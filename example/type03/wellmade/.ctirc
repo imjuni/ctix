@@ -1,0 +1,11 @@
+// created from 'create-ts-index'
+
+{
+  addNewline: true,
+  fileFirst: false,
+  includeCWD: true,
+  quote: "'",
+  useSemicolon: true,
+  useTimestamp: false,
+  verbose: false,
+}
