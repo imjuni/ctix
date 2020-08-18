@@ -13,7 +13,7 @@ import { pipe } from 'fp-ts/lib/pipeable';
 import * as TTE from 'fp-ts/lib/TaskEither';
 import * as path from 'path';
 
-const log = debug('ctit:file-test');
+const log = debug('ctix:file-test');
 const exampleRootPath = path.resolve(path.join(__dirname, '..', '..', '..', 'example'));
 const exampleType04Path = path.join(exampleRootPath, 'type04');
 

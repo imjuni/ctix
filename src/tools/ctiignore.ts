@@ -1,14 +1,13 @@
 import debug from 'debug';
 import fastGlob from 'fast-glob';
-import * as TE from 'fp-ts/lib/Either';
-import * as TTE from 'fp-ts/lib/TaskEither';
-import path from 'path';
+import * as TE from 'fp-ts/Either';
 import fs from 'fs';
-import util from 'util';
-import { TResolvedPromise, TResolvedEither } from './typehelper';
 import parseGitignore from 'parse-gitignore';
+import path from 'path';
+import util from 'util';
+import { TResolvedEither, TResolvedPromise } from './typehelper';
 
-const log = debug('ctit:ignore-tool');
+const log = debug('ctix:ignore-tool');
 const readfile = util.promisify(fs.readFile);
 
 /**
@@ -37,9 +36,10 @@ export async function getIgnoreFiles(
   try {
     const resolvedCWD = path.resolve(cwd); // absolute path
     const globPattern = path.join(resolvedCWD, '**', '.ctiignore'); // create ctiignore glob pattern
+    const npmGlobPattern = path.join(resolvedCWD, '**', '.npmignore'); // create npmignore glob pattern
 
     // ctiignore file have dot charactor at file first so set true dot flag
-    const filenames = await fastGlob(globPattern, { dot: true });
+    const filenames = await fastGlob([globPattern, npmGlobPattern], { dot: true });
 
     log('resolved: ', resolvedCWD, globPattern);
 

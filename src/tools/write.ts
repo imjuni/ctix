@@ -10,19 +10,18 @@ import {
 import { getTypeScriptExportStatement } from '@tools/tsfiles';
 import { TResolvedEither, TResolvedPromise } from '@tools/typehelper';
 import { camelCase } from 'change-case';
+import dayjs from 'dayjs';
 import debug from 'debug';
-import * as TE from 'fp-ts/lib/Either';
-import * as TI from 'fp-ts/lib/Identity';
-import { flow } from 'fp-ts/lib/function';
-import { pipe } from 'fp-ts/lib/pipeable';
-import * as TTE from 'fp-ts/lib/TaskEither';
+import * as TEI from 'fp-ts/Either';
+import { flow } from 'fp-ts/function';
+import * as TPI from 'fp-ts/pipeable';
+import * as TTE from 'fp-ts/TaskEither';
 import * as fs from 'fs';
 import { isEmpty, isNotEmpty, isTrue } from 'my-easy-fp';
 import * as path from 'path';
 import { defaultConfig } from './cticonfig';
-import dayjs from 'dayjs';
 
-const log = debug('ctit:write');
+const log = debug('ctix:write');
 
 function createExportContents({
   filename,
@@ -88,18 +87,32 @@ function createDefaultExportContents({
   }
 }
 
-export function getAllParentDir(basedir: string, dir: string): string[] {
+export function getAllParentDir(
+  basedir: string,
+  dir: string,
+  exportFilename: string,
+): string[] {
   if (basedir === dir) {
     return [];
   }
 
-  return dir
+  const dirs = dir
     .replace(basedir, '')
     .split(path.sep)
     .filter((element) => element !== '')
     .map((_, index, arr) =>
       path.join(basedir, arr.slice(0, arr.length - index).join(path.sep)),
-    );
+    )
+    .filter((subdir) => {
+      const relativeDir = path.relative(basedir, subdir);
+      return relativeDir.startsWith('./') || relativeDir.startsWith('../');
+    });
+
+  if (exportFilename === 'index.ts' || exportFilename === 'index.d.ts') {
+    return dirs;
+  }
+
+  return dirs.map((dir) => path.join(dir, exportFilename));
 }
 
 /**
@@ -110,13 +123,14 @@ export async function getWriteContents(
   args: TResolvedEither<TResolvedPromise<ReturnType<typeof getTypeScriptExportStatement>>> & {
     configObjects: INonNullableConfigObjectProps[];
   },
-): Promise<TE.Either<Error, Array<{ pathname: string; content: string[] }>>> {
+): Promise<TEI.Either<Error, Array<{ pathname: string; content: string[] }>>> {
   try {
     const configMap = new Map<string, INonNullableConfigObjectProps>(
       args.configObjects.map((configObject) => [configObject.dir, configObject]),
     );
 
     const [rootConfig] = args.configObjects;
+    const projectDir = path.resolve(path.dirname(rootConfig.config.project));
 
     log('exportFilenames: ', args.exportFilenames);
     log('defaultExportFilenames: ', args.defaultExportFilenames);
@@ -131,12 +145,16 @@ export async function getWriteContents(
           depth: dirname.split(path.sep).length,
           dirname,
         }))
-        .filter(
-          (dirname) =>
-            path.relative(rootConfig.config.output, dirname.dirname).indexOf('..') < 0,
-        )
+        .filter((dirname) => path.relative(projectDir, dirname.dirname).indexOf('..') < 0)
         .sort((left, right) => right.depth - left.depth)
-        .map((dirname) => getAllParentDir(rootConfig.config.output, dirname.dirname))
+        .map((dirname) => {
+          const nullableConfigObject = configMap.get(dirname.dirname);
+          const configObject = isNotEmpty(nullableConfigObject)
+            ? nullableConfigObject.config
+            : defaultConfig();
+
+          return getAllParentDir(projectDir, dirname.dirname, configObject.exportFilename);
+        })
         .flatMap((dirname) => dirname),
     );
 
@@ -170,16 +188,16 @@ export async function getWriteContents(
       aggregated,
     ).map(([key, value]) => ({ pathname: key, content: value }));
 
-    return TE.right(tupled);
+    return TEI.right(tupled);
   } catch (err) {
-    return TE.left(err);
+    return TEI.left(err);
   }
 }
 
 export async function write(args: {
   contents: TResolvedEither<TResolvedPromise<ReturnType<typeof getWriteContents>>>;
   configObjects: INonNullableConfigObjectProps[];
-}): Promise<TE.Either<Error, number>> {
+}): Promise<TEI.Either<Error, number>> {
   try {
     const configMap = new Map<string, INonNullableConfigObjectProps>(
       args.configObjects.map((configObject) => [configObject.dir, configObject]),
@@ -195,30 +213,30 @@ export async function write(args: {
         config: defaultConfig(),
       };
 
-      const indexFile = configObject.config.useDeclarationFile ? 'index.d.ts' : 'index.ts';
+      const indexFile = configObject.config.exportFilename;
       const resolvedIndexFile = path.resolve(targetContent.pathname, indexFile);
       const resolvedBackupFile = path.resolve(targetContent.pathname, `${indexFile}.bak`);
 
       // processing backup file,
       if (isTrue(configObject.config.useBackupFile) && (await exists(resolvedIndexFile))) {
-        const backupWrited = await pipe(
+        const backupWrited = await TPI.pipe(
           TTE.taskify(fs.readFile)(resolvedIndexFile),
           TTE.chain((buf) => TTE.taskify(fs.writeFile)(resolvedBackupFile, buf)),
         )();
 
-        if (TE.isLeft(backupWrited)) {
+        if (TEI.isLeft(backupWrited)) {
           log('error caused from backup write, ...');
           log(backupWrited.left.message);
           log(backupWrited.left.stack);
 
-          return TE.left(backupWrited.left);
+          return TEI.left(backupWrited.left);
         }
       }
 
       // create index file
       const today = dayjs();
       const comment = (() =>
-        pipe(
+        TPI.pipe(
           (() => (configObject.config.useComment ? '// created from ctix' : ''))(),
           (comment) =>
             configObject.config.useComment && configObject.config.useTimestamp
@@ -236,15 +254,15 @@ export async function write(args: {
 
       const writeResult = await TTE.taskify(fs.writeFile)(resolvedIndexFile, buf)();
 
-      if (TE.isLeft(writeResult)) {
-        log('error caused from index.ts write, ...');
+      if (TEI.isLeft(writeResult)) {
+        log(`error caused from ${indexFile} write, ...`);
         log(writeResult.left.message);
         log(writeResult.left.stack);
 
-        return TE.left(writeResult.left);
+        return TEI.left(writeResult.left);
       }
 
-      return TE.right(1);
+      return TEI.right(1);
     };
 
     const writesResult = await Promise.all(
@@ -252,12 +270,12 @@ export async function write(args: {
     );
 
     const sum = writesResult
-      .map((result): number => (TE.isRight(result) ? 1 : 0))
+      .map((result): number => (TEI.isRight(result) ? 1 : 0))
       .reduce((prev, next) => prev + next);
 
     log('successfully writed index: ', sum);
-    return TE.right(sum);
+    return TEI.right(sum);
   } catch (err) {
-    return TE.left(err);
+    return TEI.left(err);
   }
 }

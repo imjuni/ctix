@@ -8,32 +8,46 @@ import { exists } from '@tools/misc';
 import debug from 'debug';
 import merge from 'deepmerge';
 import fastGlob from 'fast-glob';
-import * as TE from 'fp-ts/lib/Either';
+import * as TEI from 'fp-ts/Either';
+import { isEmpty } from 'my-easy-fp';
+import * as TPI from 'fp-ts/pipeable';
 import * as fs from 'fs';
 import json5 from 'json5';
 import path from 'path';
 import { fpGetDirDepth, fpTimes, getParentPath } from './misc';
 
-const log = debug('ctit:config-tool');
+const log = debug('ctix:config-tool');
 
-export function defaultConfig(cwd?: string): ICTIXOptions {
+export const getExportFilename = (exportFilenameFrom?: string | undefined | null) =>
+  TPI.pipe(
+    exportFilenameFrom,
+    (filename) => (isEmpty(filename) ? 'index.ts' : filename),
+    (filename) => (filename === '' ? 'index.ts' : filename),
+  );
+
+export function defaultConfig(args?: {
+  project?: string;
+  exportFilename?: string;
+}): ICTIXOptions {
+  const project = args?.project ?? path.join(process.cwd(), 'tsconfig.json');
+  const exportFilename = args?.exportFilename ?? 'index.ts';
+
   return {
     addNewline: true,
     useSemicolon: true,
     useTimestamp: false,
     useComment: true,
-    useDeclarationFile: false,
+    exportFilename,
     quote: "'",
     verbose: false,
     useBackupFile: true,
-    output: cwd ?? process.cwd(),
-    project: path.join(cwd ?? process.cwd(), 'tsconfig.json'),
+    project,
   };
 }
 
 export async function getCtiConfig(
   args: Omit<ICreateTypeScriptIndex, 'configFiles'>,
-): Promise<TE.Either<Error, IConfigObjectProps[]>> {
+): Promise<TEI.Either<Error, IConfigObjectProps[]>> {
   try {
     const dirs = await fastGlob(`${args.cwd}/**/*`, { onlyDirectories: true });
 
@@ -47,7 +61,7 @@ export async function getCtiConfig(
 
           try {
             return {
-              dir,
+              dir: path.resolve(dir),
               exists: isConfigFileExists,
               depth: fpGetDirDepth(args.cwd, dir),
               config: isConfigFileExists
@@ -72,32 +86,52 @@ export async function getCtiConfig(
     );
 
     // directory depth ascending sort
-    return TE.right([...parsedConfigObjects].sort((a, b) => a.depth - b.depth));
+    return TEI.right(
+      [...parsedConfigObjects].sort((left, right) => {
+        const diff = left.depth - right.depth;
+        return diff === 0 ? left.dir.localeCompare(right.dir) : diff;
+      }),
+    );
   } catch (err) {
-    return TE.left(err);
+    return TEI.left(err);
   }
 }
 
 export async function getMergedConfig({
   cwd,
+  cliOptions: cliOptionsFrom,
   configObjects,
 }: {
   cwd: string;
+  cliOptions: ICTIXOptions;
   configObjects: IConfigObjectProps[];
-}): Promise<TE.Either<Error, INonNullableConfigObjectProps[]>> {
+}): Promise<TEI.Either<Error, INonNullableConfigObjectProps[]>> {
   try {
     if (configObjects.length > 1) {
-      const lastConfigObject = configObjects[configObjects.length - 1];
-      const firstConfigObject = configObjects[0];
+      const rootOptions = merge(
+        configObjects[0].config ?? defaultConfig({ project: cwd }),
+        cliOptionsFrom ?? defaultConfig({ project: cwd }),
+      );
 
+      const lastConfigObject = configObjects[configObjects.length - 1];
+      const firstConfigObject = {
+        ...configObjects[0],
+        config: {
+          ...rootOptions,
+          project: rootOptions.project,
+          exportFilename: getExportFilename(rootOptions.exportFilename),
+        },
+      };
+
+      // root configuration from project directory
       const processedParseConfigMap = new Map<string, IConfigObjectProps>(
         configObjects.map((configObject) => [configObject.dir, configObject]),
       );
 
       const rootConfigObject = {
         ...firstConfigObject,
-        config: merge(defaultConfig(cwd), {
-          ...(firstConfigObject.config ?? defaultConfig(cwd)),
+        config: merge(defaultConfig({ project: cwd }), {
+          ...(firstConfigObject.config ?? defaultConfig({ project: cwd })),
           output: cwd,
         }),
       };
@@ -114,41 +148,61 @@ export async function getMergedConfig({
 
         currentDepthedObjects.forEach((currentDepthedObject) => {
           const configObject = processedParseConfigMap.get(currentDepthedObject.dir);
-          const parentObject = nonNullableConfigMap.get(
-            getParentPath(configObject?.dir ?? ''),
-          );
+          const parentOptions =
+            nonNullableConfigMap.get(getParentPath(configObject?.dir ?? ''))?.config ??
+            defaultConfig();
 
-          if (configObject !== undefined && parentObject !== undefined) {
+          if (configObject !== undefined && parentOptions !== undefined) {
             const newConfigObject = {
               ...configObject,
               config: merge(
-                parentObject.config ?? defaultConfig(),
-                configObject.config ?? defaultConfig(),
+                parentOptions,
+                configObject.config ??
+                  defaultConfig({
+                    // exportFilename, project fields use parent options
+                    exportFilename: parentOptions.exportFilename,
+                    project: parentOptions.project,
+                  }),
               ),
             };
 
             nonNullableConfigMap.set(newConfigObject.dir, newConfigObject);
+            log(
+              'exportFilename-1: ',
+              parentOptions.exportFilename,
+              (configObject.config ?? defaultConfig()).exportFilename,
+              newConfigObject.config.exportFilename,
+            );
+          } else {
+            const newConfigObject = {
+              ...currentDepthedObject,
+              config: configObject?.config ?? defaultConfig(),
+            };
+
+            nonNullableConfigMap.set(currentDepthedObject.dir, newConfigObject);
+            log('exportFilename-2: ', newConfigObject.config.exportFilename);
           }
         });
       });
 
-      return TE.right([rootConfigObject, ...Array.from(nonNullableConfigMap.values())]);
+      const merged = [rootConfigObject, ...Array.from(nonNullableConfigMap.values())];
+      return TEI.right(merged);
     }
 
-    return TE.right(
+    return TEI.right(
       [...configObjects].map((configObject) => ({
         ...configObject,
         config: defaultConfig(),
       })),
     );
   } catch (err) {
-    return TE.left(err);
+    return TEI.left(err);
   }
 }
 
 export async function getConfigFiles(
   args: Omit<ICreateTypeScriptIndex, 'configFiles'>,
-): Promise<TE.Either<Error, ICreateTypeScriptIndex>> {
+): Promise<TEI.Either<Error, ICreateTypeScriptIndex>> {
   try {
     const resolvedCWD = path.resolve(args.cwd); // absolute path
     const configPattern = path.join(resolvedCWD, '**', '.ctirc'); // create ctirc glob pattern
@@ -158,8 +212,8 @@ export async function getConfigFiles(
 
     log('finded: ', configs);
 
-    return TE.right({ cwd: args.cwd, configFiles: configs });
+    return TEI.right({ cwd: args.cwd, configFiles: configs });
   } catch (err) {
-    return TE.left(err);
+    return TEI.left(err);
   }
 }

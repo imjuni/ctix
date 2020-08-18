@@ -7,7 +7,7 @@ import { exists } from './misc';
 import { delintNode } from './tstools';
 import { TResolvedEither, TResolvedPromise } from './typehelper';
 
-const log = debug('ctit:ignore-tool');
+const log = debug('ctix:ignore-tool');
 
 /**
  * tsconfig.json file find in current working director or cli execute path

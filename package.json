@@ -4,13 +4,13 @@
   "description": "Automatic create index.ts file",
   "main": "dist/cti.js",
   "scripts": {
-    "test": "cross-env NODE_ENV=develop DEBUG=cti:*,ctit:* jest --runInBand",
-    "win": "npx cross-env NODE_ENV=develop DEBUG=ctit:* jest --runInBand",
-    "debug": "node --nolazy --inspect-brk=9229 ./node_modules/.bin/jest --runInBand",
-    "start": "TS_NODE_PROJECT=tsconfig.json node -r ts-node/register ./src/ctix.ts",
+    "test": "cross-env NODE_ENV=develop DEBUG=cti:*,ctix:* jest --runInBand",
+    "win": "npx cross-env NODE_ENV=develop DEBUG=ctix:* jest --runInBand",
+    "test:debug": "node --nolazy --inspect-brk=9229 ./node_modules/.bin/jest --runInBand",
+    "start": "TS_NODE_PROJECT=tsconfig.json TS_NODE_FILES=true node -r ts-node/register -r tsconfig-paths/register ./src/ctix.ts",
     "webpack:prod": "NODE_ENV=production webpack --config webpack.config.prod.js",
     "webpack:dev": "NODE_ENV=production webpack --config webpack.config.dev.js",
-    "dbgstart": "DEBUG=cti:* node -r ts-node/register --nolazy --inspect-brk=9229 ./src/ctix.ts ",
+    "debug": "DEBUG=ctix:* TS_NODE_PROJECT=tsconfig.json TS_NODE_FILES=true node -r ts-node/register -r tsconfig-paths/register --nolazy --inspect-brk=9229 ./src/ctix.ts ",
     "prebuild": "npm run clean",
     "build": "tsc",
     "clean": "rimraf ./dist",
@@ -57,6 +57,7 @@
     }
   },
   "devDependencies": {
+    "@types/clui": "^0.3.0",
     "@types/debug": "^4.1.5",
     "@types/glob": "^7.1.3",
     "@types/jest": "^26.0.9",
@@ -82,6 +83,7 @@
     "ts-jest": "^26.1.4",
     "ts-loader": "^8.0.2",
     "ts-node": "^8.10.2",
+    "tsconfig-paths": "^3.9.0",
     "tsconfig-paths-webpack-plugin": "^3.3.0",
     "tslint": "^6.1.3",
     "tslint-config-prettier": "^1.18.0",
@@ -94,6 +96,7 @@
   "dependencies": {
     "chalk": "^4.1.0",
     "change-case": "^4.1.1",
+    "cli-ux": "^5.4.10",
     "clui": "^0.3.6",
     "dayjs": "^1.8.33",
     "debug": "^4.1.1",
@@ -101,14 +104,11 @@
     "fast-glob": "^3.2.4",
     "fp-ts": "^2.8.1",
     "glob": "^7.1.6",
-    "import-jsx": "^4.0.0",
-    "ink": "^3.0.3",
     "json5": "^2.1.3",
     "merge": "^1.2.1",
     "minimatch": "^3.0.4",
     "my-easy-fp": "^0.5.1",
     "parse-gitignore": "^1.0.1",
-    "react": "^16.13.1",
     "tslib": "^2.0.1",
     "yargs": "^15.4.1"
   }

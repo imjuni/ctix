@@ -14,7 +14,7 @@ import * as TTE from 'fp-ts/TaskEither';
 import * as path from 'path';
 import { getWriteContents, write } from '../write';
 
-const log = debug('ctit:file-test');
+const log = debug('ctix:file-test');
 
 const exampleRootPath = path.resolve(path.join(__dirname, '..', '..', '..', 'example'));
 const exampleType04Path = path.join(exampleRootPath, 'type04');
@@ -80,10 +80,10 @@ describe('cti-write-test-set', () => {
         {
           pathname: exampleType04Path,
           content: [
-            "export * from './BubbleCls.tsx'",
-            "export * from './ComparisonCls.tsx'",
-            "export * from './HandsomelyCls.tsx'",
-            "export * from './SampleCls.tsx'",
+            "export * from './BubbleCls'",
+            "export * from './ComparisonCls'",
+            "export * from './HandsomelyCls'",
+            "export * from './SampleCls'",
             "export * from './createTypeScriptIndex'",
             "export * from './index.tsx'",
             "export * from './wellmade'",

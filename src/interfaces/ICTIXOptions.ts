@@ -3,6 +3,13 @@
  */
 export interface ICTIXOptions {
   /**
+   * tsconfig path (with filename)
+   * @mode both
+   * @default `${process.cwd()}${path.sep}tsconfig.json`
+   */
+  project: string;
+
+  /**
    * add newline on EOF
    * @mode both
    * @default true
@@ -45,13 +52,6 @@ export interface ICTIXOptions {
   verbose: boolean;
 
   /**
-   * create index.d.ts file instead of index.ts
-   * @mode both
-   * @default false
-   */
-  useDeclarationFile: boolean;
-
-  /**
    * Don't create backupfile if already exists target file
    * @mode both
    * @default true
@@ -59,16 +59,9 @@ export interface ICTIXOptions {
   useBackupFile: boolean;
 
   /**
-   * Output file directory, only works in single-file mode
-   * @mode single-file (= entrypoint)
-   * @default process.cwd()
-   */
-  output: string;
-
-  /**
-   * tsconfig path (with filename)
+   * Export filename, if you not pass this field that use "index.ts" or "index.d.ts" (set useDeclarationFile true)
    * @mode both
-   * @default `${process.cwd()}${path.sep}tsconfig.json`
+   * @default true
    */
-  project: string;
+  exportFilename: string;
 }

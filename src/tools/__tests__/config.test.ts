@@ -6,7 +6,7 @@ import { pipe } from 'fp-ts/lib/pipeable';
 import * as TTE from 'fp-ts/lib/TaskEither';
 import * as path from 'path';
 
-const log = debug('ctit:config-test');
+const log = debug('ctix:config-test');
 const exampleRootPath = path.resolve(path.join(__dirname, '..', '..', '..', 'example'));
 const exampleType03Path = path.join(exampleRootPath, 'type03');
 
@@ -122,7 +122,7 @@ describe('cti-config-test', () => {
     log(mergedConfig.right);
     log('working directory: ', process.cwd());
 
-    return expect(mergedConfig.right.sort()).toEqual(
+    return expect(mergedConfig.right.sort((l, r) => l.dir.localeCompare(r.dir))).toEqual(
       [
         {
           dir: exampleType03Path,
@@ -130,17 +130,17 @@ describe('cti-config-test', () => {
           depth: 0,
           config: {
             addNewline: true,
-            useSemicolon: true,
-            useTimestamp: false,
-            withoutComment: true,
-            useDeclarationFile: false,
-            quote: "'",
-            verbose: false,
-            withoutBackupFile: false,
-            output: process.cwd(),
-            project: path.join(process.cwd(), '/tsconfig.json'),
+            exportFilename: 'index.ts',
             fileFirst: false,
             includeCWD: true,
+            output: process.cwd(),
+            project: path.join(process.cwd(), '/tsconfig.json'),
+            quote: "'",
+            useBackupFile: true,
+            useComment: true,
+            useSemicolon: true,
+            useTimestamp: false,
+            verbose: false,
           },
         },
         {
@@ -149,17 +149,17 @@ describe('cti-config-test', () => {
           depth: 0,
           config: {
             addNewline: true,
-            useSemicolon: true,
-            useTimestamp: false,
-            withoutComment: true,
-            useDeclarationFile: false,
-            quote: "'",
-            verbose: false,
-            withoutBackupFile: false,
-            output: process.cwd(),
-            project: path.join(process.cwd(), '/tsconfig.json'),
+            exportFilename: 'index.ts',
             fileFirst: false,
             includeCWD: true,
+            output: process.cwd(),
+            project: path.join(process.cwd(), '/tsconfig.json'),
+            quote: "'",
+            useBackupFile: true,
+            useComment: true,
+            useSemicolon: true,
+            useTimestamp: false,
+            verbose: false,
           },
         },
         {
@@ -168,17 +168,17 @@ describe('cti-config-test', () => {
           depth: 1,
           config: {
             addNewline: true,
-            useSemicolon: true,
-            useTimestamp: false,
-            withoutComment: true,
-            useDeclarationFile: false,
-            quote: "'",
-            verbose: false,
-            withoutBackupFile: false,
-            output: process.cwd(),
-            project: path.join(process.cwd(), '/tsconfig.json'),
+            exportFilename: 'index.ts',
             fileFirst: false,
             includeCWD: true,
+            output: process.cwd(),
+            project: path.join(process.cwd(), '/tsconfig.json'),
+            quote: "'",
+            useBackupFile: true,
+            useComment: true,
+            useSemicolon: true,
+            useTimestamp: false,
+            verbose: false,
           },
         },
         {
@@ -187,17 +187,17 @@ describe('cti-config-test', () => {
           depth: 1,
           config: {
             addNewline: true,
-            useSemicolon: true,
-            useTimestamp: false,
-            withoutComment: true,
-            useDeclarationFile: false,
-            quote: "'",
-            verbose: false,
-            withoutBackupFile: false,
-            output: process.cwd(),
-            project: path.join(process.cwd(), '/tsconfig.json'),
+            exportFilename: 'index.ts',
             fileFirst: false,
             includeCWD: true,
+            output: process.cwd(),
+            project: path.join(process.cwd(), '/tsconfig.json'),
+            quote: "'",
+            useBackupFile: true,
+            useComment: true,
+            useSemicolon: true,
+            useTimestamp: false,
+            verbose: false,
           },
         },
         {
@@ -206,17 +206,17 @@ describe('cti-config-test', () => {
           depth: 2,
           config: {
             addNewline: true,
-            useSemicolon: true,
-            useTimestamp: false,
-            withoutComment: true,
-            useDeclarationFile: false,
-            quote: "'",
-            verbose: false,
-            withoutBackupFile: false,
-            output: process.cwd(),
-            project: path.join(process.cwd(), '/tsconfig.json'),
+            exportFilename: 'index.ts',
             fileFirst: false,
             includeCWD: true,
+            output: process.cwd(),
+            project: path.join(process.cwd(), '/tsconfig.json'),
+            quote: "'",
+            useBackupFile: true,
+            useComment: true,
+            useSemicolon: true,
+            useTimestamp: false,
+            verbose: false,
           },
         },
         {
@@ -225,20 +225,20 @@ describe('cti-config-test', () => {
           depth: 2,
           config: {
             addNewline: true,
-            useSemicolon: true,
-            useTimestamp: false,
-            withoutComment: true,
-            useDeclarationFile: false,
-            quote: "'",
-            verbose: false,
-            withoutBackupFile: false,
-            output: process.cwd(),
-            project: path.join(process.cwd(), '/tsconfig.json'),
+            exportFilename: 'index.ts',
             fileFirst: false,
             includeCWD: true,
+            output: process.cwd(),
+            project: path.join(process.cwd(), '/tsconfig.json'),
+            quote: "'",
+            useBackupFile: true,
+            useComment: true,
+            useSemicolon: true,
+            useTimestamp: false,
+            verbose: false,
           },
         },
-      ].sort(),
+      ].sort((l, r) => l.dir.localeCompare(r.dir)),
     );
   });
 });

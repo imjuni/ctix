@@ -3,7 +3,7 @@ import * as path from 'path';
 import { getIgnoreFiles, getIgnoreFileContents, getIgnoredContents } from '@tools/ctiignore';
 import * as TE from 'fp-ts/lib/Either';
 
-const log = debug('ctit:file-test');
+const log = debug('ctix:file-test');
 const exampleRootPath = path.resolve(path.join(__dirname, '..', '..', '..', 'example'));
 const exampleType04Path = path.join(exampleRootPath, 'type04');
 

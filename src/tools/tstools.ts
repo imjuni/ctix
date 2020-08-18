@@ -4,7 +4,7 @@ import { pipe } from 'fp-ts/lib/pipeable';
 import { isEmpty, isFalse } from 'my-easy-fp';
 import typescript from 'typescript';
 
-const log = debug('ctit:ignore-tool');
+const log = debug('ctixd:ignore-tool');
 
 export type TStatementModifierType = 'exported' | 'default' | 'none';
 
