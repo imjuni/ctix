@@ -8,6 +8,7 @@
     "win": "npx cross-env NODE_ENV=develop DEBUG=ctix:* jest --runInBand",
     "test:debug": "node --nolazy --inspect-brk=9229 ./node_modules/.bin/jest --runInBand",
     "start": "TS_NODE_PROJECT=tsconfig.json TS_NODE_FILES=true node -r ts-node/register -r tsconfig-paths/register ./src/ctix.ts",
+    "startx": "DEBUG=ctix:* TS_NODE_PROJECT=tsconfig.json TS_NODE_FILES=true node -r ts-node/register -r tsconfig-paths/register ./src/ctix.ts",
     "webpack:prod": "NODE_ENV=production webpack --config webpack.config.prod.js",
     "webpack:dev": "NODE_ENV=production webpack --config webpack.config.dev.js",
     "debug": "DEBUG=ctix:* TS_NODE_PROJECT=tsconfig.json TS_NODE_FILES=true node -r ts-node/register -r tsconfig-paths/register --nolazy --inspect-brk=9229 ./src/ctix.ts ",

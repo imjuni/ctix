@@ -5,6 +5,7 @@ import {
   fpRefineStartSlash,
   fpRemoveExt,
   fpRemoveExtWithTSX,
+  fpTimes,
   settify,
 } from '@tools/misc';
 import { getTypeScriptExportStatement } from '@tools/tsfiles';
@@ -23,24 +24,25 @@ import { defaultConfig } from './cticonfig';
 
 const log = debug('ctix:write');
 
+interface IExportContent {
+  dirname: string;
+  content: string | undefined;
+}
+
 function createExportContents({
   filename,
   configMap,
 }: {
   filename: string;
   configMap: Map<string, INonNullableConfigObjectProps>;
-}): { dirname: string; content: string | undefined } {
+}): IExportContent {
   const dirname = path.dirname(filename);
 
   try {
     const configObject = configMap.get(dirname);
     const quote = configObject?.config.quote ?? "'";
 
-    const refined = flow(
-      fpRefinePathSep,
-      fpRemoveExt,
-      fpRefineStartSlash,
-    )(filename.replace(dirname, ''));
+    const refined = flow(fpRefinePathSep, fpRemoveExt, fpRefineStartSlash)(filename.replace(dirname, ''));
     const exportFileContent = `export * from ${quote}./${refined}${quote}`;
 
     return { dirname, content: exportFileContent };
@@ -57,23 +59,15 @@ function createDefaultExportContents({
 }: {
   filename: string;
   configMap: Map<string, INonNullableConfigObjectProps>;
-}): { dirname: string; content: string | undefined } {
+}): IExportContent {
   const dirname = path.dirname(filename);
 
   try {
     const configObject = configMap.get(dirname);
     const quote = configObject?.config.quote ?? "'";
 
-    const refined = flow(
-      fpRefinePathSep,
-      fpRemoveExt,
-      fpRefineStartSlash,
-    )(filename.replace(dirname, ''));
-
-    const refinedAlias = flow(
-      fpRefinePathSep,
-      fpRemoveExtWithTSX,
-    )(filename.replace(dirname, ''));
+    const refined = flow(fpRefinePathSep, fpRemoveExt, fpRefineStartSlash)(filename.replace(dirname, ''));
+    const refinedAlias = flow(fpRefinePathSep, fpRemoveExtWithTSX)(filename.replace(dirname, ''));
 
     const defaultExportFileContent = `export { default as ${camelCase(
       refinedAlias,
@@ -83,36 +77,103 @@ function createDefaultExportContents({
   } catch (err) {
     log(err.message);
     log(err.stack);
+
     return { dirname, content: undefined };
   }
 }
 
-export function getAllParentDir(
-  basedir: string,
-  dir: string,
-  exportFilename: string,
-): string[] {
-  if (basedir === dir) {
-    return [];
-  }
-
-  const dirs = dir
-    .replace(basedir, '')
-    .split(path.sep)
-    .filter((element) => element !== '')
-    .map((_, index, arr) =>
-      path.join(basedir, arr.slice(0, arr.length - index).join(path.sep)),
-    )
-    .filter((subdir) => {
-      const relativeDir = path.relative(basedir, subdir);
-      return relativeDir.startsWith('./') || relativeDir.startsWith('../');
+export function getModuleDir({
+  project,
+  configMap,
+  filenames,
+}: {
+  project: string;
+  configMap: Map<string, INonNullableConfigObjectProps>;
+  filenames: string[];
+}): IExportContent[] {
+  const dirs = filenames
+    .map((filename) => {
+      const dirname = path.dirname(filename);
+      return { depth: dirname.replace(project, '').split(path.sep).length - 1, dirname, filename };
+    })
+    .sort((left, right) => {
+      const diff = right.depth - left.depth;
+      return diff === 0 ? right.filename.localeCompare(left.filename) : diff;
     });
 
-  if (exportFilename === 'index.ts' || exportFilename === 'index.d.ts') {
-    return dirs;
-  }
+  const [lastDir] = dirs;
+  const maxDepth = lastDir.depth;
+  log('dirs: ', maxDepth, dirs);
 
-  return dirs.map((dir) => path.join(dir, exportFilename));
+  // exclude last depth
+  const modules = fpTimes(maxDepth)
+    .map((depth) => {
+      const currentDirs = dirs.filter((dir) => dir.depth === depth);
+      log('current depth: ', depth);
+
+      return currentDirs.map((currentDir) => {
+        const children = dirs.filter(
+          (dir) =>
+            dir.dirname.indexOf(currentDir.dirname) >= 0 &&
+            dir.dirname !== currentDir.dirname &&
+            dir.depth - depth === 1,
+        );
+
+        const configObject = configMap.get(currentDir.dirname);
+        const options = configObject?.config ?? defaultConfig();
+        const quote = configObject?.config.quote ?? "'";
+        const contents = settify(children.map((child) => path.dirname(child.filename)));
+
+        if (options.exportFilename === 'index.ts' || options.exportFilename === 'index.d.ts') {
+          const writableContent = contents.map((content) => {
+            const refined = flow(
+              fpRefinePathSep,
+              fpRemoveExt,
+              fpRefineStartSlash,
+            )(content.replace(currentDir.dirname, ''));
+
+            const exportFileContent = `export * from ${quote}./${refined}${quote}`;
+            return exportFileContent;
+          });
+
+          return {
+            dirname: currentDir.dirname,
+            content: writableContent,
+          };
+        }
+
+        const writableContentWithExportFilename = contents.map((content) => {
+          const refined = flow(
+            fpRefinePathSep,
+            fpRemoveExt,
+            fpRefineStartSlash,
+          )(path.join(content.replace(currentDir.dirname, ''), options.exportFilename));
+
+          const exportFileContent = `export * from ${quote}./${refined}${quote}`;
+          return exportFileContent;
+        });
+
+        return {
+          dirname: currentDir.dirname,
+          content: writableContentWithExportFilename,
+        };
+      });
+    })
+    .flatMap((dir) => dir);
+
+  const moduleMap = new Map(modules.map((module) => [module.dirname, module.content]));
+
+  const refinedModule = Array.from(moduleMap.entries())
+    .map(([key, value]) => ({ dirname: key, content: value }))
+    .filter((module) => Array.isArray(module.content) && module.content.length > 0);
+
+  log('module directory: ', refinedModule);
+
+  const exportContents: IExportContent[] = refinedModule
+    .map((module) => module.content.map((content) => ({ dirname: module.dirname, content })))
+    .flatMap((flat) => flat);
+
+  return exportContents;
 }
 
 /**
@@ -135,58 +196,39 @@ export async function getWriteContents(
     log('exportFilenames: ', args.exportFilenames);
     log('defaultExportFilenames: ', args.defaultExportFilenames);
 
-    const moduleContainDir = settify(
-      settify(
-        args.exportFilenames
-          .concat(args.defaultExportFilenames)
-          .map((dirname) => path.dirname(dirname)),
-      )
-        .map((dirname) => ({
-          depth: dirname.split(path.sep).length,
-          dirname,
-        }))
-        .filter((dirname) => path.relative(projectDir, dirname.dirname).indexOf('..') < 0)
-        .sort((left, right) => right.depth - left.depth)
-        .map((dirname) => {
-          const nullableConfigObject = configMap.get(dirname.dirname);
-          const configObject = isNotEmpty(nullableConfigObject)
-            ? nullableConfigObject.config
-            : defaultConfig();
-
-          return getAllParentDir(projectDir, dirname.dirname, configObject.exportFilename);
-        })
-        .flatMap((dirname) => dirname),
-    );
-
-    const exportContents = args.exportFilenames
-      .concat(moduleContainDir)
+    const exportContents: IExportContent[] = args.exportFilenames
       .map((filename) => createExportContents({ filename, configMap }))
-      .filter((content): content is { dirname: string; content: string } =>
-        isNotEmpty(content.content),
-      );
+      .filter((content): content is { dirname: string; content: string } => isNotEmpty(content.content));
 
-    const defaultExportContents = args.defaultExportFilenames
+    const defaultExportContents: IExportContent[] = args.defaultExportFilenames
       .map((filename) => createDefaultExportContents({ filename, configMap }))
-      .filter((content): content is { dirname: string; content: string } =>
-        isNotEmpty(content.content),
-      );
+      .filter((content): content is { dirname: string; content: string } => isNotEmpty(content.content));
 
-    log('module contain directory: ', moduleContainDir);
+    const modules = getModuleDir({
+      project: projectDir,
+      configMap,
+      filenames: args.exportFilenames.concat(args.defaultExportFilenames),
+    });
 
     const aggregated = exportContents
       .concat(defaultExportContents)
+      .concat(modules)
       .reduce<{ [key: string]: string[] }>((aggregation, current) => {
         if (isEmpty(aggregation[current.dirname])) {
           aggregation[current.dirname] = [];
         }
 
-        aggregation[current.dirname] = [...aggregation[current.dirname], current.content];
+        if (isNotEmpty(current.content)) {
+          aggregation[current.dirname] = [...aggregation[current.dirname], current.content];
+        }
+
         return aggregation;
       }, {});
 
-    const tupled: Array<{ pathname: string; content: string[] }> = Object.entries(
-      aggregated,
-    ).map(([key, value]) => ({ pathname: key, content: value }));
+    const tupled: Array<{ pathname: string; content: string[] }> = Object.entries(aggregated).map(([key, value]) => ({
+      pathname: key,
+      content: value,
+    }));
 
     return TEI.right(tupled);
   } catch (err) {
@@ -265,13 +307,9 @@ export async function write(args: {
       return TEI.right(1);
     };
 
-    const writesResult = await Promise.all(
-      args.contents.map((indexContent) => writing(indexContent)),
-    );
+    const writesResult = await Promise.all(args.contents.map((indexContent) => writing(indexContent)));
 
-    const sum = writesResult
-      .map((result): number => (TEI.isRight(result) ? 1 : 0))
-      .reduce((prev, next) => prev + next);
+    const sum = writesResult.map((result): number => (TEI.isRight(result) ? 1 : 0)).reduce((prev, next) => prev + next);
 
     log('successfully writed index: ', sum);
     return TEI.right(sum);
