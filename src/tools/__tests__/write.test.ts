@@ -1,10 +1,6 @@
-import { getCtiConfig, getMergedConfig } from '@tools/cticonfig';
+import { getCTIXOptions, getMergedConfig, defaultOption } from '@tools/cticonfig';
 import { getIgnoredContents, getIgnoreFileContents, getIgnoreFiles } from '@tools/ctiignore';
-import {
-  getTypeScriptConfig,
-  getTypeScriptExportStatement,
-  getTypeScriptSource,
-} from '@tools/tsfiles';
+import { getTypeScriptConfig, getTypeScriptExportStatement, getTypeScriptSource } from '@tools/tsfiles';
 import { taskEitherLiftor } from '@tools/typehelper';
 import debug from 'debug';
 import * as TE from 'fp-ts/Either';
@@ -37,9 +33,9 @@ describe('cti-write-test-set', () => {
         tsconfigPath: path.join(exampleType04Path, 'tsconfig.json'),
       }),
       pipe(
-        taskEitherLiftor(getCtiConfig)({ cwd: exampleType04Path }),
+        taskEitherLiftor(getCTIXOptions)({ cwd: exampleType04Path }),
         TTE.chain((args) => () =>
-          getMergedConfig({ cwd: exampleType04Path, configObjects: args }),
+          getMergedConfig({ cwd: exampleType04Path, cliOption: defaultOption(), optionObjects: args }),
         ),
       ),
     )();
@@ -67,7 +63,7 @@ describe('cti-write-test-set', () => {
       return expect(TE.isLeft(exportContents)).toBeFalsy();
     }
 
-    const writed = await getWriteContents({ ...exportContents.right, configObjects });
+    const writed = await getWriteContents({ ...exportContents.right, optionObjects: configObjects });
 
     if (TE.isLeft(writed)) {
       return expect(TE.isLeft(writed)).toBeFalsy();
@@ -119,9 +115,9 @@ describe('cti-write-test-set', () => {
         tsconfigPath: path.join(exampleType04Path, 'tsconfig.json'),
       }),
       pipe(
-        taskEitherLiftor(getCtiConfig)({ cwd: exampleType04Path }),
+        taskEitherLiftor(getCTIXOptions)({ cwd: exampleType04Path }),
         TTE.chain((args) => () =>
-          getMergedConfig({ cwd: exampleType04Path, configObjects: args }),
+          getMergedConfig({ cwd: exampleType04Path, cliOption: defaultOption(), optionObjects: args }),
         ),
       ),
     )();
@@ -149,12 +145,12 @@ describe('cti-write-test-set', () => {
       return expect(TE.isLeft(exportContents)).toBeFalsy();
     }
 
-    const writed = await getWriteContents({ ...exportContents.right, configObjects });
+    const writed = await getWriteContents({ ...exportContents.right, optionObjects: configObjects });
 
     if (TE.isLeft(writed)) {
       return expect(TE.isLeft(writed)).toBeFalsy();
     }
 
-    await write({ contents: writed.right, configObjects });
+    await write({ contents: writed.right, optionObjects: configObjects });
   });
 });

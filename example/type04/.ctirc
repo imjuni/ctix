@@ -1,9 +1,1 @@
-// created from 'create-ts-index'
-
-{
-  addNewline: true,
-  quote: "'",
-  useSemicolon: true,
-  useTimestamp: true,
-  verbose: false,
-}
+{"addNewline":true,"useSemicolon":true,"useTimestamp":false,"useComment":true,"exportFilename":"index.ts","quote":"'","useBackupFile":true}

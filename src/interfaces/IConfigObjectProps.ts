@@ -2,19 +2,19 @@ import { ICTIXOptions } from '@interfaces/ICTIXOptions';
 
 export interface ICreateTypeScriptIndex {
   cwd: string;
-  configFiles: string[];
+  optionFiles: string[];
 }
 
-export interface IConfigObjectProps {
+export interface IOptionObjectProps {
   dir: string;
   depth: number;
   exists: boolean;
-  config?: ICTIXOptions;
+  option?: ICTIXOptions;
 }
 
-export interface INonNullableConfigObjectProps {
+export interface INonNullableOptionObjectProps {
   dir: string;
   depth: number;
   exists: boolean;
-  config: ICTIXOptions;
+  option: ICTIXOptions;
 }

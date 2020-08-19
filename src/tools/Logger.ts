@@ -6,7 +6,7 @@ export class Logger {
   private _error: TLogFunc;
 
   public constructor() {
-    this._log = () => undefined;
+    this._log = console.log;
     this._debug = () => undefined;
     this._error = console.error;
   }

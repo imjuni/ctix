@@ -1,5 +1,5 @@
 import { ICTIXOptions } from '@interfaces/ICTIXOptions';
-import { defaultConfig, getCtiConfig, getMergedConfig } from '@tools/cticonfig';
+import { defaultOption, getCTIXOptions, getMergedConfig } from '@tools/cticonfig';
 import debug from 'debug';
 import fastGlob from 'fast-glob';
 import * as TEI from 'fp-ts/Either';
@@ -14,15 +14,15 @@ import { taskEitherLiftor } from './typehelper';
 const log = debug('ctix:ignore-tool');
 
 export async function getCleanFilenames({
-  cliOptions,
+  cliOption,
   includeBackupFrom,
 }: {
-  cliOptions?: ICTIXOptions;
+  cliOption?: ICTIXOptions;
   includeBackupFrom?: boolean;
 }): Promise<TEI.Either<Error, string[]>> {
   try {
-    const fallbackOptions = defaultConfig();
-    const projectPath = cliOptions?.project ?? fallbackOptions.project;
+    const fallbackOptions = defaultOption();
+    const projectPath = cliOption?.project ?? fallbackOptions.project;
     const projectDir = path.dirname(projectPath);
     const resolved = path.resolve(projectPath);
     const includeBackup = includeBackupFrom ?? true;
@@ -33,12 +33,12 @@ export async function getCleanFilenames({
     }
 
     const mergedConfig = await TPI.pipe(
-      taskEitherLiftor(getCtiConfig)({ cwd: projectDir }),
+      taskEitherLiftor(getCTIXOptions)({ cwd: projectDir }),
       TTE.chain((args) => () =>
         getMergedConfig({
           cwd: projectDir,
-          cliOptions: cliOptions ?? fallbackOptions,
-          configObjects: args,
+          cliOption: cliOption ?? fallbackOptions,
+          optionObjects: args,
         }),
       ),
     )();
@@ -49,13 +49,13 @@ export async function getCleanFilenames({
 
     const globPatterns = settify(
       mergedConfig.right.map((configObject) => {
-        return path.join(configObject.dir, '**', configObject.config.exportFilename);
+        return path.join(configObject.dir, '**', configObject.option.exportFilename);
       }),
     );
 
     const backup = settify(
       mergedConfig.right.map((configObject) => {
-        return path.join(configObject.dir, '**', `${configObject.config.exportFilename}.bak`);
+        return path.join(configObject.dir, '**', `${configObject.option.exportFilename}.bak`);
       }),
     );
 

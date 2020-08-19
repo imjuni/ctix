@@ -1,5 +1,5 @@
 import { ICreateTypeScriptIndex } from '@interfaces/IConfigObjectProps';
-import { getConfigFiles, getCtiConfig, getMergedConfig } from '@tools/cticonfig';
+import { getConfigFiles, getCTIXOptions, getMergedConfig, defaultOption } from '@tools/cticonfig';
 import debug from 'debug';
 import { isLeft } from 'fp-ts/lib/Either';
 import { pipe } from 'fp-ts/lib/pipeable';
@@ -22,7 +22,7 @@ describe('cti-config-test', () => {
 
     const expection: ICreateTypeScriptIndex = {
       cwd: exampleType03Path,
-      configFiles: [
+      optionFiles: [
         path.join(exampleType03Path, '/.ctirc'),
         path.join(exampleType03Path, '/wellmade/.ctirc'),
         path.join(exampleType03Path, '/juvenile/spill/.ctirc'),
@@ -34,7 +34,7 @@ describe('cti-config-test', () => {
   });
 
   test('get-cti-config', async () => {
-    const res = await getCtiConfig({ cwd: exampleType03Path });
+    const res = await getCTIXOptions({ cwd: exampleType03Path });
 
     if (isLeft(res)) {
       return expect(isLeft(res)).toBeFalsy();
@@ -111,8 +111,14 @@ describe('cti-config-test', () => {
   test('get-merged-content', async () => {
     const mergedConfig = await pipe(
       exampleType03Path,
-      (cwd) => () => getCtiConfig({ cwd }),
-      TTE.chain((args) => () => getMergedConfig({ cwd: process.cwd(), configObjects: args })),
+      (cwd) => () => getCTIXOptions({ cwd }),
+      TTE.chain((args) => () =>
+        getMergedConfig({
+          cwd: process.cwd(),
+          cliOption: defaultOption(),
+          optionObjects: args,
+        }),
+      ),
     )();
 
     if (isLeft(mergedConfig)) {

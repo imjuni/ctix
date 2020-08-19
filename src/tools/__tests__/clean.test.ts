@@ -4,6 +4,7 @@ import * as TEI from 'fp-ts/Either';
 import * as TTE from 'fp-ts/TaskEither';
 import * as path from 'path';
 import * as TPI from 'fp-ts/lib/pipeable';
+import { defaultOption } from '@tools/cticonfig';
 
 const log = debug('ctix:file-test');
 const exampleRootPath = path.resolve(path.join(__dirname, '..', '..', '..', 'example'));
@@ -12,7 +13,7 @@ const exampleType04Path = path.join(exampleRootPath, 'type04');
 describe('cti-clean-test', () => {
   test('get-clean-filenames', async () => {
     const files = await getCleanFilenames({
-      project: path.join(exampleType04Path, 'tsconfig.json'),
+      cliOption: { ...defaultOption(), project: path.join(exampleType04Path, 'tsconfig.json') },
     });
 
     if (TEI.isLeft(files)) {
@@ -32,7 +33,7 @@ describe('cti-clean-test', () => {
     const files = await TPI.pipe(
       () =>
         getCleanFilenames({
-          project: path.join(exampleType04Path, 'tsconfig.json'),
+          cliOption: { ...defaultOption(), project: path.join(exampleType04Path, 'tsconfig.json') },
         }),
       TTE.chain((args) => () => clean({ filenames: args })),
     )();

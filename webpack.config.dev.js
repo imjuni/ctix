@@ -10,7 +10,7 @@ const config = {
   devtool: 'eval-source-map',
   externals: [
     webpackNodeExternals({
-      whitelist: ['tslib'],
+      allowlist: ['tslib'],
     }),
   ],
   mode: 'development',
@@ -32,15 +32,15 @@ const config = {
 
   plugins: [
     new webpack.BannerPlugin({ banner: '#!/usr/bin/env node', raw: true }),
-    new webpackBar({ name: '-create-ts-index' })
+    new webpackBar({ name: '-create-ts-index-x' })
   ],
 
   entry: {
-    'cti': ['./src/cti.ts'],
+    'ctix': ['./src/ctix.ts'],
   },
 
   output: {
-    filename: 'cti.js',
+    filename: 'ctix.js',
     libraryTarget: 'commonjs',
     path: distPath,
   },
