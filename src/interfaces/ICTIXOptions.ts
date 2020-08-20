@@ -3,64 +3,64 @@
  */
 export interface ICTIXOptions {
   /**
-   * tsconfig path (with filename)
-   * @mode both
+   * tsconfig.json path: you must pass path with filename, like this "./tsconfig.json"
+   * @mode all
    * @default `${process.cwd()}${path.sep}tsconfig.json`
    */
   project: string;
 
   /**
    * add newline on EOF
-   * @mode both
+   * @mode create, single
    * @default true
    */
   addNewline: boolean;
 
   /**
    * add semicolon on every export statement
-   * @mode both
+   * @mode create, single
    * @default true
    */
   useSemicolon: boolean;
 
   /**
-   * add timestamp on creation comment
-   * @mode both
+   * timestamp write on ctix comment right-side, only works in useComment option set true
+   * @mode create, single
    * @default false
    */
   useTimestamp: boolean;
 
   /**
-   * remove create-ts-index comment, if enable this option forced disable useTimestamp option
-   * @mode both
+   * add ctix comment at first line of creted index.ts file, that remark created from ctix
+   * @mode create, single
    * @default false
    */
   useComment: boolean;
 
   /**
    * quote mark " or '
-   * @mode both
+   * @mode create, single
    * @default '
    */
   quote: string;
 
   /**
-   * disply verbose logging message
-   * @mode both
+   * display more detailed log
+   * @mode all
    * @default false
    */
   verbose: boolean;
 
   /**
-   * Don't create backupfile if already exists target file
-   * @mode both
+   * created backup file if exists index.ts file already in directory
+   * @mode create, single
    * @default true
    */
   useBackupFile: boolean;
 
   /**
-   * Export filename, if you not pass this field that use "index.ts" or "index.d.ts" (set useDeclarationFile true)
-   * @mode both
+   * Export filename, if you not pass this field that use "index.ts" or "index.d.ts"
+   * @mode create, single, clean
    * @default true
    */
   exportFilename: string;

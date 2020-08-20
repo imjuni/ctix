@@ -16,7 +16,6 @@ import * as TEI from 'fp-ts/Either';
 import * as TPI from 'fp-ts/pipeable';
 import * as TTE from 'fp-ts/TaskEither';
 import * as fs from 'fs';
-import { isFalse } from 'my-easy-fp';
 import * as path from 'path';
 import yargs, { Argv } from 'yargs';
 
@@ -95,7 +94,7 @@ const argv = yargs
       try {
         const project = await existsCheck(argv.tsconfigPath, argv.project);
 
-        cli.action.start(chalk`{yellow ctix} ${argv.exportFilename} file create mode:`, 'initializing', {
+        cli.action.start(chalk`{yellow ctix} ${argv.exportFilename ?? 'index.ts'} file create mode:`, 'initializing', {
           stdout: true,
         });
 
@@ -203,9 +202,13 @@ const argv = yargs
       try {
         const project = await existsCheck(argv.tsconfigPath, argv.project);
 
-        cli.action.start(chalk`{yellow ctix} single ${argv.exportFilename} file create mode:`, 'initializing', {
-          stdout: true,
-        });
+        cli.action.start(
+          chalk`{yellow ctix} single ${argv.exportFilename ?? 'index.ts'} file create mode:`,
+          'initializing',
+          {
+            stdout: true,
+          },
+        );
 
         const fallbackConfig = defaultOption({ project });
         const options: ICTIXOptions = {
@@ -317,7 +320,7 @@ const argv = yargs
       try {
         const project = await existsCheck(argv.tsconfigPath, argv.project);
 
-        cli.action.start(chalk`{yellow ctix} ${argv.exportFilename} file clean mode:`, 'initializing', {
+        cli.action.start(chalk`{yellow ctix} ${argv.exportFilename ?? 'index.ts'} file clean mode:`, 'initializing', {
           stdout: true,
         });
 
@@ -374,7 +377,13 @@ const argv = yargs
         logger.log(chalk`{yellow ctix - ${counter.log}:} default option generation {green compile} `);
         cli.action.status = 'processing ...';
 
-        const option = defaultOption();
+        const option: Omit<ICTIXOptions, 'project' | 'verbose'> & {
+          project?: ICTIXOptions['project'];
+          verbose?: ICTIXOptions['verbose'];
+        } = {
+          ...defaultOption(),
+        };
+
         delete option.project;
         delete option.verbose;
 
@@ -396,8 +405,7 @@ const argv = yargs
   })
   .option('exportFilename', {
     alias: 'f',
-    describe:
-      'Export filename, if you not pass this field that use "index.ts" or "index.d.ts" (set useDeclarationFile true)',
+    describe: 'Export filename, if you not pass this field that use "index.ts" or "index.d.ts"',
     type: 'string',
   })
   .option('verbose', {
