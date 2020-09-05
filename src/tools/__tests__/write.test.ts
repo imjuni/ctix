@@ -33,9 +33,9 @@ describe('cti-write-test-set', () => {
         tsconfigPath: path.join(exampleType04Path, 'tsconfig.json'),
       }),
       pipe(
-        taskEitherLiftor(getCTIXOptions)({ cwd: exampleType04Path }),
+        taskEitherLiftor(getCTIXOptions)({ projectPath: exampleType04Path }),
         TTE.chain((args) => () =>
-          getMergedConfig({ cwd: exampleType04Path, cliOption: defaultOption(), optionObjects: args }),
+          getMergedConfig({ projectPath: exampleType04Path, cliOption: defaultOption(), optionObjects: args }),
         ),
       ),
     )();
@@ -78,12 +78,12 @@ describe('cti-write-test-set', () => {
           content: [
             "export * from './BubbleCls'",
             "export * from './ComparisonCls'",
-            "export * from './HandsomelyCls'",
-            "export * from './SampleCls'",
             "export * from './createTypeScriptIndex'",
+            "export * from './HandsomelyCls'",
             "export * from './index.tsx'",
-            "export * from './wellmade'",
+            "export * from './SampleCls'",
             "export { default as index } from './index.tsx'",
+            "export * from './wellmade'",
           ],
         },
         {
@@ -115,9 +115,9 @@ describe('cti-write-test-set', () => {
         tsconfigPath: path.join(exampleType04Path, 'tsconfig.json'),
       }),
       pipe(
-        taskEitherLiftor(getCTIXOptions)({ cwd: exampleType04Path }),
+        taskEitherLiftor(getCTIXOptions)({ projectPath: exampleType04Path }),
         TTE.chain((args) => () =>
-          getMergedConfig({ cwd: exampleType04Path, cliOption: defaultOption(), optionObjects: args }),
+          getMergedConfig({ projectPath: exampleType04Path, cliOption: defaultOption(), optionObjects: args }),
         ),
       ),
     )();

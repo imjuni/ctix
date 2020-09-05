@@ -1,10 +1,6 @@
 // tslint:disable no-console
 import { getIgnoredContents, getIgnoreFileContents, getIgnoreFiles } from '@tools/ctiignore';
-import {
-  getTypeScriptConfig,
-  getTypeScriptExportStatement,
-  getTypeScriptSource,
-} from '@tools/tsfiles';
+import { getTypeScriptConfig, getTypeScriptExportStatement, getTypeScriptSource } from '@tools/tsfiles';
 import { taskEitherLiftor } from '@tools/typehelper';
 import debug from 'debug';
 import { sequenceT } from 'fp-ts/lib/Apply';
@@ -86,7 +82,7 @@ describe('cti-tsfile-test', () => {
         path.join(exampleType04Path, 'wellmade/WhisperingCls.ts'),
         path.join(exampleType04Path, 'wellmade/carpenter/DiscussionCls.ts'),
         path.join(exampleType04Path, 'wellmade/carpenter/MakeshiftCls.ts'),
-      ],
+      ].sort((left, right) => left.localeCompare(right)),
       defaultExportFilenames: [path.join(exampleType04Path, 'index.tsx')],
     });
   });

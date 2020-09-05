@@ -72,9 +72,7 @@ export async function getTypeScriptSource({
 }): Promise<TE.Either<Error, { program: typescript.Program; filenames: string[] }>> {
   try {
     const ignoreMap = new Map<string, boolean>(
-      ignores
-        .map((ignore) => path.resolve(ignore))
-        .map((resolvedIgnore) => [resolvedIgnore, true]),
+      ignores.map((ignore) => path.resolve(ignore)).map((resolvedIgnore) => [resolvedIgnore, true]),
     );
 
     // Exclude exclude file in .ctiignore file: more exclude progress
@@ -112,23 +110,19 @@ export async function getTypeScriptExportStatement({
         .getSourceFiles()
         .filter((source) => typescriptFileMap.get(source.fileName) ?? false)
         .map((source) =>
-          source.statements.map((statement) =>
-            delintNode({ filename: source.fileName, source: statement }),
-          ),
+          source.statements.map((statement) => delintNode({ filename: source.fileName, source: statement })),
         )
         .flatMap((source) => source),
     );
 
     const exportFilenames = sources
-      .map((source) =>
-        source.export.map((exported) => ({ filename: source.filename, exported })),
-      )
+      .map((source) => source.export.map((exported) => ({ filename: source.filename, exported })))
       .flatMap((source) => source)
       .map((source) => source.filename)
       .filter((filename): filename is string => isNotEmpty(filename));
 
     const exportSet = new Set(exportFilenames);
-    const exportsDeduped = Array.from(exportSet);
+    const exportsDeduped = Array.from(exportSet).sort((left, right) => left.localeCompare(right));
 
     const defaultExportFilenames = sources
       .map((source) =>
@@ -141,7 +135,7 @@ export async function getTypeScriptExportStatement({
       .map((source) => source.filename);
 
     const defaultSet = new Set(defaultExportFilenames);
-    const defaultsDeduped = Array.from(defaultSet);
+    const defaultsDeduped = Array.from(defaultSet).sort((left, right) => left.localeCompare(right));
 
     log('익스포트: ', exportFilenames, ' 디폴트: ', defaultExportFilenames);
 

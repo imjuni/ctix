@@ -2,8 +2,6 @@
 
 {
   addNewline: true,
-  fileFirst: false,
-  includeCWD: true,
   quote: "'",
   useSemicolon: true,
   useTimestamp: false,

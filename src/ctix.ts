@@ -127,8 +127,10 @@ const argv = yargs
             tsconfigPath: project,
           }),
           TPI.pipe(
-            taskEitherLiftor(getCTIXOptions)({ cwd: projectCWD }),
-            TTE.chain((args) => () => getMergedConfig({ cwd: projectCWD, optionObjects: args, cliOption: options })),
+            taskEitherLiftor(getCTIXOptions)({ projectPath: projectCWD }),
+            TTE.chain((args) => () =>
+              getMergedConfig({ projectPath: projectCWD, optionObjects: args, cliOption: options }),
+            ),
           ),
         )();
 
@@ -239,8 +241,10 @@ const argv = yargs
             tsconfigPath: project,
           }),
           TPI.pipe(
-            taskEitherLiftor(getCTIXOptions)({ cwd: projectCWD }),
-            TTE.chain((args) => () => getMergedConfig({ cwd: projectCWD, optionObjects: args, cliOption: options })),
+            taskEitherLiftor(getCTIXOptions)({ projectPath: projectCWD }),
+            TTE.chain((args) => () =>
+              getMergedConfig({ projectPath: projectCWD, optionObjects: args, cliOption: options }),
+            ),
           ),
         )();
 

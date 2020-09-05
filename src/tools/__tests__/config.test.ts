@@ -12,7 +12,7 @@ const exampleType03Path = path.join(exampleRootPath, 'type03');
 
 describe('cti-config-test', () => {
   test('get-cti-config-files', async () => {
-    const files = await getConfigFiles({ cwd: exampleType03Path });
+    const files = await getConfigFiles({ projectPath: path.join(exampleType03Path, 'tsconfig.json') });
 
     if (isLeft(files)) {
       return expect(isLeft(files)).toBeFalsy();
@@ -21,7 +21,7 @@ describe('cti-config-test', () => {
     log('Result: ', files.right);
 
     const expection: ICreateTypeScriptIndex = {
-      cwd: exampleType03Path,
+      projectPath: path.join(exampleType03Path, 'tsconfig.json'),
       optionFiles: [
         path.join(exampleType03Path, '/.ctirc'),
         path.join(exampleType03Path, '/wellmade/.ctirc'),
@@ -34,7 +34,8 @@ describe('cti-config-test', () => {
   });
 
   test('get-cti-config', async () => {
-    const res = await getCTIXOptions({ cwd: exampleType03Path });
+    const projectPath = path.join(exampleType03Path, 'tsconfig.json');
+    const res = await getCTIXOptions({ projectPath });
 
     if (isLeft(res)) {
       return expect(isLeft(res)).toBeFalsy();
@@ -47,30 +48,26 @@ describe('cti-config-test', () => {
         dir: exampleType03Path,
         exists: true,
         depth: 0,
-        config: {
+        option: {
           addNewline: true,
-          fileFirst: false,
-          includeCWD: true,
-          quote: "'",
+          quote: '"',
           useSemicolon: true,
-          useTimestamp: false,
-          verbose: false,
+          useTimestamp: true,
+          verbose: true,
         },
       },
       {
         dir: path.join(exampleType03Path, '/juvenile'),
         exists: false,
         depth: 1,
-        config: undefined,
+        option: undefined,
       },
       {
         dir: path.join(exampleType03Path, '/wellmade'),
         exists: true,
         depth: 1,
-        config: {
+        option: {
           addNewline: true,
-          fileFirst: false,
-          includeCWD: true,
           quote: "'",
           useSemicolon: true,
           useTimestamp: false,
@@ -81,10 +78,8 @@ describe('cti-config-test', () => {
         dir: path.join(exampleType03Path, '/juvenile/spill'),
         exists: true,
         depth: 2,
-        config: {
+        option: {
           addNewline: true,
-          fileFirst: false,
-          includeCWD: true,
           quote: "'",
           useSemicolon: true,
           useTimestamp: false,
@@ -95,10 +90,8 @@ describe('cti-config-test', () => {
         dir: path.join(exampleType03Path, '/wellmade/carpenter'),
         exists: true,
         depth: 2,
-        config: {
+        option: {
           addNewline: true,
-          fileFirst: false,
-          includeCWD: true,
           quote: "'",
           useSemicolon: true,
           useTimestamp: false,
@@ -109,13 +102,15 @@ describe('cti-config-test', () => {
   });
 
   test('get-merged-content', async () => {
+    const projectPath = path.join(exampleType03Path, 'tsconfig.json');
+
     const mergedConfig = await pipe(
-      exampleType03Path,
-      (cwd) => () => getCTIXOptions({ cwd }),
+      projectPath,
+      (projectPath) => () => getCTIXOptions({ projectPath }),
       TTE.chain((args) => () =>
         getMergedConfig({
-          cwd: process.cwd(),
-          cliOption: defaultOption(),
+          projectPath,
+          cliOption: defaultOption({ project: projectPath }),
           optionObjects: args,
         }),
       ),
@@ -134,13 +129,10 @@ describe('cti-config-test', () => {
           dir: exampleType03Path,
           exists: true,
           depth: 0,
-          config: {
+          option: {
             addNewline: true,
             exportFilename: 'index.ts',
-            fileFirst: false,
-            includeCWD: true,
-            output: process.cwd(),
-            project: path.join(process.cwd(), '/tsconfig.json'),
+            project: projectPath,
             quote: "'",
             useBackupFile: true,
             useComment: true,
@@ -153,13 +145,10 @@ describe('cti-config-test', () => {
           dir: exampleType03Path,
           exists: true,
           depth: 0,
-          config: {
+          option: {
             addNewline: true,
             exportFilename: 'index.ts',
-            fileFirst: false,
-            includeCWD: true,
-            output: process.cwd(),
-            project: path.join(process.cwd(), '/tsconfig.json'),
+            project: projectPath,
             quote: "'",
             useBackupFile: true,
             useComment: true,
@@ -172,13 +161,10 @@ describe('cti-config-test', () => {
           dir: path.join(exampleType03Path, '/juvenile'),
           exists: false,
           depth: 1,
-          config: {
+          option: {
             addNewline: true,
             exportFilename: 'index.ts',
-            fileFirst: false,
-            includeCWD: true,
-            output: process.cwd(),
-            project: path.join(process.cwd(), '/tsconfig.json'),
+            project: projectPath,
             quote: "'",
             useBackupFile: true,
             useComment: true,
@@ -191,13 +177,10 @@ describe('cti-config-test', () => {
           dir: path.join(exampleType03Path, '/wellmade'),
           exists: true,
           depth: 1,
-          config: {
+          option: {
             addNewline: true,
             exportFilename: 'index.ts',
-            fileFirst: false,
-            includeCWD: true,
-            output: process.cwd(),
-            project: path.join(process.cwd(), '/tsconfig.json'),
+            project: projectPath,
             quote: "'",
             useBackupFile: true,
             useComment: true,
@@ -210,13 +193,10 @@ describe('cti-config-test', () => {
           dir: path.join(exampleType03Path, '/juvenile/spill'),
           exists: true,
           depth: 2,
-          config: {
+          option: {
             addNewline: true,
             exportFilename: 'index.ts',
-            fileFirst: false,
-            includeCWD: true,
-            output: process.cwd(),
-            project: path.join(process.cwd(), '/tsconfig.json'),
+            project: projectPath,
             quote: "'",
             useBackupFile: true,
             useComment: true,
@@ -229,13 +209,10 @@ describe('cti-config-test', () => {
           dir: path.join(exampleType03Path, '/wellmade/carpenter'),
           exists: true,
           depth: 2,
-          config: {
+          option: {
             addNewline: true,
             exportFilename: 'index.ts',
-            fileFirst: false,
-            includeCWD: true,
-            output: process.cwd(),
-            project: path.join(process.cwd(), '/tsconfig.json'),
+            project: projectPath,
             quote: "'",
             useBackupFile: true,
             useComment: true,

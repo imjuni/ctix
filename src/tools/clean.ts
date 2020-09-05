@@ -33,10 +33,10 @@ export async function getCleanFilenames({
     }
 
     const mergedConfig = await TPI.pipe(
-      taskEitherLiftor(getCTIXOptions)({ cwd: projectDir }),
+      taskEitherLiftor(getCTIXOptions)({ projectPath: projectDir }),
       TTE.chain((args) => () =>
         getMergedConfig({
-          cwd: projectDir,
+          projectPath: projectDir,
           cliOption: cliOption ?? fallbackOptions,
           optionObjects: args,
         }),

@@ -1,11 +1,9 @@
 // created from 'create-ts-index'
 
 {
-  addNewline: true,
-  fileFirst: false,
-  includeCWD: true,
-  quote: "'",
-  useSemicolon: true,
-  useTimestamp: false,
-  verbose: false,
+  "addNewline": true,
+  "quote": '"',
+  "useSemicolon": true,
+  "useTimestamp": true,
+  "verbose": true
 }

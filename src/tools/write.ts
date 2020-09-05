@@ -238,10 +238,12 @@ export async function getWriteContents(
         return aggregation;
       }, {});
 
-    const tupled: Array<{ pathname: string; content: string[] }> = Object.entries(aggregated).map(([key, value]) => ({
-      pathname: key,
-      content: value,
-    }));
+    const tupled: Array<{ pathname: string; content: string[] }> = Object.entries(aggregated)
+      .map(([key, value]) => ({
+        pathname: key,
+        content: value,
+      }))
+      .sort((left, right) => left.pathname.localeCompare(right.pathname));
 
     return TEI.right(tupled);
   } catch (err) {

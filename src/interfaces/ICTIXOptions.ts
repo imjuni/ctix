@@ -4,6 +4,7 @@
 export interface ICTIXOptions {
   /**
    * tsconfig.json path: you must pass path with filename, like this "./tsconfig.json"
+   * * only work root directory or cli parameter
    * @mode all
    * @default `${process.cwd()}${path.sep}tsconfig.json`
    */
@@ -46,6 +47,7 @@ export interface ICTIXOptions {
 
   /**
    * display more detailed log
+   * * only work root directory or cli parameter
    * @mode all
    * @default false
    */

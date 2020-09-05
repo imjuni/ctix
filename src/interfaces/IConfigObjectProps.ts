@@ -1,7 +1,7 @@
 import { ICTIXOptions } from '@interfaces/ICTIXOptions';
 
 export interface ICreateTypeScriptIndex {
-  cwd: string;
+  projectPath: string;
   optionFiles: string[];
 }
 
@@ -9,7 +9,7 @@ export interface IOptionObjectProps {
   dir: string;
   depth: number;
   exists: boolean;
-  option?: ICTIXOptions;
+  option?: Partial<ICTIXOptions>;
 }
 
 export interface INonNullableOptionObjectProps {

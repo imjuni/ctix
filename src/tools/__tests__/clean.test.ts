@@ -22,11 +22,24 @@ describe('cti-clean-test', () => {
 
     log('Result: ', files.right);
 
-    return expect(files.right).toEqual([
+    const withoutBackup = [
       path.join(exampleType04Path, 'index.ts'),
       path.join(exampleType04Path, 'wellmade/index.ts'),
       path.join(exampleType04Path, 'wellmade/carpenter/index.ts'),
-    ]);
+    ];
+
+    const withBackup = [
+      path.join(exampleType04Path, 'index.ts'),
+      path.join(exampleType04Path, 'index.ts.bak'),
+      path.join(exampleType04Path, 'wellmade/index.ts'),
+      path.join(exampleType04Path, 'wellmade/index.ts.bak'),
+      path.join(exampleType04Path, 'wellmade/carpenter/index.ts'),
+      path.join(exampleType04Path, 'wellmade/carpenter/index.ts.bak'),
+    ];
+
+    return files.right.length < withBackup.length
+      ? expect(files.right).toEqual(withoutBackup)
+      : expect(files.right).toEqual(withBackup);
   });
 
   test('do-clean', async () => {
