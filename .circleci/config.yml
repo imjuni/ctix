@@ -18,3 +18,15 @@ jobs:
           name: npm-build
           command: npm run build
           no_output_timeout: 10m
+      - run:
+          name: npm-clean
+          command: npm run clean
+          no_output_timeout: 10m
+      - run:
+          name: npm-webpack:prod
+          command: npm run webpack:prod
+          no_output_timeout: 10m
+      - run:
+          name: npm-clean
+          command: npm run clean
+          no_output_timeout: 10m

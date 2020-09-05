@@ -1,6 +1,6 @@
 {
   "name": "ctix",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Automatic create index.ts file",
   "main": "dist/cti.js",
   "scripts": {
@@ -78,7 +78,7 @@
     "eslint-plugin-prefer-arrow": "^1.2.2",
     "eslint-plugin-react": "^7.20.5",
     "eslint-plugin-react-hooks": "^4.0.8",
-    "jest": "^26.2.2",
+    "jest": "^26.4.2",
     "rimraf": "^3.0.2",
     "ts-jest": "^26.3.0",
     "ts-loader": "^8.0.2",
