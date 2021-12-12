@@ -1,14 +1,13 @@
 import debug from 'debug';
-import fastGlob from 'fast-glob';
-import * as TE from 'fp-ts/Either';
+import * as TEI from 'fp-ts/Either';
+import * as TTE from 'fp-ts/TaskEither';
 import fs from 'fs';
 import parseGitignore from 'parse-gitignore';
 import path from 'path';
-import util from 'util';
-import { TResolvedEither, TResolvedPromise } from './typehelper';
+import { fastGlobWrap, replaceSepToPosix } from './misc';
+import { TResolvedTaskEither } from './typehelper';
 
 const log = debug('ctix:ignore-tool');
-const readfile = util.promisify(fs.readFile);
 
 /**
  * create-ts-index ignore interface
@@ -30,24 +29,26 @@ export interface IIgnoreContent {
  * @param cwd current working directory
  * @returns return value is eithered. string array or error class.
  */
-export async function getIgnoreFiles(
-  cwd: string,
-): Promise<TE.Either<Error, { cwd: string; filenames: string[] }>> {
-  try {
-    const resolvedCWD = path.resolve(cwd); // absolute path
-    const globPattern = path.join(resolvedCWD, '**', '.ctiignore'); // create ctiignore glob pattern
-    const npmGlobPattern = path.join(resolvedCWD, '**', '.npmignore'); // create npmignore glob pattern
+export const getIgnoreFiles =
+  (cwd: string): TTE.TaskEither<Error, { cwd: string; filenames: string[] }> =>
+  async () => {
+    try {
+      const resolvedCWD = path.resolve(cwd); // absolute path
+      const globPattern = path.join(resolvedCWD, '**', '.ctiignore'); // create ctiignore glob pattern
+      const npmGlobPattern = path.join(resolvedCWD, '**', '.npmignore'); // create npmignore glob pattern
 
-    // ctiignore file have dot charactor at file first so set true dot flag
-    const filenames = await fastGlob([globPattern, npmGlobPattern], { dot: true });
+      // ctiignore file have dot charactor at file first so set true dot flag
+      const filenames = await fastGlobWrap([globPattern, npmGlobPattern], { dot: true });
 
-    log('resolved: ', resolvedCWD, globPattern);
+      log('resolved: ', resolvedCWD, globPattern);
 
-    return TE.right({ cwd, filenames });
-  } catch (err) {
-    return TE.left(err);
-  }
-}
+      return TEI.right({ cwd, filenames });
+    } catch (catched) {
+      const err = catched instanceof Error ? catched : new Error('unknown error raised');
+
+      return TEI.left(err);
+    }
+  };
 
 /**
  * parse ignore content in filenames used by string array
@@ -55,54 +56,64 @@ export async function getIgnoreFiles(
  * @param args eithered filename from getIgnoreFiles function
  * @returns return value is eithered. IIgnoreContent array or error class
  */
-export async function getIgnoreFileContents(
-  args: TResolvedEither<TResolvedPromise<ReturnType<typeof getIgnoreFiles>>>,
-): Promise<TE.Either<Error, { cwd: string; ignores: IIgnoreContent[] }>> {
-  try {
-    const buffers = await Promise.all(
-      args.filenames.map((filename) =>
-        (async () => ({
-          filename,
-          buffer: await readfile(filename),
-        }))(),
-      ),
-    );
+export const getIgnoreFileContents =
+  (
+    args: TResolvedTaskEither<ReturnType<typeof getIgnoreFiles>>,
+  ): TTE.TaskEither<Error, { cwd: string; ignores: IIgnoreContent[] }> =>
+  async () => {
+    try {
+      const buffers = await Promise.all(
+        args.filenames.map((filename) =>
+          (async () => ({
+            filename,
+            buffer: await fs.promises.readFile(filename),
+          }))(),
+        ),
+      );
 
-    const files = buffers.map((buffer) => ({
-      filename: buffer.filename,
-      buffer: buffer.buffer.toString(),
-    }));
+      const files = buffers.map((buffer) => ({
+        filename: buffer.filename,
+        buffer: buffer.buffer.toString(),
+      }));
 
-    const ignores = files.map<IIgnoreContent>((file) => ({
-      filename: file.filename,
-      directory: path.dirname(file.filename),
-      content: parseGitignore(file.buffer),
-    }));
+      const ignores = files.map<IIgnoreContent>((file) => ({
+        filename: file.filename,
+        directory: path.dirname(file.filename),
+        content: parseGitignore(file.buffer),
+      }));
 
-    return TE.right({ cwd: args.cwd, ignores });
-  } catch (err) {
-    return TE.left(err);
-  }
-}
+      return TEI.right({ cwd: args.cwd, ignores });
+    } catch (catched) {
+      const err = catched instanceof Error ? catched : new Error('unknown error raised');
 
-export async function getIgnoredContents(
-  args: TResolvedEither<TResolvedPromise<ReturnType<typeof getIgnoreFileContents>>>,
-): Promise<TE.Either<Error, { cwd: string; ignores: string[] }>> {
-  try {
-    const contents = args.ignores
-      .map((ignore) => ignore.content.map((content) => path.join(ignore.directory, content)))
-      .flatMap((ignore) => ignore);
+      return TEI.left(err);
+    }
+  };
 
-    const ignoreContents = await fastGlob(contents, { dot: true });
+export const getIgnoredContents =
+  (
+    args: TResolvedTaskEither<ReturnType<typeof getIgnoreFileContents>>,
+  ): TTE.TaskEither<Error, { cwd: string; ignores: string[] }> =>
+  async () => {
+    try {
+      const contents = args.ignores
+        .map((ignore) => ignore.content.map((content) => path.join(ignore.directory, content)))
+        .flatMap((ignore) => ignore);
 
-    log('target ignore file: ', contents);
-    log('glob processed ignore file: ', ignoreContents);
+      const contentsForFastGlob = contents.map((content) => replaceSepToPosix(content));
 
-    return TE.right({
-      cwd: args.cwd,
-      ignores: ignoreContents,
-    });
-  } catch (err) {
-    return TE.left(err);
-  }
-}
+      const ignoreContents = await fastGlobWrap(contentsForFastGlob, { dot: true });
+
+      log('target ignore file: ', contents);
+      log('glob processed ignore file: ', ignoreContents);
+
+      return TEI.right({
+        cwd: args.cwd,
+        ignores: ignoreContents,
+      });
+    } catch (catched) {
+      const err = catched instanceof Error ? catched : new Error('unknown error raised');
+
+      return TEI.left(err);
+    }
+  };

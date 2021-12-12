@@ -14,8 +14,7 @@ import { camelCase } from 'change-case';
 import dayjs from 'dayjs';
 import debug from 'debug';
 import * as TEI from 'fp-ts/Either';
-import { flow } from 'fp-ts/function';
-import * as TPI from 'fp-ts/pipeable';
+import * as TFU from 'fp-ts/function';
 import * as TTE from 'fp-ts/TaskEither';
 import * as fs from 'fs';
 import { isEmpty, isNotEmpty, isTrue } from 'my-easy-fp';
@@ -42,18 +41,23 @@ function createExportContents({
 }): IExportContent {
   const dirname = path.dirname(filename);
 
+  log('createExportContents: ', dirname);
+
   try {
     const configObject = configMap.get(dirname);
     const project = configObject?.option.project ?? path.join(process.cwd(), 'tsconfig.json');
     const quote = configObject?.option.quote ?? "'";
     const replaced = replacer({ dirname, filename, project });
-    const refined = flow(fpRefinePathSep, fpRemoveExt, fpRefineStartSlash)(replaced);
+    const refined = TFU.flow(fpRefinePathSep, fpRemoveExt, fpRefineStartSlash)(replaced);
     const exportFileContent = `export * from ${quote}./${refined}${quote}`;
 
     return { dirname: getDirname({ filename, project }), content: exportFileContent };
-  } catch (err) {
+  } catch (catched) {
+    const err = catched instanceof Error ? catched : new Error('unknown error raised');
+
     log(err.message);
     log(err.stack);
+
     return { dirname: path.dirname(filename), content: undefined };
   }
 }
@@ -76,15 +80,17 @@ function createDefaultExportContents({
     const project = configObject?.option.project ?? path.join(process.cwd(), 'tsconfig.json');
     const quote = configObject?.option.quote ?? "'";
     const replaced = replacer({ dirname, filename, project });
-    const refined = flow(fpRefinePathSep, fpRemoveExt, fpRefineStartSlash)(replaced);
-    const refinedAlias = flow(fpRefinePathSep, fpRemoveExtWithTSX)(replaced);
+    const refined = TFU.flow(fpRefinePathSep, fpRemoveExt, fpRefineStartSlash)(replaced);
+    const refinedAlias = TFU.flow(fpRefinePathSep, fpRemoveExtWithTSX)(replaced);
 
     const defaultExportFileContent = `export { default as ${camelCase(
       refinedAlias,
     )} } from ${quote}./${refined}${quote}`;
 
     return { dirname: getDirname({ filename, project }), content: defaultExportFileContent };
-  } catch (err) {
+  } catch (catched) {
+    const err = catched instanceof Error ? catched : new Error('unknown error raised');
+
     log(err.message);
     log(err.stack);
 
@@ -136,7 +142,7 @@ export function getModuleDir({
 
         if (options.exportFilename === 'index.ts' || options.exportFilename === 'index.d.ts') {
           const writableContent = contents.map((content) => {
-            const refined = flow(
+            const refined = TFU.flow(
               fpRefinePathSep,
               fpRemoveExt,
               fpRefineStartSlash,
@@ -153,7 +159,7 @@ export function getModuleDir({
         }
 
         const writableContentWithExportFilename = contents.map((content) => {
-          const refined = flow(
+          const refined = TFU.flow(
             fpRefinePathSep,
             fpRemoveExt,
             fpRefineStartSlash,
@@ -206,16 +212,22 @@ export async function getWriteContents(
     log('exportFilenames: ', args.exportFilenames);
     log('defaultExportFilenames: ', args.defaultExportFilenames);
 
-    const replacer = (args: { dirname: string; filename: string }) => args.filename.replace(args.dirname, '');
-    const getDirname = (args: { filename: string; project: string }) => path.dirname(args.filename);
+    const replacer = (replacerArgs: { dirname: string; filename: string }) =>
+      replacerArgs.filename.replace(replacerArgs.dirname, '');
+    const getDirname = (dirnameArgs: { filename: string; project: string }) =>
+      path.dirname(dirnameArgs.filename);
 
     const exportContents: IExportContent[] = args.exportFilenames
       .map((filename) => createExportContents({ filename, configMap, replacer, getDirname }))
-      .filter((content): content is { dirname: string; content: string } => isNotEmpty(content.content));
+      .filter((content): content is { dirname: string; content: string } =>
+        isNotEmpty(content.content),
+      );
 
     const defaultExportContents: IExportContent[] = args.defaultExportFilenames
       .map((filename) => createDefaultExportContents({ filename, configMap, replacer, getDirname }))
-      .filter((content): content is { dirname: string; content: string } => isNotEmpty(content.content));
+      .filter((content): content is { dirname: string; content: string } =>
+        isNotEmpty(content.content),
+      );
 
     const modules = getModuleDir({
       project: projectDir,
@@ -226,16 +238,17 @@ export async function getWriteContents(
     const aggregated = exportContents
       .concat(defaultExportContents)
       .concat(modules)
-      .reduce<{ [key: string]: string[] }>((aggregation, current) => {
+      .reduce<Record<string, string[]>>((aggregation, current) => {
+        const next = aggregation;
         if (isEmpty(aggregation[current.dirname])) {
-          aggregation[current.dirname] = [];
+          next[current.dirname] = [];
         }
 
         if (isNotEmpty(current.content)) {
-          aggregation[current.dirname] = [...aggregation[current.dirname], current.content];
+          next[current.dirname] = [...next[current.dirname], current.content];
         }
 
-        return aggregation;
+        return next;
       }, {});
 
     const tupled: Array<{ pathname: string; content: string[] }> = Object.entries(aggregated)
@@ -246,7 +259,9 @@ export async function getWriteContents(
       .sort((left, right) => left.pathname.localeCompare(right.pathname));
 
     return TEI.right(tupled);
-  } catch (err) {
+  } catch (catched) {
+    const err = catched instanceof Error ? catched : new Error('unknown error raised');
+
     return TEI.left(err);
   }
 }
@@ -268,39 +283,49 @@ export async function getSingleFileWriteContents(
     log('exportFilenames: ', args.exportFilenames);
     log('defaultExportFilenames: ', args.defaultExportFilenames);
 
-    const replacer = (args: { dirname: string; filename: string; project: string }) =>
-      path.relative(path.dirname(args.project), args.filename);
-    const getDirname = (args: { filename: string; project: string }) => path.dirname(args.project);
+    const replacer = (replacerArgs: { dirname: string; filename: string; project: string }) =>
+      path.relative(path.dirname(replacerArgs.project), replacerArgs.filename);
+    const getDirname = (getDirnameArgs: { filename: string; project: string }) =>
+      path.dirname(getDirnameArgs.project);
 
     const exportContents: IExportContent[] = args.exportFilenames
       .map((filename) => createExportContents({ filename, configMap, replacer, getDirname }))
-      .filter((content): content is { dirname: string; content: string } => isNotEmpty(content.content));
+      .filter((content): content is { dirname: string; content: string } =>
+        isNotEmpty(content.content),
+      );
 
     const defaultExportContents: IExportContent[] = args.defaultExportFilenames
       .map((filename) => createDefaultExportContents({ filename, configMap, replacer, getDirname }))
-      .filter((content): content is { dirname: string; content: string } => isNotEmpty(content.content));
+      .filter((content): content is { dirname: string; content: string } =>
+        isNotEmpty(content.content),
+      );
 
     const aggregated = exportContents
       .concat(defaultExportContents)
       .reduce<{ [key: string]: string[] }>((aggregation, current) => {
-        if (isEmpty(aggregation[current.dirname])) {
-          aggregation[current.dirname] = [];
+        const next = aggregation;
+        if (isEmpty(next[current.dirname])) {
+          next[current.dirname] = [];
         }
 
         if (isNotEmpty(current.content)) {
-          aggregation[current.dirname] = [...aggregation[current.dirname], current.content];
+          next[current.dirname] = [...next[current.dirname], current.content];
         }
 
-        return aggregation;
+        return next;
       }, {});
 
-    const tupled: Array<{ pathname: string; content: string[] }> = Object.entries(aggregated).map(([key, value]) => ({
-      pathname: key,
-      content: value,
-    }));
+    const tupled: Array<{ pathname: string; content: string[] }> = Object.entries(aggregated).map(
+      ([key, value]) => ({
+        pathname: key,
+        content: value,
+      }),
+    );
 
     return TEI.right(tupled);
-  } catch (err) {
+  } catch (catched) {
+    const err = catched instanceof Error ? catched : new Error('unknown error raised');
+
     return TEI.left(err);
   }
 }
@@ -330,7 +355,7 @@ export async function write(args: {
 
       // processing backup file,
       if (isTrue(configObject.option.useBackupFile) && (await exists(resolvedIndexFile))) {
-        const backupWrited = await TPI.pipe(
+        const backupWrited = await TFU.pipe(
           TTE.taskify(fs.readFile)(resolvedIndexFile),
           TTE.chain((buf) => TTE.taskify(fs.writeFile)(resolvedBackupFile, buf)),
         )();
@@ -347,13 +372,13 @@ export async function write(args: {
       // create index file
       const today = dayjs();
       const comment = (() =>
-        TPI.pipe(
+        TFU.pipe(
           (() => (configObject.option.useComment ? '// created from ctix' : ''))(),
-          (comment) =>
+          (commentContent) =>
             configObject.option.useComment && configObject.option.useTimestamp
-              ? `${comment} ${today.format('YYYY-MM-DD HH:mm:ss')}`
-              : comment,
-          (comment) => (comment !== '' ? `${comment}\n\n` : comment),
+              ? `${commentContent} ${today.format('YYYY-MM-DD HH:mm:ss')}`
+              : commentContent,
+          (commentContent) => (commentContent !== '' ? `${commentContent}\n\n` : commentContent),
         ))();
 
       const buf = Buffer.from(
@@ -376,12 +401,18 @@ export async function write(args: {
       return TEI.right(1);
     };
 
-    const writesResult = await Promise.all(args.contents.map((indexContent) => writing(indexContent)));
-    const sum = writesResult.map((result): number => (TEI.isRight(result) ? 1 : 0)).reduce((prev, next) => prev + next);
+    const writesResult = await Promise.all(
+      args.contents.map((indexContent) => writing(indexContent)),
+    );
+    const sum = writesResult
+      .map((result): number => (TEI.isRight(result) ? 1 : 0))
+      .reduce((prev, next) => prev + next);
 
     log('successfully writed index: ', sum);
     return TEI.right(sum);
-  } catch (err) {
+  } catch (catched) {
+    const err = catched instanceof Error ? catched : new Error('unknown error raised');
+
     return TEI.left(err);
   }
 }

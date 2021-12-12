@@ -1,12 +1,15 @@
 // tslint:disable no-console
 import { getIgnoredContents, getIgnoreFileContents, getIgnoreFiles } from '@tools/ctiignore';
-import { getTypeScriptConfig, getTypeScriptExportStatement, getTypeScriptSource } from '@tools/tsfiles';
-import { taskEitherLiftor } from '@tools/typehelper';
+import {
+  getTypeScriptConfig,
+  getTypeScriptExportStatement,
+  getTypeScriptSource,
+} from '@tools/tsfiles';
 import debug from 'debug';
-import { sequenceT } from 'fp-ts/lib/Apply';
-import * as TE from 'fp-ts/lib/Either';
-import { pipe } from 'fp-ts/lib/pipeable';
-import * as TTE from 'fp-ts/lib/TaskEither';
+import { sequenceT } from 'fp-ts/Apply';
+import * as TEI from 'fp-ts/Either';
+import * as TFU from 'fp-ts/function';
+import * as TTE from 'fp-ts/TaskEither';
 import * as path from 'path';
 
 const log = debug('ctix:file-test');
@@ -18,35 +21,30 @@ describe('cti-tsfile-test', () => {
     const config = await getTypeScriptConfig({
       cwd: process.cwd(),
       tsconfigPath: 'tsconfig.json',
-    });
+    })();
 
-    if (TE.isLeft(config)) {
-      return expect(TE.isLeft(config)).toBeFalsy();
+    if (TEI.isLeft(config)) {
+      return expect(TEI.isLeft(config)).toBeFalsy();
     }
 
     return expect(config).toBeDefined();
   });
 
   test('get-type-script-export-statement', async () => {
-    const liftedGetIgnoreFiles = taskEitherLiftor(getIgnoreFiles);
-    const liftedGetIgnoreFileContents = taskEitherLiftor(getIgnoreFileContents);
-    const liftedGetIgnoredContents = taskEitherLiftor(getIgnoredContents);
-    const liftedGetTypeScriptConfig = taskEitherLiftor(getTypeScriptConfig);
-
-    const configWithIgnored = await sequenceT(TTE.taskEither)(
-      pipe(
-        liftedGetIgnoreFiles(exampleType04Path),
-        TTE.chain(liftedGetIgnoreFileContents),
-        TTE.chain(liftedGetIgnoredContents),
+    const configWithIgnored = await sequenceT(TTE.ApplicativeSeq)(
+      TFU.pipe(
+        getIgnoreFiles(exampleType04Path),
+        TTE.chain(getIgnoreFileContents),
+        TTE.chain(getIgnoredContents),
       ),
-      liftedGetTypeScriptConfig({
+      getTypeScriptConfig({
         cwd: exampleType04Path,
         tsconfigPath: path.join(exampleType04Path, 'tsconfig.json'),
       }),
     )();
 
-    if (TE.isLeft(configWithIgnored)) {
-      return expect(TE.isLeft(configWithIgnored)).toBeFalsy();
+    if (TEI.isLeft(configWithIgnored)) {
+      return expect(TEI.isLeft(configWithIgnored)).toBeFalsy();
     }
 
     const [ignores, tsconfig] = configWithIgnored.right;
@@ -54,10 +52,10 @@ describe('cti-tsfile-test', () => {
     const program = await getTypeScriptSource({
       tsconfig,
       ignores: ignores.ignores,
-    });
+    })();
 
-    if (TE.isLeft(program)) {
-      return expect(TE.isLeft(program)).toBeFalsy();
+    if (TEI.isLeft(program)) {
+      return expect(TEI.isLeft(program)).toBeFalsy();
     }
 
     const statements = await getTypeScriptExportStatement({
@@ -67,8 +65,8 @@ describe('cti-tsfile-test', () => {
 
     log('detected statement: ', statements);
 
-    if (TE.isLeft(statements)) {
-      return expect(TE.isLeft(statements)).toBeFalsy();
+    if (TEI.isLeft(statements)) {
+      return expect(TEI.isLeft(statements)).toBeFalsy();
     }
 
     return expect(statements.right).toEqual({

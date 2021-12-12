@@ -1,11 +1,14 @@
 import { getCTIXOptions, getMergedConfig, defaultOption } from '@tools/cticonfig';
 import { getIgnoredContents, getIgnoreFileContents, getIgnoreFiles } from '@tools/ctiignore';
-import { getTypeScriptConfig, getTypeScriptExportStatement, getTypeScriptSource } from '@tools/tsfiles';
-import { taskEitherLiftor } from '@tools/typehelper';
+import {
+  getTypeScriptConfig,
+  getTypeScriptExportStatement,
+  getTypeScriptSource,
+} from '@tools/tsfiles';
 import debug from 'debug';
-import * as TE from 'fp-ts/Either';
-import { sequenceT } from 'fp-ts/lib/Apply';
-import { pipe } from 'fp-ts/pipeable';
+import * as TEI from 'fp-ts/Either';
+import * as TAP from 'fp-ts/Apply';
+import * as TFU from 'fp-ts/function';
 import * as TTE from 'fp-ts/TaskEither';
 import * as path from 'path';
 import { getWriteContents, write } from '../write';
@@ -16,62 +19,65 @@ const exampleRootPath = path.resolve(path.join(__dirname, '..', '..', '..', 'exa
 const exampleType04Path = path.join(exampleRootPath, 'type04');
 
 describe('cti-write-test-set', () => {
-  test('get-create-write-content', async () => {
-    const liftedGetIgnoreFiles = taskEitherLiftor(getIgnoreFiles);
-    const liftedGetIgnoreFileContents = taskEitherLiftor(getIgnoreFileContents);
-    const liftedGetIgnoredContents = taskEitherLiftor(getIgnoredContents);
-    const liftedGetTypeScriptConfig = taskEitherLiftor(getTypeScriptConfig);
-
-    const configWithIgnored = await sequenceT(TTE.taskEither)(
-      pipe(
-        liftedGetIgnoreFiles(exampleType04Path),
-        TTE.chain(liftedGetIgnoreFileContents),
-        TTE.chain(liftedGetIgnoredContents),
+  test('get-create-write-content', async (): Promise<void> => {
+    const configWithIgnored = await TAP.sequenceT(TTE.ApplicativeSeq)(
+      TFU.pipe(
+        getIgnoreFiles(exampleType04Path),
+        TTE.chain(getIgnoreFileContents),
+        TTE.chain(getIgnoredContents),
       ),
-      liftedGetTypeScriptConfig({
+      getTypeScriptConfig({
         cwd: exampleType04Path,
         tsconfigPath: path.join(exampleType04Path, 'tsconfig.json'),
       }),
-      pipe(
-        taskEitherLiftor(getCTIXOptions)({ projectPath: exampleType04Path }),
-        TTE.chain((args) => () =>
-          getMergedConfig({ projectPath: exampleType04Path, cliOption: defaultOption(), optionObjects: args }),
+      TFU.pipe(
+        getCTIXOptions({ projectPath: exampleType04Path }),
+        TTE.chain((args) =>
+          getMergedConfig({
+            projectPath: exampleType04Path,
+            cliOption: defaultOption(),
+            optionObjects: args,
+          }),
         ),
       ),
     )();
 
-    if (TE.isLeft(configWithIgnored)) {
-      return expect(TE.isLeft(configWithIgnored)).toBeFalsy();
+    if (TEI.isLeft(configWithIgnored)) {
+      return expect(TEI.isLeft(configWithIgnored)).toBeFalsy();
     }
 
     const [ignores, tsconfig, configObjects] = configWithIgnored.right;
 
-    const exportContents = await pipe(
-      taskEitherLiftor(getTypeScriptSource)({
+    const exportContents = await TFU.pipe(
+      getTypeScriptSource({
         tsconfig,
         ignores: ignores.ignores,
       }),
-      TTE.chain((args) => () =>
-        getTypeScriptExportStatement({
-          program: args.program,
-          filenames: args.filenames,
-        }),
+      TTE.chain(
+        (args) => () =>
+          getTypeScriptExportStatement({
+            program: args.program,
+            filenames: args.filenames,
+          }),
       ),
     )();
 
-    if (TE.isLeft(exportContents)) {
-      return expect(TE.isLeft(exportContents)).toBeFalsy();
+    if (TEI.isLeft(exportContents)) {
+      return expect(TEI.isLeft(exportContents)).toBeFalsy();
     }
 
-    const writed = await getWriteContents({ ...exportContents.right, optionObjects: configObjects });
+    const writed = await getWriteContents({
+      ...exportContents.right,
+      optionObjects: configObjects,
+    });
 
-    if (TE.isLeft(writed)) {
-      return expect(TE.isLeft(writed)).toBeFalsy();
+    if (TEI.isLeft(writed)) {
+      return expect(TEI.isLeft(writed)).toBeFalsy();
     }
 
     log('successful result: ', writed.right);
 
-    expect(writed.right.sort()).toEqual(
+    return expect(writed.right.sort()).toEqual(
       [
         {
           pathname: exampleType04Path,
@@ -87,11 +93,11 @@ describe('cti-write-test-set', () => {
           ],
         },
         {
-          pathname: path.join(exampleType04Path, '/wellmade'),
+          pathname: path.join(exampleType04Path, 'wellmade'),
           content: ["export * from './WhisperingCls'", "export * from './carpenter'"],
         },
         {
-          pathname: path.join(exampleType04Path, '/wellmade/carpenter'),
+          pathname: path.join(exampleType04Path, 'wellmade', 'carpenter'),
           content: ["export * from './DiscussionCls'", "export * from './MakeshiftCls'"],
         },
       ].sort(),
@@ -99,58 +105,67 @@ describe('cti-write-test-set', () => {
   });
 
   test('get-write-content', async () => {
-    const liftedGetIgnoreFiles = taskEitherLiftor(getIgnoreFiles);
-    const liftedGetIgnoreFileContents = taskEitherLiftor(getIgnoreFileContents);
-    const liftedGetIgnoredContents = taskEitherLiftor(getIgnoredContents);
-    const liftedGetTypeScriptConfig = taskEitherLiftor(getTypeScriptConfig);
-
-    const configWithIgnored = await sequenceT(TTE.taskEither)(
-      pipe(
-        liftedGetIgnoreFiles(exampleType04Path),
-        TTE.chain(liftedGetIgnoreFileContents),
-        TTE.chain(liftedGetIgnoredContents),
+    const configWithIgnored = await TAP.sequenceT(TTE.ApplicativeSeq)(
+      TFU.pipe(
+        getIgnoreFiles(exampleType04Path),
+        TTE.chain(getIgnoreFileContents),
+        TTE.chain(getIgnoredContents),
       ),
-      liftedGetTypeScriptConfig({
+      getTypeScriptConfig({
         cwd: exampleType04Path,
         tsconfigPath: path.join(exampleType04Path, 'tsconfig.json'),
       }),
-      pipe(
-        taskEitherLiftor(getCTIXOptions)({ projectPath: exampleType04Path }),
-        TTE.chain((args) => () =>
-          getMergedConfig({ projectPath: exampleType04Path, cliOption: defaultOption(), optionObjects: args }),
+      TFU.pipe(
+        getCTIXOptions({ projectPath: exampleType04Path }),
+        TTE.chain((args) =>
+          getMergedConfig({
+            projectPath: exampleType04Path,
+            cliOption: defaultOption(),
+            optionObjects: args,
+          }),
         ),
       ),
     )();
 
-    if (TE.isLeft(configWithIgnored)) {
-      return expect(TE.isLeft(configWithIgnored)).toBeFalsy();
+    if (TEI.isLeft(configWithIgnored)) {
+      return expect(TEI.isLeft(configWithIgnored)).toBeFalsy();
     }
 
     const [ignores, tsconfig, configObjects] = configWithIgnored.right;
 
-    const exportContents = await pipe(
-      taskEitherLiftor(getTypeScriptSource)({
+    const exportContents = await TFU.pipe(
+      getTypeScriptSource({
         tsconfig,
         ignores: ignores.ignores,
       }),
-      TTE.chain((args) => () =>
-        getTypeScriptExportStatement({
-          program: args.program,
-          filenames: args.filenames,
-        }),
+      TTE.chain(
+        (args) => () =>
+          getTypeScriptExportStatement({
+            program: args.program,
+            filenames: args.filenames,
+          }),
       ),
     )();
 
-    if (TE.isLeft(exportContents)) {
-      return expect(TE.isLeft(exportContents)).toBeFalsy();
+    if (TEI.isLeft(exportContents)) {
+      return expect(TEI.isLeft(exportContents)).toBeFalsy();
     }
 
-    const writed = await getWriteContents({ ...exportContents.right, optionObjects: configObjects });
+    const writed = await getWriteContents({
+      ...exportContents.right,
+      optionObjects: configObjects,
+    });
 
-    if (TE.isLeft(writed)) {
-      return expect(TE.isLeft(writed)).toBeFalsy();
+    if (TEI.isLeft(writed)) {
+      return expect(TEI.isLeft(writed)).toBeFalsy();
     }
 
-    await write({ contents: writed.right, optionObjects: configObjects });
+    const writedEither = await write({ contents: writed.right, optionObjects: configObjects });
+
+    if (TEI.isLeft(writedEither)) {
+      return expect(TEI.isLeft(writedEither)).toBeFalsy();
+    }
+
+    return expect(writedEither.right).toBeTruthy();
   });
 });

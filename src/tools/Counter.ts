@@ -1,21 +1,23 @@
+/* eslint-disable import/prefer-default-export */
 export class Counter {
-  private _count: number;
+  private count: number;
+
   public readonly verbose: boolean;
 
   constructor(verbose: boolean) {
-    this._count = 0;
+    this.count = 0;
     this.verbose = verbose;
   }
 
   public get log() {
-    this._count += 1;
+    this.count += 1;
 
-    return this._count;
+    return this.count;
   }
 
   public get debug() {
-    this._count += this.verbose ? 1 : 0;
+    this.count += this.verbose ? 1 : 0;
 
-    return this._count;
+    return this.count;
   }
 }

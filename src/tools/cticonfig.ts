@@ -1,26 +1,26 @@
 import {
-  IOptionObjectProps,
   ICreateTypeScriptIndex,
   INonNullableOptionObjectProps,
+  IOptionObjectProps,
 } from '@interfaces/IConfigObjectProps';
 import { ICTIXOptions } from '@interfaces/ICTIXOptions';
-import { exists } from '@tools/misc';
+import { exists, fastGlobWrap } from '@tools/misc';
 import debug from 'debug';
 import merge from 'deepmerge';
-import fastGlob from 'fast-glob';
 import * as TEI from 'fp-ts/Either';
-import { isEmpty, isNotEmpty } from 'my-easy-fp';
-import * as TPI from 'fp-ts/pipeable';
+import * as TFU from 'fp-ts/function';
+import * as TTE from 'fp-ts/TaskEither';
 import * as fs from 'fs';
 import json5 from 'json5';
+import { isEmpty, isNotEmpty } from 'my-easy-fp';
 import path from 'path';
-import { fpGetDirDepth, fpTimes, getParentPath } from './misc';
 import logger from './Logger';
+import { fpGetDirDepth, fpTimes, getParentPath } from './misc';
 
-const log = debug('ctix:config-tool');
+const log = debug('ctix:config-test-case');
 
 export const getExportFilename = (exportFilenameFrom?: string | undefined | null) =>
-  TPI.pipe(
+  TFU.pipe(
     exportFilenameFrom,
     (filename) => (isEmpty(filename) ? 'index.ts' : filename),
     (filename) => (filename === '' ? 'index.ts' : filename),
@@ -43,7 +43,10 @@ export function defaultOption(args?: { project?: string; exportFilename?: string
   };
 }
 
-export async function readOptionFile(filename: string, projectPath: string): Promise<Partial<ICTIXOptions>> {
+export async function readOptionFile(
+  filename: string,
+  projectPath: string,
+): Promise<Partial<ICTIXOptions>> {
   try {
     const readed = await fs.promises.readFile(filename);
     const parsed = json5.parse(readed.toString()) as ICTIXOptions;
@@ -59,16 +62,20 @@ export async function readOptionFile(filename: string, projectPath: string): Pro
       'exportFilename',
     ];
 
-    const extracted: Partial<ICTIXOptions> = optionKeys.reduce((option, key) => {
+    const extracted: Partial<ICTIXOptions> = optionKeys.reduce((aggregation, key) => {
+      const next = aggregation;
+
       if (isNotEmpty(parsed[key])) {
-        option[key] = parsed[key];
+        next[key] = parsed[key];
       }
 
-      return option;
+      return next;
     }, {});
 
     return extracted;
-  } catch (err) {
+  } catch (catched) {
+    const err = catched instanceof Error ? catched : new Error('unknown error raised');
+
     logger.error(`Error caused from ${filename}`);
     logger.error(err.message ?? '');
 
@@ -92,7 +99,8 @@ export function getNonEmptyOption(
   partialOption: Partial<ICTIXOptions> | undefined,
   projectPath: string | ICTIXOptions,
 ): ICTIXOptions {
-  const fallbackOption = typeof projectPath === 'string' ? defaultOption({ project: projectPath }) : projectPath;
+  const fallbackOption =
+    typeof projectPath === 'string' ? defaultOption({ project: projectPath }) : projectPath;
 
   return {
     project: partialOption?.project ?? fallbackOption.project,
@@ -107,157 +115,172 @@ export function getNonEmptyOption(
   };
 }
 
-export async function getCTIXOptions(
-  args: Omit<ICreateTypeScriptIndex, 'optionFiles'>,
-): Promise<TEI.Either<Error, IOptionObjectProps[]>> {
-  try {
-    const projectPath = path.resolve(args.projectPath);
-    const projectDir = path.dirname(projectPath);
-    const dirs = await fastGlob(`${projectDir}/**/*`, { onlyDirectories: true });
+export const getCTIXOptions =
+  (
+    args: Omit<ICreateTypeScriptIndex, 'optionFiles'>,
+  ): TTE.TaskEither<Error, IOptionObjectProps[]> =>
+  async () => {
+    try {
+      const projectPath = path.resolve(args.projectPath);
+      const projectDir = path.dirname(projectPath);
 
-    const parsedConfigObjects = await Promise.all(
-      [projectDir, ...dirs].map<Promise<IOptionObjectProps>>((dir) =>
-        (async () => {
-          const configFile = path.join(dir, '.ctirc');
-          const isConfigFileExists = await exists(configFile);
+      const dirs = await fastGlobWrap(`${projectDir}/**/*`, { onlyDirectories: true });
 
-          log('Working configuration file: ', configFile, isConfigFileExists);
+      const parsedConfigObjects = await Promise.all(
+        [projectDir, ...dirs].map<Promise<IOptionObjectProps>>((dir) =>
+          (async () => {
+            const configFile = path.join(dir, '.ctirc');
+            const isConfigFileExists = await exists(configFile);
+            const depth = fpGetDirDepth(projectDir, dir);
 
-          try {
-            return {
-              dir: path.resolve(dir),
-              exists: isConfigFileExists,
-              depth: fpGetDirDepth(projectDir, dir),
-              option: isConfigFileExists ? await readOptionFile(configFile, projectPath) : undefined,
-            };
-          } catch (err) {
-            log(configFile, isConfigFileExists);
-            log(err.message);
+            log('Working configuration file: ', depth, configFile, isConfigFileExists);
 
-            return {
-              dir,
-              depth: fpGetDirDepth(projectDir, dir),
-              exists: isConfigFileExists,
-              option: undefined,
-            };
-          }
-        })(),
-      ),
-    );
+            try {
+              return {
+                dir: path.resolve(dir),
+                exists: isConfigFileExists,
+                depth,
+                option: isConfigFileExists
+                  ? await readOptionFile(configFile, projectPath)
+                  : undefined,
+              };
+            } catch (catched) {
+              const err = catched instanceof Error ? catched : new Error('unknown error raised');
 
-    // directory depth ascending sort
-    return TEI.right(
-      [...parsedConfigObjects].sort((left, right) => {
-        const diff = left.depth - right.depth;
-        return diff === 0 ? left.dir.localeCompare(right.dir) : diff;
-      }),
-    );
-  } catch (err) {
-    return TEI.left(err);
-  }
-}
+              log(configFile, isConfigFileExists);
+              log(err.message);
 
-export async function getMergedConfig({
-  projectPath,
-  cliOption: cliOptionFrom,
-  optionObjects,
-}: {
-  projectPath: string;
-  cliOption: Partial<ICTIXOptions>;
-  optionObjects: IOptionObjectProps[];
-}): Promise<TEI.Either<Error, INonNullableOptionObjectProps[]>> {
-  try {
-    if (optionObjects.length > 1) {
-      const fallbackOption = defaultOption({ project: projectPath });
-      const rootOptions = merge(
-        getNonEmptyOption(optionObjects[0].option, fallbackOption),
-        getNonEmptyOption(cliOptionFrom, fallbackOption),
+              return {
+                dir,
+                depth: fpGetDirDepth(projectDir, dir),
+                exists: isConfigFileExists,
+                option: undefined,
+              };
+            }
+          })(),
+        ),
       );
 
-      const lastOptionObject = optionObjects[optionObjects.length - 1];
-      const firstOptionObject = {
-        ...optionObjects[0],
-        option: {
-          ...rootOptions,
-          project: rootOptions.project,
-          exportFilename: getExportFilename(rootOptions.exportFilename),
-        },
-      };
-
-      // root configuration from project directory
-      const processedParseConfigMap = new Map<string, IOptionObjectProps>(
-        optionObjects.map((configObject) => [configObject.dir, configObject]),
-      );
-
-      const rootOptionObject = {
-        ...firstOptionObject,
-        option: merge(defaultOption({ project: projectPath }), {
-          ...(firstOptionObject.option ?? fallbackOption),
+      // directory depth ascending sort
+      return TEI.right(
+        [...parsedConfigObjects].sort((left, right) => {
+          const diff = left.depth - right.depth;
+          return diff === 0 ? left.dir.localeCompare(right.dir) : diff;
         }),
-      };
+      );
+    } catch (catched) {
+      const err = catched instanceof Error ? catched : new Error('unknown error raised');
 
-      const nonNullableOptionMap = new Map<string, INonNullableOptionObjectProps>();
-      nonNullableOptionMap.set(rootOptionObject.dir, rootOptionObject);
+      return TEI.left(err);
+    }
+  };
 
-      fpTimes(lastOptionObject.depth, false).forEach((depth) => {
-        log(`directory depth "${depth}" processed`);
-
-        const currentDepthedObjects = Array.from(processedParseConfigMap.values()).filter(
-          (configObject) => configObject.depth === depth,
+export const getMergedConfig =
+  ({
+    projectPath,
+    cliOption: cliOptionFrom,
+    optionObjects,
+  }: {
+    projectPath: string;
+    cliOption: Partial<ICTIXOptions>;
+    optionObjects: IOptionObjectProps[];
+  }): TTE.TaskEither<Error, INonNullableOptionObjectProps[]> =>
+  async () => {
+    try {
+      if (optionObjects.length > 1) {
+        const fallbackOption = defaultOption({ project: projectPath });
+        const rootOptions = merge(
+          getNonEmptyOption(optionObjects[0].option, fallbackOption),
+          getNonEmptyOption(cliOptionFrom, fallbackOption),
         );
 
-        currentDepthedObjects.forEach((currentDepthedObject) => {
-          const optionObject = processedParseConfigMap.get(currentDepthedObject.dir);
-          const parentOptions =
-            nonNullableOptionMap.get(getParentPath(optionObject?.dir ?? ''))?.option ?? defaultOption();
+        const lastOptionObject = optionObjects[optionObjects.length - 1];
+        const firstOptionObject = {
+          ...optionObjects[0],
+          option: {
+            ...rootOptions,
+            project: rootOptions.project,
+            exportFilename: getExportFilename(rootOptions.exportFilename),
+          },
+        };
 
-          if (optionObject !== undefined && parentOptions !== undefined) {
-            const newOptionObject = {
-              ...optionObject,
-              option: merge(
-                parentOptions,
-                optionObject.option ??
-                  defaultOption({
-                    // exportFilename, project fields use parent options
-                    exportFilename: parentOptions.exportFilename,
-                    project: parentOptions.project,
-                  }),
-              ),
-            };
+        // root configuration from project directory
+        const processedParseConfigMap = new Map<string, IOptionObjectProps>(
+          optionObjects.map((configObject) => [configObject.dir, configObject]),
+        );
 
-            nonNullableOptionMap.set(newOptionObject.dir, newOptionObject);
-            log(
-              'exportFilename-1: ',
-              parentOptions.exportFilename,
-              (optionObject.option ?? fallbackOption).exportFilename,
-              newOptionObject.option.exportFilename,
-            );
-          } else {
-            const newOptionObject = {
-              ...currentDepthedObject,
-              option: getNonEmptyOption(optionObject?.option, fallbackOption),
-            };
+        const rootOptionObject = {
+          ...firstOptionObject,
+          option: merge(defaultOption({ project: projectPath }), {
+            ...(firstOptionObject.option ?? fallbackOption),
+          }),
+        };
 
-            nonNullableOptionMap.set(currentDepthedObject.dir, newOptionObject);
-            log('exportFilename-2: ', newOptionObject.option.exportFilename);
-          }
+        const nonNullableOptionMap = new Map<string, INonNullableOptionObjectProps>();
+        nonNullableOptionMap.set(rootOptionObject.dir, rootOptionObject);
+
+        fpTimes(lastOptionObject.depth, false).forEach((depth) => {
+          log(`directory depth "${depth}" processed`);
+
+          const currentDepthedObjects = Array.from(processedParseConfigMap.values()).filter(
+            (configObject) => configObject.depth === depth,
+          );
+
+          currentDepthedObjects.forEach((currentDepthedObject) => {
+            const optionObject = processedParseConfigMap.get(currentDepthedObject.dir);
+            const parentOptions =
+              nonNullableOptionMap.get(getParentPath(optionObject?.dir ?? ''))?.option ??
+              defaultOption();
+
+            if (optionObject !== undefined && parentOptions !== undefined) {
+              const newOptionObject = {
+                ...optionObject,
+                option: merge(
+                  parentOptions,
+                  optionObject.option ??
+                    defaultOption({
+                      // exportFilename, project fields use parent options
+                      exportFilename: parentOptions.exportFilename,
+                      project: parentOptions.project,
+                    }),
+                ),
+              };
+
+              nonNullableOptionMap.set(newOptionObject.dir, newOptionObject);
+              log(
+                'exportFilename-1: ',
+                parentOptions.exportFilename,
+                (optionObject.option ?? fallbackOption).exportFilename,
+                newOptionObject.option.exportFilename,
+              );
+            } else {
+              const newOptionObject = {
+                ...currentDepthedObject,
+                option: getNonEmptyOption(optionObject?.option, fallbackOption),
+              };
+
+              nonNullableOptionMap.set(currentDepthedObject.dir, newOptionObject);
+              log('exportFilename-2: ', newOptionObject.option.exportFilename);
+            }
+          });
         });
-      });
 
-      const merged = [rootOptionObject, ...Array.from(nonNullableOptionMap.values())];
-      return TEI.right(merged);
+        const merged = [rootOptionObject, ...Array.from(nonNullableOptionMap.values())];
+        return TEI.right(merged);
+      }
+
+      return TEI.right(
+        [...optionObjects].map((configObject) => ({
+          ...configObject,
+          option: defaultOption(),
+        })),
+      );
+    } catch (catched) {
+      const err = catched instanceof Error ? catched : new Error('unknown error raised');
+
+      return TEI.left(err);
     }
-
-    return TEI.right(
-      [...optionObjects].map((configObject) => ({
-        ...configObject,
-        option: defaultOption(),
-      })),
-    );
-  } catch (err) {
-    return TEI.left(err);
-  }
-}
+  };
 
 export async function getConfigFiles(
   args: Omit<ICreateTypeScriptIndex, 'optionFiles'>,
@@ -267,12 +290,15 @@ export async function getConfigFiles(
     const configPattern = path.join(resolvedCWD, '**', '.ctirc'); // create ctirc glob pattern
 
     // ctiignore file have dot charactor at file first so set true dot flag
-    const configs = await fastGlob(configPattern, { dot: true });
+    // + win32 path.sep replace posix sep
+    const configs = await fastGlobWrap(configPattern, { dot: true });
 
-    log('finded: ', configs);
+    log('finded: ', args, configPattern, configs);
 
     return TEI.right({ projectPath: args.projectPath, optionFiles: configs });
-  } catch (err) {
+  } catch (catched) {
+    const err = catched instanceof Error ? catched : new Error('unknown error raised');
+
     return TEI.left(err);
   }
 }

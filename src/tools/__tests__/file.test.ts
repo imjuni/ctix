@@ -1,7 +1,7 @@
 import debug from 'debug';
 import * as path from 'path';
 import { getIgnoreFiles, getIgnoreFileContents, getIgnoredContents } from '@tools/ctiignore';
-import * as TE from 'fp-ts/lib/Either';
+import * as TEI from 'fp-ts/Either';
 
 const log = debug('ctix:file-test');
 const exampleRootPath = path.resolve(path.join(__dirname, '..', '..', '..', 'example'));
@@ -9,10 +9,10 @@ const exampleType04Path = path.join(exampleRootPath, 'type04');
 
 describe('cti-ignore-test', () => {
   test('get-ignore', async () => {
-    const files = await getIgnoreFiles(exampleType04Path);
+    const files = await getIgnoreFiles(exampleType04Path)();
 
-    if (TE.isLeft(files)) {
-      return expect(TE.isLeft(files)).toBeFalsy();
+    if (TEI.isLeft(files)) {
+      return expect(TEI.isLeft(files)).toBeFalsy();
     }
 
     log('Result: ', files.right);
@@ -33,10 +33,10 @@ describe('cti-ignore-test', () => {
         path.join(exampleType04Path, '.ctiignore'),
         path.join(exampleType04Path, 'wellmade/.ctiignore'),
       ],
-    });
+    })();
 
-    if (TE.isLeft(files)) {
-      return expect(TE.isLeft(files)).toBeFalsy();
+    if (TEI.isLeft(files)) {
+      return expect(TEI.isLeft(files)).toBeFalsy();
     }
 
     log('Result: ', files.right.ignores);
@@ -73,7 +73,7 @@ describe('cti-ignore-test', () => {
           content: ['ChildlikeCls.ts', 'FlakyCls.ts'],
         },
       ],
-    });
+    })();
 
     log('Result: ', contents);
 

@@ -1,9 +1,9 @@
 import { ICreateTypeScriptIndex } from '@interfaces/IConfigObjectProps';
 import { getConfigFiles, getCTIXOptions, getMergedConfig, defaultOption } from '@tools/cticonfig';
 import debug from 'debug';
-import { isLeft } from 'fp-ts/lib/Either';
-import { pipe } from 'fp-ts/lib/pipeable';
-import * as TTE from 'fp-ts/lib/TaskEither';
+import * as TEI from 'fp-ts/Either';
+import * as TFU from 'fp-ts/function';
+import * as TTE from 'fp-ts/TaskEither';
 import * as path from 'path';
 
 const log = debug('ctix:config-test');
@@ -12,10 +12,12 @@ const exampleType03Path = path.join(exampleRootPath, 'type03');
 
 describe('cti-config-test', () => {
   test('get-cti-config-files', async () => {
-    const files = await getConfigFiles({ projectPath: path.join(exampleType03Path, 'tsconfig.json') });
+    const files = await getConfigFiles({
+      projectPath: path.join(exampleType03Path, 'tsconfig.json'),
+    });
 
-    if (isLeft(files)) {
-      return expect(isLeft(files)).toBeFalsy();
+    if (TEI.isLeft(files)) {
+      return expect(TEI.isLeft(files)).toBeFalsy();
     }
 
     log('Result: ', files.right);
@@ -35,79 +37,84 @@ describe('cti-config-test', () => {
 
   test('get-cti-config', async () => {
     const projectPath = path.join(exampleType03Path, 'tsconfig.json');
-    const res = await getCTIXOptions({ projectPath });
+    const res = await getCTIXOptions({ projectPath })();
 
-    if (isLeft(res)) {
-      return expect(isLeft(res)).toBeFalsy();
+    if (TEI.isLeft(res)) {
+      return expect(TEI.isLeft(res)).toBeFalsy();
     }
 
     log('Result: ', res);
 
-    return expect(res.right).toEqual([
-      {
-        dir: exampleType03Path,
-        exists: true,
-        depth: 0,
-        option: {
-          addNewline: true,
-          quote: '"',
-          useSemicolon: true,
-          useTimestamp: true,
-          verbose: true,
+    return expect(res.right).toEqual(
+      [
+        {
+          dir: exampleType03Path,
+          exists: true,
+          depth: 0,
+          option: {
+            addNewline: true,
+            quote: '"',
+            useSemicolon: true,
+            useTimestamp: true,
+            verbose: true,
+          },
         },
-      },
-      {
-        dir: path.join(exampleType03Path, '/juvenile'),
-        exists: false,
-        depth: 1,
-        option: undefined,
-      },
-      {
-        dir: path.join(exampleType03Path, '/wellmade'),
-        exists: true,
-        depth: 1,
-        option: {
-          addNewline: true,
-          quote: "'",
-          useSemicolon: true,
-          useTimestamp: false,
-          verbose: false,
+        {
+          dir: path.join(exampleType03Path, 'juvenile'),
+          exists: false,
+          depth: 1,
+          option: undefined,
         },
-      },
-      {
-        dir: path.join(exampleType03Path, '/juvenile/spill'),
-        exists: true,
-        depth: 2,
-        option: {
-          addNewline: true,
-          quote: "'",
-          useSemicolon: true,
-          useTimestamp: false,
-          verbose: false,
+        {
+          dir: path.join(exampleType03Path, 'wellmade'),
+          exists: true,
+          depth: 1,
+          option: {
+            addNewline: true,
+            quote: "'",
+            useSemicolon: true,
+            useTimestamp: false,
+            verbose: false,
+          },
         },
-      },
-      {
-        dir: path.join(exampleType03Path, '/wellmade/carpenter'),
-        exists: true,
-        depth: 2,
-        option: {
-          addNewline: true,
-          quote: "'",
-          useSemicolon: true,
-          useTimestamp: false,
-          verbose: false,
+        {
+          dir: path.join(exampleType03Path, 'juvenile', 'spill'),
+          exists: true,
+          depth: 2,
+          option: {
+            addNewline: true,
+            quote: "'",
+            useSemicolon: true,
+            useTimestamp: false,
+            verbose: false,
+          },
         },
-      },
-    ]);
+        {
+          dir: path.join(exampleType03Path, 'wellmade', 'carpenter'),
+          exists: true,
+          depth: 2,
+          option: {
+            addNewline: true,
+            quote: "'",
+            useSemicolon: true,
+            useTimestamp: false,
+            verbose: false,
+          },
+        },
+      ].sort((left, right) => {
+        const diff = left.depth - right.depth;
+        return diff === 0 ? left.dir.localeCompare(right.dir) : diff;
+      }),
+    );
   });
 
   test('get-merged-content', async () => {
     const projectPath = path.join(exampleType03Path, 'tsconfig.json');
 
-    const mergedConfig = await pipe(
-      projectPath,
-      (projectPath) => () => getCTIXOptions({ projectPath }),
-      TTE.chain((args) => () =>
+    const mergedConfig = await TFU.pipe(
+      TTE.right({ projectPath }),
+      TTE.chain(getCTIXOptions),
+      TTE.chain((args) =>
         getMergedConfig({
           projectPath,
           cliOption: defaultOption({ project: projectPath }),
@@ -116,8 +123,8 @@ describe('cti-config-test', () => {
       ),
     )();
 
-    if (isLeft(mergedConfig)) {
-      return expect(isLeft(mergedConfig)).toBeFalsy();
+    if (TEI.isLeft(mergedConfig)) {
+      return expect(TEI.isLeft(mergedConfig)).toBeFalsy();
     }
 
     log(mergedConfig.right);
@@ -158,7 +165,7 @@ describe('cti-config-test', () => {
           },
         },
         {
-          dir: path.join(exampleType03Path, '/juvenile'),
+          dir: path.join(exampleType03Path, 'juvenile'),
           exists: false,
           depth: 1,
           option: {
@@ -174,7 +181,7 @@ describe('cti-config-test', () => {
           },
         },
         {
-          dir: path.join(exampleType03Path, '/wellmade'),
+          dir: path.join(exampleType03Path, 'wellmade'),
           exists: true,
           depth: 1,
           option: {
@@ -190,7 +197,7 @@ describe('cti-config-test', () => {
           },
         },
         {
-          dir: path.join(exampleType03Path, '/juvenile/spill'),
+          dir: path.join(exampleType03Path, 'juvenile', 'spill'),
           exists: true,
           depth: 2,
           option: {
@@ -206,7 +213,7 @@ describe('cti-config-test', () => {
           },
         },
         {
-          dir: path.join(exampleType03Path, '/wellmade/carpenter'),
+          dir: path.join(exampleType03Path, 'wellmade', 'carpenter'),
           exists: true,
           depth: 2,
           option: {

@@ -25,14 +25,12 @@ export const hasExportModifiers = (nodeFrom: typescript.Node): TStatementModifie
       (flag: TStatementModifierType) => flag,
       (modifiers) => {
         const exported =
-          modifiers.some(
-            (modifier) => modifier.kind === typescript.SyntaxKind.ExportKeyword,
-          ) ?? false;
+          modifiers.some((modifier) => modifier.kind === typescript.SyntaxKind.ExportKeyword) ??
+          false;
 
         const defaulted =
-          modifiers?.some(
-            (modifier) => modifier.kind === typescript.SyntaxKind.DefaultKeyword,
-          ) ?? false;
+          modifiers?.some((modifier) => modifier.kind === typescript.SyntaxKind.DefaultKeyword) ??
+          false;
 
         if (exported && defaulted) {
           return 'default';
@@ -64,6 +62,8 @@ export async function delintNode({
 
   log('delintNode: ', filename);
 
+  let isExported = '';
+
   const nodeWalk = (currentNode: typescript.Node) => {
     switch (currentNode.kind) {
       case typescript.SyntaxKind.VariableStatement:
@@ -71,7 +71,7 @@ export async function delintNode({
       case typescript.SyntaxKind.TypeAliasDeclaration:
       case typescript.SyntaxKind.FunctionDeclaration:
       case typescript.SyntaxKind.ClassDeclaration:
-        const isExported = hasExportModifiers(currentNode);
+        isExported = hasExportModifiers(currentNode);
 
         if (isExported === 'default') {
           defaultExportedNodes.push(currentNode);
@@ -95,6 +95,7 @@ export async function delintNode({
       case typescript.SyntaxKind.ExportAssignment:
         defaultExportedNodes.push(currentNode);
         break;
+      default:
     }
 
     typescript.forEachChild(currentNode, nodeWalk);

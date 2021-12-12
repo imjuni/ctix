@@ -1,13 +1,18 @@
-import * as TE from 'fp-ts/lib/Either';
+import * as TEI from 'fp-ts/lib/Either';
 import * as TTE from 'fp-ts/lib/TaskEither';
 
-export type TResolvedPromise<T extends Promise<any>> = T extends Promise<infer U> ? U : never;
-export type TResolvedEither<T extends TE.Either<any, any>> = [T] extends [
-  TE.Either<any, infer U>,
+export type TResolvedTaskEither<T extends TTE.TaskEither<any, any>> = [T] extends [
+  TTE.TaskEither<any, infer U>,
 ]
   ? U
   : never;
+export type TResolvedPromise<T extends Promise<any>> = T extends Promise<infer U> ? U : never;
+export type TResolvedEither<T extends TEI.Either<any, any>> = [T] extends [TEI.Either<any, infer U>]
+  ? U
+  : never;
 
-export function taskEitherLiftor<X, Y, Z>(f: (args: X) => Promise<TE.Either<Y, Z>>) {
-  return (args: X): TTE.TaskEither<Y, Z> => () => f(args);
+export function taskEitherLiftor<X, Y, Z>(f: (args: X) => Promise<TEI.Either<Y, Z>>) {
+  return (args: X): TTE.TaskEither<Y, Z> =>
+    () =>
+      f(args);
 }

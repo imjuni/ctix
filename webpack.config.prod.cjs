@@ -7,7 +7,6 @@ const webpackBar = require('webpackbar');
 const distPath = path.resolve(path.join(__dirname, 'dist'));
 
 const config = {
-  devtool: 'eval-source-map',
   externals: [
     webpackNodeExternals({
       allowlist: ['tslib'],
@@ -18,6 +17,13 @@ const config = {
 
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
+    fallback: {
+      __dirname: false,
+      __filename: false,
+      console: false,
+      global: false,
+      process: false,
+    },
     modules: [path.resolve(__dirname, 'src'), 'node_modules'],
     plugins: [
       new tsconfigPathsWebpackPlugin({
@@ -28,11 +34,11 @@ const config = {
 
   plugins: [
     new webpack.BannerPlugin({ banner: '#!/usr/bin/env node', raw: true }),
-    new webpackBar({ name: '-create-ts-index-x' })
+    new webpackBar({ name: '-create-ts-index-x' }),
   ],
 
   entry: {
-    'ctix': ['./src/ctix.ts'],
+    ctix: ['./src/ctix.ts'],
   },
 
   output: {
@@ -58,7 +64,7 @@ const config = {
         test: /\.tsx?$/,
         options: {
           configFile: 'tsconfig.prod.json',
-        }
+        },
       },
       // {
       //   exclude: /node_modules/,
@@ -66,16 +72,6 @@ const config = {
       //   test: /\.tsx?$/,
       // },
     ],
-  },
-
-  devtool: 'inline-source-map',
-
-  node: {
-    __dirname: false,
-    __filename: false,
-    console: false,
-    global: false,
-    process: false,
   },
 };
 

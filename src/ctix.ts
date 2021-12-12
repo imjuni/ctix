@@ -5,21 +5,22 @@ import { defaultOption, getCTIXOptions, getMergedConfig } from '@tools/cticonfig
 import { getIgnoredContents, getIgnoreFileContents, getIgnoreFiles } from '@tools/ctiignore';
 import logger from '@tools/Logger';
 import { exists } from '@tools/misc';
-import { getTypeScriptConfig, getTypeScriptExportStatement, getTypeScriptSource } from '@tools/tsfiles';
-import { taskEitherLiftor } from '@tools/typehelper';
+import {
+  getTypeScriptConfig,
+  getTypeScriptExportStatement,
+  getTypeScriptSource,
+} from '@tools/tsfiles';
 import { getSingleFileWriteContents, getWriteContents, write } from '@tools/write';
 import chalk from 'chalk';
 import cli from 'cli-ux';
-import debug from 'debug';
 import * as TAP from 'fp-ts/Apply';
 import * as TEI from 'fp-ts/Either';
-import * as TPI from 'fp-ts/pipeable';
+import * as TFU from 'fp-ts/function';
 import * as TTE from 'fp-ts/TaskEither';
 import * as fs from 'fs';
 import * as path from 'path';
 import yargs, { Argv } from 'yargs';
-
-const log = debug('ctix:cli-tools');
+import sourceMapSupport from 'source-map-support';
 
 type TCTIXOptionWithCWD = Partial<Omit<ICTIXOptions, 'project'>> & {
   project: string;
@@ -32,7 +33,7 @@ type TWithIncludeBackup<T> = T & { includeBackup: boolean };
 // only use builder function
 const casting = <T>(args: T): any => args;
 
-function setOptions(args: Argv<{}>) {
+function setOptions(args: Argv<any>) {
   args
     .option('addNewline', {
       alias: 'n',
@@ -46,12 +47,14 @@ function setOptions(args: Argv<{}>) {
     })
     .option('useTimestamp', {
       alias: 'm',
-      describe: 'timestamp write on ctix comment right-side, only works in useComment option set true',
+      describe:
+        'timestamp write on ctix comment right-side, only works in useComment option set true',
       type: 'boolean',
     })
     .option('useComment', {
       alias: 'c',
-      describe: 'add ctix comment at first line of creted index.ts file, that remark created from ctix',
+      describe:
+        'add ctix comment at first line of creted index.ts file, that remark created from ctix',
       type: 'boolean',
     })
     .option('quote', {
@@ -80,13 +83,14 @@ async function existsCheck(fromCli: string, fromOption: string): Promise<string>
   throw new Error(`invalid project path, don't exist: ${fromCli} or ${fromOption ?? ''}`);
 }
 
-const argv = yargs
+sourceMapSupport.install();
+
+// eslint-disable-next-line
+yargs
   .command<TWithTSConfig<TCTIXOptionWithCWD>>({
     command: '$0 [tsconfigPath]',
     aliases: 'create [tsconfigPath]',
-    builder: (argv: Argv<{}>) => {
-      return setOptions(argv);
-    },
+    builder: (argv) => setOptions(argv),
     handler: async (argv) => {
       logger.switch(argv.verbose ?? false);
       const counter = new Counter(argv.verbose ?? false);
@@ -94,9 +98,13 @@ const argv = yargs
       try {
         const project = await existsCheck(argv.tsconfigPath, argv.project);
 
-        cli.action.start(chalk`{yellow ctix} ${argv.exportFilename ?? 'index.ts'} file create mode:`, 'initializing', {
-          stdout: true,
-        });
+        cli.action.start(
+          chalk`{yellow ctix} ${argv.exportFilename ?? 'index.ts'} file create mode:`,
+          'initializing',
+          {
+            stdout: true,
+          },
+        );
 
         const fallbackConfig = defaultOption({ project });
         const options: ICTIXOptions = {
@@ -112,24 +120,32 @@ const argv = yargs
         };
 
         const projectCWD = path.dirname(project);
-        logger.debug(chalk`{yellow ctix - ${counter.debug}:} {blueBright [info]} project directory: ${project}`);
-        logger.log(chalk`{yellow ctix - ${counter.log}:} read ignore file, tsconfig file, cti config {green complete}`);
+        logger.debug(
+          chalk`{yellow ctix - ${counter.debug}:} {blueBright [info]} project directory: ${project}`,
+        );
+        logger.log(
+          chalk`{yellow ctix - ${counter.log}:} read ignore file, tsconfig file, cti config {green complete}`,
+        );
         cli.action.status = 'processing ...';
 
-        const configWithIgnored = await TAP.sequenceT(TTE.taskEither)(
-          TPI.pipe(
-            taskEitherLiftor(getIgnoreFiles)(projectCWD),
-            TTE.chain(taskEitherLiftor(getIgnoreFileContents)),
-            TTE.chain(taskEitherLiftor(getIgnoredContents)),
+        const configWithIgnored = await TAP.sequenceT(TTE.ApplicativeSeq)(
+          TFU.pipe(
+            getIgnoreFiles(projectCWD),
+            TTE.chain(getIgnoreFileContents),
+            TTE.chain(getIgnoredContents),
           ),
-          taskEitherLiftor(getTypeScriptConfig)({
+          getTypeScriptConfig({
             cwd: projectCWD,
             tsconfigPath: project,
           }),
-          TPI.pipe(
-            taskEitherLiftor(getCTIXOptions)({ projectPath: projectCWD }),
-            TTE.chain((args) => () =>
-              getMergedConfig({ projectPath: projectCWD, optionObjects: args, cliOption: options }),
+          TFU.pipe(
+            getCTIXOptions({ projectPath: projectCWD }),
+            TTE.chain((args) =>
+              getMergedConfig({
+                projectPath: projectCWD,
+                optionObjects: args,
+                cliOption: options,
+              }),
             ),
           ),
         )();
@@ -140,7 +156,9 @@ const argv = yargs
 
         const [ignores, tsconfig, optionObjects] = configWithIgnored.right;
 
-        logger.log(chalk`{yellow ctix - ${counter.log}:} typescript source file parsing {green compile} `);
+        logger.log(
+          chalk`{yellow ctix - ${counter.log}:} typescript source file parsing {green compile} `,
+        );
         cli.action.status = 'processing ...';
 
         logger.debug(
@@ -153,16 +171,18 @@ const argv = yargs
           chalk`{yellow ctix - ${counter.debug}:} {blueBright [info]} config file - ${optionObjects.length}`,
         );
 
-        const exportContents = await TPI.pipe(
-          taskEitherLiftor(getTypeScriptSource)({
+        const exportContents = await TFU.pipe(
+          TTE.right({
             tsconfig,
             ignores: ignores.ignores,
           }),
-          TTE.chain((args) => () =>
-            getTypeScriptExportStatement({
-              program: args.program,
-              filenames: args.filenames,
-            }),
+          TTE.chain(getTypeScriptSource),
+          TTE.chain(
+            (args) => () =>
+              getTypeScriptExportStatement({
+                program: args.program,
+                filenames: args.filenames,
+              }),
           ),
         )();
 
@@ -183,7 +203,9 @@ const argv = yargs
         }
 
         await write({ contents: writed.right, optionObjects });
-      } catch (err) {
+      } catch (catched) {
+        const err = catched instanceof Error ? catched : new Error('unknown error raised');
+
         logger.error(chalk`{red error} message below, `);
         logger.error(err.message);
       } finally {
@@ -194,9 +216,7 @@ const argv = yargs
   .command<TWithTSConfig<TCTIXOptionWithCWD>>({
     command: 'single [tsconfigPath]',
     aliases: ['entrypoint [tsconfigPath]'],
-    builder: (argv: Argv<{}>) => {
-      return setOptions(argv);
-    },
+    builder: (argv: Argv<{}>) => setOptions(argv),
     handler: async (argv) => {
       logger.switch(argv.verbose ?? false);
       const counter = new Counter(argv.verbose ?? false);
@@ -226,24 +246,32 @@ const argv = yargs
         };
 
         const projectCWD = path.dirname(project);
-        logger.debug(chalk`{yellow ctix - ${counter.debug}:} {blueBright [info]} project directory: ${project}`);
-        logger.log(chalk`{yellow ctix - ${counter.log}:} read ignore file, tsconfig file, cti config {green complete}`);
+        logger.debug(
+          chalk`{yellow ctix - ${counter.debug}:} {blueBright [info]} project directory: ${project}`,
+        );
+        logger.log(
+          chalk`{yellow ctix - ${counter.log}:} read ignore file, tsconfig file, cti config {green complete}`,
+        );
         cli.action.status = 'processing ...';
 
-        const configWithIgnored = await TAP.sequenceT(TTE.taskEither)(
-          TPI.pipe(
-            taskEitherLiftor(getIgnoreFiles)(projectCWD),
-            TTE.chain(taskEitherLiftor(getIgnoreFileContents)),
-            TTE.chain(taskEitherLiftor(getIgnoredContents)),
+        const configWithIgnored = await TAP.sequenceT(TTE.ApplicativeSeq)(
+          TFU.pipe(
+            getIgnoreFiles(projectCWD),
+            TTE.chain(getIgnoreFileContents),
+            TTE.chain(getIgnoredContents),
           ),
-          taskEitherLiftor(getTypeScriptConfig)({
+          getTypeScriptConfig({
             cwd: projectCWD,
             tsconfigPath: project,
           }),
-          TPI.pipe(
-            taskEitherLiftor(getCTIXOptions)({ projectPath: projectCWD }),
-            TTE.chain((args) => () =>
-              getMergedConfig({ projectPath: projectCWD, optionObjects: args, cliOption: options }),
+          TFU.pipe(
+            getCTIXOptions({ projectPath: projectCWD }),
+            TTE.chain((args) =>
+              getMergedConfig({
+                projectPath: projectCWD,
+                optionObjects: args,
+                cliOption: options,
+              }),
             ),
           ),
         )();
@@ -254,7 +282,9 @@ const argv = yargs
 
         const [ignores, tsconfig, optionObjects] = configWithIgnored.right;
 
-        logger.log(chalk`{yellow ctix - ${counter.log}:} typescript source file parsing {green compile} `);
+        logger.log(
+          chalk`{yellow ctix - ${counter.log}:} typescript source file parsing {green compile} `,
+        );
         cli.action.status = 'processing ...';
 
         logger.debug(
@@ -267,16 +297,18 @@ const argv = yargs
           chalk`{yellow ctix - ${counter.debug}:} {blueBright [info]} config file - ${optionObjects.length}`,
         );
 
-        const exportContents = await TPI.pipe(
-          taskEitherLiftor(getTypeScriptSource)({
+        const exportContents = await TFU.pipe(
+          TTE.right({
             tsconfig,
             ignores: ignores.ignores,
           }),
-          TTE.chain((args) => () =>
-            getTypeScriptExportStatement({
-              program: args.program,
-              filenames: args.filenames,
-            }),
+          TTE.chain(getTypeScriptSource),
+          TTE.chain(
+            (args) => () =>
+              getTypeScriptExportStatement({
+                program: args.program,
+                filenames: args.filenames,
+              }),
           ),
         )();
 
@@ -290,14 +322,19 @@ const argv = yargs
           } write on project directory {green compile}`,
         );
 
-        const writed = await getSingleFileWriteContents({ ...exportContents.right, optionObjects });
+        const writed = await getSingleFileWriteContents({
+          ...exportContents.right,
+          optionObjects,
+        });
 
         if (TEI.isLeft(writed)) {
           throw writed.left;
         }
 
         await write({ contents: writed.right, optionObjects });
-      } catch (err) {
+      } catch (catched) {
+        const err = catched instanceof Error ? catched : new Error('unknown error raised');
+
         logger.error(chalk`{red error} message below, `);
         logger.error(err.message);
       } finally {
@@ -324,9 +361,13 @@ const argv = yargs
       try {
         const project = await existsCheck(argv.tsconfigPath, argv.project);
 
-        cli.action.start(chalk`{yellow ctix} ${argv.exportFilename ?? 'index.ts'} file clean mode:`, 'initializing', {
-          stdout: true,
-        });
+        cli.action.start(
+          chalk`{yellow ctix} ${argv.exportFilename ?? 'index.ts'} file clean mode:`,
+          'initializing',
+          {
+            stdout: true,
+          },
+        );
 
         const fallbackConfig = defaultOption({ project });
         const options: ICTIXOptions = {
@@ -341,11 +382,16 @@ const argv = yargs
           exportFilename: argv.exportFilename ?? fallbackConfig.exportFilename,
         };
 
-        const files = await TPI.pipe(
-          () => getCleanFilenames({ cliOption: options, includeBackupFrom: argv.includeBackup }),
+        const files = await TFU.pipe(
+          getCleanFilenames({
+            cliOption: options,
+            includeBackupFrom: argv.includeBackup,
+          }),
           TTE.chain((args) => () => {
             logger.log(chalk`{yellow ctix - ${counter.log}:} clean file find {green complete}`);
-            logger.debug(chalk`{yellow ctix - ${counter.debug}:} {blueBright [info]} clean file - ${args.length}`);
+            logger.debug(
+              chalk`{yellow ctix - ${counter.debug}:} {blueBright [info]} clean file - ${args.length}`,
+            );
 
             return clean({ filenames: args });
           }),
@@ -356,7 +402,9 @@ const argv = yargs
         }
 
         logger.log(chalk`{yellow ctix - ${counter.log}:} clean action {green complete}`);
-      } catch (err) {
+      } catch (catched) {
+        const err = catched instanceof Error ? catched : new Error('unknown error raised');
+
         logger.error(chalk`{red error} message below, `);
         logger.error(err.message);
       } finally {
@@ -378,7 +426,9 @@ const argv = yargs
           stdout: true,
         });
 
-        logger.log(chalk`{yellow ctix - ${counter.log}:} default option generation {green compile} `);
+        logger.log(
+          chalk`{yellow ctix - ${counter.log}:} default option generation {green compile} `,
+        );
         cli.action.status = 'processing ...';
 
         const option: Omit<ICTIXOptions, 'project' | 'verbose'> & {
@@ -396,7 +446,11 @@ const argv = yargs
 
         logger.log(chalk`{yellow ctix - ${counter.log}:} .ctirc file write {green compile} `);
         cli.action.status = 'processing ...';
-      } catch (err) {
+      } catch (catched) {
+        const err = catched instanceof Error ? catched : new Error('unknown error raised');
+
+        logger.error(chalk`{red error} message below, `);
+        logger.error(err.message);
       } finally {
         cli.action.stop('complete');
       }
@@ -418,8 +472,3 @@ const argv = yargs
     type: 'boolean',
   })
   .help().argv;
-
-// below line, meaning less
-log('test: ', argv.filenames);
-log('test: ', argv.interfaces);
-log('test: ', process.env.DEBUG);

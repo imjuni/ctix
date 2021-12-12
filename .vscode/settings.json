@@ -26,6 +26,7 @@
         "document": true,
         "dist": true
     },
+    "files.eol": "\n",
     "eslint.validate": ["typescript", "typescriptreact"],
     "typescript.tsdk": "node_modules/typescript/lib"
 }

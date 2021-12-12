@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 type TLogFunc = (message?: any, ...optionalParams: any[]) => void;
 
 export class Logger {
