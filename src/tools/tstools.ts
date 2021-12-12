@@ -71,6 +71,7 @@ export async function delintNode({
       case typescript.SyntaxKind.TypeAliasDeclaration:
       case typescript.SyntaxKind.FunctionDeclaration:
       case typescript.SyntaxKind.ClassDeclaration:
+      case typescript.SyntaxKind.EnumDeclaration:
         isExported = hasExportModifiers(currentNode);
 
         if (isExported === 'default') {
