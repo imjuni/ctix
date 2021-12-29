@@ -12,15 +12,16 @@ jobs:
           name: npm-install
           command: npm install
       - run:
-          name: npm-test
-          command: npm run test
-      - run:
           name: npm-build
           command: npm run build
           no_output_timeout: 10m
       - run:
           name: npm-clean
           command: npm run clean
+          no_output_timeout: 10m
+      - run:
+          name: npm-test
+          command: npm run test
           no_output_timeout: 10m
       - run:
           name: npm-webpack:prod

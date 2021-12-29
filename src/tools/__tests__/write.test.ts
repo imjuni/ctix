@@ -1,4 +1,5 @@
-import { getCTIXOptions, getMergedConfig, defaultOption } from '@tools/cticonfig';
+import { clean, getCleanFilenames } from '@tools/clean';
+import { defaultOption, getCTIXOptions, getMergedConfig } from '@tools/cticonfig';
 import { getIgnoredContents, getIgnoreFileContents, getIgnoreFiles } from '@tools/ctiignore';
 import {
   getTypeScriptConfig,
@@ -6,8 +7,8 @@ import {
   getTypeScriptSource,
 } from '@tools/tsfiles';
 import debug from 'debug';
-import * as TEI from 'fp-ts/Either';
 import * as TAP from 'fp-ts/Apply';
+import * as TEI from 'fp-ts/Either';
 import * as TFU from 'fp-ts/function';
 import * as TTE from 'fp-ts/TaskEither';
 import * as path from 'path';
@@ -19,6 +20,15 @@ const exampleRootPath = path.resolve(path.join(__dirname, '..', '..', '..', 'exa
 const exampleType04Path = path.join(exampleRootPath, 'type04');
 
 describe('cti-write-test-set', () => {
+  afterEach(async (): Promise<void> => {
+    await TFU.pipe(
+      getCleanFilenames({
+        cliOption: { ...defaultOption(), project: path.join(exampleType04Path, 'tsconfig.json') },
+      }),
+      TTE.chain((args) => () => clean({ filenames: args })),
+    )();
+  });
+
   test('get-create-write-content', async (): Promise<void> => {
     const configWithIgnored = await TAP.sequenceT(TTE.ApplicativeSeq)(
       TFU.pipe(

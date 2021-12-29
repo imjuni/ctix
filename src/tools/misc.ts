@@ -1,9 +1,9 @@
+import fastGlob from 'fast-glob';
 import * as TEI from 'fp-ts/Either';
 import { flow, pipe } from 'fp-ts/function';
 import * as fs from 'fs';
 import { isEmpty } from 'my-easy-fp';
 import * as path from 'path';
-import fastGlob from 'fast-glob';
 
 /**
  * check file existing, if file exists return true, don't exists return false
@@ -24,7 +24,17 @@ export function settify<T>(arr: T[]): T[] {
 }
 
 export function replaceSepToPosix(targetPath: string): string {
-  return path.posix.join(...targetPath.split(path.sep));
+  if (path.sep !== '/') {
+    const replaced = path.posix.join(...targetPath.split(path.sep));
+
+    if (targetPath.startsWith(path.sep)) {
+      return `${path.posix.sep}${replaced}`;
+    }
+
+    return replaced;
+  }
+
+  return targetPath;
 }
 
 export function winify(filePath: string): string {
