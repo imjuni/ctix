@@ -179,7 +179,14 @@ export async function getTypeScriptExportStatement({
     const defaultSet = new Set(defaultExportFilenames);
     const defaultsDeduped = Array.from(defaultSet).sort((left, right) => left.localeCompare(right));
 
-    log('file: ', filenames);
+    log(
+      'file-1: ',
+      program
+        .getSourceFiles()
+        .map((source) => source.fileName)
+        .filter((filename) => filename.indexOf('node_modules') < 0),
+    );
+    log('file-2: ', filenames);
     log('export file: ', exportFilenames, ' default file: ', defaultExportFilenames);
 
     return TEI.right({

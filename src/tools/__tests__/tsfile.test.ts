@@ -63,11 +63,11 @@ describe('cti-tsfile-test', () => {
       filenames: program.right.filenames,
     });
 
-    log('detected statement: ', statements);
-
     if (TEI.isLeft(statements)) {
       return expect(TEI.isLeft(statements)).toBeFalsy();
     }
+
+    log('detected statement: ', { ...statements.right, program: undefined });
 
     return expect(statements.right).toEqual({
       program: program.right.program,
