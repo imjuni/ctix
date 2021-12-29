@@ -92,6 +92,16 @@ Most inconvenience from import statement that solve [module resolution](https://
 | --useComment | -c | true | create, single | ctix comment add on first line of creted export file(default index.ts) file, that remark created from ctix |
 | --quote | -q | ' | create, single | change quote character at export syntax |
 | --useBackupFile | -b | true | create, single | created backup file if exists export file(default index.ts) file already in directory |
+| --useRootDir | -r | false | single | output file under rootDir in tsconfig.json. |
+
+## rootDir, rootDirs
+useRootDir option activate using rootDir option in tsconfig.json. This option run below rules.
+
+1. rootDir
+2. rootDirs first item
+    * rootDirs: ["path01", "path02", "path03"] -> "path01"
+3. exportFilename: pathname in exportFilename
+4. tsconfig.json: pathname on tsconfig.json filepath
 
 # CLI with .ctirc
 ctix cli support `.ctirc` configuration file. Available name is only `.ctirc`. `.ctirc` configuration file can applied by each target directories and script working directory. Every configuration overwrited same feature. Also cti cli arguments forced applied. And `.ctirc` file can write [json5](https://json5.org) format. json5 spec. can comment and more feature.

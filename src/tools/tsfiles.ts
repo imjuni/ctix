@@ -183,6 +183,7 @@ export async function getTypeScriptExportStatement({
     log('export file: ', exportFilenames, ' default file: ', defaultExportFilenames);
 
     return TEI.right({
+      program,
       exportFilenames: exportsDeduped,
       defaultExportFilenames: defaultsDeduped,
     });

@@ -1,7 +1,12 @@
 import { ICTIXOptions } from '@interfaces/ICTIXOptions';
 import { clean, getCleanFilenames } from '@tools/clean';
 import { Counter } from '@tools/Counter';
-import { defaultOption, getCTIXOptions, getMergedConfig } from '@tools/cticonfig';
+import {
+  defaultOption,
+  getCTIXOptions,
+  getMergedConfig,
+  getNonEmptyOption,
+} from '@tools/cticonfig';
 import { getIgnoredContents, getIgnoreFileContents, getIgnoreFiles } from '@tools/ctiignore';
 import logger from '@tools/Logger';
 import { exists } from '@tools/misc';
@@ -19,8 +24,8 @@ import * as TFU from 'fp-ts/function';
 import * as TTE from 'fp-ts/TaskEither';
 import * as fs from 'fs';
 import * as path from 'path';
-import yargs, { Argv } from 'yargs';
 import sourceMapSupport from 'source-map-support';
+import yargs from 'yargs/yargs';
 
 type TCTIXOptionWithCWD = Partial<Omit<ICTIXOptions, 'project'>> & {
   project: string;
@@ -33,7 +38,7 @@ type TWithIncludeBackup<T> = T & { includeBackup: boolean };
 // only use builder function
 const casting = <T>(args: T): any => args;
 
-function setOptions(args: Argv<any>) {
+function setOptions(args: ReturnType<typeof yargs>) {
   args
     .option('addNewline', {
       alias: 'n',
@@ -86,7 +91,7 @@ async function existsCheck(fromCli: string, fromOption: string): Promise<string>
 sourceMapSupport.install();
 
 // eslint-disable-next-line
-yargs
+yargs(process.argv.slice(2))
   .command<TWithTSConfig<TCTIXOptionWithCWD>>({
     command: '$0 [tsconfigPath]',
     aliases: 'create [tsconfigPath]',
@@ -106,18 +111,7 @@ yargs
           },
         );
 
-        const fallbackConfig = defaultOption({ project });
-        const options: ICTIXOptions = {
-          project,
-          useBackupFile: argv.useBackupFile ?? fallbackConfig.useBackupFile,
-          useComment: argv.useComment ?? fallbackConfig.useComment,
-          useSemicolon: argv.useSemicolon ?? fallbackConfig.useSemicolon,
-          useTimestamp: argv.useTimestamp ?? fallbackConfig.useTimestamp,
-          addNewline: argv.addNewline ?? fallbackConfig.addNewline,
-          quote: argv.quote ?? fallbackConfig.quote,
-          verbose: argv.verbose ?? fallbackConfig.verbose,
-          exportFilename: argv.exportFilename ?? fallbackConfig.exportFilename,
-        };
+        const options: ICTIXOptions = getNonEmptyOption(argv, project);
 
         const projectCWD = path.dirname(project);
         logger.debug(
@@ -216,7 +210,17 @@ yargs
   .command<TWithTSConfig<TCTIXOptionWithCWD>>({
     command: 'single [tsconfigPath]',
     aliases: ['entrypoint [tsconfigPath]'],
-    builder: (argv: Argv<{}>) => setOptions(argv),
+    builder: (argv) => {
+      const optionApplied = setOptions(argv);
+
+      optionApplied.option('useRootDir', {
+        alias: 'r',
+        describe: 'output file under rootDir in tsconfig.json',
+        type: 'boolean',
+      });
+
+      return optionApplied;
+    },
     handler: async (argv) => {
       logger.switch(argv.verbose ?? false);
       const counter = new Counter(argv.verbose ?? false);
@@ -232,18 +236,7 @@ yargs
           },
         );
 
-        const fallbackConfig = defaultOption({ project });
-        const options: ICTIXOptions = {
-          project,
-          useBackupFile: argv.useBackupFile ?? fallbackConfig.useBackupFile,
-          useComment: argv.useComment ?? fallbackConfig.useComment,
-          useSemicolon: argv.useSemicolon ?? fallbackConfig.useSemicolon,
-          useTimestamp: argv.useTimestamp ?? fallbackConfig.useTimestamp,
-          addNewline: argv.addNewline ?? fallbackConfig.addNewline,
-          quote: argv.quote ?? fallbackConfig.quote,
-          verbose: argv.verbose ?? fallbackConfig.verbose,
-          exportFilename: argv.exportFilename ?? fallbackConfig.exportFilename,
-        };
+        const options: ICTIXOptions = getNonEmptyOption(argv, project);
 
         const projectCWD = path.dirname(project);
         logger.debug(
@@ -325,6 +318,7 @@ yargs
         const writed = await getSingleFileWriteContents({
           ...exportContents.right,
           optionObjects,
+          fallbackPath: { tsconfigPath: project, exportFilename: options.exportFilename },
         });
 
         if (TEI.isLeft(writed)) {
@@ -344,7 +338,7 @@ yargs
   })
   .command<TWithIncludeBackup<TWithTSConfig<TCTIXOptionWithCWD>>>({
     command: 'clean [tsconfigPath]',
-    builder: (argv: Argv<{}>) => {
+    builder: (argv) => {
       argv.option('includeBackup', {
         alias: 'b',
         describe: 'clean with backup file',
@@ -369,18 +363,7 @@ yargs
           },
         );
 
-        const fallbackConfig = defaultOption({ project });
-        const options: ICTIXOptions = {
-          project,
-          useBackupFile: argv.useBackupFile ?? fallbackConfig.useBackupFile,
-          useComment: argv.useComment ?? fallbackConfig.useComment,
-          useSemicolon: argv.useSemicolon ?? fallbackConfig.useSemicolon,
-          useTimestamp: argv.useTimestamp ?? fallbackConfig.useTimestamp,
-          addNewline: argv.addNewline ?? fallbackConfig.addNewline,
-          quote: argv.quote ?? fallbackConfig.quote,
-          verbose: argv.verbose ?? fallbackConfig.verbose,
-          exportFilename: argv.exportFilename ?? fallbackConfig.exportFilename,
-        };
+        const options: ICTIXOptions = getNonEmptyOption(argv, project);
 
         const files = await TFU.pipe(
           getCleanFilenames({
@@ -414,7 +397,7 @@ yargs
   })
   .command<TWithTSConfig<TCTIXOptionWithCWD>>({
     command: 'init [tsconfigPath]',
-    builder: (argv: Argv<{}>) => casting(argv),
+    builder: (argv) => argv,
     handler: async (argv) => {
       const counter = new Counter(argv.verbose ?? false);
       logger.switch(argv.verbose ?? false);

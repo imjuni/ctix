@@ -19,6 +19,7 @@ import * as TTE from 'fp-ts/TaskEither';
 import * as fs from 'fs';
 import { isEmpty, isNotEmpty, isTrue } from 'my-easy-fp';
 import * as path from 'path';
+import typescript from 'typescript';
 import { defaultOption } from './cticonfig';
 
 const log = debug('ctix:write');
@@ -27,6 +28,34 @@ interface IExportContent {
   dirname: string;
   content: string | undefined;
 }
+
+const getRootDir = (
+  program: typescript.Program,
+  fallbackPath: { tsconfigPath: string; exportFilename: string },
+): string => {
+  const compilerOptions = program.getCompilerOptions();
+
+  // If set rootDir, use it
+  if (compilerOptions.rootDir !== undefined && compilerOptions.rootDir !== null) {
+    return compilerOptions.rootDir;
+  }
+
+  // If set rootDirs, use first element of array
+  if (compilerOptions.rootDirs !== undefined && compilerOptions.rootDirs !== null) {
+    const [head] = compilerOptions.rootDirs;
+    return head;
+  }
+
+  const dirnameInExportFilename = path.dirname(fallbackPath.exportFilename);
+
+  // exportFilename don't have path, use working directory
+  if (dirnameInExportFilename === '.') {
+    return path.dirname(fallbackPath.tsconfigPath);
+  }
+
+  // exportFilename have path, use it
+  return dirnameInExportFilename;
+};
 
 function createExportContents({
   filename,
@@ -273,6 +302,7 @@ export async function getWriteContents(
 export async function getSingleFileWriteContents(
   args: TResolvedEither<TResolvedPromise<ReturnType<typeof getTypeScriptExportStatement>>> & {
     optionObjects: INonNullableOptionObjectProps[];
+    fallbackPath: { tsconfigPath: string; exportFilename: string };
   },
 ): Promise<TEI.Either<Error, Array<{ pathname: string; content: string[] }>>> {
   try {
@@ -322,7 +352,19 @@ export async function getSingleFileWriteContents(
       }),
     );
 
-    return TEI.right(tupled);
+    const rootDir = getRootDir(args.program, args.fallbackPath);
+    const rootDirApplied = tupled.map((writeContent) => {
+      try {
+        const filename = path.basename(writeContent.pathname);
+        const applied = path.join(rootDir, filename);
+
+        return { ...writeContent, pathname: applied };
+      } catch {
+        return writeContent;
+      }
+    });
+
+    return TEI.right(rootDirApplied);
   } catch (catched) {
     const err = catched instanceof Error ? catched : new Error('unknown error raised');
 

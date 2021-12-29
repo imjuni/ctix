@@ -70,6 +70,7 @@ describe('cti-tsfile-test', () => {
     }
 
     return expect(statements.right).toEqual({
+      program: program.right.program,
       exportFilenames: [
         path.join(exampleType04Path, 'BubbleCls.tsx'),
         path.join(exampleType04Path, 'ComparisonCls.tsx'),
@@ -77,11 +78,15 @@ describe('cti-tsfile-test', () => {
         path.join(exampleType04Path, 'SampleCls.tsx'),
         path.join(exampleType04Path, 'createTypeScriptIndex.d.ts'),
         path.join(exampleType04Path, 'index.tsx'),
+        path.join(exampleType04Path, 'SampleEnum.ts'),
         path.join(exampleType04Path, 'wellmade/WhisperingCls.ts'),
         path.join(exampleType04Path, 'wellmade/carpenter/DiscussionCls.ts'),
         path.join(exampleType04Path, 'wellmade/carpenter/MakeshiftCls.ts'),
       ].sort((left, right) => left.localeCompare(right)),
-      defaultExportFilenames: [path.join(exampleType04Path, 'index.tsx')],
+      defaultExportFilenames: [
+        path.join(exampleType04Path, 'index.tsx'),
+        path.join(exampleType04Path, 'SampleEnum.ts'),
+      ],
     });
   });
 });

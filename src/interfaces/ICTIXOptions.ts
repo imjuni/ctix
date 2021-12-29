@@ -66,4 +66,12 @@ export interface ICTIXOptions {
    * @default true
    */
   exportFilename: string;
+
+  /**
+   * Only work single file generation mode. use rootDir configuration in tsconfig.json.
+   * Export file create under a rootDir directory. If you set rootDirs, ctix use first element of array.
+   * @mode single
+   * @default false
+   */
+  useRootDir: boolean;
 }

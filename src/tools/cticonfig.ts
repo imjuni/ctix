@@ -39,6 +39,7 @@ export function defaultOption(args?: { project?: string; exportFilename?: string
     quote: "'",
     verbose: false,
     useBackupFile: true,
+    useRootDir: false,
     project,
   };
 }
@@ -60,6 +61,7 @@ export async function readOptionFile(
       'verbose',
       'useBackupFile',
       'exportFilename',
+      'useRootDir',
     ];
 
     const extracted: Partial<ICTIXOptions> = optionKeys.reduce((aggregation, key) => {
@@ -112,6 +114,7 @@ export function getNonEmptyOption(
     verbose: partialOption?.verbose ?? fallbackOption.verbose,
     useBackupFile: partialOption?.useBackupFile ?? fallbackOption.useBackupFile,
     exportFilename: partialOption?.exportFilename ?? fallbackOption.exportFilename,
+    useRootDir: partialOption?.useRootDir ?? fallbackOption.useRootDir,
   };
 }
 
