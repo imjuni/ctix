@@ -29,7 +29,7 @@ describe('cti-config-test', () => {
         path.join(exampleType03Path, '/wellmade/.ctirc'),
         path.join(exampleType03Path, '/juvenile/spill/.ctirc'),
         path.join(exampleType03Path, '/wellmade/carpenter/.ctirc'),
-      ],
+      ].sort((left, right) => left.localeCompare(right)),
     };
 
     return expect(files.right).toEqual(expection);

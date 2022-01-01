@@ -1,4 +1,5 @@
 import { INonNullableOptionObjectProps } from '@interfaces/IConfigObjectProps';
+import { ICTIXOptions } from '@interfaces/ICTIXOptions';
 import {
   exists,
   fpRefinePathSep,
@@ -17,7 +18,7 @@ import * as TEI from 'fp-ts/Either';
 import * as TFU from 'fp-ts/function';
 import * as TTE from 'fp-ts/TaskEither';
 import * as fs from 'fs';
-import { isEmpty, isNotEmpty, isTrue } from 'my-easy-fp';
+import { isEmpty, isFalse, isNotEmpty, isTrue } from 'my-easy-fp';
 import * as path from 'path';
 import typescript from 'typescript';
 import { defaultOption } from './cticonfig';
@@ -29,10 +30,23 @@ interface IExportContent {
   content: string | undefined;
 }
 
-const getRootDir = (
-  program: typescript.Program,
-  fallbackPath: { tsconfigPath: string; exportFilename: string },
-): string => {
+const getOutDir = (rootOptions: ICTIXOptions): string => {
+  const dirnameInExportFilename = path.dirname(rootOptions.exportFilename);
+
+  // exportFilename don't have path, use working directory
+  if (dirnameInExportFilename === '.') {
+    return path.dirname(rootOptions.project);
+  }
+
+  // exportFilename have path, use it
+  return dirnameInExportFilename;
+};
+
+const getRootDir = (program: typescript.Program, rootOptions: ICTIXOptions): string => {
+  if (isFalse(rootOptions.useRootDir)) {
+    return getOutDir(rootOptions);
+  }
+
   const compilerOptions = program.getCompilerOptions();
 
   // If set rootDir, use it
@@ -46,15 +60,7 @@ const getRootDir = (
     return head;
   }
 
-  const dirnameInExportFilename = path.dirname(fallbackPath.exportFilename);
-
-  // exportFilename don't have path, use working directory
-  if (dirnameInExportFilename === '.') {
-    return path.dirname(fallbackPath.tsconfigPath);
-  }
-
-  // exportFilename have path, use it
-  return dirnameInExportFilename;
+  return getOutDir(rootOptions);
 };
 
 function createExportContents({
@@ -302,7 +308,7 @@ export async function getWriteContents(
 export async function getSingleFileWriteContents(
   args: TResolvedEither<TResolvedPromise<ReturnType<typeof getTypeScriptExportStatement>>> & {
     optionObjects: INonNullableOptionObjectProps[];
-    fallbackPath: { tsconfigPath: string; exportFilename: string };
+    rootOptions: ICTIXOptions;
   },
 ): Promise<TEI.Either<Error, Array<{ pathname: string; content: string[] }>>> {
   try {
@@ -352,7 +358,7 @@ export async function getSingleFileWriteContents(
       }),
     );
 
-    const rootDir = getRootDir(args.program, args.fallbackPath);
+    const rootDir = getRootDir(args.program, args.rootOptions);
     const rootDirApplied = tupled.map((writeContent) => {
       try {
         const filename = path.basename(writeContent.pathname);
