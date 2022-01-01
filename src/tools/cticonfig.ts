@@ -295,10 +295,11 @@ export async function getConfigFiles(
     // ctiignore file have dot charactor at file first so set true dot flag
     // + win32 path.sep replace posix sep
     const configs = await fastGlobWrap(configPattern, { dot: true });
+    const sorted = configs.sort((left, right) => left.localeCompare(right));
 
-    log('finded: ', args, configPattern, configs);
+    log('finded: ', args, configPattern, sorted);
 
-    return TEI.right({ projectPath: args.projectPath, optionFiles: configs });
+    return TEI.right({ projectPath: args.projectPath, optionFiles: sorted });
   } catch (catched) {
     const err = catched instanceof Error ? catched : new Error('unknown error raised');
 

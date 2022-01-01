@@ -318,7 +318,7 @@ yargs(process.argv.slice(2))
         const writed = await getSingleFileWriteContents({
           ...exportContents.right,
           optionObjects,
-          fallbackPath: { tsconfigPath: project, exportFilename: options.exportFilename },
+          rootOptions: options,
         });
 
         if (TEI.isLeft(writed)) {
