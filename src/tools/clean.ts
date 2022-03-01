@@ -22,20 +22,20 @@ export const getCleanFilenames =
   async () => {
     try {
       const fallbackOptions = defaultOption();
-      const projectPath = cliOption?.resolvedProjectPath ?? fallbackOptions.project;
-      const projectDir = path.dirname(projectPath);
+      const projectFilePath = cliOption?.resolvedProjectFilePath ?? fallbackOptions.project;
+      const projectDirPath = cliOption?.resolvedProjectDirPath ?? fallbackOptions.project;
       const includeBackup = includeBackupFrom ?? true;
 
       // Check existing tsconfig.json path and project path
-      if (isFalse(await exists(projectPath))) {
-        return TEI.left(new Error(`invalid tsconfig.json path: ${projectPath}`));
+      if (isFalse(await exists(projectFilePath))) {
+        return TEI.left(new Error(`invalid tsconfig.json path: ${projectFilePath}`));
       }
 
       const mergedConfig = await TFU.pipe(
-        getCTIXOptions({ projectPath }),
+        getCTIXOptions({ projectPath: projectFilePath }),
         TTE.chain((args) =>
           getMergedConfig({
-            projectPath: projectDir,
+            projectPath: projectFilePath,
             cliOption: cliOption ?? fallbackOptions,
             optionObjects: args,
           }),
@@ -68,14 +68,14 @@ export const getCleanFilenames =
           : globPatterns.map((dirname) => replaceSepToPosix(dirname)),
         {
           dot: true,
-          cwd: projectDir,
-          ignore: [replaceSepToPosix(path.join(projectPath, '**', 'node_modules', '**'))],
+          cwd: projectDirPath,
+          ignore: [replaceSepToPosix(path.join(projectFilePath, '**', 'node_modules', '**'))],
         },
       );
 
-      const filteredCWD = filenames.filter((filename) => filename.startsWith(projectDir));
+      const filteredCWD = filenames.filter((filename) => filename.startsWith(projectDirPath));
 
-      log('resolved: ', projectPath, globPatterns, filenames, filteredCWD);
+      log('resolved: ', projectFilePath, globPatterns, filenames, filteredCWD);
 
       return TEI.right(filteredCWD);
     } catch (err) {

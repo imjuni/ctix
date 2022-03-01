@@ -10,7 +10,6 @@ import {
   getNonEmptyOption,
 } from '@tools/cticonfig';
 import { getIgnoredContents, getIgnoreFileContents, getIgnoreFiles } from '@tools/ctiignore';
-import getChdir from '@tools/getChdir';
 import logger from '@tools/Logger';
 import { exists, getDirname } from '@tools/misc';
 import {
@@ -112,7 +111,10 @@ yargs(process.argv.slice(2))
 
       try {
         const project = await existsCheck(argv.tsconfigPath, argv.project);
-        process.chdir(await getChdir(path.resolve(project)));
+        const resolvedProjectFilePath = path.resolve(project);
+        const resolvedProjectDirPath = await getDirname(resolvedProjectFilePath, true);
+
+        process.chdir(resolvedProjectDirPath);
 
         cli.action.start(
           chalk`{yellow ctix} ${argv.exportFilename ?? 'index.ts'} file create mode:`,
@@ -122,9 +124,12 @@ yargs(process.argv.slice(2))
           },
         );
 
-        const options: ICTIXOptions = getNonEmptyOption(argv, project);
+        const options: TCTIXOptionWithResolvedProject = {
+          ...getNonEmptyOption(argv, project),
+          resolvedProjectDirPath,
+          resolvedProjectFilePath,
+        };
 
-        const projectCWD = path.dirname(project);
         logger.debug(
           chalk`{yellow ctix - ${counter.debug}:} {blueBright [info]} project directory: ${project}`,
         );
@@ -135,19 +140,18 @@ yargs(process.argv.slice(2))
 
         const configWithIgnored = await TAP.sequenceT(TTE.ApplicativeSeq)(
           TFU.pipe(
-            getIgnoreFiles(projectCWD),
+            getIgnoreFiles(resolvedProjectDirPath),
             TTE.chain(getIgnoreFileContents),
             TTE.chain(getIgnoredContents),
           ),
           getTypeScriptConfig({
-            cwd: projectCWD,
-            tsconfigPath: project,
+            tsconfigPath: resolvedProjectFilePath,
           }),
           TFU.pipe(
-            getCTIXOptions({ projectPath: projectCWD }),
+            getCTIXOptions({ projectPath: resolvedProjectFilePath }),
             TTE.chain((args) =>
               getMergedConfig({
-                projectPath: projectCWD,
+                projectPath: resolvedProjectFilePath,
                 optionObjects: args,
                 cliOption: options,
               }),
@@ -237,8 +241,11 @@ yargs(process.argv.slice(2))
       const counter = new Counter(argv.verbose ?? false);
 
       try {
-        const project = await getDirname(await existsCheck(argv.tsconfigPath, argv.project));
-        process.chdir(await getChdir(path.resolve(project)));
+        const project = await existsCheck(argv.tsconfigPath, argv.project);
+        const resolvedProjectFilePath = path.resolve(project);
+        const resolvedProjectDirPath = await getDirname(resolvedProjectFilePath, true);
+
+        process.chdir(resolvedProjectDirPath);
 
         cli.action.start(
           chalk`{yellow ctix} single ${argv.exportFilename ?? 'index.ts'} file create mode:`,
@@ -248,32 +255,35 @@ yargs(process.argv.slice(2))
           },
         );
 
-        const options: ICTIXOptions = getNonEmptyOption(argv, project);
+        const options: TCTIXOptionWithResolvedProject = {
+          ...getNonEmptyOption(argv, project),
+          resolvedProjectDirPath,
+          resolvedProjectFilePath,
+        };
 
-        const projectCWD = path.dirname(project);
         logger.debug(
           chalk`{yellow ctix - ${counter.debug}:} {blueBright [info]} project directory: ${project}`,
         );
         logger.log(
           chalk`{yellow ctix - ${counter.log}:} read ignore file, tsconfig file, cti config {green complete}`,
         );
+
         cli.action.status = 'processing ...';
 
         const configWithIgnored = await TAP.sequenceT(TTE.ApplicativeSeq)(
           TFU.pipe(
-            getIgnoreFiles(projectCWD),
+            getIgnoreFiles(resolvedProjectDirPath),
             TTE.chain(getIgnoreFileContents),
             TTE.chain(getIgnoredContents),
           ),
           getTypeScriptConfig({
-            cwd: projectCWD,
             tsconfigPath: project,
           }),
           TFU.pipe(
-            getCTIXOptions({ projectPath: projectCWD }),
+            getCTIXOptions({ projectPath: resolvedProjectFilePath }),
             TTE.chain((args) =>
               getMergedConfig({
-                projectPath: projectCWD,
+                projectPath: resolvedProjectFilePath,
                 optionObjects: args,
                 cliOption: options,
               }),
@@ -366,7 +376,10 @@ yargs(process.argv.slice(2))
 
       try {
         const project = await existsCheck(argv.tsconfigPath, argv.project);
-        process.chdir(await getChdir(path.resolve(project)));
+        const resolvedProjectFilePath = path.resolve(project);
+        const resolvedProjectDirPath = await getDirname(resolvedProjectFilePath, true);
+
+        process.chdir(resolvedProjectDirPath);
 
         log('path.resolve in ctix.ts: ', path.resolve(project));
 
@@ -380,7 +393,8 @@ yargs(process.argv.slice(2))
 
         const options: TCTIXOptionWithResolvedProject = {
           ...getNonEmptyOption(argv, project),
-          resolvedProjectPath: path.resolve(project),
+          resolvedProjectDirPath,
+          resolvedProjectFilePath,
         };
 
         log('clean option: ', options);

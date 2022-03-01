@@ -18,12 +18,12 @@ export async function exists(filepath: string): Promise<boolean> {
   }
 }
 
-export async function getDirname(filepath: string): Promise<string> {
+export async function getDirname(filepath: string, resolved?: boolean): Promise<string> {
   try {
     const lstat = await fs.promises.lstat(filepath);
 
     if (lstat.isDirectory()) {
-      return filepath;
+      return resolved ?? false ? filepath : path.resolve(filepath);
     }
 
     const dirname = path.dirname(filepath);
@@ -32,7 +32,7 @@ export async function getDirname(filepath: string): Promise<string> {
       throw new Error(`Cannot found dirname: ${dirname}`);
     }
 
-    return dirname;
+    return resolved ?? false ? dirname : path.resolve(dirname);
   } catch (catched) {
     const err =
       catched instanceof Error ? catched : new Error(`unknown error from dirname: ${filepath}`);
