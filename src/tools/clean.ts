@@ -1,4 +1,4 @@
-import { ICTIXOptions } from '@interfaces/ICTIXOptions';
+import { TCTIXOptionWithResolvedProject } from '@interfaces/ICTIXOptions';
 import { defaultOption, getCTIXOptions, getMergedConfig } from '@tools/cticonfig';
 import debug from 'debug';
 import * as TEI from 'fp-ts/Either';
@@ -7,33 +7,32 @@ import * as TTE from 'fp-ts/TaskEither';
 import * as fs from 'fs';
 import { isFalse } from 'my-easy-fp';
 import * as path from 'path';
-import { exists, fastGlobWrap, settify } from './misc';
+import { exists, fastGlobWrap, replaceSepToPosix, settify } from './misc';
 
-const log = debug('ctix:ignore-tool');
+const log = debug('ctix:clean-tool');
 
 export const getCleanFilenames =
   ({
     cliOption,
     includeBackupFrom,
   }: {
-    cliOption?: ICTIXOptions;
+    cliOption?: TCTIXOptionWithResolvedProject;
     includeBackupFrom?: boolean;
   }): TTE.TaskEither<Error, string[]> =>
   async () => {
     try {
       const fallbackOptions = defaultOption();
-      const projectPath = cliOption?.project ?? fallbackOptions.project;
+      const projectPath = cliOption?.resolvedProjectPath ?? fallbackOptions.project;
       const projectDir = path.dirname(projectPath);
-      const resolved = path.resolve(projectPath);
       const includeBackup = includeBackupFrom ?? true;
 
       // Check existing tsconfig.json path and project path
-      if (isFalse(await exists(resolved))) {
-        return TEI.left(new Error('invalid tsconfig.json path'));
+      if (isFalse(await exists(projectPath))) {
+        return TEI.left(new Error(`invalid tsconfig.json path: ${projectPath}`));
       }
 
       const mergedConfig = await TFU.pipe(
-        getCTIXOptions({ projectPath: projectDir }),
+        getCTIXOptions({ projectPath }),
         TTE.chain((args) =>
           getMergedConfig({
             projectPath: projectDir,
@@ -48,9 +47,13 @@ export const getCleanFilenames =
       }
 
       const globPatterns = settify(
-        mergedConfig.right.map((configObject) => {
-          return path.join(configObject.dir, '**', configObject.option.exportFilename);
-        }),
+        mergedConfig.right
+          .filter((configObject) => {
+            return configObject.dir.indexOf('node_modules') < 0;
+          })
+          .map((configObject) => {
+            return path.join(configObject.dir, '**', configObject.option.exportFilename);
+          }),
       );
 
       const backup = settify(
@@ -60,13 +63,19 @@ export const getCleanFilenames =
       );
 
       const filenames = await fastGlobWrap(
-        includeBackup ? globPatterns.concat(backup) : globPatterns,
-        { dot: true },
+        includeBackup
+          ? globPatterns.concat(backup).map((dirname) => replaceSepToPosix(dirname))
+          : globPatterns.map((dirname) => replaceSepToPosix(dirname)),
+        {
+          dot: true,
+          cwd: projectDir,
+          ignore: [replaceSepToPosix(path.join(projectPath, '**', 'node_modules', '**'))],
+        },
       );
 
       const filteredCWD = filenames.filter((filename) => filename.startsWith(projectDir));
 
-      log('resolved: ', resolved, globPatterns, filenames, filteredCWD);
+      log('resolved: ', projectPath, globPatterns, filenames, filteredCWD);
 
       return TEI.right(filteredCWD);
     } catch (err) {

@@ -4,7 +4,7 @@ import {
   IOptionObjectProps,
 } from '@interfaces/IConfigObjectProps';
 import { ICTIXOptions } from '@interfaces/ICTIXOptions';
-import { exists, fastGlobWrap } from '@tools/misc';
+import { exists, fastGlobWrap, replaceSepToPosix } from '@tools/misc';
 import debug from 'debug';
 import merge from 'deepmerge';
 import * as TEI from 'fp-ts/Either';
@@ -39,6 +39,7 @@ export function defaultOption(args?: { project?: string; exportFilename?: string
     quote: "'",
     verbose: false,
     useBackupFile: true,
+    outputDir: project,
     useRootDir: false,
     project,
   };
@@ -114,6 +115,7 @@ export function getNonEmptyOption(
     verbose: partialOption?.verbose ?? fallbackOption.verbose,
     useBackupFile: partialOption?.useBackupFile ?? fallbackOption.useBackupFile,
     exportFilename: partialOption?.exportFilename ?? fallbackOption.exportFilename,
+    outputDir: partialOption?.outputDir ?? fallbackOption.outputDir,
     useRootDir: partialOption?.useRootDir ?? fallbackOption.useRootDir,
   };
 }
@@ -127,7 +129,10 @@ export const getCTIXOptions =
       const projectPath = path.resolve(args.projectPath);
       const projectDir = path.dirname(projectPath);
 
-      const dirs = await fastGlobWrap(`${projectDir}/**/*`, { onlyDirectories: true });
+      const dirs = await fastGlobWrap(`${projectDir}/**/*`, {
+        onlyDirectories: true,
+        ignore: [replaceSepToPosix(path.join(projectDir, '**', 'node_modules', '**'))],
+      });
 
       const parsedConfigObjects = await Promise.all(
         [projectDir, ...dirs].map<Promise<IOptionObjectProps>>((dir) =>

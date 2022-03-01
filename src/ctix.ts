@@ -1,4 +1,6 @@
-import { ICTIXOptions } from '@interfaces/ICTIXOptions';
+/* eslint-disable @typescript-eslint/no-unused-expressions */
+
+import { ICTIXOptions, TCTIXOptionWithResolvedProject } from '@interfaces/ICTIXOptions';
 import { clean, getCleanFilenames } from '@tools/clean';
 import { Counter } from '@tools/Counter';
 import {
@@ -8,8 +10,9 @@ import {
   getNonEmptyOption,
 } from '@tools/cticonfig';
 import { getIgnoredContents, getIgnoreFileContents, getIgnoreFiles } from '@tools/ctiignore';
+import getChdir from '@tools/getChdir';
 import logger from '@tools/Logger';
-import { exists } from '@tools/misc';
+import { exists, getDirname } from '@tools/misc';
 import {
   getTypeScriptConfig,
   getTypeScriptExportStatement,
@@ -18,6 +21,7 @@ import {
 import { getSingleFileWriteContents, getWriteContents, write } from '@tools/write';
 import chalk from 'chalk';
 import cli from 'cli-ux';
+import debug from 'debug';
 import * as TAP from 'fp-ts/Apply';
 import * as TEI from 'fp-ts/Either';
 import * as TFU from 'fp-ts/function';
@@ -25,7 +29,9 @@ import * as TTE from 'fp-ts/TaskEither';
 import * as fs from 'fs';
 import * as path from 'path';
 import sourceMapSupport from 'source-map-support';
-import yargs from 'yargs/yargs';
+import yargsAnyType, { Argv } from 'yargs';
+
+const log = debug('ctix:cli-tool');
 
 type TCTIXOptionWithCWD = Partial<Omit<ICTIXOptions, 'project'>> & {
   project: string;
@@ -90,7 +96,11 @@ async function existsCheck(fromCli: string, fromOption: string): Promise<string>
 
 sourceMapSupport.install();
 
-// eslint-disable-next-line
+// Yargs default type using object type(= {}). But object type cause error that
+// fast-maker cli option interface type. So we make concrete type yargs instance
+// make using by any type.
+const yargs: Argv<TWithTSConfig<TCTIXOptionWithCWD>> = yargsAnyType as any;
+
 yargs(process.argv.slice(2))
   .command<TWithTSConfig<TCTIXOptionWithCWD>>({
     command: '$0 [tsconfigPath]',
@@ -102,6 +112,7 @@ yargs(process.argv.slice(2))
 
       try {
         const project = await existsCheck(argv.tsconfigPath, argv.project);
+        process.chdir(await getChdir(path.resolve(project)));
 
         cli.action.start(
           chalk`{yellow ctix} ${argv.exportFilename ?? 'index.ts'} file create mode:`,
@@ -226,7 +237,8 @@ yargs(process.argv.slice(2))
       const counter = new Counter(argv.verbose ?? false);
 
       try {
-        const project = await existsCheck(argv.tsconfigPath, argv.project);
+        const project = await getDirname(await existsCheck(argv.tsconfigPath, argv.project));
+        process.chdir(await getChdir(path.resolve(project)));
 
         cli.action.start(
           chalk`{yellow ctix} single ${argv.exportFilename ?? 'index.ts'} file create mode:`,
@@ -354,6 +366,9 @@ yargs(process.argv.slice(2))
 
       try {
         const project = await existsCheck(argv.tsconfigPath, argv.project);
+        process.chdir(await getChdir(path.resolve(project)));
+
+        log('path.resolve in ctix.ts: ', path.resolve(project));
 
         cli.action.start(
           chalk`{yellow ctix} ${argv.exportFilename ?? 'index.ts'} file clean mode:`,
@@ -363,7 +378,12 @@ yargs(process.argv.slice(2))
           },
         );
 
-        const options: ICTIXOptions = getNonEmptyOption(argv, project);
+        const options: TCTIXOptionWithResolvedProject = {
+          ...getNonEmptyOption(argv, project),
+          resolvedProjectPath: path.resolve(project),
+        };
+
+        log('clean option: ', options);
 
         const files = await TFU.pipe(
           getCleanFilenames({

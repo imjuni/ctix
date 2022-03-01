@@ -38,7 +38,9 @@ export const getIgnoreFiles =
       const npmGlobPattern = path.join(resolvedCWD, '**', '.npmignore'); // create npmignore glob pattern
 
       // ctiignore file have dot charactor at file first so set true dot flag
-      const filenames = await fastGlobWrap([globPattern, npmGlobPattern], { dot: true });
+      const filenames = await fastGlobWrap([globPattern, npmGlobPattern], {
+        dot: true,
+      });
 
       log('resolved: ', resolvedCWD, globPattern);
 

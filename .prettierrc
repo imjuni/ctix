@@ -3,5 +3,19 @@
   "trailingComma": "all",
   "printWidth": 100,
   "arrowParens": "always",
-  "parser": "typescript"
+  "parser": "typescript",
+  "overrides": [
+    {
+      "files": "*.md",
+      "options": {
+        "parser": "markdown"
+      }
+    },
+    {
+      "files": ".tjsclirc",
+      "options": {
+        "parser": "json5"
+      }
+    }
+  ]
 }
