@@ -2,7 +2,7 @@ import fastGlob from 'fast-glob';
 import * as TEI from 'fp-ts/Either';
 import { flow, pipe } from 'fp-ts/function';
 import * as fs from 'fs';
-import { isEmpty } from 'my-easy-fp';
+import { isEmpty, isFalse } from 'my-easy-fp';
 import * as path from 'path';
 
 /**
@@ -15,6 +15,29 @@ export async function exists(filepath: string): Promise<boolean> {
     return isEmpty(accessed);
   } catch (err) {
     return false;
+  }
+}
+
+export async function getDirname(filepath: string): Promise<string> {
+  try {
+    const lstat = await fs.promises.lstat(filepath);
+
+    if (lstat.isDirectory()) {
+      return filepath;
+    }
+
+    const dirname = path.dirname(filepath);
+
+    if (isFalse(await exists(dirname))) {
+      throw new Error(`Cannot found dirname: ${dirname}`);
+    }
+
+    return dirname;
+  } catch (catched) {
+    const err =
+      catched instanceof Error ? catched : new Error(`unknown error from dirname: ${filepath}`);
+
+    throw err;
   }
 }
 
@@ -88,6 +111,16 @@ export const fpRefineStartSlash = (exportPathFrom: string) =>
     TEI.fold(
       (exportPath) => exportPath.substring(1, exportPath.length),
       (exportPath) => exportPath,
+    ),
+  );
+
+export const fpAddDotPath = (exportPathFrom: string) =>
+  pipe(
+    exportPathFrom,
+    (exportPath) => (exportPath.startsWith('.') ? TEI.left(exportPath) : TEI.right(exportPath)),
+    TEI.fold(
+      (exportPath) => exportPath,
+      (exportPath) => `./${exportPath}`,
     ),
   );
 

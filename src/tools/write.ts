@@ -2,11 +2,13 @@ import { INonNullableOptionObjectProps } from '@interfaces/IConfigObjectProps';
 import { ICTIXOptions } from '@interfaces/ICTIXOptions';
 import {
   exists,
+  fpAddDotPath,
   fpRefinePathSep,
   fpRefineStartSlash,
   fpRemoveExt,
   fpRemoveExtWithTSX,
   fpTimes,
+  getDirname,
   settify,
 } from '@tools/misc';
 import { getTypeScriptExportStatement } from '@tools/tsfiles';
@@ -30,63 +32,74 @@ interface IExportContent {
   content: string | undefined;
 }
 
-const getOutDir = (rootOptions: ICTIXOptions): string => {
-  const dirnameInExportFilename = path.dirname(rootOptions.exportFilename);
-
-  // exportFilename don't have path, use working directory
-  if (dirnameInExportFilename === '.') {
-    return path.dirname(rootOptions.project);
-  }
-
-  // exportFilename have path, use it
-  return dirnameInExportFilename;
-};
-
-const getRootDir = (program: typescript.Program, rootOptions: ICTIXOptions): string => {
-  if (isFalse(rootOptions.useRootDir)) {
-    return getOutDir(rootOptions);
-  }
-
-  const compilerOptions = program.getCompilerOptions();
-
+const getTsconfigRootDir = (compilerOptions: typescript.CompilerOptions): string | undefined => {
   // If set rootDir, use it
   if (compilerOptions.rootDir !== undefined && compilerOptions.rootDir !== null) {
-    return compilerOptions.rootDir;
+    const rootDir = path.resolve(compilerOptions.rootDir);
+    return rootDir;
   }
 
   // If set rootDirs, use first element of array
   if (compilerOptions.rootDirs !== undefined && compilerOptions.rootDirs !== null) {
     const [head] = compilerOptions.rootDirs;
-    return head;
+    const rootDir = path.resolve(head);
+    return rootDir;
   }
 
-  return getOutDir(rootOptions);
+  return undefined;
 };
 
-function createExportContents({
+const getOutputDir = async (
+  program: typescript.Program,
+  rootOptions: ICTIXOptions,
+): Promise<string> => {
+  if (isFalse(rootOptions.useRootDir)) {
+    return path.resolve(await getDirname(rootOptions.outputDir));
+  }
+
+  const compilerOptions = program.getCompilerOptions();
+  const rootDir = getTsconfigRootDir(compilerOptions);
+
+  if (rootDir !== undefined && rootDir !== null) {
+    const outputDirConfig = await getDirname(rootOptions.outputDir);
+
+    if (path.relative(rootDir, outputDirConfig).startsWith('..')) {
+      return rootDir;
+    }
+
+    return path.resolve(outputDirConfig);
+  }
+
+  return path.resolve(await getDirname(rootOptions.outputDir));
+};
+
+async function createExportContents({
   filename,
-  getDirname,
   replacer,
   configMap,
 }: {
   filename: string;
-  replacer: (args: { dirname: string; filename: string; project: string }) => string;
-  getDirname: (args: { filename: string; project: string }) => string;
+  replacer: (args: { dirname: string; filename: string }) => string;
   configMap: Map<string, INonNullableOptionObjectProps>;
-}): IExportContent {
+}): Promise<IExportContent> {
   const dirname = path.dirname(filename);
 
   log('createExportContents: ', dirname);
 
   try {
     const configObject = configMap.get(dirname);
-    const project = configObject?.option.project ?? path.join(process.cwd(), 'tsconfig.json');
     const quote = configObject?.option.quote ?? "'";
-    const replaced = replacer({ dirname, filename, project });
-    const refined = TFU.flow(fpRefinePathSep, fpRemoveExt, fpRefineStartSlash)(replaced);
-    const exportFileContent = `export * from ${quote}./${refined}${quote}`;
+    const replaced = replacer({ dirname, filename });
+    const refined = TFU.flow(
+      fpRefinePathSep,
+      fpRemoveExt,
+      fpRefineStartSlash,
+      fpAddDotPath,
+    )(replaced);
 
-    return { dirname: getDirname({ filename, project }), content: exportFileContent };
+    const exportFileContent = `export * from ${quote}${refined}${quote}`;
+
+    return { dirname: await getDirname(filename), content: exportFileContent };
   } catch (catched) {
     const err = catched instanceof Error ? catched : new Error('unknown error raised');
 
@@ -97,32 +110,34 @@ function createExportContents({
   }
 }
 
-function createDefaultExportContents({
+async function createDefaultExportContents({
   filename,
   replacer,
-  getDirname,
   configMap,
 }: {
   filename: string;
-  getDirname: (args: { filename: string; project: string }) => string;
-  replacer: (args: { dirname: string; filename: string; project: string }) => string;
+  replacer: (args: { dirname: string; filename: string }) => string;
   configMap: Map<string, INonNullableOptionObjectProps>;
-}): IExportContent {
+}): Promise<IExportContent> {
   const dirname = path.dirname(filename);
 
   try {
     const configObject = configMap.get(dirname);
-    const project = configObject?.option.project ?? path.join(process.cwd(), 'tsconfig.json');
     const quote = configObject?.option.quote ?? "'";
-    const replaced = replacer({ dirname, filename, project });
-    const refined = TFU.flow(fpRefinePathSep, fpRemoveExt, fpRefineStartSlash)(replaced);
+    const replaced = replacer({ dirname, filename });
+    const refined = TFU.flow(
+      fpRefinePathSep,
+      fpRemoveExt,
+      fpRefineStartSlash,
+      fpAddDotPath,
+    )(replaced);
     const refinedAlias = TFU.flow(fpRefinePathSep, fpRemoveExtWithTSX)(replaced);
 
     const defaultExportFileContent = `export { default as ${camelCase(
       refinedAlias,
-    )} } from ${quote}./${refined}${quote}`;
+    )} } from ${quote}${refined}${quote}`;
 
-    return { dirname: getDirname({ filename, project }), content: defaultExportFileContent };
+    return { dirname: await getDirname(filename), content: defaultExportFileContent };
   } catch (catched) {
     const err = catched instanceof Error ? catched : new Error('unknown error raised');
 
@@ -248,21 +263,25 @@ export async function getWriteContents(
     log('defaultExportFilenames: ', args.defaultExportFilenames);
 
     const replacer = (replacerArgs: { dirname: string; filename: string }) =>
-      replacerArgs.filename.replace(replacerArgs.dirname, '');
-    const getDirname = (dirnameArgs: { filename: string; project: string }) =>
-      path.dirname(dirnameArgs.filename);
+      path.relative(replacerArgs.dirname, replacerArgs.filename);
 
-    const exportContents: IExportContent[] = args.exportFilenames
-      .map((filename) => createExportContents({ filename, configMap, replacer, getDirname }))
-      .filter((content): content is { dirname: string; content: string } =>
-        isNotEmpty(content.content),
-      );
+    const nullableExportContents = await Promise.all(
+      args.exportFilenames.map((filename) =>
+        createExportContents({ filename, configMap, replacer }),
+      ),
+    );
+    const exportContents: IExportContent[] = nullableExportContents.filter(
+      (content): content is { dirname: string; content: string } => isNotEmpty(content.content),
+    );
 
-    const defaultExportContents: IExportContent[] = args.defaultExportFilenames
-      .map((filename) => createDefaultExportContents({ filename, configMap, replacer, getDirname }))
-      .filter((content): content is { dirname: string; content: string } =>
-        isNotEmpty(content.content),
-      );
+    const nullableDefaultExportContents = await Promise.all(
+      args.defaultExportFilenames.map((filename) =>
+        createDefaultExportContents({ filename, configMap, replacer }),
+      ),
+    );
+    const defaultExportContents: IExportContent[] = nullableDefaultExportContents.filter(
+      (content): content is { dirname: string; content: string } => isNotEmpty(content.content),
+    );
 
     const modules = getModuleDir({
       project: projectDir,
@@ -319,22 +338,28 @@ export async function getSingleFileWriteContents(
     log('exportFilenames: ', args.exportFilenames);
     log('defaultExportFilenames: ', args.defaultExportFilenames);
 
-    const replacer = (replacerArgs: { dirname: string; filename: string; project: string }) =>
-      path.relative(path.dirname(replacerArgs.project), replacerArgs.filename);
-    const getDirname = (getDirnameArgs: { filename: string; project: string }) =>
-      path.dirname(getDirnameArgs.project);
+    const rootDir = await getOutputDir(args.program, args.rootOptions);
 
-    const exportContents: IExportContent[] = args.exportFilenames
-      .map((filename) => createExportContents({ filename, configMap, replacer, getDirname }))
-      .filter((content): content is { dirname: string; content: string } =>
-        isNotEmpty(content.content),
-      );
+    const replacer = (replacerArgs: { dirname: string; filename: string }) =>
+      path.relative(rootDir, replacerArgs.filename);
 
-    const defaultExportContents: IExportContent[] = args.defaultExportFilenames
-      .map((filename) => createDefaultExportContents({ filename, configMap, replacer, getDirname }))
-      .filter((content): content is { dirname: string; content: string } =>
-        isNotEmpty(content.content),
-      );
+    const nullableExportContents = await Promise.all(
+      args.exportFilenames.map((filename) =>
+        createExportContents({ filename, configMap, replacer }),
+      ),
+    );
+    const exportContents: IExportContent[] = nullableExportContents.filter(
+      (content): content is { dirname: string; content: string } => isNotEmpty(content.content),
+    );
+
+    const nullableDefaultExportContents = await Promise.all(
+      args.defaultExportFilenames.map((filename) =>
+        createDefaultExportContents({ filename, configMap, replacer }),
+      ),
+    );
+    const defaultExportContents: IExportContent[] = nullableDefaultExportContents.filter(
+      (content): content is { dirname: string; content: string } => isNotEmpty(content.content),
+    );
 
     const aggregated = exportContents
       .concat(defaultExportContents)
@@ -358,7 +383,6 @@ export async function getSingleFileWriteContents(
       }),
     );
 
-    const rootDir = getRootDir(args.program, args.rootOptions);
     const rootDirApplied = tupled.map((writeContent) => {
       try {
         const filename = path.basename(writeContent.pathname);

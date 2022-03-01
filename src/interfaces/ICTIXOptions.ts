@@ -1,3 +1,5 @@
+import { string } from 'fp-ts';
+
 /**
  * Option interface for CTIX
  */
@@ -68,6 +70,13 @@ export interface ICTIXOptions {
   exportFilename: string;
 
   /**
+   * Output directory. It works only single mode.
+   * @mode single
+   * @default true
+   */
+  outputDir: string;
+
+  /**
    * Only work single file generation mode. use rootDir configuration in tsconfig.json.
    * Export file create under a rootDir directory. If you set rootDirs, ctix use first element of array.
    * @mode single
@@ -75,3 +84,5 @@ export interface ICTIXOptions {
    */
   useRootDir: boolean;
 }
+
+export type TCTIXOptionWithResolvedProject = ICTIXOptions & { resolvedProjectPath: string };
