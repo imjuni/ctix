@@ -365,12 +365,12 @@ export async function getSingleFileWriteContents(
       .concat(defaultExportContents)
       .reduce<{ [key: string]: string[] }>((aggregation, current) => {
         const next = aggregation;
-        if (isEmpty(next[current.dirname])) {
-          next[current.dirname] = [];
+        if (isEmpty(next[rootDir])) {
+          next[rootDir] = [];
         }
 
         if (isNotEmpty(current.content)) {
-          next[current.dirname] = [...next[current.dirname], current.content];
+          next[rootDir] = [...next[rootDir], current.content];
         }
 
         return next;
@@ -383,18 +383,7 @@ export async function getSingleFileWriteContents(
       }),
     );
 
-    const rootDirApplied = tupled.map((writeContent) => {
-      try {
-        const filename = path.basename(writeContent.pathname);
-        const applied = path.join(rootDir, filename);
-
-        return { ...writeContent, pathname: applied };
-      } catch {
-        return writeContent;
-      }
-    });
-
-    return TEI.right(rootDirApplied);
+    return TEI.right(tupled);
   } catch (catched) {
     const err = catched instanceof Error ? catched : new Error('unknown error raised');
 

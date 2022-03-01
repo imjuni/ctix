@@ -1,6 +1,7 @@
 import { ICTIXOptions } from '@interfaces/ICTIXOptions';
 
 export interface ICreateTypeScriptIndex {
+  // tsconfig.json directory with filename
   projectPath: string;
   optionFiles: string[];
 }

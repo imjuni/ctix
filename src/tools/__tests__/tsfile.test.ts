@@ -19,7 +19,6 @@ const exampleType04Path = path.join(exampleRootPath, 'type04');
 describe('cti-tsfile-test', () => {
   test('get-tsconfig', async () => {
     const config = await getTypeScriptConfig({
-      cwd: process.cwd(),
       tsconfigPath: 'tsconfig.json',
     })();
 
@@ -38,7 +37,6 @@ describe('cti-tsfile-test', () => {
         TTE.chain(getIgnoredContents),
       ),
       getTypeScriptConfig({
-        cwd: exampleType04Path,
         tsconfigPath: path.join(exampleType04Path, 'tsconfig.json'),
       }),
     )();

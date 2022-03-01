@@ -28,7 +28,6 @@ describe('cti-clean-test', () => {
         TTE.chain(getIgnoredContents),
       ),
       getTypeScriptConfig({
-        cwd: exampleType04Path,
         tsconfigPath: path.join(exampleType04Path, 'tsconfig.json'),
       }),
       TFU.pipe(
@@ -84,7 +83,12 @@ describe('cti-clean-test', () => {
 
   test('get-clean-filenames', async () => {
     const files = await getCleanFilenames({
-      cliOption: { ...defaultOption(), project: path.join(exampleType04Path, 'tsconfig.json') },
+      cliOption: {
+        ...defaultOption(),
+        project: path.join(exampleType04Path, 'tsconfig.json'),
+        resolvedProjectDirPath: path.resolve(exampleType04Path),
+        resolvedProjectFilePath: path.resolve(path.join(exampleType04Path, 'tsconfig.json')),
+      },
     })();
 
     if (TEI.isLeft(files)) {
@@ -116,7 +120,12 @@ describe('cti-clean-test', () => {
   test('do-clean', async () => {
     const files = await TFU.pipe(
       getCleanFilenames({
-        cliOption: { ...defaultOption(), project: path.join(exampleType04Path, 'tsconfig.json') },
+        cliOption: {
+          ...defaultOption(),
+          project: path.join(exampleType04Path, 'tsconfig.json'),
+          resolvedProjectDirPath: path.resolve(exampleType04Path),
+          resolvedProjectFilePath: path.resolve(path.join(exampleType04Path, 'tsconfig.json')),
+        },
       }),
       TTE.chain((args) => () => clean({ filenames: args })),
     )();

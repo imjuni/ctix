@@ -13,12 +13,10 @@ const log = debug('ctix:tsfiles');
 
 const getTsconfigPath =
   ({
-    cwd,
     cliPath,
     tsconfigResolved,
     tsconfigInCliPath,
   }: {
-    cwd: string;
     cliPath: string;
     tsconfigResolved: string;
     tsconfigInCliPath: string;
@@ -32,7 +30,9 @@ const getTsconfigPath =
       return TEI.right(path.join(cliPath, tsconfigResolved));
     }
 
-    return TEI.left(new Error(`Cannot found ${tsconfigResolved} in ${cwd} or ${cliPath}`));
+    return TEI.left(
+      new Error(`Cannot found ${tsconfigResolved} in ${process.cwd()} or ${cliPath}`),
+    );
   };
 
 /**
@@ -43,10 +43,8 @@ const getTsconfigPath =
  */
 export const getTypeScriptConfig =
   ({
-    cwd,
     tsconfigPath: tsconfigPathFrom,
   }: {
-    cwd: string;
     tsconfigPath?: string;
   }): TTE.TaskEither<Error, typescript.ParsedCommandLine> =>
   async () => {
@@ -58,12 +56,12 @@ export const getTypeScriptConfig =
         : path.resolve(tsconfigInCliPath);
 
       const tsconfigPath = await TFU.flow(
-        () => ({ cwd, cliPath, tsconfigInCliPath, tsconfigResolved }),
+        () => ({ cliPath, tsconfigInCliPath, tsconfigResolved }),
         getTsconfigPath,
       )()();
 
       if (TEI.isLeft(tsconfigPath)) {
-        return TEI.left(new Error(`Cannot found ${tsconfigResolved} in ${cwd} or ${cliPath}`));
+        return TEI.left(new Error(`Cannot found ${tsconfigResolved} in ${cliPath} or ${cliPath}`));
       }
 
       const parseConfigHost: typescript.ParseConfigHost = {

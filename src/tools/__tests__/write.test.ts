@@ -23,7 +23,12 @@ describe('cti-write-test-set', () => {
   afterEach(async (): Promise<void> => {
     await TFU.pipe(
       getCleanFilenames({
-        cliOption: { ...defaultOption(), project: path.join(exampleType04Path, 'tsconfig.json') },
+        cliOption: {
+          ...defaultOption(),
+          project: path.join(exampleType04Path, 'tsconfig.json'),
+          resolvedProjectDirPath: path.resolve(exampleType04Path),
+          resolvedProjectFilePath: path.resolve(path.join(exampleType04Path, 'tsconfig.json')),
+        },
       }),
       TTE.chain((args) => () => clean({ filenames: args })),
     )();
@@ -37,7 +42,6 @@ describe('cti-write-test-set', () => {
         TTE.chain(getIgnoredContents),
       ),
       getTypeScriptConfig({
-        cwd: exampleType04Path,
         tsconfigPath: path.join(exampleType04Path, 'tsconfig.json'),
       }),
       TFU.pipe(
@@ -124,7 +128,6 @@ describe('cti-write-test-set', () => {
         TTE.chain(getIgnoredContents),
       ),
       getTypeScriptConfig({
-        cwd: exampleType04Path,
         tsconfigPath: path.join(exampleType04Path, 'tsconfig.json'),
       }),
       TFU.pipe(

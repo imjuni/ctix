@@ -126,20 +126,20 @@ export const getCTIXOptions =
   ): TTE.TaskEither<Error, IOptionObjectProps[]> =>
   async () => {
     try {
-      const projectPath = path.resolve(args.projectPath);
-      const projectDir = path.dirname(projectPath);
+      const projectFilePath = path.resolve(args.projectPath);
+      const projectDirPath = path.dirname(projectFilePath);
 
-      const dirs = await fastGlobWrap(`${projectDir}/**/*`, {
+      const dirs = await fastGlobWrap(`${projectDirPath}/**/*`, {
         onlyDirectories: true,
-        ignore: [replaceSepToPosix(path.join(projectDir, '**', 'node_modules', '**'))],
+        ignore: [replaceSepToPosix(path.join(projectDirPath, '**', 'node_modules', '**'))],
       });
 
       const parsedConfigObjects = await Promise.all(
-        [projectDir, ...dirs].map<Promise<IOptionObjectProps>>((dir) =>
+        [projectDirPath, ...dirs].map<Promise<IOptionObjectProps>>((dir) =>
           (async () => {
             const configFile = path.join(dir, '.ctirc');
             const isConfigFileExists = await exists(configFile);
-            const depth = fpGetDirDepth(projectDir, dir);
+            const depth = fpGetDirDepth(projectDirPath, dir);
 
             log('Working configuration file: ', depth, configFile, isConfigFileExists);
 
@@ -149,7 +149,7 @@ export const getCTIXOptions =
                 exists: isConfigFileExists,
                 depth,
                 option: isConfigFileExists
-                  ? await readOptionFile(configFile, projectPath)
+                  ? await readOptionFile(configFile, projectFilePath)
                   : undefined,
               };
             } catch (catched) {
@@ -160,7 +160,7 @@ export const getCTIXOptions =
 
               return {
                 dir,
-                depth: fpGetDirDepth(projectDir, dir),
+                depth: fpGetDirDepth(projectDirPath, dir),
                 exists: isConfigFileExists,
                 option: undefined,
               };

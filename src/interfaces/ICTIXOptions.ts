@@ -1,5 +1,3 @@
-import { string } from 'fp-ts';
-
 /**
  * Option interface for CTIX
  */
@@ -85,4 +83,10 @@ export interface ICTIXOptions {
   useRootDir: boolean;
 }
 
-export type TCTIXOptionWithResolvedProject = ICTIXOptions & { resolvedProjectPath: string };
+export type TCTIXOptionWithResolvedProject = ICTIXOptions & {
+  /** resolved tsconfig.json directory */
+  resolvedProjectDirPath: string;
+
+  /** resolved tsconfig.json directory with filename */
+  resolvedProjectFilePath: string;
+};
