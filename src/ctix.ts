@@ -82,12 +82,24 @@ function setOptions(args: ReturnType<typeof yargs>) {
 }
 
 async function existsCheck(fromCli: string, fromOption: string): Promise<string> {
+  if (await exists(fromOption)) {
+    return path.resolve(fromOption);
+  }
+
+  const fromOptionWithFilename = path.join(fromOption, 'tsconfig.json');
+
+  if (await exists(fromOptionWithFilename)) {
+    return path.resolve(fromOptionWithFilename);
+  }
+
   if (await exists(fromCli)) {
     return path.resolve(fromCli);
   }
 
-  if (await exists(fromOption)) {
-    return path.resolve(fromOption);
+  const fromCliWithFilename = path.join(fromCli, 'tsconfig.json');
+
+  if (await exists(fromCliWithFilename)) {
+    return path.resolve(fromCliWithFilename);
   }
 
   throw new Error(`invalid project path, don't exist: ${fromCli} or ${fromOption ?? ''}`);
