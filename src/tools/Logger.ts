@@ -1,3 +1,5 @@
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable @typescript-eslint/lines-between-class-members */
 /* eslint-disable no-console */
 type TLogFunc = (message?: any, ...optionalParams: any[]) => void;
 

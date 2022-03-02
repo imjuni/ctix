@@ -13,7 +13,7 @@ module.exports = {
   ignorePatterns: ['__test__/*', '__tests__/*'],
   parser: '@typescript-eslint/parser',
   parserOptions: {
-    project: './tsconfig.eslint.json',
+    project: './tsconfig.json',
   },
   plugins: ['@typescript-eslint', '@typescript-eslint/tslint', 'prettier'],
   rules: {
