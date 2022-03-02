@@ -1,6 +1,6 @@
 {
   "name": "ctix",
-  "version": "0.4.3",
+  "version": "0.4.4",
   "description": "Automatic create index.ts file",
   "main": "dist/cti.js",
   "scripts": {
@@ -75,10 +75,9 @@
     "webpackbar": "^5.0.2"
   },
   "dependencies": {
-    "chalk": "^4.1.2",
+    "@oclif/core": "^1.5.0",
+    "chalk": "^5.0.0",
     "change-case": "^4.1.2",
-    "cli-ux": "^6.0.9",
-    "clui": "^0.3.6",
     "dayjs": "^1.10.8",
     "debug": "^4.3.3",
     "deepmerge": "^4.2.2",

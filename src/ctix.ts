@@ -19,7 +19,7 @@ import {
 } from '@tools/tsfiles';
 import { getSingleFileWriteContents, getWriteContents, write } from '@tools/write';
 import chalk from 'chalk';
-import cli from 'cli-ux';
+import { CliUx } from '@oclif/core';
 import debug from 'debug';
 import * as TAP from 'fp-ts/Apply';
 import * as TEI from 'fp-ts/Either';
@@ -128,7 +128,7 @@ yargs(process.argv.slice(2))
 
         process.chdir(resolvedProjectDirPath);
 
-        cli.action.start(
+        CliUx.ux.action.start(
           chalk`{yellow ctix} ${argv.exportFilename ?? 'index.ts'} file create mode:`,
           'initializing',
           {
@@ -148,7 +148,7 @@ yargs(process.argv.slice(2))
         logger.log(
           chalk`{yellow ctix - ${counter.log}:} read ignore file, tsconfig file, cti config {green complete}`,
         );
-        cli.action.status = 'processing ...';
+        CliUx.ux.action.status = 'processing ...';
 
         const configWithIgnored = await TAP.sequenceT(TTE.ApplicativeSeq)(
           TFU.pipe(
@@ -180,7 +180,7 @@ yargs(process.argv.slice(2))
         logger.log(
           chalk`{yellow ctix - ${counter.log}:} typescript source file parsing {green compile} `,
         );
-        cli.action.status = 'processing ...';
+        CliUx.ux.action.status = 'processing ...';
 
         logger.debug(
           chalk`{yellow ctix - ${counter.debug}:} {blueBright [info]} ignore content - ${ignores.ignores.length}`,
@@ -230,7 +230,7 @@ yargs(process.argv.slice(2))
         logger.error(chalk`{red error} message below, `);
         logger.error(err.message);
       } finally {
-        cli.action.stop('complete');
+        CliUx.ux.action.stop('complete');
       }
     },
   })
@@ -259,7 +259,7 @@ yargs(process.argv.slice(2))
 
         process.chdir(resolvedProjectDirPath);
 
-        cli.action.start(
+        CliUx.ux.action.start(
           chalk`{yellow ctix} single ${argv.exportFilename ?? 'index.ts'} file create mode:`,
           'initializing',
           {
@@ -280,7 +280,7 @@ yargs(process.argv.slice(2))
           chalk`{yellow ctix - ${counter.log}:} read ignore file, tsconfig file, cti config {green complete}`,
         );
 
-        cli.action.status = 'processing ...';
+        CliUx.ux.action.status = 'processing ...';
 
         const configWithIgnored = await TAP.sequenceT(TTE.ApplicativeSeq)(
           TFU.pipe(
@@ -312,7 +312,7 @@ yargs(process.argv.slice(2))
         logger.log(
           chalk`{yellow ctix - ${counter.log}:} typescript source file parsing {green compile} `,
         );
-        cli.action.status = 'processing ...';
+        CliUx.ux.action.status = 'processing ...';
 
         logger.debug(
           chalk`{yellow ctix - ${counter.debug}:} {blueBright [info]} ignore content - ${ignores.ignores.length}`,
@@ -366,7 +366,7 @@ yargs(process.argv.slice(2))
         logger.error(chalk`{red error} message below, `);
         logger.error(err.message);
       } finally {
-        cli.action.stop('complete');
+        CliUx.ux.action.stop('complete');
       }
     },
   })
@@ -395,7 +395,7 @@ yargs(process.argv.slice(2))
 
         log('path.resolve in ctix.ts: ', path.resolve(project));
 
-        cli.action.start(
+        CliUx.ux.action.start(
           chalk`{yellow ctix} ${argv.exportFilename ?? 'index.ts'} file clean mode:`,
           'initializing',
           {
@@ -437,7 +437,7 @@ yargs(process.argv.slice(2))
         logger.error(chalk`{red error} message below, `);
         logger.error(err.message);
       } finally {
-        cli.action.stop('complete');
+        CliUx.ux.action.stop('complete');
       }
     },
   })
@@ -451,14 +451,15 @@ yargs(process.argv.slice(2))
       try {
         const project = await existsCheck(argv.tsconfigPath, argv.project);
 
-        cli.action.start(chalk`{yellow ctix} generate .ctirc:`, 'initializing', {
+        CliUx.ux.action.start(chalk`{yellow ctix} generate .ctirc:`, 'initializing', {
           stdout: true,
         });
 
         logger.log(
           chalk`{yellow ctix - ${counter.log}:} default option generation {green compile} `,
         );
-        cli.action.status = 'processing ...';
+
+        CliUx.ux.action.status = 'processing ...';
 
         const option: Omit<ICTIXOptions, 'project' | 'verbose'> & {
           project?: ICTIXOptions['project'];
@@ -474,14 +475,14 @@ yargs(process.argv.slice(2))
         await fs.promises.writeFile(path.join(initDir, '.ctirc'), JSON.stringify(option));
 
         logger.log(chalk`{yellow ctix - ${counter.log}:} .ctirc file write {green compile} `);
-        cli.action.status = 'processing ...';
+        CliUx.ux.action.status = 'processing ...';
       } catch (catched) {
         const err = catched instanceof Error ? catched : new Error('unknown error raised');
 
         logger.error(chalk`{red error} message below, `);
         logger.error(err.message);
       } finally {
-        cli.action.stop('complete');
+        CliUx.ux.action.stop('complete');
       }
     },
   })
