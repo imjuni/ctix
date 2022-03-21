@@ -1,6 +1,6 @@
 {
   "name": "ctix",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "Automatic create index.ts file",
   "main": "dist/cti.js",
   "scripts": {
@@ -85,7 +85,7 @@
     "fast-glob": "^3.2.11",
     "fp-ts": "^2.11.8",
     "glob": "^7.2.0",
-    "json5": "^2.2.0",
+    "json5": "^2.2.1",
     "my-easy-fp": "^0.10.0",
     "parse-gitignore": "^1.0.1",
     "source-map-support": "^0.5.21",
