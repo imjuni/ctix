@@ -81,6 +81,27 @@ export interface ICTIXOptions {
    * @default false
    */
   useRootDir: boolean;
+
+  /**
+   * Default export name create without directory(dirname)
+   * option true, export { default as WriteModule } from './src/javascript/WriteModule';
+   * option false, export { default as srcJavascriptWriteModule } from './src/javascript/WriteModule';
+   *
+   * It prevent same name module in each directory But you don't have same name module, pass true.
+   *
+   * @mode create, single
+   * @default false
+   */
+  excludePath: boolean;
+
+  /**
+   * If your default export variable, class, function name keep first capital character.
+   * Option set false, TribeClass -> tribeClass. But option set true, TribeClass -> TribeClass.
+   *
+   * @mode create, single
+   * @default true
+   */
+  useUpperFirst: boolean;
 }
 
 export type TCTIXOptionWithResolvedProject = ICTIXOptions & {

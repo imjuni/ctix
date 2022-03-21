@@ -72,6 +72,17 @@ function setOptions(args: ReturnType<typeof yargs>) {
       describe: 'change quote character at export syntax',
       type: 'string',
     })
+    .option('excludePath', {
+      alias: 'x',
+      describe: 'exclude path in default export variable(or function)',
+      type: 'boolean',
+      default: false,
+    })
+    .option('useUpperFirst', {
+      describe: 'Default export variable, class, function name keep first capital character.',
+      type: 'boolean',
+      default: true,
+    })
     .option('useBackupFile', {
       alias: 'b',
       describe: 'created backup file if exists index.ts file already in directory',
@@ -81,15 +92,28 @@ function setOptions(args: ReturnType<typeof yargs>) {
   return casting(args);
 }
 
-async function existsCheck(fromCli: string, fromOption: string): Promise<string> {
-  if (await exists(fromOption)) {
-    return path.resolve(fromOption);
+async function existsCheck(
+  fromCli: string | undefined,
+  fromOption: string | undefined,
+): Promise<string> {
+  if (fromCli === undefined && fromOption === undefined) {
+    throw new Error(`invalid project path, don't exist: "${fromCli}" or "${fromOption ?? ''}"`);
   }
 
-  const fromOptionWithFilename = path.join(fromOption, 'tsconfig.json');
+  const nonNullableFromOption = fromOption ?? '';
+
+  if (await exists(nonNullableFromOption)) {
+    return path.resolve(nonNullableFromOption);
+  }
+
+  const fromOptionWithFilename = path.join(nonNullableFromOption, 'tsconfig.json');
 
   if (await exists(fromOptionWithFilename)) {
     return path.resolve(fromOptionWithFilename);
+  }
+
+  if (fromCli === undefined) {
+    throw new Error(`invalid project path, don't exist: "${fromCli}" or "${fromOption ?? ''}"`);
   }
 
   if (await exists(fromCli)) {
@@ -240,11 +264,17 @@ yargs(process.argv.slice(2))
     builder: (argv) => {
       const optionApplied = setOptions(argv);
 
-      optionApplied.option('useRootDir', {
-        alias: 'r',
-        describe: 'output file under rootDir in tsconfig.json',
-        type: 'boolean',
-      });
+      optionApplied
+        .option('useRootDir', {
+          alias: 'r',
+          describe: 'output file under rootDir in tsconfig.json',
+          type: 'boolean',
+        })
+        .option('output', {
+          alias: 'o',
+          describe: 'Output directory',
+          type: 'string',
+        });
 
       return optionApplied;
     },

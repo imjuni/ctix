@@ -11,6 +11,15 @@ npm i ctix --save-dev
 npx ctix create ./tsconfig.json # execute create mode
 ```
 
+# Breaking Change
+0.4.x ctix generate default export variable, function, class process to lowercase start. But 0.5.x ctix can set excludePath. If set excludePath optoin to true, ctix follow filename first charactor.
+
+ex>
+```
+Option excludePath set true and useUpperFirst true: TribeClass -> tribeClass 
+Option excludePath set false or useUpperFirst false: TribeClass -> TribeClass
+```
+
 # Introduction
 When you develop package for another application using TypeScript, that is compiled using by webpack, babel. webpack very popular tool for bundling. At this time you need bundle entrypoint called by index.ts. 
 
@@ -91,11 +100,14 @@ Most inconvenience from import statement that solve [module resolution](https://
 | --useTimestamp | -m | false | create, single | timestamp write on ctix comment right-side, only works in useComment option set true |
 | --useComment | -c | true | create, single | ctix comment add on first line of creted export file(default index.ts) file, that remark created from ctix |
 | --quote | -q | ' | create, single | change quote character at export syntax |
+| --outputDir | -q | ' | create, single | change quote character at export syntax |
 | --useBackupFile | -b | true | create, single | created backup file if exists export file(default index.ts) file already in directory |
 | --useRootDir | -r | false | single | output file under rootDir in tsconfig.json. |
+| --excludePath | -x | false | single | Default export name create without directory(dirname). |
+| --useUpperFirst | N/A | true | create, single | If your default export variable, class, function name keep first capital character. |
 
 ## rootDir, rootDirs
-useRootDir option activate using rootDir option in tsconfig.json. This option run below flowchart.
+useRootDir option activate using rootDir option in tsconfig.json. This option run below [flowchart](https://github.com/imjuni/ctix/blob/master/UseRootDir.md).
 
 # CLI with .ctirc
 ctix cli support `.ctirc` configuration file. Available name is only `.ctirc`. `.ctirc` configuration file can applied by each target directories and script working directory. Every configuration overwrited same feature. Also cti cli arguments forced applied. And `.ctirc` file can write [json5](https://json5.org) format. json5 spec. can comment and more feature.
