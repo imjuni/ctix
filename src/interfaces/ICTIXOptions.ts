@@ -72,7 +72,7 @@ export interface ICTIXOptions {
    * @mode single
    * @default true
    */
-  outputDir: string;
+  output: string;
 
   /**
    * Only work single file generation mode. use rootDir configuration in tsconfig.json.

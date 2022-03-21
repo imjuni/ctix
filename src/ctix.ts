@@ -272,7 +272,7 @@ yargs(process.argv.slice(2))
         })
         .option('output', {
           alias: 'o',
-          describe: 'Output directory',
+          describe: 'output directory',
           type: 'string',
         });
 

@@ -1,6 +1,6 @@
 {
   "name": "ctix",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "Automatic create index.ts file",
   "main": "dist/cti.js",
   "scripts": {
