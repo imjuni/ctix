@@ -1,3 +1,3 @@
-export class TriteCls {
+export default class TriteCls {
   name: string = 'TriteCls';
 }

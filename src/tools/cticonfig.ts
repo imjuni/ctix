@@ -26,9 +26,18 @@ export const getExportFilename = (exportFilenameFrom?: string | undefined | null
     (filename) => (filename === '' ? 'index.ts' : filename),
   );
 
-export function defaultOption(args?: { project?: string; exportFilename?: string }): ICTIXOptions {
+export function defaultOption(args?: {
+  project?: string;
+  exportFilename?: string;
+  excludePath?: boolean;
+  useRootDir?: boolean;
+  useUpperFirst?: boolean;
+}): ICTIXOptions {
   const project = args?.project ?? path.join(process.cwd(), 'tsconfig.json');
   const exportFilename = args?.exportFilename ?? 'index.ts';
+  const excludePath = args?.excludePath ?? false;
+  const useRootDir = args?.useRootDir ?? false;
+  const useUpperFirst = args?.useUpperFirst ?? true;
 
   return {
     addNewline: true,
@@ -40,7 +49,9 @@ export function defaultOption(args?: { project?: string; exportFilename?: string
     verbose: false,
     useBackupFile: true,
     outputDir: project,
-    useRootDir: false,
+    useRootDir,
+    excludePath,
+    useUpperFirst,
     project,
   };
 }
@@ -117,6 +128,8 @@ export function getNonEmptyOption(
     exportFilename: partialOption?.exportFilename ?? fallbackOption.exportFilename,
     outputDir: partialOption?.outputDir ?? fallbackOption.outputDir,
     useRootDir: partialOption?.useRootDir ?? fallbackOption.useRootDir,
+    excludePath: partialOption?.excludePath ?? fallbackOption.excludePath,
+    useUpperFirst: partialOption?.useUpperFirst ?? fallbackOption.useUpperFirst,
   };
 }
 
@@ -208,6 +221,9 @@ export const getMergedConfig =
           option: {
             ...rootOptions,
             project: rootOptions.project,
+            excludePath: rootOptions.excludePath,
+            useRootDir: rootOptions.useRootDir,
+            useUpperFirst: rootOptions.useUpperFirst,
             exportFilename: getExportFilename(rootOptions.exportFilename),
           },
         };
@@ -249,12 +265,16 @@ export const getMergedConfig =
                     defaultOption({
                       // exportFilename, project fields use parent options
                       exportFilename: parentOptions.exportFilename,
+                      useRootDir: parentOptions.useRootDir,
                       project: parentOptions.project,
+                      useUpperFirst: rootOptions.useUpperFirst,
+                      excludePath: parentOptions.excludePath,
                     }),
                 ),
               };
 
               nonNullableOptionMap.set(newOptionObject.dir, newOptionObject);
+
               log(
                 'exportFilename-1: ',
                 parentOptions.exportFilename,

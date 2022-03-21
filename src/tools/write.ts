@@ -23,6 +23,7 @@ import * as fs from 'fs';
 import { isEmpty, isFalse, isNotEmpty, isTrue } from 'my-easy-fp';
 import * as path from 'path';
 import typescript from 'typescript';
+import { upperCaseFirst } from 'upper-case-first';
 import { defaultOption } from './cticonfig';
 
 const log = debug('ctix:write');
@@ -110,6 +111,25 @@ async function createExportContents({
   }
 }
 
+function getCamelCaseConverter(option?: ICTIXOptions) {
+  if (option === undefined || option === null) {
+    return camelCase;
+  }
+
+  if (isFalse(option.excludePath)) {
+    return camelCase;
+  }
+
+  if (isFalse(option.useUpperFirst)) {
+    return camelCase;
+  }
+
+  return (targetFilename: string) =>
+    /^[A-Z]\w+/.test(targetFilename)
+      ? upperCaseFirst(camelCase(targetFilename))
+      : camelCase(targetFilename);
+}
+
 async function createDefaultExportContents({
   filename,
   replacer,
@@ -131,9 +151,14 @@ async function createDefaultExportContents({
       fpRefineStartSlash,
       fpAddDotPath,
     )(replaced);
-    const refinedAlias = TFU.flow(fpRefinePathSep, fpRemoveExtWithTSX)(replaced);
 
-    const defaultExportFileContent = `export { default as ${camelCase(
+    const refinedAlias = configObject?.option.excludePath
+      ? TFU.flow((filePath: string) => path.basename(filePath), fpRemoveExtWithTSX)(replaced)
+      : TFU.flow(fpRefinePathSep, fpRemoveExtWithTSX)(replaced);
+
+    const camelCaseConverter = getCamelCaseConverter(configObject?.option);
+
+    const defaultExportFileContent = `export { default as ${camelCaseConverter(
       refinedAlias,
     )} } from ${quote}${refined}${quote}`;
 

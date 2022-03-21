@@ -148,6 +148,8 @@ describe('cti-config-test', () => {
             useTimestamp: false,
             useRootDir: false,
             verbose: false,
+            excludePath: false,
+            useUpperFirst: true,
           },
         },
         {
@@ -166,6 +168,8 @@ describe('cti-config-test', () => {
             useTimestamp: false,
             useRootDir: false,
             verbose: false,
+            excludePath: false,
+            useUpperFirst: true,
           },
         },
         {
@@ -184,6 +188,8 @@ describe('cti-config-test', () => {
             useTimestamp: false,
             useRootDir: false,
             verbose: false,
+            excludePath: false,
+            useUpperFirst: true,
           },
         },
         {
@@ -202,6 +208,8 @@ describe('cti-config-test', () => {
             useTimestamp: false,
             useRootDir: false,
             verbose: false,
+            excludePath: false,
+            useUpperFirst: true,
           },
         },
         {
@@ -220,6 +228,8 @@ describe('cti-config-test', () => {
             useTimestamp: false,
             useRootDir: false,
             verbose: false,
+            excludePath: false,
+            useUpperFirst: true,
           },
         },
         {
@@ -238,6 +248,8 @@ describe('cti-config-test', () => {
             useTimestamp: false,
             useRootDir: false,
             verbose: false,
+            excludePath: false,
+            useUpperFirst: true,
           },
         },
       ].sort((l, r) => l.dir.localeCompare(r.dir)),
