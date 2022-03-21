@@ -55,14 +55,14 @@ const getOutputDir = async (
   rootOptions: ICTIXOptions,
 ): Promise<string> => {
   if (isFalse(rootOptions.useRootDir)) {
-    return path.resolve(await getDirname(rootOptions.outputDir));
+    return path.resolve(await getDirname(rootOptions.output));
   }
 
   const compilerOptions = program.getCompilerOptions();
   const rootDir = getTsconfigRootDir(compilerOptions);
 
   if (rootDir !== undefined && rootDir !== null) {
-    const outputDirConfig = await getDirname(rootOptions.outputDir);
+    const outputDirConfig = await getDirname(rootOptions.output);
 
     if (path.relative(rootDir, outputDirConfig).startsWith('..')) {
       return rootDir;
@@ -71,7 +71,7 @@ const getOutputDir = async (
     return path.resolve(outputDirConfig);
   }
 
-  return path.resolve(await getDirname(rootOptions.outputDir));
+  return path.resolve(await getDirname(rootOptions.output));
 };
 
 async function createExportContents({

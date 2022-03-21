@@ -100,7 +100,7 @@ Most inconvenience from import statement that solve [module resolution](https://
 | --useTimestamp | -m | false | create, single | timestamp write on ctix comment right-side, only works in useComment option set true |
 | --useComment | -c | true | create, single | ctix comment add on first line of creted export file(default index.ts) file, that remark created from ctix |
 | --quote | -q | ' | create, single | change quote character at export syntax |
-| --outputDir | -q | ' | create, single | change quote character at export syntax |
+| --output | -o | N/A | single | output directory |
 | --useBackupFile | -b | true | create, single | created backup file if exists export file(default index.ts) file already in directory |
 | --useRootDir | -r | false | single | output file under rootDir in tsconfig.json. |
 | --excludePath | -x | false | single | Default export name create without directory(dirname). |
