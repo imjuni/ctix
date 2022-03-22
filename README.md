@@ -16,8 +16,8 @@ npx ctix create ./tsconfig.json # execute create mode
 
 ex>
 ```
-Option excludePath set true and useUpperFirst true: TribeClass -> tribeClass 
-Option excludePath set false or useUpperFirst false: TribeClass -> TribeClass
+Option excludePath set true and useUpperFirst true: TribeClass -> TribeClass 
+Option excludePath set false or useUpperFirst false: TribeClass -> tribeClass
 ```
 
 # Introduction
