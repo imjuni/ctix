@@ -260,7 +260,6 @@ export const getMergedConfig =
               const newOptionObject = {
                 ...optionObject,
                 option: merge(
-                  parentOptions,
                   optionObject.option ??
                     defaultOption({
                       // exportFilename, project fields use parent options
@@ -270,6 +269,7 @@ export const getMergedConfig =
                       useUpperFirst: rootOptions.useUpperFirst,
                       excludePath: parentOptions.excludePath,
                     }),
+                    parentOptions,
                 ),
               };
 
