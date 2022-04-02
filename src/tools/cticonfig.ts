@@ -210,7 +210,7 @@ export const getMergedConfig =
     try {
       if (optionObjects.length > 1) {
         const fallbackOption = defaultOption({ project: projectPath });
-        const rootOptions = merge(
+        const rootOptions: ICTIXOptions = merge(
           getNonEmptyOption(optionObjects[0].option, fallbackOption),
           getNonEmptyOption(cliOptionFrom, fallbackOption),
         );
@@ -256,20 +256,12 @@ export const getMergedConfig =
               nonNullableOptionMap.get(getParentPath(optionObject?.dir ?? ''))?.option ??
               defaultOption();
 
-            if (optionObject !== undefined && parentOptions !== undefined) {
+            if (optionObject?.option !== undefined && parentOptions !== undefined) {
               const newOptionObject = {
                 ...optionObject,
                 option: merge(
                   parentOptions,
-                  optionObject.option ??
-                    defaultOption({
-                      // exportFilename, project fields use parent options
-                      exportFilename: parentOptions.exportFilename,
-                      useRootDir: parentOptions.useRootDir,
-                      project: parentOptions.project,
-                      useUpperFirst: rootOptions.useUpperFirst,
-                      excludePath: parentOptions.excludePath,
-                    }),
+                  optionObject.option ?? getNonEmptyOption(parentOptions, rootOptions.project),
                 ),
               };
 
@@ -284,7 +276,7 @@ export const getMergedConfig =
             } else {
               const newOptionObject = {
                 ...currentDepthedObject,
-                option: getNonEmptyOption(optionObject?.option, fallbackOption),
+                option: getNonEmptyOption(optionObject?.option, rootOptions),
               };
 
               nonNullableOptionMap.set(currentDepthedObject.dir, newOptionObject);

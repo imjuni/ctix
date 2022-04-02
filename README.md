@@ -101,10 +101,11 @@ Most inconvenience from import statement that solve [module resolution](https://
 | --useComment | -c | true | create, single | ctix comment add on first line of creted export file(default index.ts) file, that remark created from ctix |
 | --quote | -q | ' | create, single | change quote character at export syntax |
 | --output | -o | N/A | single | output directory |
-| --useBackupFile | -b | true | create, single | created backup file if exists export file(default index.ts) file already in directory |
+| --useBackupFile | -b | true | create, single, clean | created backup file if exists export file(default index.ts) file already in directory. If this option set false on clean mode what will be delete backup file. |
 | --useRootDir | -r | false | single | output file under rootDir in tsconfig.json. |
 | --excludePath | -x | false | single | Default export name create without directory(dirname). |
 | --useUpperFirst | N/A | true | create, single | If your default export variable, class, function name keep first capital character. |
+| --includeBackup | N/A | false | clean | If this option set true on clean mode what will be delete backup file. |
 
 ## rootDir, rootDirs
 useRootDir option activate using rootDir option in tsconfig.json. This option run below [flowchart](https://github.com/imjuni/ctix/blob/master/UseRootDir.md).

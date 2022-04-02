@@ -1,6 +1,6 @@
 import debug from 'debug';
-import * as TE from 'fp-ts/lib/Either';
-import { pipe } from 'fp-ts/lib/pipeable';
+import * as TEI from 'fp-ts/Either';
+import * as TFU from 'fp-ts/function';
 import { isEmpty, isFalse } from 'my-easy-fp';
 import typescript from 'typescript';
 
@@ -16,12 +16,12 @@ export type TStatementModifierType = 'exported' | 'default' | 'none';
  * @param nodeFrom TypeScript statement node
  */
 export const hasExportModifiers = (nodeFrom: typescript.Node): TStatementModifierType =>
-  pipe(
+  TFU.pipe(
     nodeFrom,
     (node) => node.modifiers,
     (modifiers) =>
-      isEmpty(modifiers) ? TE.left<TStatementModifierType>('none') : TE.right(modifiers),
-    TE.fold(
+      isEmpty(modifiers) ? TEI.left<TStatementModifierType>('none') : TEI.right(modifiers),
+    TEI.fold(
       (flag: TStatementModifierType) => flag,
       (modifiers) => {
         const exported =
