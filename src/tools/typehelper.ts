@@ -1,5 +1,5 @@
-import * as TEI from 'fp-ts/lib/Either';
-import * as TTE from 'fp-ts/lib/TaskEither';
+import * as TEI from 'fp-ts/Either';
+import * as TTE from 'fp-ts/TaskEither';
 
 export type TResolvedTaskEither<T extends TTE.TaskEither<any, any>> = [T] extends [
   TTE.TaskEither<any, infer U>,

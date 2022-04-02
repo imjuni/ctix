@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 
 import { ICTIXOptions, TCTIXOptionWithResolvedProject } from '@interfaces/ICTIXOptions';
+import { CliUx } from '@oclif/core';
 import { clean, getCleanFilenames } from '@tools/clean';
 import { Counter } from '@tools/Counter';
 import {
@@ -19,13 +20,13 @@ import {
 } from '@tools/tsfiles';
 import { getSingleFileWriteContents, getWriteContents, write } from '@tools/write';
 import chalk from 'chalk';
-import { CliUx } from '@oclif/core';
 import debug from 'debug';
 import * as TAP from 'fp-ts/Apply';
 import * as TEI from 'fp-ts/Either';
 import * as TFU from 'fp-ts/function';
 import * as TTE from 'fp-ts/TaskEither';
 import * as fs from 'fs';
+import { isFalse } from 'my-easy-fp';
 import * as path from 'path';
 import sourceMapSupport from 'source-map-support';
 import yargsAnyType, { Argv } from 'yargs';
@@ -444,7 +445,7 @@ yargs(process.argv.slice(2))
         const files = await TFU.pipe(
           getCleanFilenames({
             cliOption: options,
-            includeBackupFrom: argv.includeBackup,
+            includeBackupFrom: argv.includeBackup || isFalse(options.useBackupFile),
           }),
           TTE.chain((args) => () => {
             logger.log(chalk`{yellow ctix - ${counter.log}:} clean file find {green complete}`);
@@ -491,18 +492,18 @@ yargs(process.argv.slice(2))
 
         CliUx.ux.action.status = 'processing ...';
 
-        const option: Omit<ICTIXOptions, 'project' | 'verbose'> & {
+        const options: Omit<ICTIXOptions, 'project' | 'verbose'> & {
           project?: ICTIXOptions['project'];
           verbose?: ICTIXOptions['verbose'];
         } = {
           ...defaultOption(),
         };
 
-        delete option.project;
-        delete option.verbose;
+        delete options.project;
+        delete options.verbose;
 
         const initDir = path.dirname(project);
-        await fs.promises.writeFile(path.join(initDir, '.ctirc'), JSON.stringify(option));
+        await fs.promises.writeFile(path.join(initDir, '.ctirc'), JSON.stringify(options));
 
         logger.log(chalk`{yellow ctix - ${counter.log}:} .ctirc file write {green compile} `);
         CliUx.ux.action.status = 'processing ...';
