@@ -12,7 +12,7 @@ npx ctix create ./tsconfig.json # execute create mode
 ```
 
 # Breaking Change
-0.4.x ctix generate default export variable, function, class process to lowercase start. But 0.5.x ctix can set excludePath. If set excludePath optoin to true, ctix follow filename first charactor.
+0.4.x ctix generate default export variable, function, class process to lowercase start. But 0.5.x ctix can set excludePath. If set excludePath option to true, ctix follows filename first charactor.
 
 ex>
 ```
@@ -73,8 +73,8 @@ ctix single mode generate single file. This file suitable for webpack entrypoint
     * my_default_index.test.ts file create `export { default as myDefaultIndexTest } from './my_default_index.test'` 
 
 ## Cons
-1. Something slow some project
-    * ctix use TypeScript compiler API, big project some slow
+1. It may be slow for some project
+    * since ctix uses TypeScript compiler API, big projects may take time to generate index files
 
 # What is difference module resolution?
 Most inconvenience from import statement that solve [module resolution](https://www.typescriptlang.org/docs/handbook/module-resolution.html). But module resolution don't helpful for entrypoint create for bundling. ctix helpful this work.
