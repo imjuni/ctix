@@ -80,6 +80,7 @@ describe('cti-tsfile-test', () => {
         path.join(exampleType04Path, 'wellmade/WhisperingCls.ts'),
         path.join(exampleType04Path, 'wellmade/carpenter/DiscussionCls.ts'),
         path.join(exampleType04Path, 'wellmade/carpenter/MakeshiftCls.ts'),
+        path.join(exampleType04Path, 'xylophone/yellow/zoo/ZooCls.ts'),
       ].sort((left, right) => left.localeCompare(right)),
       defaultExportFilenames: [
         path.join(exampleType04Path, 'index.tsx'),

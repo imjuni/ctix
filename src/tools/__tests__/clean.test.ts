@@ -100,7 +100,10 @@ describe('cti-clean-test', () => {
     const withoutBackup = [
       path.join(exampleType04Path, 'index.ts'),
       path.join(exampleType04Path, 'wellmade', 'index.ts'),
+      path.join(exampleType04Path, 'xylophone', 'index.ts'),
       path.join(exampleType04Path, 'wellmade', 'carpenter', 'index.ts'),
+      path.join(exampleType04Path, 'xylophone', 'yellow', 'index.ts'),
+      path.join(exampleType04Path, 'xylophone', 'yellow', 'zoo', 'index.ts'),
     ];
 
     const withBackup = [
@@ -110,6 +113,8 @@ describe('cti-clean-test', () => {
       path.join(exampleType04Path, 'wellmade', 'index.ts.bak'),
       path.join(exampleType04Path, 'wellmade', 'carpenter', 'index.ts'),
       path.join(exampleType04Path, 'wellmade', 'carpenter', 'index.ts.bak'),
+      path.join(exampleType04Path, 'xylophone', 'yellow', 'zoo', 'index.ts'),
+      path.join(exampleType04Path, 'xylophone', 'yellow', 'zoo', 'index.ts.bak'),
     ];
 
     return files.right.length < withBackup.length

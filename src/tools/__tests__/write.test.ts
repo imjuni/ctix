@@ -105,16 +105,41 @@ describe('cti-write-test-set', () => {
             "export * from './SampleEnum'",
             "export { default as index } from './index.tsx'",
             "export { default as sampleEnum } from './SampleEnum'",
+            "export * from './xylophone'",
             "export * from './wellmade'",
           ],
         },
         {
           pathname: path.join(exampleType04Path, 'wellmade'),
-          content: ["export * from './WhisperingCls'", "export * from './carpenter'"],
+          content: [
+            "export * from './WhisperingCls'",
+            "export * from './carpenter'"
+          ],
         },
         {
           pathname: path.join(exampleType04Path, 'wellmade', 'carpenter'),
-          content: ["export * from './DiscussionCls'", "export * from './MakeshiftCls'"],
+          content: [
+            "export * from './DiscussionCls'",
+            "export * from './MakeshiftCls'"
+          ],
+        },
+        {
+          pathname: path.join(exampleType04Path, 'xylophone'),
+          content: [
+            "export * from './yellow'",
+          ],
+        },
+        {
+          pathname: path.join(exampleType04Path, 'xylophone', 'yellow'),
+          content: [
+            "export * from './zoo'",
+          ],
+        },
+        {
+          pathname: path.join(exampleType04Path, 'xylophone', 'yellow', 'zoo'),
+          content: [
+            "export * from './ZooCls'",
+          ],
         },
       ].sort(),
     );

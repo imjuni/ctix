@@ -173,6 +173,7 @@ async function createDefaultExportContents({
   }
 }
 
+type ContentItem = { dirname: string, filename: string, depth: number };
 export function getModuleDir({
   project,
   configMap,
@@ -182,11 +183,28 @@ export function getModuleDir({
   configMap: Map<string, INonNullableOptionObjectProps>;
   filenames: string[];
 }): IExportContent[] {
-  const dirs = filenames
-    .map((filename) => {
-      const dirname = path.dirname(filename);
-      return { depth: dirname.replace(project, '').split(path.sep).length - 1, dirname, filename };
-    })
+
+  const dirs = Object.values<ContentItem>(
+    filenames
+      .reduce((all, filename) => {
+        let dirname = path.dirname(filename);
+        let depth = dirname.replace(project, '').split(path.sep).length - 1;
+
+        // add ContentItem for file
+        all[filename] = { depth, dirname, filename };
+
+        while (depth > 0) {
+          filename = path.join(dirname, 'index.ts');
+          // add ContentItem for parent directory
+          all[filename] = { depth, dirname, filename };
+
+          dirname = dirname.substring(0, dirname.lastIndexOf(path.sep));
+          depth--;
+        }
+
+        return all;
+      }, {})
+  )
     .sort((left, right) => {
       const diff = right.depth - left.depth;
       return diff === 0 ? right.filename.localeCompare(left.filename) : diff;
