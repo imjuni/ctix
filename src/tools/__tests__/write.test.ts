@@ -20,15 +20,17 @@ const exampleRootPath = path.resolve(path.join(__dirname, '..', '..', '..', 'exa
 const exampleType04Path = path.join(exampleRootPath, 'type04');
 
 describe('cti-write-test-set', () => {
+  const cliOption = {
+    ...defaultOption(),
+    project: path.join(exampleType04Path, 'tsconfig.json'),
+    resolvedProjectDirPath: path.resolve(exampleType04Path),
+    resolvedProjectFilePath: path.resolve(path.join(exampleType04Path, 'tsconfig.json')),
+  }
+
   afterEach(async (): Promise<void> => {
     await TFU.pipe(
       getCleanFilenames({
-        cliOption: {
-          ...defaultOption(),
-          project: path.join(exampleType04Path, 'tsconfig.json'),
-          resolvedProjectDirPath: path.resolve(exampleType04Path),
-          resolvedProjectFilePath: path.resolve(path.join(exampleType04Path, 'tsconfig.json')),
-        },
+        cliOption,
       }),
       TTE.chain((args) => () => clean({ filenames: args })),
     )();
@@ -49,7 +51,7 @@ describe('cti-write-test-set', () => {
         TTE.chain((args) =>
           getMergedConfig({
             projectPath: exampleType04Path,
-            cliOption: defaultOption(),
+            cliOption,
             optionObjects: args,
           }),
         ),
@@ -160,7 +162,7 @@ describe('cti-write-test-set', () => {
         TTE.chain((args) =>
           getMergedConfig({
             projectPath: exampleType04Path,
-            cliOption: defaultOption(),
+            cliOption,
             optionObjects: args,
           }),
         ),
