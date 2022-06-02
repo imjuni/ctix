@@ -21,12 +21,11 @@ const var2 = 'varable_02';
 const var3 = 'varable_03';
 
 export { var1, var2, var3 };
+export { var4 as variable04, var5, var6 };
 
 const var4 = 'varable_04';
 const var5 = 'varable_05';
 const var6 = 'varable_06';
-
-export { var4 as variable04, var5, var6 };
 
 const var7 = 'a';
 

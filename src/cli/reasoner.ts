@@ -1,13 +1,27 @@
 /* eslint-disable no-console */
 import IReason from '@cli/interfaces/IReason';
 import chalk from 'chalk';
-import { isEmpty, isFalse } from 'my-easy-fp';
+import { isEmpty, isFalse, sleep as sleepMs } from 'my-easy-fp';
 import * as path from 'path';
 
 let isMessageDisplay = false;
 
 export function enable(flag: boolean) {
   isMessageDisplay = flag;
+}
+
+export async function sleep(ms: number): Promise<void> {
+  if (isMessageDisplay) {
+    await sleepMs(ms);
+  }
+}
+
+export function space(): void {
+  if (isFalse(isMessageDisplay)) {
+    return;
+  }
+
+  console.log('');
 }
 
 export function start(reasons: IReason[]): void {

@@ -1,5 +1,5 @@
 import IExportInfo from '@compilers/interfaces/IExportInfo';
-import { TOptionWithResolvedProject } from '@configs/interfaces/IOption';
+import { TCreateOrSingleOption } from '@configs/interfaces/IOption';
 import getRelativeDepth from '@tools/getRelativeDepth';
 import fastGlob from 'fast-glob';
 import { getDirname, startSepRemove } from 'my-node-fp';
@@ -7,7 +7,7 @@ import path from 'path';
 
 export default async function getDirPaths(
   exportInfos: IExportInfo[],
-  option: TOptionWithResolvedProject,
+  option: TCreateOrSingleOption,
 ): Promise<{ depths: Record<string, number>; dirPaths: Record<string, IExportInfo[]> }> {
   const filePathsFromExportInfos = Array.from(
     new Set(

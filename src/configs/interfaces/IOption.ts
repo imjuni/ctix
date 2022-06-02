@@ -1,118 +1,20 @@
-/**
- * Option interface for CTIX
- */
-export default interface IOption {
-  /**
-   * generate mode
-   *
-   * create: create index.ts file each directory
-   * single: create index.ts file output directory
-   */
-  mode: 'create' | 'single';
+import ICommonCliOption from '@configs/interfaces/ICommonCliOption';
+import ICreateSingleCommonCliOption from '@configs/interfaces/ICreateSingleCommonCliOption';
+import IDirectoryInfo from '@configs/interfaces/IDirectoryInfo';
+import IOnlyCleanCliOption from '@configs/interfaces/IOnlyCleanCliOption';
+import IOnlyCreateCliOption from '@configs/interfaces/IOnlyCreateCliOption';
+import IOnlySingleCliOption from '@configs/interfaces/IOnlySingleCliOption';
 
-  /**
-   * configuration file(.ctirc) path
-   */
-  config: string;
+export type TCreateOption = ICommonCliOption & ICreateSingleCommonCliOption & IOnlyCreateCliOption;
+export type TCreateOptionWithDirInfo = TCreateOption & IDirectoryInfo;
 
-  /**
-   * tsconfig.json path: you must pass path with filename, like this "./tsconfig.json"
-   * * only work root directory or cli parameter
-   * @mode all
-   * @default `${process.cwd()}${path.sep}tsconfig.json`
-   */
-  project: string;
+export type TSingleOption = ICommonCliOption & ICreateSingleCommonCliOption & IOnlySingleCliOption;
+export type TSingleOptionWithDirInfo = TSingleOption & IDirectoryInfo;
 
-  /**
-   * add newline on EOF
-   * @mode create, single
-   * @default true
-   */
-  addNewline: boolean;
+export type TCleanOption = ICommonCliOption & IOnlyCleanCliOption;
+export type TCleanOptionWithDirInfo = TCleanOption & IDirectoryInfo;
 
-  /**
-   * add semicolon on every export statement
-   * @mode create, single
-   * @default true
-   */
-  useSemicolon: boolean;
+export type TInitOption = ICommonCliOption & ICreateSingleCommonCliOption & IOnlyCleanCliOption;
+export type TTInitOptionWithDirInfo = TInitOption & IDirectoryInfo;
 
-  /**
-   * timestamp write on ctix comment right-side, only works in useComment option set true
-   * @mode create, single
-   * @default false
-   */
-  useTimestamp: boolean;
-
-  /**
-   * add ctix comment at first line of creted index.ts file, that remark created from ctix
-   * @mode create, single
-   * @default false
-   */
-  useComment: boolean;
-
-  /**
-   * quote mark " or '
-   * @mode create, single
-   * @default '
-   */
-  quote: string;
-
-  /**
-   * display more detailed log
-   * * only work root directory or cli parameter
-   * @mode all
-   * @default false
-   */
-  verbose: boolean;
-
-  /**
-   * created backup file if exists index.ts file already in directory
-   * @mode create, single
-   * @default true
-   */
-  useBackupFile: boolean;
-
-  useRootDir: boolean;
-
-  /**
-   * Export filename, if you not pass this field that use "index.ts" or "index.d.ts"
-   * @mode create, single, clean
-   * @default true
-   */
-  exportFilename: string;
-
-  /**
-   * Output directory. It works only single mode.
-   * @mode single
-   * @default true
-   */
-  output: string;
-
-  /**
-   * Keep file extension in index.ts file.
-   * @mode create, single
-   * @default false
-   */
-  keepFileExt: boolean;
-
-  /**
-   * If set true this option, skip empty directory
-   * @mode create
-   * @default false
-   */
-  skipEmptyDir: boolean;
-}
-
-export type TOptionWithResolvedProject = IOption & {
-  /** topLevelDirs */
-  topDirs: string[];
-  /** topLevelDir Depth */
-  topDirDepth: number;
-
-  /** resolved tsconfig.json directory */
-  resolvedProjectDirPath: string;
-
-  /** resolved tsconfig.json directory with filename */
-  resolvedProjectFilePath: string;
-};
+export type TCreateOrSingleOption = TCreateOptionWithDirInfo | TSingleOptionWithDirInfo;

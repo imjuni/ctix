@@ -75,5 +75,29 @@ export default function getExportedName(exportedDeclarationNode: tsm.ExportedDec
     return moduleDeclarationNode.getName();
   }
 
-  throw new Error(`Cannot support type: ${exportedDeclarationNode.getText()}`);
+  if (isNotEmpty(exportedDeclarationNode.asKind(tsm.SyntaxKind.ArrayLiteralExpression))) {
+    const arrayLiteralExpressionNode = exportedDeclarationNode.asKindOrThrow(
+      tsm.SyntaxKind.ArrayLiteralExpression,
+    );
+
+    const sourceFile = arrayLiteralExpressionNode.getSourceFile();
+    const filename = sourceFile.getBaseName();
+    const basename = getRefinedFilename(filename);
+    return basename;
+  }
+
+  if (isNotEmpty(exportedDeclarationNode.asKind(tsm.SyntaxKind.ObjectLiteralExpression))) {
+    const objectLiteralExpressionNode = exportedDeclarationNode.asKindOrThrow(
+      tsm.SyntaxKind.ObjectLiteralExpression,
+    );
+
+    const sourceFile = objectLiteralExpressionNode.getSourceFile();
+    const filename = sourceFile.getBaseName();
+    const basename = getRefinedFilename(filename);
+    return basename;
+  }
+
+  throw new Error(
+    `Cannot support type: (${exportedDeclarationNode.getKind()}) ${exportedDeclarationNode.getText()}`,
+  );
 }

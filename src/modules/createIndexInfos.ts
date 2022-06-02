@@ -1,6 +1,6 @@
 import * as progress from '@cli/progress';
 import IExportInfo from '@compilers/interfaces/IExportInfo';
-import { TOptionWithResolvedProject } from '@configs/interfaces/IOption';
+import { TCreateOrSingleOption } from '@configs/interfaces/IOption';
 import IGetIgnoredConfigContents from '@ignores/interfaces/IGetIgnoredConfigContents';
 import createDecendentIndex from '@modules/createDecendentIndex';
 import createIndexInfo from '@modules/createIndexInfo';
@@ -13,7 +13,7 @@ import { isNotEmpty } from 'my-easy-fp';
 export default async function createIndexInfos(
   exportInfos: IExportInfo[],
   ignores: IGetIgnoredConfigContents,
-  option: TOptionWithResolvedProject,
+  option: TCreateOrSingleOption,
 ): Promise<ICreateIndexInfos[]> {
   try {
     const { depths, dirPaths } = await getDirPaths(exportInfos, option);

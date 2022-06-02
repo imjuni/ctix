@@ -1,5 +1,5 @@
 import IExportInfo from '@compilers/interfaces/IExportInfo';
-import { TOptionWithResolvedProject } from '@configs/interfaces/IOption';
+import { TCreateOrSingleOption } from '@configs/interfaces/IOption';
 import getFilePathOnIndex from '@modules/getFilePathOnIndex';
 import ICreateIndexInfo from '@tools/interface/ICreateIndexInfo';
 import { isEmpty, isNotEmpty } from 'my-easy-fp';
@@ -7,7 +7,7 @@ import { getDirnameSync } from 'my-node-fp';
 
 export default function createIndexInfo(
   exportInfo: IExportInfo,
-  option: TOptionWithResolvedProject,
+  option: TCreateOrSingleOption,
 ): ICreateIndexInfo[] {
   if (
     exportInfo.starExported &&

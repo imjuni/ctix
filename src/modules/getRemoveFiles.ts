@@ -1,12 +1,12 @@
-import { TOptionWithResolvedProject } from '@configs/interfaces/IOption';
+import { TCleanOptionWithDirInfo } from '@configs/interfaces/IOption';
 import fastGlob from 'fast-glob';
 import { getDirname, replaceSepToPosix } from 'my-node-fp';
 import path from 'path';
 import * as tsm from 'ts-morph';
 
-export default async function getCleanFiles(
+export default async function getRemoveFiles(
   project: tsm.Project,
-  option: TOptionWithResolvedProject,
+  option: TCleanOptionWithDirInfo,
 ) {
   const filePaths = project
     .getSourceFiles()

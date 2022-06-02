@@ -38,7 +38,7 @@ const config = {
   ],
 
   entry: {
-    ctix: ['./src/ctix.ts'],
+    ctix: ['./src/cli.ts'],
   },
 
   output: {
@@ -48,7 +48,7 @@ const config = {
   },
 
   optimization: {
-    minimize: true, // <---- disables uglify.
+    minimize: false, // <---- disables uglify.
     // minimizer: [new UglifyJsPlugin()] if you want to customize it.
   },
 

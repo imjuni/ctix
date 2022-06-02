@@ -1,14 +1,10 @@
-import { TOptionWithResolvedProject } from '@configs/interfaces/IOption';
+import { TCreateOrSingleOption } from '@configs/interfaces/IOption';
 import getExtname from '@tools/getExtname';
 import { isNotEmpty } from 'my-easy-fp';
 import { replaceSepToPosix } from 'my-node-fp';
 import path from 'path';
 
-function getRelativePath(
-  filePath: string,
-  option: TOptionWithResolvedProject,
-  relativePath?: string,
-) {
+function getRelativePath(filePath: string, option: TCreateOrSingleOption, relativePath?: string) {
   const extname = getExtname(filePath);
   const basename = path.basename(filePath, extname);
   const isIndex = basename.endsWith('index');
@@ -54,7 +50,7 @@ function getRelativePath(
 
 export default function getFilePathOnIndex(
   filePath: string,
-  option: TOptionWithResolvedProject,
+  option: TCreateOrSingleOption,
   relativePath?: string,
 ) {
   const semicolon = option.useSemicolon ? ';' : '';

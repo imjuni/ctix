@@ -1,35 +1,23 @@
 import getTypeScriptConfig from '@compilers/getTypeScriptConfig';
-import ICliOption from '@configs/interfaces/ICliOption';
-import IOption, { TOptionWithResolvedProject } from '@configs/interfaces/IOption';
+import IDirectoryInfo from '@configs/interfaces/IDirectoryInfo';
+import {
+  TCleanOption,
+  TCreateOption,
+  TInitOption,
+  TSingleOption,
+} from '@configs/interfaces/IOption';
 import getDepth from '@tools/getDepth';
 import { settify } from '@tools/misc';
 import { getDirnameSync, replaceSepToPosix, replaceSepToWin32 } from 'my-node-fp';
 import path from 'path';
+import getSourceFileEol from './getSourceFileEol';
 
-export default function convertConfig(
-  cliOption: ICliOption,
-  mode: 'create' | 'single',
-): TOptionWithResolvedProject {
-  const option: IOption = {
-    mode,
-    config: cliOption.config,
-    addNewline: cliOption.addNewline ?? true,
-    exportFilename: cliOption.exportFilename ?? 'index.ts',
-    keepFileExt: cliOption.keepFileExt ?? cliOption.keepFileExt ?? false,
-    output: cliOption.output ?? cliOption.project,
-    project: cliOption.project,
-    quote: cliOption.quote ?? "'",
-    useBackupFile: cliOption.useBackupFile ?? true,
-    useComment: cliOption.useComment ?? false,
-    useSemicolon: cliOption.useSemicolon ?? true,
-    useRootDir: cliOption.useRootDir ?? false,
-    useTimestamp: cliOption.useTimestamp ?? false,
-    verbose: cliOption.verbose ?? false,
-    skipEmptyDir: cliOption.skipEmptyDir ?? false,
-  };
+export default async function attachDiretoryInfo<
+  T extends TCreateOption | TSingleOption | TCleanOption | TInitOption,
+>(option: T): Promise<T & IDirectoryInfo> {
+  const project = replaceSepToPosix(path.resolve(option.project));
+  const tsconfig = getTypeScriptConfig(option.project);
 
-  const project = replaceSepToPosix(path.resolve(cliOption.project));
-  const tsconfig = getTypeScriptConfig(cliOption.project);
   const topDirDepth = tsconfig.fileNames
     .map((filePath) => {
       const dirPath = replaceSepToWin32(path.resolve(getDirnameSync(filePath)));
@@ -56,8 +44,11 @@ export default function convertConfig(
       },
     );
 
+  const eol = await getSourceFileEol([...tsconfig.fileNames].slice(0, 30));
+
   return {
     ...option,
+    eol,
     topDirs: topDirDepth.filePaths,
     topDirDepth: 0,
     resolvedProjectDirPath: getDirnameSync(project),

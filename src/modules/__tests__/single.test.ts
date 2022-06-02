@@ -1,8 +1,8 @@
 import getExportInfos from '@compilers/getExportInfos';
 import { TOptionWithResolvedProject } from '@configs/interfaces/IOption';
+import singleIndexInfos from '@modules/singleIndexInfos';
 import * as env from '@testenv/env';
 import { posixJoin } from '@tools/misc';
-import singleIndexInfos from '@tools/singleIndexInfos';
 import validateExportDuplication from '@validations/validateExportDuplication';
 import validateFileNameDuplication from '@validations/validateFileNameDuplication';
 import consola, { LogLevel } from 'consola';

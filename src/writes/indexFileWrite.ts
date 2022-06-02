@@ -1,27 +1,27 @@
 import IReason from '@cli/interfaces/IReason';
-import { TOptionWithResolvedProject } from '@configs/interfaces/IOption';
+import { TCreateOrSingleOption } from '@configs/interfaces/IOption';
 import ICreateIndexInfos from '@tools/interface/ICreateIndexInfos';
+import prettierApply from '@writes/prettierApply';
 import chalk from 'chalk';
 import dayjs from 'dayjs';
 import fs from 'fs';
 import { isFalse, isNotEmpty } from 'my-easy-fp';
 import { exists } from 'my-node-fp';
-import os from 'os';
 import path from 'path';
 
-function getFirstLineComment(option: TOptionWithResolvedProject): string {
+function getFirstLineComment(option: TCreateOrSingleOption): string {
   const today = dayjs();
 
   if (option.useComment && option.useTimestamp) {
-    return `// created from ctix ${today.format('YYYY-MM-DD HH:mm:ss')}${os.EOL}${os.EOL}`;
+    return `// created from ctix ${today.format('YYYY-MM-DD HH:mm:ss')}${option.eol}${option.eol}`;
   }
 
   if (option.useComment) {
-    return `// created from ctix${os.EOL}${os.EOL}`;
+    return `// created from ctix${option.eol}${option.eol}`;
   }
 
   if (option.useTimestamp) {
-    return `// ${today.format('YYYY-MM-DD HH:mm:ss')}${os.EOL}${os.EOL}`;
+    return `// ${today.format('YYYY-MM-DD HH:mm:ss')}${option.eol}${option.eol}`;
   }
 
   return '';
@@ -29,16 +29,24 @@ function getFirstLineComment(option: TOptionWithResolvedProject): string {
 
 export default async function indexFileWrite(
   indexInfos: ICreateIndexInfos[],
-  option: TOptionWithResolvedProject,
+  option: TCreateOrSingleOption,
 ) {
   const nullableReasons = await Promise.all(
     indexInfos.map(async (indexInfo) => {
       const indexFilePath = path.join(indexInfo.resolvedDirPath, option.exportFilename);
-      const indexFileContent = indexInfo.exportStatements.join(os.EOL);
+      const indexFileContent = indexInfo.exportStatements.join(option.eol);
       const firstLine = getFirstLineComment(option);
 
       if (isFalse(await exists(indexFilePath))) {
-        await fs.promises.writeFile(indexFilePath, `${firstLine}${indexFileContent}`);
+        const prettierApplied = await prettierApply(
+          option.project,
+          `${firstLine}${indexFileContent}${option.eol}`,
+        );
+
+        await fs.promises.writeFile(
+          indexFilePath,
+          `${firstLine}${prettierApplied.contents}${option.eol}`,
+        );
         return undefined;
       }
 

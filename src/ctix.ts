@@ -3,27 +3,31 @@ import * as reasoner from '@cli/reasoner';
 import * as spinner from '@cli/spinner';
 import getExportInfos from '@compilers/getExportInfos';
 import getTypeScriptProject from '@compilers/getTypeScriptProject';
-import { TOptionWithResolvedProject } from '@configs/interfaces/IOption';
+import {
+  TCleanOptionWithDirInfo,
+  TCreateOptionWithDirInfo,
+  TSingleOptionWithDirInfo,
+} from '@configs/interfaces/IOption';
 import getIgnoreConfigContents from '@ignores/getIgnoreConfigContents';
 import getIgnoreConfigFiles from '@ignores/getIgnoreConfigFiles';
 import createIndexInfos from '@modules/createIndexInfos';
-import getCleanFiles from '@modules/getCleanFiles';
+import getRemoveFiles from '@modules/getRemoveFiles';
 import singleIndexInfos from '@modules/singleIndexInfos';
 import validateExportDuplication from '@validations/validateExportDuplication';
 import validateFileNameDuplication from '@validations/validateFileNameDuplication';
 import indexFileWrite from '@writes/indexFileWrite';
-import consola from 'consola';
 import fs from 'fs';
 import { isFalse } from 'my-easy-fp';
 import { getDirname } from 'my-node-fp';
 
-export async function createWritor(option: TOptionWithResolvedProject, isMessageDisplay?: boolean) {
+export async function createWritor(option: TCreateOptionWithDirInfo, isMessageDisplay?: boolean) {
   try {
     progress.enable(isMessageDisplay ?? false);
     spinner.enable(isMessageDisplay ?? false);
     reasoner.enable(isMessageDisplay ?? false);
 
     spinner.start("ctix 'create' mode start, ...");
+    reasoner.sleep(1000);
 
     const projectDirPath = await getDirname(option.resolvedProjectFilePath);
     const project = getTypeScriptProject(option.resolvedProjectFilePath);
@@ -69,19 +73,21 @@ export async function createWritor(option: TOptionWithResolvedProject, isMessage
     const err =
       catched instanceof Error ? catched : new Error('Unknown error raised from createWritor');
 
-    consola.error(err);
+    throw err;
   } finally {
     spinner.stop();
+    progress.stop();
   }
 }
 
-export async function singleWritor(option: TOptionWithResolvedProject, isMessageDisplay?: boolean) {
+export async function singleWritor(option: TSingleOptionWithDirInfo, isMessageDisplay?: boolean) {
   try {
     progress.enable(isMessageDisplay ?? false);
     spinner.enable(isMessageDisplay ?? false);
     reasoner.enable(isMessageDisplay ?? false);
 
     spinner.start("ctix 'single' mode start, ...");
+    reasoner.sleep(1000);
 
     const projectPath = await getDirname(option.resolvedProjectFilePath);
     const project = getTypeScriptProject(option.resolvedProjectFilePath);
@@ -117,26 +123,26 @@ export async function singleWritor(option: TOptionWithResolvedProject, isMessage
     const err =
       catched instanceof Error ? catched : new Error('Unknown error raised from createWritor');
 
-    consola.error(err);
+    throw err;
   } finally {
     spinner.stop();
+    progress.stop();
   }
 }
 
-export async function cleanIndexFile(
-  option: TOptionWithResolvedProject,
-  isMessageDisplay?: boolean,
-) {
+export async function removeIndexFile(option: TCleanOptionWithDirInfo, isMessageDisplay?: boolean) {
   try {
     progress.enable(isMessageDisplay ?? false);
     spinner.enable(isMessageDisplay ?? false);
+    reasoner.enable(isMessageDisplay ?? false);
 
-    spinner.start("ctix start 'clean' mode");
+    spinner.start("ctix start 'remove' mode");
+    reasoner.sleep(1000);
 
     const project = getTypeScriptProject(option.resolvedProjectFilePath);
-    const filePaths = await getCleanFiles(project, option);
+    const filePaths = await getRemoveFiles(project, option);
 
-    spinner.update(`clean each ${option.exportFilename} file`);
+    spinner.update(`remove each ${option.exportFilename} file`);
 
     progress.start(filePaths.length, 0);
 
@@ -150,13 +156,15 @@ export async function cleanIndexFile(
       }),
     );
 
-    spinner.update(`ctix 'clean' mode complete!`);
-    spinner.stop();
-    progress.stop();
+    reasoner.space();
+    spinner.update(`ctix 'remove' mode complete!`);
   } catch (catched) {
     const err =
       catched instanceof Error ? catched : new Error('Unknown error raised from createWritor');
 
-    consola.error(err);
+    throw err;
+  } finally {
+    spinner.stop();
+    progress.stop();
   }
 }

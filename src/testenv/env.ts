@@ -1,5 +1,5 @@
-import convertConfig from '@configs/convertConfig';
-import ICliOption from '@configs/interfaces/ICliOption';
+import convertConfig from '@configs/attachDiretoryInfo';
+import ICliOption from '@configs/interfaces/IOption';
 import { replaceSepToPosix } from 'my-node-fp';
 import path from 'path';
 

@@ -1,6 +1,6 @@
 import getExportedName from '@compilers/getExportedName';
 import IExportInfo from '@compilers/interfaces/IExportInfo';
-import { TOptionWithResolvedProject } from '@configs/interfaces/IOption';
+import { TCreateOrSingleOption } from '@configs/interfaces/IOption';
 import IGetIgnoredConfigContents from '@ignores/interfaces/IGetIgnoredConfigContents';
 import getRelativeDepth from '@tools/getRelativeDepth';
 import { isEmpty, isFalse, isNotEmpty } from 'my-easy-fp';
@@ -8,7 +8,7 @@ import { getDirname, getDirnameSync, replaceSepToPosix } from 'my-node-fp';
 import path from 'path';
 import * as tsm from 'ts-morph';
 
-function getDefaultExportName(exportedDeclarations: tsm.ExportedDeclarations[]): string {
+function getFirstExportName(exportedDeclarations: tsm.ExportedDeclarations[]): string {
   const [exportedDeclaration] = exportedDeclarations;
   const exportedName = getExportedName(exportedDeclaration);
   return exportedName;
@@ -28,7 +28,7 @@ function isStarExport(ignoreInFile?: string | string[]) {
 
 export default async function getExportInfo(
   sourceFile: tsm.SourceFile,
-  option: TOptionWithResolvedProject,
+  option: TCreateOrSingleOption,
   ignores: IGetIgnoredConfigContents,
 ): Promise<IExportInfo> {
   const filePath = sourceFile.getFilePath().toString();
@@ -37,7 +37,7 @@ export default async function getExportInfo(
   const defaultExportedDeclarations = exportedDeclarationsMap.get('default');
   const defaultExportedName = isNotEmpty(defaultExportedDeclarations)
     ? {
-        identifier: getDefaultExportName(defaultExportedDeclarations),
+        identifier: getFirstExportName(defaultExportedDeclarations),
         node: defaultExportedDeclarations[0],
       }
     : undefined;
@@ -62,8 +62,7 @@ export default async function getExportInfo(
         ignoreInFile.length > 0 &&
         typeof ignoreInFile[0] === 'string'
       ) {
-        const [firstNode] = exportedDeclarations;
-        const name = getExportedName(firstNode);
+        const name = getFirstExportName(exportedDeclarations);
         return isFalse(ignoreInFile.includes(name));
       }
 

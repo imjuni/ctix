@@ -1,5 +1,5 @@
 import IExportInfo from '@compilers/interfaces/IExportInfo';
-import { TOptionWithResolvedProject } from '@configs/interfaces/IOption';
+import { TCreateOrSingleOption } from '@configs/interfaces/IOption';
 import getFilePathOnIndex from '@modules/getFilePathOnIndex';
 import ICreateIndexInfo from '@tools/interface/ICreateIndexInfo';
 import getOutputDir from '@writes/getOutputDir';
@@ -8,7 +8,7 @@ import * as tsm from 'ts-morph';
 
 export default function singleIndexInfo(
   exportInfo: IExportInfo,
-  option: TOptionWithResolvedProject,
+  option: TCreateOrSingleOption,
   project: tsm.Project,
 ): ICreateIndexInfo[] {
   const outputDir = getOutputDir(project, option);

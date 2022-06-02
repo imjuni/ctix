@@ -1,5 +1,5 @@
 import IExportInfo from '@compilers/interfaces/IExportInfo';
-import { TOptionWithResolvedProject } from '@configs/interfaces/IOption';
+import { TCreateOrSingleOption } from '@configs/interfaces/IOption';
 import IGetIgnoredConfigContents from '@ignores/interfaces/IGetIgnoredConfigContents';
 import getRelativeDepth from '@tools/getRelativeDepth';
 import IDecendentExportInfo from '@tools/interface/IDecendentExportInfo';
@@ -11,7 +11,7 @@ import path from 'path';
 
 export default async function getDecendentExportInfo(
   parentFilePath: string,
-  option: TOptionWithResolvedProject,
+  option: TCreateOrSingleOption,
   exportInfos: IExportInfo[],
   ignores: IGetIgnoredConfigContents,
 ): Promise<IDecendentExportInfo[]> {

@@ -1,55 +1,34 @@
-import ICliOption from '@configs/interfaces/ICliOption';
+import {
+  TCleanOption,
+  TCreateOption,
+  TInitOption,
+  TSingleOption,
+} from '@configs/interfaces/IOption';
 import { Argv } from 'yargs';
 
-export default function builder(args: Argv<ICliOption>) {
+export default function builder<
+  T extends TCleanOption | TCreateOption | TInitOption | TSingleOption,
+>(args: Argv<T>) {
   args
+    .option('project', {
+      alias: 'p',
+      describe: 'tsconfig.json path: you must pass path with filename, like this "./tsconfig.json"',
+      type: 'string',
+    })
+    .option('exportFilename', {
+      alias: 'f',
+      describe: 'Export filename, if you not pass this field that use "index.ts" or "index.d.ts"',
+      type: 'string',
+    })
+    .option('verbose', {
+      alias: 'v',
+      describe: 'display more detailed log',
+      type: 'boolean',
+    })
     .option('config', {
       alias: 'c',
       describe: 'configuration file path',
       type: 'string',
-    })
-    .option('addNewline', {
-      alias: 'n',
-      describe: 'add newline on EOF',
-      type: 'boolean',
-    })
-    .option('useSemicolon', {
-      alias: 's',
-      describe: 'add semicolon on every export statement',
-      type: 'boolean',
-    })
-    .option('useTimestamp', {
-      alias: 'm',
-      describe:
-        'timestamp write on ctix comment right-side, only works in useComment option set true',
-      type: 'boolean',
-    })
-    .option('useComment', {
-      alias: 'c',
-      describe:
-        'add ctix comment at first line of creted index.ts file, that remark created from ctix',
-      type: 'boolean',
-    })
-    .option('quote', {
-      alias: 'q',
-      describe: 'change quote character at export syntax',
-      type: 'string',
-    })
-    .option('excludePath', {
-      alias: 'x',
-      describe: 'exclude path in default export variable(or function)',
-      type: 'boolean',
-      default: false,
-    })
-    .option('useUpperFirst', {
-      describe: 'Default export variable, class, function name keep first capital character.',
-      type: 'boolean',
-      default: true,
-    })
-    .option('useBackupFile', {
-      alias: 'b',
-      describe: 'created backup file if exists index.ts file already in directory',
-      type: 'boolean',
     });
 
   return args;

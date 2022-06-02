@@ -1,13 +1,13 @@
 import getExportInfo from '@compilers/getExportInfo';
 import IExportInfo from '@compilers/interfaces/IExportInfo';
-import { TOptionWithResolvedProject } from '@configs/interfaces/IOption';
+import { TCreateOrSingleOption } from '@configs/interfaces/IOption';
 import IGetIgnoredConfigContents from '@ignores/interfaces/IGetIgnoredConfigContents';
 import { isEmpty, isFalse } from 'my-easy-fp';
 import * as tsm from 'ts-morph';
 
 export default async function getExportInfos(
   project: tsm.Project,
-  option: TOptionWithResolvedProject,
+  option: TCreateOrSingleOption,
   ignores: IGetIgnoredConfigContents,
 ) {
   const ignoreFileNames = Object.keys(ignores);

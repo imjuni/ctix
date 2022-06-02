@@ -43,11 +43,11 @@ const config = {
   ],
 
   entry: {
-    ctix: ['./src/ctix.ts'],
+    ctix: ['./src/cli.ts'],
   },
 
   output: {
-    filename: 'ctix.js',
+    filename: 'cli.js',
     libraryTarget: 'commonjs',
     path: distPath,
   },

@@ -1,5 +1,5 @@
 import IExportInfo from '@compilers/interfaces/IExportInfo';
-import { TOptionWithResolvedProject } from '@configs/interfaces/IOption';
+import { TCreateOrSingleOption } from '@configs/interfaces/IOption';
 import IGetIgnoredConfigContents from '@ignores/interfaces/IGetIgnoredConfigContents';
 import getDecendentExportInfo from '@modules/getDecendentExportInfo';
 import getFilePathOnIndex from '@modules/getFilePathOnIndex';
@@ -43,7 +43,7 @@ export default async function createDecendentIndex(
   dirPath: string,
   exportInfos: IExportInfo[],
   ignores: IGetIgnoredConfigContents,
-  option: TOptionWithResolvedProject,
+  option: TCreateOrSingleOption,
 ): Promise<ICreateIndexInfo[]> {
   const depth = getRelativeDepth(option.topDirs, dirPath);
   const everyDecendents = await getDecendentExportInfo(dirPath, option, exportInfos, ignores);
@@ -54,7 +54,7 @@ export default async function createDecendentIndex(
       return depthDiff !== 0 ? depthDiff : r.dirPath.localeCompare(l.dirPath);
     });
 
-  if (option.skipEmptyDir) {
+  if (option.mode === 'create' && option.skipEmptyDir) {
     // 내가 비어있으면 스킵
     // top level 이라면, 비어 있더라도 index를 빌드해야 한다
     if (exportInfos.length <= 0 && depth !== option.topDirDepth) {
