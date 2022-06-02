@@ -1,3 +1,4 @@
+import * as progress from '@cli/progress';
 import IExportInfo from '@compilers/interfaces/IExportInfo';
 import { TOptionWithResolvedProject } from '@configs/interfaces/IOption';
 import getDirPaths from '@modules/getDirPaths';
@@ -13,52 +14,62 @@ export default async function singleIndexInfos(
   option: TOptionWithResolvedProject,
   project: tsm.Project,
 ): Promise<ICreateIndexInfos[]> {
-  const { depths, dirPaths } = await getDirPaths(exportInfos, option);
+  try {
+    const { depths, dirPaths } = await getDirPaths(exportInfos, option);
 
-  const depthPairs = Object.keys(dirPaths)
-    .map((dirPath) => ({ dirPath, depth: depths[dirPath], exportInfos: dirPaths[dirPath] }))
-    .filter((depthPair) => isNotEmpty(depthPair.depth))
-    .filter((depthPair) => isNotEmpty(depthPair.exportInfos))
-    .sort((l, r) => r.depth - l.depth);
+    const depthPairs = Object.keys(dirPaths)
+      .map((dirPath) => ({ dirPath, depth: depths[dirPath], exportInfos: dirPaths[dirPath] }))
+      .filter((depthPair) => isNotEmpty(depthPair.depth))
+      .filter((depthPair) => isNotEmpty(depthPair.exportInfos))
+      .sort((l, r) => r.depth - l.depth);
 
-  const statementInfos = depthPairs
-    .map((depthPair) => {
-      if (depthPair.exportInfos.length <= 0) {
-        return [];
-      }
+    progress.start(depthPairs.length, 0);
 
-      const statements = depthPair.exportInfos
-        .map((exportInfo) => singleIndexInfo(exportInfo, option, project))
-        .flatMap((nonFlatted) => nonFlatted);
+    const statementInfos = depthPairs
+      .map((depthPair) => {
+        if (depthPair.exportInfos.length <= 0) {
+          return [];
+        }
 
-      return statements;
-    })
-    .flatMap((nonFlatted) => nonFlatted)
-    .reduce<Record<string, ICreateIndexInfos>>((aggregation, indexInfo) => {
-      if (isNotEmpty(aggregation[indexInfo.resolvedDirPath])) {
+        const statements = depthPair.exportInfos
+          .map((exportInfo) => singleIndexInfo(exportInfo, option, project))
+          .flatMap((nonFlatted) => nonFlatted);
+
+        progress.increment();
+
+        return statements;
+      })
+      .flatMap((nonFlatted) => nonFlatted)
+      .reduce<Record<string, ICreateIndexInfos>>((aggregation, indexInfo) => {
+        if (isNotEmpty(aggregation[indexInfo.resolvedDirPath])) {
+          return {
+            ...aggregation,
+            [indexInfo.resolvedDirPath]: mergeCreateIndexInfo(
+              aggregation[indexInfo.resolvedDirPath],
+              indexInfo,
+            ),
+          };
+        }
+
         return {
           ...aggregation,
-          [indexInfo.resolvedDirPath]: mergeCreateIndexInfo(
-            aggregation[indexInfo.resolvedDirPath],
-            indexInfo,
-          ),
-        };
-      }
-
-      return {
-        ...aggregation,
-        [indexInfo.resolvedDirPath]: {
-          depth: indexInfo.depth,
-          resolvedDirPath: indexInfo.resolvedDirPath,
-          resolvedFilePaths: settify(
-            [indexInfo.resolvedFilePath].filter((resolvedFilePath): resolvedFilePath is string =>
-              isNotEmpty(resolvedFilePath),
+          [indexInfo.resolvedDirPath]: {
+            depth: indexInfo.depth,
+            resolvedDirPath: indexInfo.resolvedDirPath,
+            resolvedFilePaths: settify(
+              [indexInfo.resolvedFilePath].filter((resolvedFilePath): resolvedFilePath is string =>
+                isNotEmpty(resolvedFilePath),
+              ),
             ),
-          ),
-          exportStatements: [indexInfo.exportStatement],
-        },
-      };
-    }, {});
+            exportStatements: [indexInfo.exportStatement],
+          },
+        };
+      }, {});
 
-  return Object.values(statementInfos);
+    progress.update(depthPairs.length);
+
+    return Object.values(statementInfos);
+  } finally {
+    progress.stop();
+  }
 }

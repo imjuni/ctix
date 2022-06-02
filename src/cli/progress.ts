@@ -9,16 +9,28 @@ const progressBar = new SingleBar({
   barsize: 40,
 });
 
+let isMessageDisplay = false;
+
+export function enable(flag: boolean) {
+  isMessageDisplay = flag;
+}
+
 export function start(max: number, initial: number) {
-  progressBar.start(max, initial);
+  if (isMessageDisplay) {
+    progressBar.start(max, initial);
+  }
 }
 
 export function increment() {
-  progressBar.increment();
+  if (isMessageDisplay) {
+    progressBar.increment();
+  }
 }
 
 export function update(current: number) {
-  progressBar.update(current);
+  if (isMessageDisplay) {
+    progressBar.update(current);
+  }
 }
 
 export function stop() {

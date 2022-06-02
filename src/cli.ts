@@ -56,7 +56,7 @@ yargs(process.argv.slice(2))
     handler: async (argv) => {
       try {
         const option = convertConfig(argv, 'create');
-        await singleWritor(option);
+        await singleWritor(option, true);
       } catch (catched) {
         const err = catched instanceof Error ? catched : new Error('unknown error raised');
         consola.error(err);

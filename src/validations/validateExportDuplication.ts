@@ -2,6 +2,7 @@ import IReason from '@cli/interfaces/IReason';
 import IExportInfo from '@compilers/interfaces/IExportInfo';
 import IIdentifierWithNode from '@compilers/interfaces/IIdentifierWithNode';
 import { settify } from '@tools/misc';
+import chalk from 'chalk';
 import { isNotEmpty } from 'my-easy-fp';
 
 function createReason(exportInfo: IExportInfo, identifier: string) {
@@ -16,7 +17,7 @@ function createReason(exportInfo: IExportInfo, identifier: string) {
       nodes: [exportInfo.defaultExport.node],
       source: exportInfo.defaultExport.node.getSourceFile(),
       filePath: exportInfo.resolvedFilePath,
-      message: `detect same name of default export statement: ${identifier}`,
+      message: `detect same name of default export statement: "${chalk.yellow(identifier)}"`,
     };
 
     return [reason];
@@ -35,7 +36,7 @@ function createReason(exportInfo: IExportInfo, identifier: string) {
         nodes: [namedExport.node],
         source: namedExport.node.getSourceFile(),
         filePath: exportInfo.resolvedFilePath,
-        message: `detect same name of export statement: ${identifier}`,
+        message: `detect same name of export statement: "${chalk.yellow(identifier)}"`,
       };
 
       return reason;

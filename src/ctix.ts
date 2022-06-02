@@ -1,5 +1,6 @@
-import messageDisplay from '@cli/messageDisplay';
-import { increment, start, stop } from '@cli/progress';
+import * as progress from '@cli/progress';
+import * as reasoner from '@cli/reasoner';
+import * as spinner from '@cli/spinner';
 import getExportInfos from '@compilers/getExportInfos';
 import getTypeScriptProject from '@compilers/getTypeScriptProject';
 import { TOptionWithResolvedProject } from '@configs/interfaces/IOption';
@@ -15,35 +16,28 @@ import consola from 'consola';
 import fs from 'fs';
 import { isFalse } from 'my-easy-fp';
 import { getDirname } from 'my-node-fp';
-import ora from 'ora';
 
 export async function createWritor(option: TOptionWithResolvedProject, isMessageDisplay?: boolean) {
-  const spinner = ora("ctix start 'create' mode");
-
   try {
-    if (isMessageDisplay) {
-      spinner.start();
-    }
+    progress.enable(isMessageDisplay ?? false);
+    spinner.enable(isMessageDisplay ?? false);
+    reasoner.enable(isMessageDisplay ?? false);
+
+    spinner.start("ctix 'create' mode start, ...");
 
     const projectDirPath = await getDirname(option.resolvedProjectFilePath);
     const project = getTypeScriptProject(option.resolvedProjectFilePath);
 
-    if (isMessageDisplay) {
-      spinner.text = 'project loading complete';
-    }
+    spinner.update('project loading complete');
 
     const ignoreFiles = await getIgnoreConfigFiles(projectDirPath);
     const ignoreContents = await getIgnoreConfigContents({ cwd: projectDirPath, ...ignoreFiles });
 
-    if (isMessageDisplay) {
-      spinner.text = 'ignore file loading complete';
-    }
+    spinner.update('ignore file loading complete');
 
     const totalExportInfos = await getExportInfos(project, option, ignoreContents);
 
-    if (isMessageDisplay) {
-      spinner.text = 'start validateion';
-    }
+    spinner.update('start validation');
 
     const exportDuplicationValidateResult = validateExportDuplication(totalExportInfos);
     const fileNameDuplicationValidateResult = validateFileNameDuplication(
@@ -60,98 +54,105 @@ export async function createWritor(option: TOptionWithResolvedProject, isMessage
         isFalse(exportDuplicationValidateResult.filePaths.includes(exportInfo.resolvedFilePath)),
     );
 
-    if (isMessageDisplay) {
-      spinner.text = `generate ${option.exportFilename} content`;
-    }
+    spinner.update(`generate ${option.exportFilename} content`);
 
-    const indexInfos = await createIndexInfos(
-      exportInfos,
-      ignoreContents,
-      option,
-      isMessageDisplay,
-    );
+    const indexInfos = await createIndexInfos(exportInfos, ignoreContents, option);
 
-    if (isMessageDisplay) {
-      spinner.text = `write each ${option.exportFilename} file`;
-    }
+    spinner.update(`write each ${option.exportFilename} file`);
 
     const writeReasons = await indexFileWrite(indexInfos, option);
 
-    if (isMessageDisplay) {
-      spinner.text = `ctix 'create' mode complete!`;
-    }
+    spinner.update(`ctix 'create' mode complete!`);
 
-    if (isMessageDisplay) {
-      messageDisplay([...exportDuplicationValidateResult.reasons, ...writeReasons]);
-    }
+    reasoner.start([...exportDuplicationValidateResult.reasons, ...writeReasons]);
   } catch (catched) {
     const err =
       catched instanceof Error ? catched : new Error('Unknown error raised from createWritor');
 
     consola.error(err);
   } finally {
-    spinner.stopAndPersist();
+    spinner.stop();
   }
 }
 
-export async function singleWritor(option: TOptionWithResolvedProject) {
-  const projectPath = await getDirname(option.resolvedProjectFilePath);
-  const project = getTypeScriptProject(option.resolvedProjectFilePath);
+export async function singleWritor(option: TOptionWithResolvedProject, isMessageDisplay?: boolean) {
+  try {
+    progress.enable(isMessageDisplay ?? false);
+    spinner.enable(isMessageDisplay ?? false);
+    reasoner.enable(isMessageDisplay ?? false);
 
-  const ignoreFiles = await getIgnoreConfigFiles(projectPath);
-  const ignoreContents = await getIgnoreConfigContents({ cwd: projectPath, ...ignoreFiles });
+    spinner.start("ctix 'single' mode start, ...");
 
-  const totalExportInfos = await getExportInfos(project, option, ignoreContents);
-  const exportDuplicationValidateResult = validateExportDuplication(totalExportInfos);
+    const projectPath = await getDirname(option.resolvedProjectFilePath);
+    const project = getTypeScriptProject(option.resolvedProjectFilePath);
 
-  const exportInfos = totalExportInfos.filter((exportInfo) =>
-    isFalse(exportDuplicationValidateResult.filePaths.includes(exportInfo.resolvedFilePath)),
-  );
+    spinner.update('project loading complete');
 
-  const indexInfos = await singleIndexInfos(exportInfos, option, project);
-  const reasons = await indexFileWrite(indexInfos, option);
+    const ignoreFiles = await getIgnoreConfigFiles(projectPath);
+    const ignoreContents = await getIgnoreConfigContents({ cwd: projectPath, ...ignoreFiles });
 
-  consola.debug(reasons);
+    spinner.update('ignore file loading complete');
+
+    const totalExportInfos = await getExportInfos(project, option, ignoreContents);
+    const exportDuplicationValidateResult = validateExportDuplication(totalExportInfos);
+
+    spinner.update('start validateion');
+
+    const exportInfos = totalExportInfos.filter((exportInfo) =>
+      isFalse(exportDuplicationValidateResult.filePaths.includes(exportInfo.resolvedFilePath)),
+    );
+
+    const indexInfos = await singleIndexInfos(exportInfos, option, project);
+
+    spinner.update(`generate ${option.exportFilename} content`);
+
+    const writeReasons = await indexFileWrite(indexInfos, option);
+
+    spinner.update(`write each ${option.exportFilename} file`);
+
+    spinner.update(`ctix 'single' mode complete!`);
+
+    reasoner.start([...exportDuplicationValidateResult.reasons, ...writeReasons]);
+  } catch (catched) {
+    const err =
+      catched instanceof Error ? catched : new Error('Unknown error raised from createWritor');
+
+    consola.error(err);
+  } finally {
+    spinner.stop();
+  }
 }
 
 export async function cleanIndexFile(
   option: TOptionWithResolvedProject,
   isMessageDisplay?: boolean,
 ) {
-  const spinner = ora("ctix start 'clean' mode");
-
   try {
-    if (isMessageDisplay) {
-      spinner.start();
-    }
+    progress.enable(isMessageDisplay ?? false);
+    spinner.enable(isMessageDisplay ?? false);
+
+    spinner.start("ctix start 'clean' mode");
 
     const project = getTypeScriptProject(option.resolvedProjectFilePath);
     const filePaths = await getCleanFiles(project, option);
 
-    if (isMessageDisplay) {
-      spinner.text = `clean each ${option.exportFilename} file`;
-    }
+    spinner.update(`clean each ${option.exportFilename} file`);
 
-    if (isMessageDisplay) {
-      start(filePaths.length, 0);
-    }
+    progress.start(filePaths.length, 0);
 
     await Promise.all(
       filePaths.map(async (filePath) => {
         await fs.promises.unlink(filePath);
 
         if (isMessageDisplay) {
-          increment();
+          progress.increment();
         }
       }),
     );
 
-    if (isMessageDisplay) {
-      spinner.text = `ctix 'clean' mode complete!`;
-      spinner.stopAndPersist();
-
-      stop();
-    }
+    spinner.update(`ctix 'clean' mode complete!`);
+    spinner.stop();
+    progress.stop();
   } catch (catched) {
     const err =
       catched instanceof Error ? catched : new Error('Unknown error raised from createWritor');

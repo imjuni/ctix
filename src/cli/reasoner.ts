@@ -1,10 +1,20 @@
 /* eslint-disable no-console */
 import IReason from '@cli/interfaces/IReason';
 import chalk from 'chalk';
-import { isEmpty } from 'my-easy-fp';
+import { isEmpty, isFalse } from 'my-easy-fp';
 import * as path from 'path';
 
-export default function messageDisplay(reasons: IReason[]): void {
+let isMessageDisplay = false;
+
+export function enable(flag: boolean) {
+  isMessageDisplay = flag;
+}
+
+export function start(reasons: IReason[]): void {
+  if (isFalse(isMessageDisplay)) {
+    return;
+  }
+
   console.log('');
 
   reasons.forEach((reason) => {

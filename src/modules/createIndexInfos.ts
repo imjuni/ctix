@@ -1,4 +1,4 @@
-import { increment, start, stop, update } from '@cli/progress';
+import * as progress from '@cli/progress';
 import IExportInfo from '@compilers/interfaces/IExportInfo';
 import { TOptionWithResolvedProject } from '@configs/interfaces/IOption';
 import IGetIgnoredConfigContents from '@ignores/interfaces/IGetIgnoredConfigContents';
@@ -14,7 +14,6 @@ export default async function createIndexInfos(
   exportInfos: IExportInfo[],
   ignores: IGetIgnoredConfigContents,
   option: TOptionWithResolvedProject,
-  isMessageDisplay?: boolean,
 ): Promise<ICreateIndexInfos[]> {
   try {
     const { depths, dirPaths } = await getDirPaths(exportInfos, option);
@@ -25,9 +24,7 @@ export default async function createIndexInfos(
       .filter((depthPair) => isNotEmpty(depthPair.exportInfos))
       .sort((l, r) => r.depth - l.depth);
 
-    if (isMessageDisplay) {
-      start(depthPairs.length * 2, 0);
-    }
+    progress.start(depthPairs.length * 2, 0);
 
     const statementInfos = depthPairs
       .map((depthPair) => {
@@ -42,9 +39,7 @@ export default async function createIndexInfos(
           })
           .flatMap((nonFlatted) => nonFlatted);
 
-        if (isMessageDisplay) {
-          increment();
-        }
+        progress.increment();
 
         return statements;
       })
@@ -85,9 +80,7 @@ export default async function createIndexInfos(
             option,
           );
 
-          if (isMessageDisplay) {
-            increment();
-          }
+          progress.increment();
 
           return indexInfo;
         }),
@@ -158,14 +151,10 @@ export default async function createIndexInfos(
       {},
     );
 
-    if (isMessageDisplay) {
-      update(depthPairs.length * 2);
-    }
+    progress.update(depthPairs.length * 2);
 
     return Object.values(mergedIndexInfos);
   } finally {
-    if (isMessageDisplay) {
-      stop();
-    }
+    progress.stop();
   }
 }
