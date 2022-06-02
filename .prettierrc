@@ -17,6 +17,17 @@
       "options": {
         "parser": "json5"
       }
+    },
+    {
+      "files": [
+        ".vscode/launch.json",
+        ".vscode/settings.json",
+        "tsconfig.prod.json",
+        "tsconfig.json"
+      ],
+      "options": {
+        "parser": "json"
+      }
     }
   ]
 }

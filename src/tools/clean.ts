@@ -1,4 +1,4 @@
-import { TCTIXOptionWithResolvedProject } from '@interfaces/ICTIXOptions';
+import { TOptionWithResolvedProject } from '@configs/interfaces/IOption';
 import { defaultOption, getCTIXOptions, getMergedConfig } from '@tools/cticonfig';
 import debug from 'debug';
 import * as TEI from 'fp-ts/Either';
@@ -16,7 +16,7 @@ export const getCleanFilenames =
     cliOption,
     includeBackupFrom,
   }: {
-    cliOption?: TCTIXOptionWithResolvedProject;
+    cliOption?: TOptionWithResolvedProject;
     includeBackupFrom?: boolean;
   }): TTE.TaskEither<Error, string[]> =>
   async () => {

@@ -1,32 +1,40 @@
 {
-    "[typescript]": {
-        "editor.formatOnSave": true
-    },
-    "files.exclude": {
-        "**/.git": true,
-        "**/.svn": true,
-        "**/.hg": true,
-        "**/CVS": true,
-        "**/node_modules": true,
-        "**/.DS_Store": true,
-        "**/build": true,
-        "**/dist": false
-    },
-    "files.watcherExclude": {
-        "**/.git/objects/**": true,
-        "**/.git/subtree-cache/**": true,
-        "**/node_modules/**": true,
-        "**/build": true,
-        "**/dist": true
-    },
-    "git.ignoreLimitWarning": true,
-    "search.exclude": {
-        "**/node_modules": true,
-        "**/bower_components": true,
-        "document": true,
-        "dist": true
-    },
-    "files.eol": "\n",
-    "eslint.validate": ["typescript", "typescriptreact"],
-    "typescript.tsdk": "node_modules/typescript/lib"
+  "[typescript]": {
+    "editor.formatOnSave": true
+  },
+  "files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/CVS": true,
+    "**/node_modules": true,
+    "**/.DS_Store": true,
+    "**/build": true,
+    "**/dist": false
+  },
+  "files.watcherExclude": {
+    "**/.git/objects/**": true,
+    "**/.git/subtree-cache/**": true,
+    "**/node_modules/**": true,
+    "**/build": true,
+    "**/dist": true
+  },
+  "git.ignoreLimitWarning": true,
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/bower_components": true,
+    "document": true,
+    "dist": true
+  },
+  "files.eol": "\n",
+  "eslint.validate": ["typescript", "typescriptreact"],
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "files.associations": {
+    "**/.ctiignore": "jsonc"
+  },
+  "jest.autoRun": {
+    "watch": false
+    // "onStartup": ["all-tests"],
+    // "onSave": "test-src-file"
+  }
 }

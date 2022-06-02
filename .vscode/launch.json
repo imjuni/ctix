@@ -5,24 +5,46 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "Jest",
+      "request": "launch",
+      "runtimeArgs": ["run-script", "test:debug", "${input:testPath}"],
+      "runtimeExecutable": "npm",
+      "skipFiles": ["<node_internals>/**"],
+      "stopOnEntry": true,
+      "type": "node"
+    },
+    {
       "type": "node",
       "request": "launch",
-      "name": "Launch Program",
-      "args": [
-        "--runInBand",
-        "--no-cache"
-      ],
-      "runtimeArgs": [
-        "--inspect",
-        "--lazy"
-      ],
-      "program": "${workspaceFolder}/node_modules/.bin/jest"
+      "name": "Launch Test",
+      "args": ["--runInBand", "--no-cache", "${input:testPath}"],
+      "runtimeArgs": ["-r", "ts-node/register", "--inspect"],
+      "stopOnEntry": false,
+      "sourceMaps": true,
+      "program": "${workspaceFolder}/node_modules/jest/bin/jest",
+      "env": {
+        "TS_NODE_PROJECT": "tsconfig.json"
+      }
     },
     {
       "type": "node",
       "request": "attach",
       "name": "Attach Process",
       "port": 9229
+    }
+  ],
+  "inputs": [
+    {
+      "type": "promptString",
+      "id": "testPath",
+      "description": "Path Name your testcase",
+      "default": ""
+    },
+    {
+      "type": "promptString",
+      "id": "testName",
+      "description": "Name your testcase",
+      "default": ""
     }
   ]
 }
