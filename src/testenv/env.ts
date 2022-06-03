@@ -1,7 +1,7 @@
 import attachDiretoryInfo from '@configs/attachDiretoryInfo';
 import ICommonCliOption from '@configs/interfaces/ICommonCliOption';
 import ICreateSingleCommonCliOption from '@configs/interfaces/ICreateSingleCommonCliOption';
-import { TCleanOption, TCreateOption, TSingleOption } from '@configs/interfaces/IOption';
+import { TCreateOption, TRemoveOption, TSingleOption } from '@configs/interfaces/IOption';
 import { replaceSepToPosix } from 'my-node-fp';
 import path from 'path';
 
@@ -59,7 +59,7 @@ export const singleOption: TSingleOption = {
   useRootDir: false,
 };
 
-export const cleanOption: TCleanOption = {
+export const cleanOption: TRemoveOption = {
   ...commonOption,
   mode: 'clean',
   b: true,

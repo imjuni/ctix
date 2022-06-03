@@ -11,23 +11,24 @@ import getRequiredCliCleanOption from '@configs/getRequiredCliCleanOption';
 import getRequiredCliCreateOption from '@configs/getRequiredCliCreateOption';
 import getRequiredCliSingleOption from '@configs/getRequiredCliSingleOption';
 import {
-  TCleanOption,
   TCreateOption,
   TInitOption,
+  TRemoveOption,
   TSingleOption,
 } from '@configs/interfaces/IOption';
 import preLoadConfig from '@configs/preLoadConfig';
 import consola, { LogLevel } from 'consola';
 import sourceMapSupport from 'source-map-support';
 import yargsAnyType, { Argv } from 'yargs';
-import { createWritor, removeIndexFile, singleWritor } from './ctix';
+import { createInitFile, createWritor, removeIndexFile, singleWritor } from './ctix';
 
 sourceMapSupport.install();
 
 // Yargs default type using object type(= {}). But object type cause error that
 // fast-maker cli option interface type. So we make concrete type yargs instance
 // make using by any type.
-const yargs: Argv<TCleanOption | TCreateOption | TInitOption | TSingleOption> = yargsAnyType as any;
+const yargs: Argv<TRemoveOption | TCreateOption | TInitOption | TSingleOption> =
+  yargsAnyType as any;
 consola.level = LogLevel.Debug;
 
 yargs(process.argv.slice(2))
@@ -77,7 +78,7 @@ yargs(process.argv.slice(2))
       }
     },
   })
-  .command<TCleanOption>({
+  .command<TRemoveOption>({
     command: 'remove',
     aliases: ['r'],
     describe: 'remove index.ts file',
@@ -109,7 +110,8 @@ yargs(process.argv.slice(2))
     },
     handler: async (argv) => {
       try {
-        consola.debug('init', argv);
+        const optionWithDirectoryInfo = attachDiretoryInfo(argv);
+        await createInitFile(optionWithDirectoryInfo, true);
       } catch (catched) {
         const err = catched instanceof Error ? catched : new Error('unknown error raised');
         consola.error(err);

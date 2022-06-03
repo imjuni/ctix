@@ -1,13 +1,13 @@
 import {
-  TCleanOption,
   TCreateOption,
   TInitOption,
+  TRemoveOption,
   TSingleOption,
 } from '@configs/interfaces/IOption';
 import { Argv } from 'yargs';
 
 export default function createSingleBuilder<
-  T extends TCleanOption | TCreateOption | TInitOption | TSingleOption,
+  T extends TRemoveOption | TCreateOption | TInitOption | TSingleOption,
 >(args: Argv<T>) {
   args
     .option('useSemicolon', {

@@ -1,9 +1,9 @@
 import getTypeScriptConfig from '@compilers/getTypeScriptConfig';
 import IDirectoryInfo from '@configs/interfaces/IDirectoryInfo';
 import {
-  TCleanOption,
   TCreateOption,
   TInitOption,
+  TRemoveOption,
   TSingleOption,
 } from '@configs/interfaces/IOption';
 import getDepth from '@tools/getDepth';
@@ -13,7 +13,7 @@ import path from 'path';
 import getSourceFileEol from './getSourceFileEol';
 
 export default function attachDiretoryInfo<
-  T extends TCreateOption | TSingleOption | TCleanOption | TInitOption,
+  T extends TCreateOption | TSingleOption | TRemoveOption | TInitOption,
 >(option: T): T & IDirectoryInfo {
   const project = replaceSepToPosix(path.resolve(option.project));
   const tsconfig = getTypeScriptConfig(option.project);

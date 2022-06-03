@@ -1,10 +1,10 @@
-import { TCleanOption } from '@configs/interfaces/IOption';
+import { TRemoveOption } from '@configs/interfaces/IOption';
 
 export default function getRequiredCliCleanOption(
-  originConfig: Partial<Omit<TCleanOption, 'config' | 'c' | 'project' | 'p'>> &
-    Required<Pick<TCleanOption, 'config' | 'c' | 'project' | 'p'>>,
-): TCleanOption {
-  const option: TCleanOption = {
+  originConfig: Partial<Omit<TRemoveOption, 'config' | 'c' | 'project' | 'p'>> &
+    Required<Pick<TRemoveOption, 'config' | 'c' | 'project' | 'p'>>,
+): TRemoveOption {
+  const option: TRemoveOption = {
     mode: 'clean',
 
     c: originConfig.c,

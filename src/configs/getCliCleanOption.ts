@@ -1,4 +1,4 @@
-import { TCleanOption } from '@configs/interfaces/IOption';
+import { TRemoveOption } from '@configs/interfaces/IOption';
 import jsonLoader from '@configs/jsonLoader';
 import minimist from 'minimist';
 
@@ -7,10 +7,10 @@ export default function getCliCleanOption(
   argv: minimist.ParsedArgs,
   configFilePath: string,
   project: string,
-): TCleanOption {
-  const rawConfig: Partial<TCleanOption> = jsonLoader(configBuf.toString());
+): TRemoveOption {
+  const rawConfig: Partial<TRemoveOption> = jsonLoader(configBuf.toString());
 
-  const option: TCleanOption = {
+  const option: TRemoveOption = {
     mode: 'clean',
 
     c: configFilePath,

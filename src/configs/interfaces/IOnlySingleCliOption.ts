@@ -2,9 +2,8 @@ export default interface IOnlySingleCliOption {
   mode: 'single';
 
   /**
-   * Output directory. It works only single mode.
+   * Output directory. Default value is same project directory
    * @mode single
-   * @default true
    */
   o: string;
   output: string;

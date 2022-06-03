@@ -51,6 +51,17 @@ export default function preLoadConfig() {
       return getCliCleanOption(configBuf, argv, configFilePath, tsconfigPath);
     }
 
+    if (command === 'init') {
+      return {
+        p: tsconfigPath,
+        project: tsconfigPath,
+        c: configFilePath,
+        config: configFilePath,
+        f: argv.f ?? argv.exportFilename ?? 'index.ts',
+        exportFilename: argv.f ?? argv.exportFilename ?? 'index.ts',
+      };
+    }
+
     return {};
   } catch (catched) {
     const err = catched instanceof Error ? catched : new Error('unknown error raised');

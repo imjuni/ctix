@@ -30,7 +30,8 @@
   "eslint.validate": ["typescript", "typescriptreact"],
   "typescript.tsdk": "node_modules/typescript/lib",
   "files.associations": {
-    "**/.ctiignore": "jsonc"
+    "**/.ctiignore": "jsonc",
+    ".ctirc": "jsonc"
   },
   "jest.autoRun": {
     "watch": false

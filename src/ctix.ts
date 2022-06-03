@@ -1,12 +1,15 @@
+import IReason from '@cli/interfaces/IReason';
 import * as progress from '@cli/progress';
 import * as reasoner from '@cli/reasoner';
 import * as spinner from '@cli/spinner';
 import getExportInfos from '@compilers/getExportInfos';
 import getTypeScriptProject from '@compilers/getTypeScriptProject';
+import initialConfigLiteral from '@configs/initialConfigLiteral';
 import {
-  TCleanOptionWithDirInfo,
   TCreateOptionWithDirInfo,
+  TRemoveOptionWithDirInfo,
   TSingleOptionWithDirInfo,
+  TTInitOptionWithDirInfo,
 } from '@configs/interfaces/IOption';
 import getIgnoreConfigContents from '@ignores/getIgnoreConfigContents';
 import getIgnoreConfigFiles from '@ignores/getIgnoreConfigFiles';
@@ -17,8 +20,10 @@ import validateExportDuplication from '@validations/validateExportDuplication';
 import validateFileNameDuplication from '@validations/validateFileNameDuplication';
 import indexFileWrite from '@writes/indexFileWrite';
 import fs from 'fs';
-import { isFalse } from 'my-easy-fp';
-import { getDirname } from 'my-node-fp';
+import { applyEdits, FormattingOptions, ModificationOptions, modify } from 'jsonc-parser';
+import { isFalse, isNotEmpty } from 'my-easy-fp';
+import { exists, getDirname, replaceSepToPosix } from 'my-node-fp';
+import path from 'path';
 
 export async function createWritor(option: TCreateOptionWithDirInfo, isMessageDisplay?: boolean) {
   try {
@@ -130,7 +135,10 @@ export async function singleWritor(option: TSingleOptionWithDirInfo, isMessageDi
   }
 }
 
-export async function removeIndexFile(option: TCleanOptionWithDirInfo, isMessageDisplay?: boolean) {
+export async function removeIndexFile(
+  option: TRemoveOptionWithDirInfo,
+  isMessageDisplay?: boolean,
+) {
   try {
     progress.enable(isMessageDisplay ?? false);
     spinner.enable(isMessageDisplay ?? false);
@@ -158,6 +166,143 @@ export async function removeIndexFile(option: TCleanOptionWithDirInfo, isMessage
 
     reasoner.space();
     spinner.update(`ctix 'remove' mode complete!`);
+  } catch (catched) {
+    const err =
+      catched instanceof Error ? catched : new Error('Unknown error raised from createWritor');
+
+    throw err;
+  } finally {
+    spinner.stop();
+    progress.stop();
+  }
+}
+
+export async function createInitFile(option: TTInitOptionWithDirInfo, isMessageDisplay?: boolean) {
+  progress.enable(isMessageDisplay ?? false);
+  spinner.enable(isMessageDisplay ?? false);
+  reasoner.enable(isMessageDisplay ?? false);
+
+  try {
+    spinner.start("ctix 'init' mode start, ...");
+
+    const configPath = await getDirname(
+      option.config ?? option.project ?? path.resolve(process.cwd()),
+    );
+
+    const configFilePath = replaceSepToPosix(path.resolve(path.join(configPath, '.ctirc')));
+
+    const formattingOptions: FormattingOptions = {
+      insertSpaces: true,
+      tabSize: 2,
+      eol: '\n',
+    };
+
+    const options: ModificationOptions = {
+      formattingOptions,
+    };
+
+    let modifiedInitialConfig: string = initialConfigLiteral;
+
+    if (isNotEmpty(option.project)) {
+      modifiedInitialConfig = applyEdits(
+        modifiedInitialConfig,
+        modify(modifiedInitialConfig, ['project'], option.project, options),
+      );
+    }
+
+    if (isNotEmpty(option.output)) {
+      modifiedInitialConfig = applyEdits(
+        modifiedInitialConfig,
+        modify(modifiedInitialConfig, ['output'], option.output, options),
+      );
+    } else if (isNotEmpty(option.project)) {
+      modifiedInitialConfig = applyEdits(
+        modifiedInitialConfig,
+        modify(modifiedInitialConfig, ['output'], option.project, options),
+      );
+    } else {
+      modifiedInitialConfig = applyEdits(
+        modifiedInitialConfig,
+        modify(modifiedInitialConfig, ['output'], configPath, options),
+      );
+    }
+
+    if (isNotEmpty(option.exportFilename)) {
+      modifiedInitialConfig = applyEdits(
+        modifiedInitialConfig,
+        modify(modifiedInitialConfig, ['exportFilename'], option.exportFilename, options),
+      );
+    }
+
+    if (isNotEmpty(option.useSemicolon)) {
+      modifiedInitialConfig = applyEdits(
+        modifiedInitialConfig,
+        modify(modifiedInitialConfig, ['useSemicolon'], option.useSemicolon, options),
+      );
+    }
+
+    if (isNotEmpty(option.useTimestamp)) {
+      modifiedInitialConfig = applyEdits(
+        modifiedInitialConfig,
+        modify(modifiedInitialConfig, ['useTimestamp'], option.useTimestamp, options),
+      );
+    }
+
+    if (isNotEmpty(option.useComment)) {
+      modifiedInitialConfig = applyEdits(
+        modifiedInitialConfig,
+        modify(modifiedInitialConfig, ['useComment'], option.useComment, options),
+      );
+    }
+
+    if (isNotEmpty(option.quote)) {
+      modifiedInitialConfig = applyEdits(
+        modifiedInitialConfig,
+        modify(modifiedInitialConfig, ['quote'], option.quote, options),
+      );
+    }
+
+    if (isNotEmpty(option.keepFileExt)) {
+      modifiedInitialConfig = applyEdits(
+        modifiedInitialConfig,
+        modify(modifiedInitialConfig, ['keepFileExt'], option.keepFileExt, options),
+      );
+    }
+
+    if (isNotEmpty(option.skipEmptyDir)) {
+      modifiedInitialConfig = applyEdits(
+        modifiedInitialConfig,
+        modify(modifiedInitialConfig, ['skipEmptyDir'], option.skipEmptyDir, options),
+      );
+    }
+
+    if (isNotEmpty(option.useRootDir)) {
+      modifiedInitialConfig = applyEdits(
+        modifiedInitialConfig,
+        modify(modifiedInitialConfig, ['useRootDir'], option.useRootDir, options),
+      );
+    }
+
+    if (isNotEmpty(option.includeBackup)) {
+      modifiedInitialConfig = applyEdits(
+        modifiedInitialConfig,
+        modify(modifiedInitialConfig, ['includeBackup'], option.includeBackup, options),
+      );
+    }
+
+    if (await exists(configFilePath)) {
+      const reason: IReason = {
+        type: 'error',
+        filePath: configFilePath,
+        message: `configuration file(.ctirc) is already exists: ${configFilePath}`,
+      };
+
+      reasoner.start([reason]);
+    } else {
+      await fs.promises.writeFile(configFilePath, modifiedInitialConfig);
+    }
+
+    spinner.start("ctix 'init' mode complete!");
   } catch (catched) {
     const err =
       catched instanceof Error ? catched : new Error('Unknown error raised from createWritor');

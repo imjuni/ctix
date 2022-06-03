@@ -1,8 +1,8 @@
-export default interface IOnlyCleanCliOption {
+export default interface IOnlyRemoveCliOption {
   mode: 'clean';
 
   /**
-   * clean with backup file
+   * remove with backup file
    * @mode clean
    * @default false
    */

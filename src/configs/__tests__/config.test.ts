@@ -1,21 +1,30 @@
-import getIgnoreConfigFiles from '@ignores/getIgnoreConfigFiles';
-import * as env from '@testenv/env';
+import initialConfigLiteral from '@configs/initialConfigLiteral';
 import consola, { LogLevel } from 'consola';
-import { replaceSepToPosix } from 'my-node-fp';
-import path from 'path';
+import { applyEdits, FormattingOptions, ModificationOptions, modify } from 'jsonc-parser';
+
+const share: { formattingOptions: FormattingOptions; options: ModificationOptions } = {} as any;
 
 beforeAll(() => {
   consola.level = LogLevel.Debug;
-});
-
-test('getIgnoreFiles', async () => {
-  const result = await getIgnoreConfigFiles(env.exampleType04Path);
-
-  const expectation = {
-    cti: replaceSepToPosix(path.join(env.exampleType04Path, '.ctiignore')),
-    git: replaceSepToPosix(path.join(env.exampleType04Path, '.gitignore')),
-    npm: replaceSepToPosix(path.join(env.exampleType04Path, '.npmignore')),
+  share.formattingOptions = {
+    insertSpaces: true,
+    tabSize: 2,
+    eol: '\n',
   };
 
-  expect(result).toEqual(expectation);
+  share.options = {
+    formattingOptions: share.formattingOptions,
+  };
+});
+
+test('defaultConfig', async () => {
+  consola.debug('AS-IS -------------------------------------------------------------------');
+  consola.debug(initialConfigLiteral);
+  consola.debug('------------------------------------------------------------------------');
+
+  const modified = modify(initialConfigLiteral, ['project'], 'helloworld', share.options);
+
+  consola.debug('TO-BE -------------------------------------------------------------------');
+  consola.debug(applyEdits(initialConfigLiteral, modified));
+  consola.debug('------------------------------------------------------------------------');
 });
