@@ -13,7 +13,7 @@ ctix create -p ./tsconfig.json
 ```
 
 # Breaking Change
-0.6.x and 1.x version big different. See [migration guide](https://github.com/imjuni/ctix/blob/master/docs/MigrationGuide.md). cli command, option, ignore file changed.
+0.6.x and 1.x version big different. See [migration guide](https://github.com/imjuni/ctix/blob/master/docs/MigrationGuide.md). cli command, option, ignore file changed. Support TypeScript `4.7.2` and `new file extensions(.mts, .cts, etc)`.
 
 # Introduction
 When you develop package for another application using TypeScript, that is compiled using by webpack, babel. webpack very popular tool for bundling. At this time you need bundle entrypoint called by index.ts. 
@@ -117,7 +117,7 @@ ctix i
 | --includeBackup | N/A | false | clean | If this option set true on clean mode what will be delete backup file. |
 
 # Ignore
-Ignore file 3 way that is .gitignore, .npmignore, .ctiignore.
+Ignore file 3 way that is `.gitignore`, `.npmignore`, `.ctiignore`.
 
 ## .ctiignore
 .ctiignore file is json with comments. See below.
