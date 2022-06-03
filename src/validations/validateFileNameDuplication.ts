@@ -1,13 +1,13 @@
 import IReason from '@cli/interfaces/IReason';
 import IExportInfo from '@compilers/interfaces/IExportInfo';
-import { TOptionWithResolvedProject } from '@configs/interfaces/IOption';
+import { TCreateOrSingleOption } from '@configs/interfaces/IOption';
 import getExtname from '@tools/getExtname';
 import chalk from 'chalk';
 import path from 'path';
 
 export default function validateFileNameDuplication(
   exportInfos: IExportInfo[],
-  option: TOptionWithResolvedProject,
+  option: TCreateOrSingleOption,
 ) {
   if (option.mode === 'single') {
     return {

@@ -12,9 +12,9 @@ import { getDirnameSync, replaceSepToPosix, replaceSepToWin32 } from 'my-node-fp
 import path from 'path';
 import getSourceFileEol from './getSourceFileEol';
 
-export default async function attachDiretoryInfo<
+export default function attachDiretoryInfo<
   T extends TCreateOption | TSingleOption | TCleanOption | TInitOption,
->(option: T): Promise<T & IDirectoryInfo> {
+>(option: T): T & IDirectoryInfo {
   const project = replaceSepToPosix(path.resolve(option.project));
   const tsconfig = getTypeScriptConfig(option.project);
 
@@ -44,7 +44,7 @@ export default async function attachDiretoryInfo<
       },
     );
 
-  const eol = await getSourceFileEol([...tsconfig.fileNames].slice(0, 30));
+  const eol = getSourceFileEol([...tsconfig.fileNames].slice(0, 30));
 
   return {
     ...option,

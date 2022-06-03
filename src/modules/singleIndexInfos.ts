@@ -1,6 +1,6 @@
 import * as progress from '@cli/progress';
 import IExportInfo from '@compilers/interfaces/IExportInfo';
-import { TCreateOrSingleOption } from '@configs/interfaces/IOption';
+import { TSingleOptionWithDirInfo } from '@configs/interfaces/IOption';
 import getDirPaths from '@modules/getDirPaths';
 import mergeCreateIndexInfo from '@modules/mergeCreateIndexInfo';
 import singleIndexInfo from '@modules/singleIndexInfo';
@@ -11,7 +11,7 @@ import * as tsm from 'ts-morph';
 
 export default async function singleIndexInfos(
   exportInfos: IExportInfo[],
-  option: TCreateOrSingleOption,
+  option: TSingleOptionWithDirInfo,
   project: tsm.Project,
 ): Promise<ICreateIndexInfos[]> {
   try {

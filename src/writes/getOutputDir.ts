@@ -1,4 +1,4 @@
-import { TOptionWithResolvedProject } from '@configs/interfaces/IOption';
+import { TSingleOptionWithDirInfo } from '@configs/interfaces/IOption';
 import { isFalse } from 'my-easy-fp';
 import { getDirnameSync, replaceSepToPosix } from 'my-node-fp';
 import path from 'path';
@@ -23,10 +23,10 @@ function getTsconfigRootDir(compilerOptions: tsm.CompilerOptions): string | unde
 
 export default function getOutputDir(
   project: tsm.Project,
-  option: TOptionWithResolvedProject,
+  option: TSingleOptionWithDirInfo,
 ): string {
-  if (isFalse(option.useRootDir)) {
-    return path.resolve(getDirnameSync(option.output));
+  if (isFalse(option.useRootDir ?? false)) {
+    return replaceSepToPosix(path.resolve(getDirnameSync(option.output)));
   }
 
   const compilerOptions = project.getCompilerOptions();

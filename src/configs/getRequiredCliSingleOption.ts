@@ -16,9 +16,6 @@ export default function getRequiredCliSingleOption(
     f: originConfig.exportFilename ?? 'index.ts',
     exportFilename: originConfig.exportFilename ?? 'index.ts',
 
-    v: originConfig.verbose ?? false,
-    verbose: originConfig.verbose ?? false,
-
     s: originConfig.useSemicolon ?? true,
     useSemicolon: originConfig.useSemicolon ?? true,
 

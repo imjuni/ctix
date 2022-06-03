@@ -1,5 +1,7 @@
-import convertConfig from '@configs/attachDiretoryInfo';
-import ICliOption from '@configs/interfaces/IOption';
+import attachDiretoryInfo from '@configs/attachDiretoryInfo';
+import ICommonCliOption from '@configs/interfaces/ICommonCliOption';
+import ICreateSingleCommonCliOption from '@configs/interfaces/ICreateSingleCommonCliOption';
+import { TCleanOption, TCreateOption, TSingleOption } from '@configs/interfaces/IOption';
 import { replaceSepToPosix } from 'my-node-fp';
 import path from 'path';
 
@@ -11,22 +13,18 @@ export const exampleType03Path = path.join(examplePath, 'type03');
 export const exampleType04Path = path.join(examplePath, 'type04');
 export const exampleType05Path = path.join(examplePath, 'type05');
 
-export const cliOption: ICliOption = {
+export const commonOption: ICommonCliOption = {
   c: replaceSepToPosix(path.join(exampleRcloaderPath, '.ctirc')),
   config: replaceSepToPosix(path.join(exampleRcloaderPath, '.ctirc')),
 
   p: replaceSepToPosix(path.join(examplePath, 'tsconfig.json')),
   project: replaceSepToPosix(path.join(examplePath, 'tsconfig.json')),
 
-  f: undefined,
-  exportFilename: undefined,
+  f: 'index.ts',
+  exportFilename: 'index.ts',
+};
 
-  n: undefined,
-  addNewline: undefined,
-
-  v: undefined,
-  verbose: undefined,
-
+export const createSingleCommonOption: ICreateSingleCommonCliOption = {
   s: true,
   useSemicolon: true,
 
@@ -36,17 +34,38 @@ export const cliOption: ICliOption = {
   t: false,
   useComment: false,
 
-  q: undefined,
-  quote: undefined,
+  q: "'",
+  quote: "'",
 
   b: true,
   useBackupFile: true,
-
-  e: true,
-  skipEmptyDir: true,
-
-  o: replaceSepToPosix(exampleType04Path),
-  output: replaceSepToPosix(exampleType04Path),
 };
 
-export const option = convertConfig(cliOption, 'create');
+export const createOption: TCreateOption = {
+  ...commonOption,
+  ...createSingleCommonOption,
+  mode: 'create',
+  e: true,
+  skipEmptyDir: true,
+};
+
+export const singleOption: TSingleOption = {
+  ...commonOption,
+  ...createSingleCommonOption,
+  mode: 'single',
+  o: replaceSepToPosix(exampleType04Path),
+  output: replaceSepToPosix(exampleType04Path),
+  r: false,
+  useRootDir: false,
+};
+
+export const cleanOption: TCleanOption = {
+  ...commonOption,
+  mode: 'clean',
+  b: true,
+  includeBackup: true,
+};
+
+export const createOptionWithDirInfo = attachDiretoryInfo(createOption);
+export const singleOptionWithDirInfo = attachDiretoryInfo(singleOption);
+export const cleanOptionWithDirInfo = attachDiretoryInfo(cleanOption);

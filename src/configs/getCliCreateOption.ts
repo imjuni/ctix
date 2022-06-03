@@ -22,9 +22,6 @@ export default function getCliCreateOption(
     f: argv.f ?? argv.exportFilename ?? rawConfig.exportFilename ?? 'index.ts',
     exportFilename: argv.f ?? argv.exportFilename ?? rawConfig.exportFilename ?? 'index.ts',
 
-    v: argv.v ?? argv.verbose ?? rawConfig.verbose ?? false,
-    verbose: argv.v ?? argv.verbose ?? rawConfig.verbose ?? false,
-
     s: argv.s ?? argv.useSemicolon ?? rawConfig.useSemicolon,
     useSemicolon: argv.s ?? argv.useSemicolon ?? rawConfig.useSemicolon,
 

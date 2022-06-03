@@ -7,8 +7,8 @@ export default [
     depth: 4,
     resolvedDirPath: posixJoin(env.exampleType03Path, 'popcorn', 'finance', 'discipline'),
     exportStatements: [
-      "export { default as case02 } from './case02'",
-      "export { default as Case03 } from './case03'",
+      "export { default as case02 } from './case02';",
+      "export { default as Case03 } from './case03';",
     ],
     resolvedFilePaths: [
       posixJoin(env.exampleType03Path, 'popcorn', 'finance', 'discipline', 'case02.ts'),
@@ -19,8 +19,8 @@ export default [
     depth: 4,
     resolvedDirPath: posixJoin(env.exampleType03Path, 'popcorn', 'lawyer', 'appliance'),
     exportStatements: [
-      "export { default as IKittens } from './IKittens'",
-      "export * from './TomatoesCls'",
+      "export { default as IKittens } from './IKittens';",
+      "export * from './TomatoesCls';",
     ],
     resolvedFilePaths: [
       posixJoin(env.exampleType03Path, 'popcorn', 'lawyer', 'appliance', 'IKittens.ts'),
@@ -30,13 +30,13 @@ export default [
   {
     depth: 3,
     resolvedDirPath: posixJoin(env.exampleType03Path, 'juvenile', 'spill'),
-    exportStatements: ["export * from './ExperienceCls'"],
+    exportStatements: ["export * from './ExperienceCls';"],
     resolvedFilePaths: [posixJoin(env.exampleType03Path, 'juvenile', 'spill', 'ExperienceCls.ts')],
   },
   {
     depth: 3,
     resolvedDirPath: posixJoin(env.exampleType03Path, 'wellmade', 'carpenter'),
-    exportStatements: ["export * from './DiscussionCls'", "export * from './MakeshiftCls'"],
+    exportStatements: ["export * from './DiscussionCls';", "export * from './MakeshiftCls';"],
     resolvedFilePaths: [
       posixJoin(env.exampleType03Path, 'wellmade', 'carpenter', 'DiscussionCls.ts'),
       posixJoin(env.exampleType03Path, 'wellmade', 'carpenter', 'MakeshiftCls.ts'),
@@ -45,16 +45,16 @@ export default [
   {
     depth: 1,
     resolvedDirPath: posixJoin(env.exampleType03Path, 'juvenile'),
-    exportStatements: ["export * from './TriteCls'", "export * from './spill'"],
+    exportStatements: ["export * from './spill';", "export * from './TriteCls';"],
     resolvedFilePaths: [posixJoin(env.exampleType03Path, 'juvenile', 'TriteCls.ts')],
   },
   {
     depth: 1,
     resolvedDirPath: posixJoin(env.exampleType03Path, 'popcorn'),
     exportStatements: [
-      "export { default as case01 } from './case01'",
-      "export * from './finance/discipline'",
-      "export * from './lawyer/appliance'",
+      "export { default as case01 } from './case01';",
+      "export * from './finance/discipline';",
+      "export * from './lawyer/appliance';",
     ],
     resolvedFilePaths: [posixJoin(env.exampleType03Path, 'popcorn', 'case01.ts')],
   },
@@ -62,10 +62,10 @@ export default [
     depth: 1,
     resolvedDirPath: posixJoin(env.exampleType03Path, 'wellmade'),
     exportStatements: [
-      "export * from './ChildlikeCls'",
-      "export * from './FlakyCls'",
-      "export * from './WhisperingCls'",
-      "export * from './carpenter'",
+      "export * from './carpenter';",
+      "export * from './ChildlikeCls';",
+      "export * from './FlakyCls';",
+      "export * from './WhisperingCls';",
     ],
     resolvedFilePaths: [
       posixJoin(env.exampleType03Path, 'wellmade', 'ChildlikeCls.ts'),
@@ -77,10 +77,10 @@ export default [
     depth: 1,
     resolvedDirPath: replaceSepToPosix(env.exampleType03Path),
     exportStatements: [
-      "export * from './BubbleCls'",
-      "export * from './ComparisonCls'",
-      "export * from './HandsomelyCls'",
-      "export * from './SampleCls'",
+      "export * from './BubbleCls';",
+      "export * from './ComparisonCls';",
+      "export * from './HandsomelyCls';",
+      "export * from './SampleCls';",
     ],
     resolvedFilePaths: [
       posixJoin(env.exampleType03Path, 'BubbleCls.tsx'),

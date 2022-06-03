@@ -2,19 +2,19 @@ import IExportInfo from '@compilers/interfaces/IExportInfo';
 import { TCreateOrSingleOption } from '@configs/interfaces/IOption';
 import IGetIgnoredConfigContents from '@ignores/interfaces/IGetIgnoredConfigContents';
 import getRelativeDepth from '@tools/getRelativeDepth';
-import IDecendentExportInfo from '@tools/interface/IDecendentExportInfo';
+import IDescendantExportInfo from '@tools/interface/IDescendantExportInfo';
 import fastGlob from 'fast-glob';
 import fs from 'fs';
 import { isEmpty, isFalse } from 'my-easy-fp';
-import { getDirname, isDescendant, replaceSepToPosix } from 'my-node-fp';
+import { getDirname, isDescendant, isEmptyDir, replaceSepToPosix } from 'my-node-fp';
 import path from 'path';
 
-export default async function getDecendentExportInfo(
+export default async function getDescendantExportInfo(
   parentFilePath: string,
   option: TCreateOrSingleOption,
   exportInfos: IExportInfo[],
   ignores: IGetIgnoredConfigContents,
-): Promise<IDecendentExportInfo[]> {
+): Promise<IDescendantExportInfo[]> {
   const filePath = replaceSepToPosix(parentFilePath);
   const dirPath = await getDirname(filePath);
   const globPattern = replaceSepToPosix(path.join(dirPath, '**', '*'));
@@ -30,7 +30,10 @@ export default async function getDecendentExportInfo(
     onlyDirectories: true,
   });
 
-  const decendents = await Promise.all(
+  const parentExportInfo = exportInfos.filter(
+    (exportInfo) => exportInfo.resolvedDirPath === filePath,
+  );
+  const descendants = await Promise.all(
     globDirPaths.map(async (globDirPath) => {
       const includeExportInfos = exportInfos
         .filter((exportInfo) => exportInfo.resolvedDirPath === globDirPath)
@@ -68,6 +71,14 @@ export default async function getDecendentExportInfo(
     }),
   );
 
-  const sortedDecendents = decendents.sort((l, r) => l.depth - r.depth);
-  return sortedDecendents;
+  const sortedDescendents = [
+    {
+      dirPath: filePath,
+      isTerminal: await isEmptyDir(filePath),
+      depth: getRelativeDepth(option.topDirs, filePath),
+      exportInfos: parentExportInfo,
+    },
+    ...descendants,
+  ].sort((l, r) => l.depth - r.depth);
+  return sortedDescendents;
 }

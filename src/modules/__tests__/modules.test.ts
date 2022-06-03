@@ -1,11 +1,11 @@
 import getExportInfos from '@compilers/getExportInfos';
-import { TOptionWithResolvedProject } from '@configs/interfaces/IOption';
-import getDecendentExportInfo from '@modules/getDecendentExportInfo';
+import { TCreateOptionWithDirInfo, TSingleOptionWithDirInfo } from '@configs/interfaces/IOption';
+import getDescendantExportInfo from '@modules/getDescendantExportInfo';
 import getDirPaths from '@modules/getDirPaths';
 import getFilePathOnIndex from '@modules/getFilePathOnIndex';
 import mergeCreateIndexInfo from '@modules/mergeCreateIndexInfo';
 import * as env from '@testenv/env';
-import { posixJoin } from '@tools/misc';
+import { getTestValue, posixJoin } from '@tools/misc';
 import validateExportDuplication from '@validations/validateExportDuplication';
 import validateFileNameDuplication from '@validations/validateFileNameDuplication';
 import consola, { LogLevel } from 'consola';
@@ -42,9 +42,8 @@ test('c001-getDirPaths', async () => {
     return { ...aggregation, [file]: '*' };
   }, {});
 
-  const option: TOptionWithResolvedProject = {
-    ...env.option,
-    mode: 'create' as const,
+  const option: TCreateOptionWithDirInfo = {
+    ...env.createOptionWithDirInfo,
     skipEmptyDir: false,
     keepFileExt: false,
     topDirDepth: 0,
@@ -66,25 +65,23 @@ test('c001-getDirPaths', async () => {
   );
 
   const dirPaths = await getDirPaths(validExportInfos, option);
+  const terminateCircularResult = getTestValue(dirPaths);
   const expectation = await import(path.join(__dirname, 'expects', expectFileName));
 
-  expect(dirPaths).toEqual(expectation.default);
+  expect(terminateCircularResult).toEqual(expectation.default);
 });
 
 test('c002-getFilePathOnIndex', async () => {
   const case01 = posixJoin(env.exampleType04Path, 'fast-maker', 'carpenter', 'DiscussionCls.ts');
 
-  const filePathCase01 = getFilePathOnIndex(case01, { ...env.option, mode: 'create' });
+  const filePathCase01 = getFilePathOnIndex(case01, { ...env.createOptionWithDirInfo });
   const filePathCase02 = getFilePathOnIndex(case01, {
-    ...env.option,
-    mode: 'create',
+    ...env.createOptionWithDirInfo,
     keepFileExt: true,
   });
 
-  const option: TOptionWithResolvedProject = {
-    ...env.option,
-    mode: 'single' as const,
-    skipEmptyDir: false,
+  const option: TSingleOptionWithDirInfo = {
+    ...env.singleOptionWithDirInfo,
     keepFileExt: false,
     topDirDepth: 0,
     topDirs: [env.exampleType04Path],
@@ -102,10 +99,10 @@ test('c002-getFilePathOnIndex', async () => {
   );
 
   const expectation = [
-    "'./DiscussionCls'",
-    "'./DiscussionCls.ts'",
-    "'./fast-maker/carpenter/DiscussionCls'",
-    "'./fast-maker/carpenter/DiscussionCls.ts'",
+    "'./DiscussionCls';",
+    "'./DiscussionCls.ts';",
+    "'./fast-maker/carpenter/DiscussionCls';",
+    "'./fast-maker/carpenter/DiscussionCls.ts';",
   ].sort();
 
   const result = [filePathCase01, filePathCase02, filePathCase03, filePathCase04].sort();
@@ -114,7 +111,7 @@ test('c002-getFilePathOnIndex', async () => {
   expect(result).toEqual(expectation);
 });
 
-test('c003-getDecendentExportInfo', async () => {
+test('c003-getDescendantExportInfo', async () => {
   const expectFileName = expect
     .getState()
     .currentTestName.replace(/^([cC][0-9]+)(-.+)/, 'expect$2.ts');
@@ -129,9 +126,8 @@ test('c003-getDecendentExportInfo', async () => {
     { cwd: replaceSepToPosix(env.examplePath) },
   );
 
-  const option: TOptionWithResolvedProject = {
-    ...env.option,
-    mode: 'create' as const,
+  const option: TCreateOptionWithDirInfo = {
+    ...env.createOptionWithDirInfo,
     skipEmptyDir: false,
     keepFileExt: false,
     topDirDepth: 0,
@@ -157,11 +153,12 @@ test('c003-getDecendentExportInfo', async () => {
   );
 
   const dirPath = posixJoin(env.exampleType03Path, 'popcorn');
-  const result = await getDecendentExportInfo(dirPath, option, validExportInfos, ignores);
+  const result = await getDescendantExportInfo(dirPath, option, validExportInfos, ignores);
+  const terminateCircularResult = getTestValue(result);
 
   const expectation = await import(path.join(__dirname, 'expects', expectFileName));
 
-  expect(result).toEqual(expectation.default);
+  expect(terminateCircularResult).toEqual(expectation.default);
 });
 
 test('c004-mergeCreateIndexInfo', async () => {

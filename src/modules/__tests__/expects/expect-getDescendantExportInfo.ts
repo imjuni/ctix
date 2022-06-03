@@ -3,6 +3,24 @@ import { posixJoin } from '@tools/misc';
 
 export default [
   {
+    dirPath: posixJoin(env.exampleType03Path, 'popcorn'),
+    isTerminal: false,
+    depth: 1,
+    exportInfos: [
+      {
+        resolvedFilePath: posixJoin(env.exampleType03Path, 'popcorn', 'case01.ts'),
+        resolvedDirPath: posixJoin(env.exampleType03Path, 'popcorn'),
+        relativeFilePath: 'type03/popcorn/case01.ts',
+        depth: 2,
+        starExported: true,
+        defaultExport: {
+          identifier: 'case01',
+        },
+        namedExports: [],
+      },
+    ],
+  },
+  {
     dirPath: posixJoin(env.exampleType03Path, 'popcorn', 'finance'),
     isTerminal: false,
     depth: 2,
@@ -31,7 +49,7 @@ export default [
         relativeFilePath: posixJoin('type03', 'popcorn', 'finance', 'discipline', 'case02.ts'),
         depth: 4,
         starExported: true,
-        defaultExport: 'case02',
+        defaultExport: { identifier: 'case02' },
         namedExports: [],
       },
       {
@@ -46,7 +64,7 @@ export default [
         relativeFilePath: posixJoin('type03', 'popcorn', 'finance', 'discipline', 'case03.ts'),
         depth: 4,
         starExported: true,
-        defaultExport: 'Case03',
+        defaultExport: { identifier: 'Case03' },
         namedExports: [],
       },
     ],
@@ -68,7 +86,7 @@ export default [
         relativeFilePath: posixJoin('type03', 'popcorn', 'lawyer', 'appliance', 'IKittens.ts'),
         depth: 4,
         starExported: true,
-        defaultExport: 'IKittens',
+        defaultExport: { identifier: 'IKittens' },
         namedExports: [],
       },
       {
@@ -84,7 +102,7 @@ export default [
         depth: 4,
         starExported: true,
         defaultExport: undefined,
-        namedExports: ['TomatoesCls'],
+        namedExports: [{ identifier: 'TomatoesCls' }],
       },
     ],
   },

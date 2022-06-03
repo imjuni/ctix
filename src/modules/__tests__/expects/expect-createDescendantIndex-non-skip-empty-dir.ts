@@ -6,18 +6,18 @@ export default [
     depth: 0,
     resolvedDirPath: replaceSepToPosix(env.exampleType03Path),
     resolvedFilePath: undefined,
-    exportStatement: "export * from './juvenile'",
+    exportStatement: "export * from './juvenile';",
   },
   {
     depth: 0,
     resolvedDirPath: replaceSepToPosix(env.exampleType03Path),
     resolvedFilePath: undefined,
-    exportStatement: "export * from './popcorn'",
+    exportStatement: "export * from './popcorn';",
   },
   {
     depth: 0,
     resolvedDirPath: replaceSepToPosix(env.exampleType03Path),
     resolvedFilePath: undefined,
-    exportStatement: "export * from './wellmade'",
+    exportStatement: "export * from './wellmade';",
   },
 ];

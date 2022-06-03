@@ -36,7 +36,7 @@ test('c001-validateExportDuplication', async () => {
     return { ...aggregation, [file]: '*' };
   }, {});
 
-  const exportInfos = await getExportInfos(share.project, env.option, ignores);
+  const exportInfos = await getExportInfos(share.project, env.createOptionWithDirInfo, ignores);
   const result = validateExportDuplication(exportInfos);
 
   const expectation = await import(path.join(__dirname, 'expects', expectFileName));
@@ -64,8 +64,8 @@ test('c002-validateFileNameDuplication', async () => {
     return { ...aggregation, [file]: '*' };
   }, {});
 
-  const exportInfos = await getExportInfos(share.project, env.option, ignores);
-  const result = validateFileNameDuplication(exportInfos, env.option);
+  const exportInfos = await getExportInfos(share.project, env.createOptionWithDirInfo, ignores);
+  const result = validateFileNameDuplication(exportInfos, env.createOptionWithDirInfo);
   const terminateCircularResult = getTestValue(result);
 
   const expectation = await import(path.join(__dirname, 'expects', expectFileName));

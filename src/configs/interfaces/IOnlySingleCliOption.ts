@@ -6,8 +6,8 @@ export default interface IOnlySingleCliOption {
    * @mode single
    * @default true
    */
-  o?: string;
-  output?: string;
+  o: string;
+  output: string;
 
   /**
    * Only work single file generation mode. use rootDir configuration in tsconfig.json.

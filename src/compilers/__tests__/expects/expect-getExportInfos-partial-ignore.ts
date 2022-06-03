@@ -75,9 +75,9 @@ export default [
     resolvedDirPath: posixJoin(env.exampleType04Path, 'wellmade'),
     relativeFilePath: posixJoin('type04', 'wellmade', 'ChildlikeCls.ts'),
     depth: 2,
-    starExported: true,
+    starExported: false,
     defaultExport: undefined,
-    namedExports: [{ identifier: 'ChildlikeCls' }],
+    namedExports: [{ identifier: 'ChildlikeCls' }, { identifier: 'document' }],
   },
   {
     resolvedFilePath: posixJoin(env.exampleType04Path, 'wellmade', 'carpenter', 'DiscussionCls.ts'),

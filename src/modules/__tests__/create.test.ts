@@ -1,11 +1,11 @@
 import getExportInfos from '@compilers/getExportInfos';
-import { TOptionWithResolvedProject } from '@configs/interfaces/IOption';
+import { TCreateOptionWithDirInfo } from '@configs/interfaces/IOption';
 import getIgnoreConfigContents from '@ignores/getIgnoreConfigContents';
 import getIgnoreConfigFiles from '@ignores/getIgnoreConfigFiles';
-import createDecendentIndex from '@modules/createDecendentIndex';
+import createDescendantIndex from '@modules/createDescendantIndex';
 import createIndexInfos from '@modules/createIndexInfos';
 import * as env from '@testenv/env';
-import { posixJoin } from '@tools/misc';
+import { getTestValue, posixJoin } from '@tools/misc';
 import validateExportDuplication from '@validations/validateExportDuplication';
 import validateFileNameDuplication from '@validations/validateFileNameDuplication';
 import consola, { LogLevel } from 'consola';
@@ -23,7 +23,7 @@ beforeAll(() => {
   share.project = new tsm.Project({ tsConfigFilePath: share.projectPath });
 });
 
-test('c001-createDecendentIndex-non-skip-empty-dir', async () => {
+test('c001-createDescendantIndex-non-skip-empty-dir', async () => {
   const expectFileName = expect
     .getState()
     .currentTestName.replace(/^([cC][0-9]+)(-.+)/, 'expect$2.ts');
@@ -38,9 +38,8 @@ test('c001-createDecendentIndex-non-skip-empty-dir', async () => {
     { cwd: replaceSepToPosix(env.examplePath) },
   );
 
-  const option: TOptionWithResolvedProject = {
-    ...env.option,
-    mode: 'create' as const,
+  const option: TCreateOptionWithDirInfo = {
+    ...env.createOptionWithDirInfo,
     skipEmptyDir: false,
     keepFileExt: false,
     topDirDepth: 0,
@@ -65,12 +64,13 @@ test('c001-createDecendentIndex-non-skip-empty-dir', async () => {
       isFalse(exportDuplicationValidateResult.filePaths.includes(exportInfo.resolvedFilePath)),
   );
 
-  const result = await createDecendentIndex(
+  const result = await createDescendantIndex(
     replaceSepToPosix(env.exampleType03Path),
     validExportInfos,
     ignores,
     option,
   );
+
   const sortedResult = result.sort((l, r) => {
     const depthDiff = l.depth - r.depth;
     if (depthDiff !== 0) {
@@ -84,13 +84,14 @@ test('c001-createDecendentIndex-non-skip-empty-dir', async () => {
 
     return l.exportStatement.localeCompare(r.exportStatement);
   });
+  const terminateCircularResult = getTestValue(sortedResult);
 
   const expectation = await import(path.join(__dirname, 'expects', expectFileName));
 
-  expect(sortedResult).toEqual(expectation.default);
+  expect(terminateCircularResult).toEqual(expectation.default);
 });
 
-test('c002-createDecendentIndex-do-skip-empty-dir', async () => {
+test('c002-createDescendantIndex-do-skip-empty-dir', async () => {
   const expectFileName = expect
     .getState()
     .currentTestName.replace(/^([cC][0-9]+)(-.+)/, 'expect$2.ts');
@@ -105,9 +106,8 @@ test('c002-createDecendentIndex-do-skip-empty-dir', async () => {
     { cwd: replaceSepToPosix(env.examplePath) },
   );
 
-  const option: TOptionWithResolvedProject = {
-    ...env.option,
-    mode: 'create' as const,
+  const option: TCreateOptionWithDirInfo = {
+    ...env.createOptionWithDirInfo,
     skipEmptyDir: true,
     keepFileExt: false,
     topDirs: [env.exampleType03Path],
@@ -131,7 +131,7 @@ test('c002-createDecendentIndex-do-skip-empty-dir', async () => {
       isFalse(exportDuplicationValidateResult.filePaths.includes(exportInfo.resolvedFilePath)),
   );
 
-  const result = await createDecendentIndex(
+  const result = await createDescendantIndex(
     replaceSepToPosix(env.exampleType03Path),
     validExportInfos,
     ignores,
@@ -150,10 +150,11 @@ test('c002-createDecendentIndex-do-skip-empty-dir', async () => {
 
     return l.exportStatement.localeCompare(r.exportStatement);
   });
+  const terminateCircularResult = getTestValue(sortedResult);
 
   const expectation = await import(path.join(__dirname, 'expects', expectFileName));
 
-  expect(sortedResult).toEqual(expectation.default);
+  expect(terminateCircularResult).toEqual(expectation.default);
 });
 
 test('c003-createIndexInfos-non-skip-empty-dir', async () => {
@@ -172,8 +173,8 @@ test('c003-createIndexInfos-non-skip-empty-dir', async () => {
   );
 
   // option modify for expectation
-  const option: TOptionWithResolvedProject = {
-    ...env.option,
+  const option: TCreateOptionWithDirInfo = {
+    ...env.createOptionWithDirInfo,
     skipEmptyDir: false,
     keepFileExt: false,
     topDirs: [env.exampleType03Path],
@@ -198,12 +199,11 @@ test('c003-createIndexInfos-non-skip-empty-dir', async () => {
   );
 
   const result = await createIndexInfos(validExportInfos, ignores, option);
-
-  consola.debug(result);
+  const terminateCircularResult = getTestValue(result);
 
   const expectation = await import(path.join(__dirname, 'expects', expectFileName));
 
-  expect(result).toEqual(expectation.default);
+  expect(terminateCircularResult).toEqual(expectation.default);
 });
 
 test('c004-createIndexInfos-do-skip-empty-dir', async () => {
@@ -222,8 +222,8 @@ test('c004-createIndexInfos-do-skip-empty-dir', async () => {
   );
 
   // option modify for expectation
-  const option: TOptionWithResolvedProject = {
-    ...env.option,
+  const option: TCreateOptionWithDirInfo = {
+    ...env.createOptionWithDirInfo,
     skipEmptyDir: true,
     keepFileExt: false,
     topDirs: [env.exampleType03Path],
@@ -248,12 +248,11 @@ test('c004-createIndexInfos-do-skip-empty-dir', async () => {
   );
 
   const result = await createIndexInfos(validExportInfos, ignores, option);
-
-  consola.debug(result);
+  const terminateCircularResult = getTestValue(result);
 
   const expectation = await import(path.join(__dirname, 'expects', expectFileName));
 
-  expect(result).toEqual(expectation.default);
+  expect(terminateCircularResult).toEqual(expectation.default);
 });
 
 test('c005-createIndexInfos-partial-ignore', async () => {
@@ -272,8 +271,8 @@ test('c005-createIndexInfos-partial-ignore', async () => {
   );
 
   // option modify for expectation
-  const option: TOptionWithResolvedProject = {
-    ...env.option,
+  const option: TCreateOptionWithDirInfo = {
+    ...env.createOptionWithDirInfo,
     skipEmptyDir: true,
     keepFileExt: false,
     topDirs: [env.exampleType04Path],
@@ -304,8 +303,9 @@ test('c005-createIndexInfos-partial-ignore', async () => {
   );
 
   const result = await createIndexInfos(validExportInfos, ignores, option);
+  const terminateCircularResult = getTestValue(result);
 
   const expectation = await import(path.join(__dirname, 'expects', expectFileName));
 
-  expect(result).toEqual(expectation.default);
+  expect(terminateCircularResult).toEqual(expectation.default);
 });

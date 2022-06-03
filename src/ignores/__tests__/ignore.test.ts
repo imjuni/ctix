@@ -39,6 +39,7 @@ test('getIgnoreConfigContents', async () => {
     [posixJoin(env.exampleType04Path, 'fast-maker/carpenter/MakeshiftCls.ts')]: '*',
     [posixJoin(env.exampleType04Path, 'juvenile/TriteCls.ts')]: '*',
     [posixJoin(env.exampleType04Path, 'juvenile/spill/ExperienceCls.ts')]: '*',
+    [posixJoin(env.exampleType04Path, 'wellmade/ChildlikeCls.ts')]: ['transfer', 'stomach'],
     [posixJoin(env.exampleType04Path, 'wellmade/FlakyCls.ts')]: '*',
     [posixJoin(env.exampleType04Path, 'wellmade/WhisperingCls.ts')]: '*',
   };

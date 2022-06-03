@@ -6,7 +6,7 @@ export default [
   {
     depth: 3,
     resolvedDirPath: posixJoin(env.exampleType04Path, 'wellmade', 'carpenter'),
-    exportStatements: ["export * from './DiscussionCls'", "export * from './MakeshiftCls'"],
+    exportStatements: ["export * from './DiscussionCls';", "export * from './MakeshiftCls';"],
     resolvedFilePaths: [
       posixJoin(env.exampleType04Path, 'wellmade', 'carpenter', 'DiscussionCls.ts'),
       posixJoin(env.exampleType04Path, 'wellmade', 'carpenter', 'MakeshiftCls.ts'),
@@ -16,8 +16,8 @@ export default [
     depth: 1,
     resolvedDirPath: posixJoin(env.exampleType04Path, 'wellmade'),
     exportStatements: [
-      "export { ChildlikeCls, document } from './ChildlikeCls'",
-      "export * from './carpenter'",
+      "export { ChildlikeCls, document } from './ChildlikeCls';",
+      "export * from './carpenter';",
     ],
     resolvedFilePaths: [posixJoin(env.exampleType04Path, 'wellmade', 'ChildlikeCls.ts')],
   },
@@ -25,13 +25,13 @@ export default [
     depth: 1,
     resolvedDirPath: replaceSepToPosix(env.exampleType04Path),
     exportStatements: [
-      "export * from './BubbleCls'",
-      "export * from './ComparisonCls'",
-      "export * from './createTypeScriptIndex'",
-      "export * from './HandsomelyCls'",
-      "export * from './SampleCls'",
-      "export * from './SampleEnum'",
-      "export { default as JobType } from './SampleEnum'",
+      "export { default as JobType } from './SampleEnum';",
+      "export * from './BubbleCls';",
+      "export * from './ComparisonCls';",
+      "export * from './createTypeScriptIndex.d.ts';",
+      "export * from './HandsomelyCls';",
+      "export * from './SampleCls';",
+      "export * from './SampleEnum';",
     ],
     resolvedFilePaths: [
       posixJoin(env.exampleType04Path, 'BubbleCls.tsx'),

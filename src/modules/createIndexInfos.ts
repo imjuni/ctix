@@ -2,7 +2,7 @@ import * as progress from '@cli/progress';
 import IExportInfo from '@compilers/interfaces/IExportInfo';
 import { TCreateOrSingleOption } from '@configs/interfaces/IOption';
 import IGetIgnoredConfigContents from '@ignores/interfaces/IGetIgnoredConfigContents';
-import createDecendentIndex from '@modules/createDecendentIndex';
+import createDescendantIndex from '@modules/createDescendantIndex';
 import createIndexInfo from '@modules/createIndexInfo';
 import getDirPaths from '@modules/getDirPaths';
 import mergeCreateIndexInfo from '@modules/mergeCreateIndexInfo';
@@ -70,10 +70,10 @@ export default async function createIndexInfos(
         };
       }, {});
 
-    const decendentExportInfos = (
+    const descendantExportInfos = (
       await Promise.all(
         depthPairs.map(async (depthPair) => {
-          const indexInfo = await createDecendentIndex(
+          const indexInfo = await createDescendantIndex(
             depthPair.dirPath,
             exportInfos,
             ignores,
@@ -114,14 +114,14 @@ export default async function createIndexInfos(
     const mergedIndexInfos = depthPairs.reduce<Record<string, ICreateIndexInfos>>(
       (aggregation, depthPair) => {
         const statementInfo = statementInfos[depthPair.dirPath];
-        const decendentExportInfo = decendentExportInfos[depthPair.dirPath];
+        const descendantExportInfo = descendantExportInfos[depthPair.dirPath];
 
-        if (isNotEmpty(statementInfo) && isNotEmpty(decendentExportInfo)) {
+        if (isNotEmpty(statementInfo) && isNotEmpty(descendantExportInfo)) {
           return {
             ...aggregation,
             [depthPair.dirPath]: mergeCreateIndexInfo(
               mergeCreateIndexInfo(aggregation[depthPair.dirPath], statementInfo),
-              decendentExportInfo,
+              descendantExportInfo,
             ),
           };
         }
@@ -136,12 +136,12 @@ export default async function createIndexInfos(
           };
         }
 
-        if (isNotEmpty(decendentExportInfo)) {
+        if (isNotEmpty(descendantExportInfo)) {
           return {
             ...aggregation,
             [depthPair.dirPath]: mergeCreateIndexInfo(
               aggregation[depthPair.dirPath],
-              decendentExportInfo,
+              descendantExportInfo,
             ),
           };
         }
@@ -153,7 +153,12 @@ export default async function createIndexInfos(
 
     progress.update(depthPairs.length * 2);
 
-    return Object.values(mergedIndexInfos);
+    return Object.values(mergedIndexInfos).map((mergedIndexInfo) => {
+      return {
+        ...mergedIndexInfo,
+        exportStatements: mergedIndexInfo.exportStatements.sort((l, r) => l.localeCompare(r)),
+      };
+    });
   } finally {
     progress.stop();
   }

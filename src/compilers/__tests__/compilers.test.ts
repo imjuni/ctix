@@ -1,7 +1,7 @@
 import getExportedName from '@compilers/getExportedName';
 import getExportInfo from '@compilers/getExportInfo';
 import getExportInfos from '@compilers/getExportInfos';
-import { TOptionWithResolvedProject } from '@configs/interfaces/IOption';
+import { TCreateOptionWithDirInfo } from '@configs/interfaces/IOption';
 import getIgnoreConfigContents from '@ignores/getIgnoreConfigContents';
 import getIgnoreConfigFiles from '@ignores/getIgnoreConfigFiles';
 import * as env from '@testenv/env';
@@ -56,8 +56,6 @@ test('c001-getExportedName', async () => {
   names.sort();
   expectation.sort();
 
-  consola.debug(names);
-
   expect(names).toEqual(expectation);
 });
 
@@ -68,7 +66,10 @@ test('c002-getFileExportInfo', async () => {
   );
 
   const sourceFile = share.project.getSourceFileOrThrow(sourceFilePath);
-  const result = await getExportInfo(sourceFile, env.option, { [sourceFilePath]: ['name'] });
+  const result = await getExportInfo(sourceFile, env.createOptionWithDirInfo, {
+    [sourceFilePath]: ['name'],
+  });
+  const terminateCircularResult = getTestValue(result);
 
   const expectation = {
     resolvedFilePath: posixJoin(env.exampleType04Path, 'fast-maker\\ChildlikeCls.ts'),
@@ -87,12 +88,10 @@ test('c002-getFileExportInfo', async () => {
     namedExports: [{ identifier: 'ChildlikeCls' }, { identifier: 'greeting' }],
   };
 
-  consola.debug(result);
-
-  expect(getTestValue(result)).toEqual(expectation);
+  expect(terminateCircularResult).toEqual(expectation);
 });
 
-test('c003-getFileExportInfo', async () => {
+test('c003-getExportInfo', async () => {
   // project://example/type04/fast-maker/ChildlikeCls.ts
   // example\type03\popcorn\lawyer\appliance\bomb.ts
   const sourceFilePath = posixJoin(
@@ -103,9 +102,8 @@ test('c003-getFileExportInfo', async () => {
     'bomb.ts',
   );
 
-  const option: TOptionWithResolvedProject = {
-    ...env.option,
-    mode: 'create' as const,
+  const option: TCreateOptionWithDirInfo = {
+    ...env.createOptionWithDirInfo,
     skipEmptyDir: false,
     keepFileExt: false,
     topDirDepth: 0,
@@ -114,6 +112,7 @@ test('c003-getFileExportInfo', async () => {
 
   const sourceFile = share.project.getSourceFileOrThrow(sourceFilePath);
   const result = await getExportInfo(sourceFile, option, { [sourceFilePath]: ['name'] });
+  const terminateCircularResult = getTestValue(result);
 
   const expectation = {
     resolvedFilePath: posixJoin(env.exampleType03Path, 'popcorn', 'lawyer', 'appliance', 'bomb.ts'),
@@ -132,9 +131,7 @@ test('c003-getFileExportInfo', async () => {
     namedExports: [{ identifier: 'bomb' }],
   };
 
-  consola.debug(getTestValue(result));
-
-  expect(getTestValue(result)).toEqual(expectation);
+  expect(terminateCircularResult).toEqual(expectation);
 });
 
 test('c004-getExportInfos-not-ignore', async () => {
@@ -156,20 +153,19 @@ test('c004-getExportInfos-not-ignore', async () => {
     return { ...aggregation, [file]: '*' };
   }, {});
 
-  const option: TOptionWithResolvedProject = {
-    ...env.option,
-    mode: 'create' as const,
+  const option: TCreateOptionWithDirInfo = {
+    ...env.createOptionWithDirInfo,
     skipEmptyDir: false,
     keepFileExt: false,
     topDirDepth: 0,
-    output: replaceSepToPosix(env.exampleType03Path),
     topDirs: [replaceSepToPosix(env.exampleType03Path)],
   };
 
   const result = await getExportInfos(share.project, option, ignores);
   const expectation = await import(path.join(__dirname, 'expects', expectFileName));
+  const terminateCircularResult = getTestValue(result);
 
-  expect(getTestValue(result)).toEqual(expectation.default);
+  expect(terminateCircularResult).toEqual(expectation.default);
 });
 
 test('c005-getExportInfos-partial-ignore', async () => {
@@ -197,19 +193,17 @@ test('c005-getExportInfos-partial-ignore', async () => {
     return { ...aggregation, [file]: '*', ...ignoreContents };
   }, {});
 
-  const option: TOptionWithResolvedProject = {
-    ...env.option,
-    mode: 'create' as const,
+  const option: TCreateOptionWithDirInfo = {
+    ...env.createOptionWithDirInfo,
     skipEmptyDir: false,
     keepFileExt: false,
     topDirDepth: 0,
-    output: replaceSepToPosix(env.exampleType04Path),
     topDirs: [replaceSepToPosix(env.exampleType04Path)],
   };
 
   const result = await getExportInfos(share.project, option, ignores);
   const expectation = await import(path.join(__dirname, 'expects', expectFileName));
-  const refined = getTestValue(result);
+  const terminateCircularResult = getTestValue(result);
 
-  expect(refined).toEqual(expectation.default);
+  expect(terminateCircularResult).toEqual(expectation.default);
 });

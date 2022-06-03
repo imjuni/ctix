@@ -33,19 +33,4 @@ export default interface ICommonCliOption {
    * @default index.ts
    */
   exportFilename: string;
-
-  /**
-   * display more detailed log
-   * * only work root directory or cli parameter
-   * @mode all
-   * @default false
-   */
-  v?: boolean;
-  /**
-   * display more detailed log
-   * * only work root directory or cli parameter
-   * @mode all
-   * @default false
-   */
-  verbose?: boolean;
 }

@@ -45,7 +45,7 @@ yargs(process.argv.slice(2))
     handler: async (argv) => {
       try {
         const option = getRequiredCliCreateOption(argv);
-        const optionWithDirectoryInfo = await attachDiretoryInfo(option);
+        const optionWithDirectoryInfo = attachDiretoryInfo(option);
 
         await createWritor(optionWithDirectoryInfo, true);
       } catch (catched) {
@@ -68,7 +68,7 @@ yargs(process.argv.slice(2))
     handler: async (argv) => {
       try {
         const option = getRequiredCliSingleOption(argv);
-        const optionWithDirectoryInfo = await attachDiretoryInfo(option);
+        const optionWithDirectoryInfo = attachDiretoryInfo(option);
 
         await singleWritor(optionWithDirectoryInfo, true);
       } catch (catched) {
@@ -90,7 +90,7 @@ yargs(process.argv.slice(2))
     handler: async (argv) => {
       try {
         const option = getRequiredCliCleanOption(argv);
-        const optionWithDirectoryInfo = await attachDiretoryInfo(option);
+        const optionWithDirectoryInfo = attachDiretoryInfo(option);
 
         await removeIndexFile(optionWithDirectoryInfo, true);
       } catch (catched) {
