@@ -6,6 +6,7 @@ import ts from 'typescript';
  * @param project project directory
  */
 export default function getTypeScriptConfig(project: string): ts.ParsedCommandLine {
+  const resolvedProjectPath = path.resolve(project);
   const parseConfigHost: ts.ParseConfigHost = {
     fileExists: ts.sys.fileExists,
     readFile: ts.sys.readFile,
@@ -13,12 +14,12 @@ export default function getTypeScriptConfig(project: string): ts.ParsedCommandLi
     useCaseSensitiveFileNames: true,
   };
 
-  const configFile = ts.readConfigFile(project, ts.sys.readFile);
+  const configFile = ts.readConfigFile(resolvedProjectPath, ts.sys.readFile);
 
   const tsconfig = ts.parseJsonConfigFileContent(
     configFile.config,
     parseConfigHost,
-    path.dirname(project),
+    path.dirname(resolvedProjectPath),
   );
 
   // ts.ParsedCommandLine object already contains typescript file in project

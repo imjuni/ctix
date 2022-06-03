@@ -60,7 +60,7 @@ test('c001-getExportedName', async () => {
   expect(names).toEqual(expectation);
 });
 
-test('c002-getFileExportInfo', async () => {
+test('c002-getExportInfo', async () => {
   // project://example/type04/fast-maker/ChildlikeCls.ts
   const sourceFilePath = replaceSepToPosix(
     path.join(env.exampleType04Path, 'fast-maker', 'ChildlikeCls.ts'),
@@ -168,7 +168,10 @@ test('c004-getExportInfos-not-ignore', async () => {
     topDirs: [replaceSepToPosix(env.exampleType03Path)],
   };
 
-  const result = await getExportInfos(share.project, option, ignores);
+  const result = await getExportInfos(share.project, option, {
+    origin: ignores,
+    evaluated: ignores,
+  });
   const expectation = await import(path.join(__dirname, 'expects', expectFileName));
   const terminateCircularResult = getTestValue(result);
 
@@ -197,8 +200,11 @@ test('c005-getExportInfos-partial-ignore', async () => {
   });
 
   const ignores = files.reduce<Record<string, string | string[]>>((aggregation, file) => {
-    return { ...aggregation, [file]: '*', ...ignoreContents };
+    return { ...aggregation, [file]: '*' };
   }, {});
+
+  ignoreContents.origin = { ...ignoreContents.origin, ...ignores };
+  ignoreContents.evaluated = { ...ignoreContents.evaluated, ...ignores };
 
   const option: TCreateOptionWithDirInfo = {
     ...env.createOptionWithDirInfo,
@@ -208,7 +214,7 @@ test('c005-getExportInfos-partial-ignore', async () => {
     topDirs: [replaceSepToPosix(env.exampleType04Path)],
   };
 
-  const result = await getExportInfos(share.project, option, ignores);
+  const result = await getExportInfos(share.project, option, ignoreContents);
   const expectation = await import(path.join(__dirname, 'expects', expectFileName));
   const terminateCircularResult = getTestValue(result);
 

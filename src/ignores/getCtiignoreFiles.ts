@@ -9,9 +9,9 @@ import path from 'path';
 export default async function getCtiignoreFiles(
   cwd: string,
   filePath: string,
-): Promise<IGetIgnoredConfigContents> {
+): Promise<{ origin: IGetIgnoredConfigContents; evaluated: IGetIgnoredConfigContents }> {
   if (isFalse(await exists(filePath))) {
-    return {};
+    return { origin: {}, evaluated: {} };
   }
 
   const fileBuf = await fs.promises.readFile(filePath);
@@ -62,5 +62,5 @@ export default async function getCtiignoreFiles(
       return aggregation;
     }, {});
 
-  return evaluatedCtiignoreConfigContents;
+  return { origin: ignoreFiles, evaluated: evaluatedCtiignoreConfigContents };
 }

@@ -32,9 +32,9 @@ export default function createSingleBuilder<
       describe: 'change quote character at export syntax',
       type: 'string',
     })
-    .option('useBackupFile', {
-      alias: 'b',
-      describe: 'created backup file if exists index.ts file already in directory',
+    .option('overwrite', {
+      alias: 'w',
+      describe: 'overwrite each index.ts file',
       type: 'boolean',
     })
     .option('keepFileExt', {

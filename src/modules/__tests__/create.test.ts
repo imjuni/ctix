@@ -46,11 +46,20 @@ test('c001-createDescendantIndex-non-skip-empty-dir', async () => {
     topDirs: [env.exampleType03Path],
   };
 
+  const ignoreFiles = await getIgnoreConfigFiles(env.exampleType03Path);
+  const ignoreContents = await getIgnoreConfigContents({
+    cwd: env.exampleType03Path,
+    ...ignoreFiles,
+  });
+
   const ignores = files.reduce<Record<string, string | string[]>>((aggregation, file) => {
     return { ...aggregation, [file]: '*' };
   }, {});
 
-  const exportInfos = await getExportInfos(share.project, option, ignores);
+  ignoreContents.origin = { ...ignoreContents.origin, ...ignores };
+  ignoreContents.evaluated = { ...ignoreContents.evaluated, ...ignores };
+
+  const exportInfos = await getExportInfos(share.project, option, ignoreContents);
   const exportDuplicationValidateResult = validateExportDuplication(exportInfos);
   const validateResult = validateFileNameDuplication(
     exportInfos.filter((exportInfo) =>
@@ -67,7 +76,7 @@ test('c001-createDescendantIndex-non-skip-empty-dir', async () => {
   const result = await createDescendantIndex(
     replaceSepToPosix(env.exampleType03Path),
     validExportInfos,
-    ignores,
+    ignoreContents,
     option,
   );
 
@@ -126,11 +135,20 @@ test('c002-createDescendantIndex-do-skip-empty-dir', async () => {
     topDirs: [env.exampleType03Path],
   };
 
+  const ignoreFiles = await getIgnoreConfigFiles(env.exampleType03Path);
+  const ignoreContents = await getIgnoreConfigContents({
+    cwd: env.exampleType03Path,
+    ...ignoreFiles,
+  });
+
   const ignores = files.reduce<Record<string, string | string[]>>((aggregation, file) => {
     return { ...aggregation, [file]: '*' };
   }, {});
 
-  const exportInfos = await getExportInfos(share.project, option, ignores);
+  ignoreContents.origin = { ...ignoreContents.origin, ...ignores };
+  ignoreContents.evaluated = { ...ignoreContents.evaluated, ...ignores };
+
+  const exportInfos = await getExportInfos(share.project, option, ignoreContents);
   const exportDuplicationValidateResult = validateExportDuplication(exportInfos);
   const validateResult = validateFileNameDuplication(
     exportInfos.filter((exportInfo) =>
@@ -147,7 +165,7 @@ test('c002-createDescendantIndex-do-skip-empty-dir', async () => {
   const result = await createDescendantIndex(
     replaceSepToPosix(env.exampleType03Path),
     validExportInfos,
-    ignores,
+    ignoreContents,
     option,
   );
   const sortedResult = result.sort((l, r) => {
@@ -193,11 +211,20 @@ test('c003-createIndexInfos-non-skip-empty-dir', async () => {
     topDirs: [env.exampleType03Path],
   };
 
+  const ignoreFiles = await getIgnoreConfigFiles(env.exampleType03Path);
+  const ignoreContents = await getIgnoreConfigContents({
+    cwd: env.exampleType03Path,
+    ...ignoreFiles,
+  });
+
   const ignores = files.reduce<Record<string, string | string[]>>((aggregation, file) => {
     return { ...aggregation, [file]: '*' };
   }, {});
 
-  const exportInfos = await getExportInfos(share.project, option, ignores);
+  ignoreContents.origin = { ...ignoreContents.origin, ...ignores };
+  ignoreContents.evaluated = { ...ignoreContents.evaluated, ...ignores };
+
+  const exportInfos = await getExportInfos(share.project, option, ignoreContents);
   const exportDuplicationValidateResult = validateExportDuplication(exportInfos);
   const validateResult = validateFileNameDuplication(
     exportInfos.filter((exportInfo) =>
@@ -211,7 +238,7 @@ test('c003-createIndexInfos-non-skip-empty-dir', async () => {
       isFalse(exportDuplicationValidateResult.filePaths.includes(exportInfo.resolvedFilePath)),
   );
 
-  const result = await createIndexInfos(validExportInfos, ignores, option);
+  const result = await createIndexInfos(validExportInfos, ignoreContents, option);
   const terminateCircularResult = getTestValue(result);
 
   const expectation = await import(path.join(__dirname, 'expects', expectFileName));
@@ -242,11 +269,20 @@ test('c004-createIndexInfos-do-skip-empty-dir', async () => {
     topDirs: [env.exampleType03Path],
   };
 
+  const ignoreFiles = await getIgnoreConfigFiles(env.exampleType03Path);
+  const ignoreContents = await getIgnoreConfigContents({
+    cwd: env.exampleType03Path,
+    ...ignoreFiles,
+  });
+
   const ignores = files.reduce<Record<string, string | string[]>>((aggregation, file) => {
     return { ...aggregation, [file]: '*' };
   }, {});
 
-  const exportInfos = await getExportInfos(share.project, option, ignores);
+  ignoreContents.origin = { ...ignoreContents.origin, ...ignores };
+  ignoreContents.evaluated = { ...ignoreContents.evaluated, ...ignores };
+
+  const exportInfos = await getExportInfos(share.project, option, ignoreContents);
   const exportDuplicationValidateResult = validateExportDuplication(exportInfos);
   const validateResult = validateFileNameDuplication(
     exportInfos.filter((exportInfo) =>
@@ -260,7 +296,7 @@ test('c004-createIndexInfos-do-skip-empty-dir', async () => {
       isFalse(exportDuplicationValidateResult.filePaths.includes(exportInfo.resolvedFilePath)),
   );
 
-  const result = await createIndexInfos(validExportInfos, ignores, option);
+  const result = await createIndexInfos(validExportInfos, ignoreContents, option);
   const terminateCircularResult = getTestValue(result);
 
   const expectation = await import(path.join(__dirname, 'expects', expectFileName));
@@ -298,10 +334,13 @@ test('c005-createIndexInfos-partial-ignore', async () => {
   });
 
   const ignores = files.reduce<Record<string, string | string[]>>((aggregation, file) => {
-    return { ...aggregation, [file]: '*', ...ignoreContents };
+    return { ...aggregation, [file]: '*' };
   }, {});
 
-  const exportInfos = await getExportInfos(share.project, option, ignores);
+  ignoreContents.origin = { ...ignoreContents.origin, ...ignores };
+  ignoreContents.evaluated = { ...ignoreContents.evaluated, ...ignores };
+
+  const exportInfos = await getExportInfos(share.project, option, ignoreContents);
   const exportDuplicationValidateResult = validateExportDuplication(exportInfos);
   const validateResult = validateFileNameDuplication(
     exportInfos.filter((exportInfo) =>
@@ -315,7 +354,7 @@ test('c005-createIndexInfos-partial-ignore', async () => {
       isFalse(exportDuplicationValidateResult.filePaths.includes(exportInfo.resolvedFilePath)),
   );
 
-  const result = await createIndexInfos(validExportInfos, ignores, option);
+  const result = await createIndexInfos(validExportInfos, ignoreContents, option);
   const terminateCircularResult = getTestValue(result);
 
   const expectation = await import(path.join(__dirname, 'expects', expectFileName));

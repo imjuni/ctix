@@ -1,5 +1,7 @@
 import getExportInfos from '@compilers/getExportInfos';
 import { TCreateOptionWithDirInfo, TSingleOptionWithDirInfo } from '@configs/interfaces/IOption';
+import getIgnoreConfigContents from '@ignores/getIgnoreConfigContents';
+import getIgnoreConfigFiles from '@ignores/getIgnoreConfigFiles';
 import getDescendantExportInfo from '@modules/getDescendantExportInfo';
 import getDirPaths from '@modules/getDirPaths';
 import getFilePathOnIndex from '@modules/getFilePathOnIndex';
@@ -38,9 +40,18 @@ test('c001-getDirPaths', async () => {
     { cwd: replaceSepToPosix(env.examplePath) },
   );
 
+  const ignoreFiles = await getIgnoreConfigFiles(env.exampleType03Path);
+  const ignoreContents = await getIgnoreConfigContents({
+    cwd: env.exampleType03Path,
+    ...ignoreFiles,
+  });
+
   const ignores = files.reduce<Record<string, string | string[]>>((aggregation, file) => {
     return { ...aggregation, [file]: '*' };
   }, {});
+
+  ignoreContents.origin = { ...ignoreContents.origin, ...ignores };
+  ignoreContents.evaluated = { ...ignoreContents.evaluated, ...ignores };
 
   const option: TCreateOptionWithDirInfo = {
     ...env.createOptionWithDirInfo,
@@ -50,7 +61,7 @@ test('c001-getDirPaths', async () => {
     topDirs: [env.exampleType03Path],
   };
 
-  const exportInfos = await getExportInfos(share.project, option, ignores);
+  const exportInfos = await getExportInfos(share.project, option, ignoreContents);
   const exportDuplicationValidateResult = validateExportDuplication(exportInfos);
   const validateResult = validateFileNameDuplication(
     exportInfos.filter((exportInfo) =>
@@ -64,7 +75,7 @@ test('c001-getDirPaths', async () => {
       isFalse(exportDuplicationValidateResult.filePaths.includes(exportInfo.resolvedFilePath)),
   );
 
-  const dirPaths = await getDirPaths(validExportInfos, option);
+  const dirPaths = await getDirPaths(validExportInfos, ignoreContents, option);
   const terminateCircularResult = getTestValue(dirPaths);
   const expectation = await import(path.join(__dirname, 'expects', expectFileName));
 
@@ -134,11 +145,20 @@ test('c003-getDescendantExportInfo', async () => {
     topDirs: [env.exampleType03Path],
   };
 
+  const ignoreFiles = await getIgnoreConfigFiles(env.exampleType03Path);
+  const ignoreContents = await getIgnoreConfigContents({
+    cwd: env.exampleType03Path,
+    ...ignoreFiles,
+  });
+
   const ignores = files.reduce<Record<string, string | string[]>>((aggregation, file) => {
     return { ...aggregation, [file]: '*' };
   }, {});
 
-  const exportInfos = await getExportInfos(share.project, option, ignores);
+  ignoreContents.origin = { ...ignoreContents.origin, ...ignores };
+  ignoreContents.evaluated = { ...ignoreContents.evaluated, ...ignores };
+
+  const exportInfos = await getExportInfos(share.project, option, ignoreContents);
   const exportDuplicationValidateResult = validateExportDuplication(exportInfos);
   const validateResult = validateFileNameDuplication(
     exportInfos.filter((exportInfo) =>

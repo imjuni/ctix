@@ -1,6 +1,7 @@
 import * as progress from '@cli/progress';
 import IExportInfo from '@compilers/interfaces/IExportInfo';
 import { TSingleOptionWithDirInfo } from '@configs/interfaces/IOption';
+import IGetIgnoredConfigContents from '@ignores/interfaces/IGetIgnoredConfigContents';
 import getDirPaths from '@modules/getDirPaths';
 import mergeCreateIndexInfo from '@modules/mergeCreateIndexInfo';
 import singleIndexInfo from '@modules/singleIndexInfo';
@@ -11,11 +12,12 @@ import * as tsm from 'ts-morph';
 
 export default async function singleIndexInfos(
   exportInfos: IExportInfo[],
+  ignores: { origin: IGetIgnoredConfigContents; evaluated: IGetIgnoredConfigContents },
   option: TSingleOptionWithDirInfo,
   project: tsm.Project,
 ): Promise<ICreateIndexInfos[]> {
   try {
-    const { depths, dirPaths } = await getDirPaths(exportInfos, option);
+    const { depths, dirPaths } = await getDirPaths(exportInfos, ignores, option);
 
     const depthPairs = Object.keys(dirPaths)
       .map((dirPath) => ({ dirPath, depth: depths[dirPath], exportInfos: dirPaths[dirPath] }))

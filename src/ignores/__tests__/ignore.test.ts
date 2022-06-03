@@ -32,16 +32,24 @@ test('getIgnoreConfigContents', async () => {
   consola.debug(result);
 
   const expectation = {
-    [posixJoin(env.exampleType04Path, 'fast-maker/ChildlikeCls.ts')]: '*',
-    [posixJoin(env.exampleType04Path, 'fast-maker/FlakyCls.ts')]: '*',
-    [posixJoin(env.exampleType04Path, 'fast-maker/WhisperingCls.ts')]: '*',
-    [posixJoin(env.exampleType04Path, 'fast-maker/carpenter/DiscussionCls.ts')]: '*',
-    [posixJoin(env.exampleType04Path, 'fast-maker/carpenter/MakeshiftCls.ts')]: '*',
-    [posixJoin(env.exampleType04Path, 'juvenile/TriteCls.ts')]: '*',
-    [posixJoin(env.exampleType04Path, 'juvenile/spill/ExperienceCls.ts')]: '*',
-    [posixJoin(env.exampleType04Path, 'wellmade/ChildlikeCls.ts')]: ['transfer', 'stomach'],
-    [posixJoin(env.exampleType04Path, 'wellmade/FlakyCls.ts')]: '*',
-    [posixJoin(env.exampleType04Path, 'wellmade/WhisperingCls.ts')]: '*',
+    origin: {
+      'juvenile/**': '*',
+      'wellmade/FlakyCls.ts': '*',
+      'wellmade/WhisperingCls.ts': '*',
+      'wellmade/ChildlikeCls.ts': ['transfer', 'stomach'],
+    },
+    evaluated: {
+      [posixJoin(env.exampleType04Path, 'fast-maker/ChildlikeCls.ts')]: '*',
+      [posixJoin(env.exampleType04Path, 'fast-maker/FlakyCls.ts')]: '*',
+      [posixJoin(env.exampleType04Path, 'fast-maker/WhisperingCls.ts')]: '*',
+      [posixJoin(env.exampleType04Path, 'fast-maker/carpenter/DiscussionCls.ts')]: '*',
+      [posixJoin(env.exampleType04Path, 'fast-maker/carpenter/MakeshiftCls.ts')]: '*',
+      [posixJoin(env.exampleType04Path, 'juvenile/TriteCls.ts')]: '*',
+      [posixJoin(env.exampleType04Path, 'juvenile/spill/ExperienceCls.ts')]: '*',
+      [posixJoin(env.exampleType04Path, 'wellmade/ChildlikeCls.ts')]: ['transfer', 'stomach'],
+      [posixJoin(env.exampleType04Path, 'wellmade/FlakyCls.ts')]: '*',
+      [posixJoin(env.exampleType04Path, 'wellmade/WhisperingCls.ts')]: '*',
+    },
   };
 
   expect(result).toEqual(expectation);

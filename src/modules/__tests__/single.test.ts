@@ -45,11 +45,20 @@ test('c001-singleIndexInfos-type03', async () => {
     topDirs: [env.exampleType03Path],
   };
 
+  const ignoreFiles = await getIgnoreConfigFiles(env.exampleType03Path);
+  const ignoreContents = await getIgnoreConfigContents({
+    cwd: env.exampleType03Path,
+    ...ignoreFiles,
+  });
+
   const ignores = files.reduce<Record<string, string | string[]>>((aggregation, file) => {
     return { ...aggregation, [file]: '*' };
   }, {});
 
-  const exportInfos = await getExportInfos(share.project, option, ignores);
+  ignoreContents.origin = { ...ignoreContents.origin, ...ignores };
+  ignoreContents.evaluated = { ...ignoreContents.evaluated, ...ignores };
+
+  const exportInfos = await getExportInfos(share.project, option, ignoreContents);
   const exportDuplicationValidateResult = validateExportDuplication(exportInfos);
   const validateResult = validateFileNameDuplication(
     exportInfos.filter((exportInfo) =>
@@ -63,7 +72,7 @@ test('c001-singleIndexInfos-type03', async () => {
       isFalse(exportDuplicationValidateResult.filePaths.includes(exportInfo.resolvedFilePath)),
   );
 
-  const result = await singleIndexInfos(validExportInfos, option, share.project);
+  const result = await singleIndexInfos(validExportInfos, ignoreContents, option, share.project);
   const terminateCircularResult = getTestValue(result);
 
   const expectation = await import(path.join(__dirname, 'expects', expectFileName));
@@ -101,10 +110,13 @@ test('c002-singleIndexInfos-type04', async () => {
   });
 
   const ignores = files.reduce<Record<string, string | string[]>>((aggregation, file) => {
-    return { ...aggregation, [file]: '*', ...ignoreContents };
+    return { ...aggregation, [file]: '*' };
   }, {});
 
-  const exportInfos = await getExportInfos(share.project, option, ignores);
+  ignoreContents.origin = { ...ignoreContents.origin, ...ignores };
+  ignoreContents.evaluated = { ...ignoreContents.evaluated, ...ignores };
+
+  const exportInfos = await getExportInfos(share.project, option, ignoreContents);
   const exportDuplicationValidateResult = validateExportDuplication(exportInfos);
   const validateResult = validateFileNameDuplication(
     exportInfos.filter((exportInfo) =>
@@ -118,7 +130,7 @@ test('c002-singleIndexInfos-type04', async () => {
       isFalse(exportDuplicationValidateResult.filePaths.includes(exportInfo.resolvedFilePath)),
   );
 
-  const result = await singleIndexInfos(validExportInfos, option, share.project);
+  const result = await singleIndexInfos(validExportInfos, ignoreContents, option, share.project);
   const terminateCircularResult = getTestValue(result);
 
   const expectation = await import(path.join(__dirname, 'expects', expectFileName));

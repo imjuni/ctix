@@ -114,7 +114,7 @@ export async function singleWritor(option: TSingleOptionWithDirInfo, isMessageDi
       isFalse(exportDuplicationValidateResult.filePaths.includes(exportInfo.resolvedFilePath)),
     );
 
-    const indexInfos = await singleIndexInfos(exportInfos, option, project);
+    const indexInfos = await singleIndexInfos(exportInfos, ignoreContents, option, project);
 
     spinner.update(`generate ${option.exportFilename} content`);
 

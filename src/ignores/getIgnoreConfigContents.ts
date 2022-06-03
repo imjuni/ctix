@@ -9,14 +9,17 @@ export default async function getIgnoreConfigContents({
   npm,
   cti,
   cwd,
-}: IGetIgnoreConfigFiles & { cwd: string }): Promise<IGetIgnoredConfigContents> {
+}: IGetIgnoreConfigFiles & { cwd: string }): Promise<{
+  origin: IGetIgnoredConfigContents;
+  evaluated: IGetIgnoredConfigContents;
+}> {
   const gitignoreRecord = await getGitignoreFiles(cwd, git);
   const npmignoreRecord = await getGitignoreFiles(cwd, npm);
   const ctiignoreRecord = await getCtiignoreFiles(cwd, cti);
 
   const ignoreConfigContents = Object.entries(gitignoreRecord)
     .concat(Object.entries(npmignoreRecord))
-    .concat(Object.entries(ctiignoreRecord))
+    .concat(Object.entries(ctiignoreRecord.evaluated))
     .reduce<IGetIgnoredConfigContents>((aggregation, file) => {
       const [key, value] = file;
 
@@ -27,5 +30,5 @@ export default async function getIgnoreConfigContents({
       return { ...aggregation, [key]: Array.from(new Set([...aggregation[key], ...value])) };
     }, {});
 
-  return ignoreConfigContents;
+  return { origin: ctiignoreRecord.origin, evaluated: ignoreConfigContents };
 }

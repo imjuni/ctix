@@ -9,11 +9,11 @@ import * as tsm from 'ts-morph';
 export default async function getExportInfos(
   project: tsm.Project,
   option: TCreateOrSingleOption,
-  ignores: IGetIgnoredConfigContents,
+  ignores: { origin: IGetIgnoredConfigContents; evaluated: IGetIgnoredConfigContents },
 ) {
-  const ignoreFileNames = Object.keys(ignores);
+  const ignoreFileNames = Object.keys(ignores.evaluated);
   const completlyIgnoreFileNames = ignoreFileNames.filter((ignoreFileName) => {
-    const ignoreInfo = ignores[ignoreFileName];
+    const ignoreInfo = ignores.evaluated[ignoreFileName];
 
     if (typeof ignoreInfo === 'string' && ignoreInfo === '*') {
       return true;
@@ -36,7 +36,7 @@ export default async function getExportInfos(
     );
 
   const exportInfos = await Promise.all(
-    sourceFiles.map((sourceFile) => getExportInfo(sourceFile, option, ignores)),
+    sourceFiles.map((sourceFile) => getExportInfo(sourceFile, option, ignores.evaluated)),
   );
 
   const exportRecord = exportInfos.reduce<Record<string, IExportInfo>>(
