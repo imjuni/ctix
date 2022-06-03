@@ -79,6 +79,15 @@ export default async function getDescendantExportInfo(
       exportInfos: parentExportInfo,
     },
     ...descendants,
-  ].sort((l, r) => l.depth - r.depth);
+  ].sort((l, r) => {
+    const depthDiff = l.depth - r.depth;
+
+    if (depthDiff !== 0) {
+      return depthDiff;
+    }
+
+    return l.dirPath.localeCompare(r.dirPath);
+  });
+
   return sortedDescendents;
 }
