@@ -1,4 +1,5 @@
 import { TCreateOrSingleOption } from '@configs/interfaces/IOption';
+import appendDotDirPrefix from '@tools/appendDotDirPrefix';
 import extensions from '@tools/extensions';
 import getExtname from '@tools/getExtname';
 import { isEmpty, isNotEmpty } from 'my-easy-fp';
@@ -42,10 +43,10 @@ function getRelativePath(filePath: string, option: TCreateOrSingleOption, relati
       path.relative(relativePath, filePath.replace(path.basename(filePath), '')),
     );
     const exportPath = `${path.posix.sep}${basename}${extname}`;
-
-    const relativeDirPathWithDot = relativeDirPath.startsWith('.')
-      ? `${relativeDirPath}${exportPath}`
-      : `.${path.posix.sep}${relativeDirPath}${exportPath}`;
+    const relativeDirPathWithDot = `${appendDotDirPrefix(
+      relativeDirPath,
+      path.posix.sep,
+    )}${exportPath}`;
 
     return relativeDirPathWithDot;
   }
@@ -55,10 +56,10 @@ function getRelativePath(filePath: string, option: TCreateOrSingleOption, relati
       path.relative(relativePath, filePath.replace(path.basename(filePath), '')),
     );
     const exportPath = isIndex ? '' : `${path.posix.sep}${basename}${extname}`;
-
-    const relativeDirPathWithDot = relativeDirPath.startsWith('.')
-      ? `${relativeDirPath}${exportPath}`
-      : `.${path.posix.sep}${relativeDirPath}${exportPath}`;
+    const relativeDirPathWithDot = `${appendDotDirPrefix(
+      relativeDirPath,
+      path.posix.sep,
+    )}${exportPath}`;
 
     return relativeDirPathWithDot;
   }
@@ -69,23 +70,21 @@ function getRelativePath(filePath: string, option: TCreateOrSingleOption, relati
     );
     const exportPath = isIndex ? '' : `${path.posix.sep}${basename}`;
 
-    const relativeDirPathWithDot = relativeDirPath.startsWith('.')
-      ? `${relativeDirPath}${exportPath}`
-      : `.${path.posix.sep}${relativeDirPath}${exportPath}`;
+    const relativeDirPathWithDot = `${appendDotDirPrefix(
+      relativeDirPath,
+      path.posix.sep,
+    )}${exportPath}`;
 
     return relativeDirPathWithDot;
   }
 
   if (option.keepFileExt || declareExtensions.includes(extname)) {
     const exportPath = isIndex ? '' : `${basename}${extname}`;
-    const basenameWithDot = basename.startsWith('.')
-      ? `${exportPath}`
-      : `.${path.posix.sep}${exportPath}`;
-
+    const basenameWithDot = appendDotDirPrefix(exportPath, path.posix.sep);
     return basenameWithDot;
   }
 
-  const basenameWithDot = basename.startsWith('.') ? basename : `.${path.posix.sep}${basename}`;
+  const basenameWithDot = appendDotDirPrefix(basename, path.posix.sep);
   return basenameWithDot;
 }
 

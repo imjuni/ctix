@@ -34,8 +34,8 @@ export default function getCliCreateOption(
     q: argv.q ?? argv.quote ?? rawConfig.quote,
     quote: argv.q ?? argv.quote ?? rawConfig.quote,
 
-    b: argv.b ?? argv.useBackupFile ?? rawConfig.useBackupFile,
-    useBackupFile: argv.b ?? argv.useBackupFile ?? rawConfig.useBackupFile,
+    w: argv.w ?? argv.overwrite ?? rawConfig.overwrite,
+    overwrite: argv.b ?? argv.overwrite ?? rawConfig.overwrite,
 
     k: argv.b ?? argv.keepFileExt ?? rawConfig.keepFileExt,
     keepFileExt: argv.b ?? argv.keepFileExt ?? rawConfig.keepFileExt,

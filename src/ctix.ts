@@ -16,6 +16,7 @@ import getIgnoreConfigFiles from '@ignores/getIgnoreConfigFiles';
 import createIndexInfos from '@modules/createIndexInfos';
 import getRemoveFiles from '@modules/getRemoveFiles';
 import singleIndexInfos from '@modules/singleIndexInfos';
+import appendDotDirPrefix from '@tools/appendDotDirPrefix';
 import validateExportDuplication from '@validations/validateExportDuplication';
 import validateFileNameDuplication from '@validations/validateFileNameDuplication';
 import indexFileWrite from '@writes/indexFileWrite';
@@ -204,21 +205,47 @@ export async function createInitFile(option: TTInitOptionWithDirInfo, isMessageD
     let modifiedInitialConfig: string = initialConfigLiteral;
 
     if (isNotEmpty(option.project)) {
+      const projectFilePath = appendDotDirPrefix(
+        replaceSepToPosix(
+          path.join(
+            path.relative(configPath, await getDirname(option.project)),
+            path.basename(option.project),
+          ),
+        ),
+        path.posix.sep,
+      );
+
       modifiedInitialConfig = applyEdits(
         modifiedInitialConfig,
-        modify(modifiedInitialConfig, ['project'], option.project, options),
+        modify(modifiedInitialConfig, ['project'], projectFilePath, options),
       );
     }
 
     if (isNotEmpty(option.output)) {
       modifiedInitialConfig = applyEdits(
         modifiedInitialConfig,
-        modify(modifiedInitialConfig, ['output'], option.output, options),
+        modify(
+          modifiedInitialConfig,
+          ['output'],
+          appendDotDirPrefix(
+            replaceSepToPosix(path.relative(configPath, option.output)),
+            path.posix.sep,
+          ),
+          options,
+        ),
       );
     } else if (isNotEmpty(option.project)) {
       modifiedInitialConfig = applyEdits(
         modifiedInitialConfig,
-        modify(modifiedInitialConfig, ['output'], option.project, options),
+        modify(
+          modifiedInitialConfig,
+          ['output'],
+          appendDotDirPrefix(
+            replaceSepToPosix(path.relative(configPath, await getDirname(option.project))),
+            path.posix.sep,
+          ),
+          options,
+        ),
       );
     } else {
       modifiedInitialConfig = applyEdits(

@@ -1,9 +1,0 @@
-// created from 'create-ts-index'
-
-{
-  "addNewline": true,
-  "quote": '"',
-  "useSemicolon": true,
-  "useTimestamp": true,
-  "verbose": true
-}

@@ -1,5 +1,5 @@
-import getCliCleanOption from '@configs/getCliCleanOption';
 import getCliCreateOption from '@configs/getCliCreateOption';
+import getCliRemoveOption from '@configs/getCliRemoveOption';
 import getCliSingleOption from '@configs/getCliSingleOption';
 import consola from 'consola';
 import * as findUp from 'find-up';
@@ -39,19 +39,19 @@ export default function preLoadConfig() {
 
     const configBuf = fs.readFileSync(configFilePath);
 
-    if (command === 'create') {
+    if (command === 'c' || command === 'create') {
       return getCliCreateOption(configBuf, argv, configFilePath, tsconfigPath);
     }
 
-    if (command === 'single') {
+    if (command === 's' || command === 'single') {
       return getCliSingleOption(configBuf, argv, configFilePath, tsconfigPath);
     }
 
-    if (command === 'clean') {
-      return getCliCleanOption(configBuf, argv, configFilePath, tsconfigPath);
+    if (command === 'r' || command === 'remove') {
+      return getCliRemoveOption(configBuf, argv, configFilePath, tsconfigPath);
     }
 
-    if (command === 'init') {
+    if (command === 'i' || command === 'init') {
       return {
         p: tsconfigPath,
         project: tsconfigPath,

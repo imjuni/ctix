@@ -51,8 +51,8 @@ export default interface ICreateSingleCommonCliOption {
    */
   quote?: string;
 
-  b?: boolean;
-  useBackupFile?: boolean;
+  w?: boolean;
+  overwrite?: boolean;
 
   /**
    * Keep file extension in index.ts file.

@@ -13,29 +13,29 @@ export default function getRequiredCliCreateOption(
     p: originConfig.p,
     project: originConfig.project,
 
-    f: originConfig.exportFilename ?? 'index.ts',
-    exportFilename: originConfig.exportFilename ?? 'index.ts',
+    f: originConfig.f ?? originConfig.exportFilename ?? 'index.ts',
+    exportFilename: originConfig.f ?? originConfig.exportFilename ?? 'index.ts',
 
-    s: originConfig.useSemicolon ?? true,
-    useSemicolon: originConfig.useSemicolon ?? true,
+    s: originConfig.s ?? originConfig.useSemicolon ?? true,
+    useSemicolon: originConfig.s ?? originConfig.useSemicolon ?? true,
 
-    m: originConfig.useTimestamp ?? false,
-    useTimestamp: originConfig.useTimestamp ?? false,
+    m: originConfig.m ?? originConfig.useTimestamp ?? false,
+    useTimestamp: originConfig.m ?? originConfig.useTimestamp ?? false,
 
-    t: originConfig.useComment ?? false,
-    useComment: originConfig.useComment ?? false,
+    t: originConfig.t ?? originConfig.useComment ?? false,
+    useComment: originConfig.t ?? originConfig.useComment ?? false,
 
-    q: originConfig.quote ?? "'",
-    quote: originConfig.quote ?? "'",
+    q: originConfig.q ?? originConfig.quote ?? "'",
+    quote: originConfig.q ?? originConfig.quote ?? "'",
 
-    b: originConfig.useBackupFile ?? false,
-    useBackupFile: originConfig.useBackupFile ?? false,
+    w: originConfig.w ?? originConfig.overwrite ?? false,
+    overwrite: originConfig.w ?? originConfig.overwrite ?? false,
 
-    k: originConfig.keepFileExt ?? false,
-    keepFileExt: originConfig.keepFileExt ?? false,
+    k: originConfig.k ?? originConfig.keepFileExt ?? false,
+    keepFileExt: originConfig.k ?? originConfig.keepFileExt ?? false,
 
-    e: originConfig.skipEmptyDir ?? false,
-    skipEmptyDir: originConfig.skipEmptyDir ?? false,
+    e: originConfig.e ?? originConfig.skipEmptyDir ?? false,
+    skipEmptyDir: originConfig.e ?? originConfig.skipEmptyDir ?? false,
   };
 
   return option;

@@ -2,7 +2,7 @@ import { TRemoveOption } from '@configs/interfaces/IOption';
 import jsonLoader from '@configs/jsonLoader';
 import minimist from 'minimist';
 
-export default function getCliCleanOption(
+export default function getCliRemoveOption(
   configBuf: Buffer,
   argv: minimist.ParsedArgs,
   configFilePath: string,

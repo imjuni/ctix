@@ -13,11 +13,11 @@ export default function getRequiredCliCleanOption(
     p: originConfig.p,
     project: originConfig.project,
 
-    f: originConfig.exportFilename ?? 'index.ts',
-    exportFilename: originConfig.exportFilename ?? 'index.ts',
+    f: originConfig.f ?? originConfig.exportFilename ?? 'index.ts',
+    exportFilename: originConfig.f ?? originConfig.exportFilename ?? 'index.ts',
 
-    b: originConfig.includeBackup ?? false,
-    includeBackup: originConfig.includeBackup ?? false,
+    b: originConfig.b ?? originConfig.includeBackup ?? false,
+    includeBackup: originConfig.b ?? originConfig.includeBackup ?? false,
   };
 
   return option;

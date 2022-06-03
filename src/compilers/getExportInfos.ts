@@ -3,6 +3,7 @@ import IExportInfo from '@compilers/interfaces/IExportInfo';
 import { TCreateOrSingleOption } from '@configs/interfaces/IOption';
 import IGetIgnoredConfigContents from '@ignores/interfaces/IGetIgnoredConfigContents';
 import { isEmpty, isFalse } from 'my-easy-fp';
+import path from 'path';
 import * as tsm from 'ts-morph';
 
 export default async function getExportInfos(
@@ -27,6 +28,9 @@ export default async function getExportInfos(
 
   const sourceFiles = project
     .getSourceFiles()
+    .filter(
+      (sourceFile) => path.basename(sourceFile.getFilePath().toString()) !== option.exportFilename,
+    )
     .filter((sourceFile) =>
       isFalse(completlyIgnoreFileNames.includes(sourceFile.getFilePath().toString())),
     );

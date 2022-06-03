@@ -16,9 +16,16 @@ export default async function getRemoveFiles(
     (dirPath) => replaceSepToPosix(dirPath),
   );
 
-  const globPatterns = dirPaths.map((dirPath) =>
-    replaceSepToPosix(path.join(dirPath, '**', option.exportFilename)),
-  );
+  const globPatterns = option.includeBackup
+    ? [
+        ...dirPaths.map((dirPath) =>
+          replaceSepToPosix(path.join(dirPath, '**', option.exportFilename)),
+        ),
+        ...dirPaths.map((dirPath) =>
+          replaceSepToPosix(path.join(dirPath, '**', `${option.exportFilename}.bak`)),
+        ),
+      ]
+    : dirPaths.map((dirPath) => replaceSepToPosix(path.join(dirPath, '**', option.exportFilename)));
 
   const files = await fastGlob(globPatterns, { dot: true, cwd: option.project });
 

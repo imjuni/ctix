@@ -19,8 +19,8 @@ const initialConfigLiteral = `{
 
   // quote mark " or '
   "quote": "'",
-  // aa
-  "useBackupFile": false,
+  // overwrite index.ts file also index.ts file already exist that create backup file
+  "overwrite": false,
   // keep file extension in export statement path
   "keepFileExt": false,
 

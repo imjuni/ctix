@@ -37,8 +37,8 @@ export const createSingleCommonOption: ICreateSingleCommonCliOption = {
   q: "'",
   quote: "'",
 
-  b: true,
-  useBackupFile: true,
+  w: true,
+  overwrite: true,
 };
 
 export const createOption: TCreateOption = {

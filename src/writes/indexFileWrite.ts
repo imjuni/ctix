@@ -5,7 +5,7 @@ import prettierApply from '@writes/prettierApply';
 import chalk from 'chalk';
 import dayjs from 'dayjs';
 import fs from 'fs';
-import { isFalse, isNotEmpty } from 'my-easy-fp';
+import { isFalse, isNotEmpty, isTrue } from 'my-easy-fp';
 import { exists } from 'my-node-fp';
 import path from 'path';
 
@@ -37,6 +37,26 @@ export default async function indexFileWrite(
       const indexFileContent = indexInfo.exportStatements.join(option.eol);
       const firstLine = getFirstLineComment(option);
 
+      if (isTrue(option.overwrite ?? false)) {
+        const prettierApplied = await prettierApply(
+          option.project,
+          `${firstLine}${indexFileContent}${option.eol}`,
+        );
+
+        // index.ts file already exist, create backup file
+        if (await exists(indexFilePath)) {
+          await fs.promises.writeFile(
+            `${indexFilePath}.bak`,
+            await fs.promises.readFile(indexFilePath),
+          );
+        }
+
+        await fs.promises.writeFile(
+          indexFilePath,
+          `${firstLine}${prettierApplied.contents}${option.eol}`,
+        );
+      }
+
       if (isFalse(await exists(indexFilePath))) {
         const prettierApplied = await prettierApply(
           option.project,
@@ -47,6 +67,7 @@ export default async function indexFileWrite(
           indexFilePath,
           `${firstLine}${prettierApplied.contents}${option.eol}`,
         );
+
         return undefined;
       }
 
