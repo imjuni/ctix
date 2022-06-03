@@ -51,7 +51,17 @@ export default interface ICreateSingleCommonCliOption {
    */
   quote?: string;
 
+  /**
+   * overwrite each index.ts file
+   * @mode create, single
+   * @default false
+   */
   w?: boolean;
+  /**
+   * overwrite each index.ts file
+   * @mode create, single
+   * @default false
+   */
   overwrite?: boolean;
 
   /**
