@@ -12,6 +12,10 @@ export default function getRelativeDepth(basePaths: string | string[], dirPath: 
     path.relative(replaceSepToPosix(basePath), replaceSepToPosix(dirPath)),
   );
 
+  if (relativePath === '') {
+    return 0;
+  }
+
   if (relativePath === '.') {
     return 0;
   }

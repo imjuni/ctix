@@ -87,6 +87,19 @@ test('c001-createDescendantIndex-non-skip-empty-dir', async () => {
   const terminateCircularResult = getTestValue(sortedResult);
 
   const expectation = await import(path.join(__dirname, 'expects', expectFileName));
+  expectation.default.sort((l, r) => {
+    const depthDiff = l.depth - r.depth;
+    if (depthDiff !== 0) {
+      return depthDiff;
+    }
+
+    const dirDiff = l.resolvedDirPath.localeCompare(r.resolvedDirPath);
+    if (dirDiff !== 0) {
+      return dirDiff;
+    }
+
+    return l.exportStatement.localeCompare(r.exportStatement);
+  });
 
   expect(terminateCircularResult).toEqual(expectation.default);
 });

@@ -8,7 +8,8 @@ import * as env from '@testenv/env';
 import { getTestValue, posixJoin } from '@tools/misc';
 import consola, { LogLevel } from 'consola';
 import fastGlob from 'fast-glob';
-import { isEmpty, populate } from 'my-easy-fp';
+import fs from 'fs';
+import { isEmpty } from 'my-easy-fp';
 import { getDirname, replaceSepToPosix } from 'my-node-fp';
 import path from 'path';
 import * as tsm from 'ts-morph';
@@ -22,8 +23,8 @@ beforeAll(() => {
 });
 
 test('c001-getExportedName', async () => {
-  const cases = populate(9, true).map((index) => `case${`${index}`.padStart(2, '0')}.ts`);
-  const sourceFiles = cases.map((caseFile) =>
+  const files = await fs.promises.readdir(env.exampleType05Path);
+  const sourceFiles = files.map((caseFile) =>
     share.project.getSourceFileOrThrow(path.join(env.exampleType05Path, caseFile)),
   );
 
@@ -62,27 +63,33 @@ test('c001-getExportedName', async () => {
 test('c002-getFileExportInfo', async () => {
   // project://example/type04/fast-maker/ChildlikeCls.ts
   const sourceFilePath = replaceSepToPosix(
-    path.join(env.exampleType04Path, 'fast-maker\\ChildlikeCls.ts'),
+    path.join(env.exampleType04Path, 'fast-maker', 'ChildlikeCls.ts'),
   );
 
+  const option: TCreateOptionWithDirInfo = {
+    ...env.createOptionWithDirInfo,
+    topDirDepth: 0,
+    topDirs: [env.exampleType04Path],
+  };
+
   const sourceFile = share.project.getSourceFileOrThrow(sourceFilePath);
-  const result = await getExportInfo(sourceFile, env.createOptionWithDirInfo, {
+  const result = await getExportInfo(sourceFile, option, {
     [sourceFilePath]: ['name'],
   });
   const terminateCircularResult = getTestValue(result);
 
   const expectation = {
-    resolvedFilePath: posixJoin(env.exampleType04Path, 'fast-maker\\ChildlikeCls.ts'),
+    resolvedFilePath: posixJoin(env.exampleType04Path, 'fast-maker', 'ChildlikeCls.ts'),
     resolvedDirPath: await getDirname(
-      posixJoin(env.exampleType04Path, 'fast-maker\\ChildlikeCls.ts'),
+      posixJoin(env.exampleType04Path, 'fast-maker', 'ChildlikeCls.ts'),
     ),
     relativeFilePath: replaceSepToPosix(
       path.relative(
         env.examplePath,
-        posixJoin(env.exampleType04Path, 'fast-maker\\ChildlikeCls.ts'),
+        posixJoin(env.exampleType04Path, 'fast-maker', 'ChildlikeCls.ts'),
       ),
     ),
-    depth: 4,
+    depth: 2,
     starExported: false,
     defaultExport: { identifier: 'ChildlikeCls' },
     namedExports: [{ identifier: 'ChildlikeCls' }, { identifier: 'greeting' }],

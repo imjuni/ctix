@@ -40,40 +40,39 @@ function getRelativePath(filePath: string, option: TCreateOrSingleOption, relati
     }
 
     const relativeDirPath = replaceSepToPosix(
-      path.relative(relativePath, filePath.replace(path.basename(filePath), '')),
+      path.posix.relative(relativePath, path.dirname(filePath)),
     );
-    const exportPath = `${path.posix.sep}${basename}${extname}`;
-    const relativeDirPathWithDot = `${appendDotDirPrefix(
-      relativeDirPath,
+    const exportPath = `${basename}${extname}`;
+    const relativeDirPathWithDot = appendDotDirPrefix(
+      path.posix.join(relativeDirPath, exportPath),
       path.posix.sep,
-    )}${exportPath}`;
+    );
 
     return relativeDirPathWithDot;
   }
 
   if (isNotEmpty(relativePath) && option.keepFileExt) {
     const relativeDirPath = replaceSepToPosix(
-      path.relative(relativePath, filePath.replace(path.basename(filePath), '')),
+      path.posix.relative(relativePath, path.dirname(filePath)),
     );
-    const exportPath = isIndex ? '' : `${path.posix.sep}${basename}${extname}`;
-    const relativeDirPathWithDot = `${appendDotDirPrefix(
-      relativeDirPath,
+    const exportPath = isIndex ? '' : `${basename}${extname}`;
+    const relativeDirPathWithDot = appendDotDirPrefix(
+      path.posix.join(relativeDirPath, exportPath),
       path.posix.sep,
-    )}${exportPath}`;
+    );
 
     return relativeDirPathWithDot;
   }
 
   if (isNotEmpty(relativePath)) {
     const relativeDirPath = replaceSepToPosix(
-      path.relative(relativePath, filePath.replace(path.basename(filePath), '')),
+      path.posix.relative(relativePath, path.dirname(filePath)),
     );
-    const exportPath = isIndex ? '' : `${path.posix.sep}${basename}`;
-
-    const relativeDirPathWithDot = `${appendDotDirPrefix(
-      relativeDirPath,
+    const exportPath = isIndex ? '' : `${basename}`;
+    const relativeDirPathWithDot = appendDotDirPrefix(
+      path.posix.join(relativeDirPath, exportPath),
       path.posix.sep,
-    )}${exportPath}`;
+    );
 
     return relativeDirPathWithDot;
   }

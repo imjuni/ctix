@@ -1,4 +1,5 @@
 import getExportInfos from '@compilers/getExportInfos';
+import { TCreateOptionWithDirInfo } from '@configs/interfaces/IOption';
 import * as env from '@testenv/env';
 import { getTestValue, posixJoin } from '@tools/misc';
 import validateExportDuplication from '@validations/validateExportDuplication';
@@ -36,7 +37,13 @@ test('c001-validateExportDuplication', async () => {
     return { ...aggregation, [file]: '*' };
   }, {});
 
-  const exportInfos = await getExportInfos(share.project, env.createOptionWithDirInfo, ignores);
+  const option: TCreateOptionWithDirInfo = {
+    ...env.createOptionWithDirInfo,
+    topDirDepth: 0,
+    topDirs: [env.exampleType03Path],
+  };
+
+  const exportInfos = await getExportInfos(share.project, option, ignores);
   const result = validateExportDuplication(exportInfos);
 
   const expectation = await import(path.join(__dirname, 'expects', expectFileName));
@@ -64,8 +71,14 @@ test('c002-validateFileNameDuplication', async () => {
     return { ...aggregation, [file]: '*' };
   }, {});
 
-  const exportInfos = await getExportInfos(share.project, env.createOptionWithDirInfo, ignores);
-  const result = validateFileNameDuplication(exportInfos, env.createOptionWithDirInfo);
+  const option: TCreateOptionWithDirInfo = {
+    ...env.createOptionWithDirInfo,
+    topDirDepth: 0,
+    topDirs: [env.exampleType03Path],
+  };
+
+  const exportInfos = await getExportInfos(share.project, option, ignores);
+  const result = validateFileNameDuplication(exportInfos, option);
   const terminateCircularResult = getTestValue(result);
 
   const expectation = await import(path.join(__dirname, 'expects', expectFileName));
