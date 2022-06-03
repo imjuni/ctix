@@ -37,11 +37,7 @@ yargs(process.argv.slice(2))
     aliases: ['c'],
     describe: 'create index.ts file that each file per directory',
     builder: (argv) => {
-      builder(argv);
-      createSingleBuilder(argv);
-      createBuilder(argv);
-
-      return argv as any;
+      return createBuilder(createSingleBuilder(builder(argv))) as any;
     },
     handler: async (argv) => {
       try {
@@ -60,11 +56,7 @@ yargs(process.argv.slice(2))
     aliases: ['s'],
     describe: 'create index.ts file that aggregate on single file',
     builder: (argv) => {
-      builder(argv);
-      createSingleBuilder(argv);
-      singleBuilder(argv);
-
-      return argv as any;
+      return singleBuilder(createSingleBuilder(builder(argv))) as any;
     },
     handler: async (argv) => {
       try {
@@ -83,10 +75,7 @@ yargs(process.argv.slice(2))
     aliases: ['r'],
     describe: 'remove index.ts file',
     builder: (argv) => {
-      builder(argv);
-      removeBuilder(argv);
-
-      return argv as any;
+      return removeBuilder(builder(argv)) as any;
     },
     handler: async (argv) => {
       try {
@@ -105,8 +94,7 @@ yargs(process.argv.slice(2))
     aliases: ['i'],
     describe: 'create .ctirc configuration',
     builder: (argv) => {
-      initBuilder(argv);
-      return argv as any;
+      return initBuilder(argv) as any;
     },
     handler: async (argv) => {
       try {

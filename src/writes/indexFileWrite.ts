@@ -55,6 +55,8 @@ export default async function indexFileWrite(
           indexFilePath,
           `${firstLine}${prettierApplied.contents}${option.eol}`,
         );
+
+        return undefined;
       }
 
       if (isFalse(await exists(indexFilePath))) {

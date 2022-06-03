@@ -1,5 +1,7 @@
 import getExportInfos from '@compilers/getExportInfos';
 import { TCreateOptionWithDirInfo } from '@configs/interfaces/IOption';
+import getIgnoreConfigContents from '@ignores/getIgnoreConfigContents';
+import getIgnoreConfigFiles from '@ignores/getIgnoreConfigFiles';
 import * as env from '@testenv/env';
 import { getTestValue, posixJoin } from '@tools/misc';
 import validateExportDuplication from '@validations/validateExportDuplication';
@@ -33,9 +35,18 @@ test('c001-validateExportDuplication', async () => {
     { cwd: replaceSepToPosix(env.examplePath) },
   );
 
+  const ignoreFiles = await getIgnoreConfigFiles(env.exampleType03Path);
+  const ignoreContents = await getIgnoreConfigContents({
+    cwd: env.exampleType03Path,
+    ...ignoreFiles,
+  });
+
   const ignores = files.reduce<Record<string, string | string[]>>((aggregation, file) => {
     return { ...aggregation, [file]: '*' };
   }, {});
+
+  ignoreContents.origin = { ...ignoreContents.origin, ...ignores };
+  ignoreContents.evaluated = { ...ignoreContents.evaluated, ...ignores };
 
   const option: TCreateOptionWithDirInfo = {
     ...env.createOptionWithDirInfo,
@@ -43,7 +54,7 @@ test('c001-validateExportDuplication', async () => {
     topDirs: [env.exampleType03Path],
   };
 
-  const exportInfos = await getExportInfos(share.project, option, ignores);
+  const exportInfos = await getExportInfos(share.project, option, ignoreContents);
   const result = validateExportDuplication(exportInfos);
 
   const expectation = await import(path.join(__dirname, 'expects', expectFileName));
@@ -67,9 +78,18 @@ test('c002-validateFileNameDuplication', async () => {
     { cwd: replaceSepToPosix(env.examplePath) },
   );
 
+  const ignoreFiles = await getIgnoreConfigFiles(env.exampleType03Path);
+  const ignoreContents = await getIgnoreConfigContents({
+    cwd: env.exampleType03Path,
+    ...ignoreFiles,
+  });
+
   const ignores = files.reduce<Record<string, string | string[]>>((aggregation, file) => {
     return { ...aggregation, [file]: '*' };
   }, {});
+
+  ignoreContents.origin = { ...ignoreContents.origin, ...ignores };
+  ignoreContents.evaluated = { ...ignoreContents.evaluated, ...ignores };
 
   const option: TCreateOptionWithDirInfo = {
     ...env.createOptionWithDirInfo,
@@ -77,7 +97,7 @@ test('c002-validateFileNameDuplication', async () => {
     topDirs: [env.exampleType03Path],
   };
 
-  const exportInfos = await getExportInfos(share.project, option, ignores);
+  const exportInfos = await getExportInfos(share.project, option, ignoreContents);
   const result = validateFileNameDuplication(exportInfos, option);
   const terminateCircularResult = getTestValue(result);
 

@@ -6,6 +6,7 @@ import getFilePathOnIndex from '@modules/getFilePathOnIndex';
 import getRelativeDepth from '@tools/getRelativeDepth';
 import ICreateIndexInfo from '@tools/interface/ICreateIndexInfo';
 import IDescendantExportInfo from '@tools/interface/IDescendantExportInfo';
+import minimatch from 'minimatch';
 import { isFalse, populate } from 'my-easy-fp';
 import { isDescendant, replaceSepToPosix } from 'my-node-fp';
 import path from 'path';
@@ -42,11 +43,16 @@ a/b/c/f/g/case04.ts
 export default async function createDescendantIndex(
   dirPath: string,
   exportInfos: IExportInfo[],
-  ignores: IGetIgnoredConfigContents,
+  ignores: { origin: IGetIgnoredConfigContents; evaluated: IGetIgnoredConfigContents },
   option: TCreateOrSingleOption,
 ): Promise<ICreateIndexInfo[]> {
   const depth = getRelativeDepth(option.topDirs, dirPath);
-  const everyDescendants = await getDescendantExportInfo(dirPath, option, exportInfos, ignores);
+  const everyDescendants = await getDescendantExportInfo(
+    dirPath,
+    option,
+    exportInfos,
+    ignores.evaluated,
+  );
   const sortedEveryDescendants = everyDescendants.sort((l, r) => {
     const depthDiff = r.depth - l.depth;
     return depthDiff !== 0 ? depthDiff : r.dirPath.localeCompare(l.dirPath);
@@ -125,8 +131,20 @@ export default async function createDescendantIndex(
     return descendantIndexInfos;
   }
 
+  const ignoreGlobPatterns = Object.keys(ignores.origin);
   const descendantIndexInfos = everyDescendants
-    .filter((descendant) => descendant.depth === depth + 1)
+    .filter((everyDescendant) => everyDescendant.depth === depth + 1)
+    .filter((everyDescendant) => {
+      const minimatchResult = ignoreGlobPatterns.some((ignoreGlobPattern) =>
+        minimatch(
+          everyDescendant.dirPath,
+          path.posix.join(option.resolvedProjectDirPath, ignoreGlobPattern),
+          { partial: true } as any, // @types repo support 3.x
+        ),
+      );
+
+      return isFalse(minimatchResult);
+    })
     .map((exportedDescendant) => {
       const filePath = getFilePathOnIndex(exportedDescendant.dirPath, option, dirPath);
 

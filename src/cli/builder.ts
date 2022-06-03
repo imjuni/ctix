@@ -20,11 +20,6 @@ export default function builder<
       describe: 'Export filename, if you not pass this field that use "index.ts" or "index.d.ts"',
       type: 'string',
     })
-    .option('verbose', {
-      alias: 'v',
-      describe: 'display more detailed log',
-      type: 'boolean',
-    })
     .option('config', {
       alias: 'c',
       describe: 'configuration file path',

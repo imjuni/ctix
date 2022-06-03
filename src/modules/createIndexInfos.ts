@@ -12,11 +12,11 @@ import { isNotEmpty } from 'my-easy-fp';
 
 export default async function createIndexInfos(
   exportInfos: IExportInfo[],
-  ignores: IGetIgnoredConfigContents,
+  ignores: { origin: IGetIgnoredConfigContents; evaluated: IGetIgnoredConfigContents },
   option: TCreateOrSingleOption,
 ): Promise<ICreateIndexInfos[]> {
   try {
-    const { depths, dirPaths } = await getDirPaths(exportInfos, option);
+    const { depths, dirPaths } = await getDirPaths(exportInfos, ignores, option);
 
     const depthPairs = Object.keys(dirPaths)
       .map((dirPath) => ({ dirPath, depth: depths[dirPath], exportInfos: dirPaths[dirPath] }))

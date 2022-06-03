@@ -1,12 +1,16 @@
 import IExportInfo from '@compilers/interfaces/IExportInfo';
 import { TCreateOrSingleOption } from '@configs/interfaces/IOption';
+import IGetIgnoredConfigContents from '@ignores/interfaces/IGetIgnoredConfigContents';
 import getRelativeDepth from '@tools/getRelativeDepth';
 import fastGlob from 'fast-glob';
+import minimatch from 'minimatch';
+import { isFalse } from 'my-easy-fp';
 import { getDirname, startSepRemove } from 'my-node-fp';
 import path from 'path';
 
 export default async function getDirPaths(
   exportInfos: IExportInfo[],
+  ignores: { origin: IGetIgnoredConfigContents; evaluated: IGetIgnoredConfigContents },
   option: TCreateOrSingleOption,
 ): Promise<{ depths: Record<string, number>; dirPaths: Record<string, IExportInfo[]> }> {
   const filePathsFromExportInfos = Array.from(
@@ -15,10 +19,23 @@ export default async function getDirPaths(
     ),
   );
 
-  const globFilePaths = await fastGlob(
+  const totalGlobFilePaths = await fastGlob(
     filePathsFromExportInfos.map((filePath) => `${filePath}${path.posix.sep}**${path.posix.sep}*`),
     { onlyDirectories: true },
   );
+
+  const ignoreGlobPatterns = Object.keys(ignores.origin);
+  const globFilePaths = totalGlobFilePaths.filter((totalGlobFilePath) => {
+    return isFalse(
+      ignoreGlobPatterns.some((ignoreGlobPattern) =>
+        minimatch(
+          totalGlobFilePath,
+          path.posix.join(option.resolvedProjectDirPath, ignoreGlobPattern),
+          { partial: true } as any, // @types repo support 3.x
+        ),
+      ),
+    );
+  });
 
   const filePaths = Array.from(new Set([...filePathsFromExportInfos, ...globFilePaths]));
   const depths = filePaths.reduce<Record<string, number>>((aggregation, filePath) => {
