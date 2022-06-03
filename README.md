@@ -137,7 +137,7 @@ json key indicate file path. You can use glob pattern. If set `'*'` character at
 useRootDir option activate using rootDir option in tsconfig.json. This option run below [flowchart](https://github.com/imjuni/ctix/blob/master/UseRootDir.md).
 
 # CLI with .ctirc
-ctix cli support `.ctirc` configuration file. Available name is only `.ctirc`. `.ctirc` configuration file can applied by each target directories and script working directory. Every configuration overwrited same feature. Also cti cli arguments forced applied. And `.ctirc` file can write [json5](https://json5.org) format. json5 spec. can comment and more feature.
+ctix cli support `.ctirc` configuration file. Available name is only `.ctirc`. Also cti cli arguments forced applied. And `.ctirc` file can write [json with comments](https://www.npmjs.com/package/jsonc-parser).
 
 ## .ctirc creation
 You can use cli for `.ctirc` file creation. 
