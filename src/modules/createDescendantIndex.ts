@@ -139,7 +139,6 @@ export default async function createDescendantIndex(
         minimatch(
           everyDescendant.dirPath,
           path.posix.join(option.resolvedProjectDirPath, ignoreGlobPattern),
-          { partial: true } as any, // @types repo support 3.x
         ),
       );
 
