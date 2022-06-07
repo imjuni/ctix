@@ -31,7 +31,6 @@ export default async function getDirPaths(
         minimatch(
           totalGlobFilePath,
           path.posix.join(option.resolvedProjectDirPath, ignoreGlobPattern),
-          { partial: true } as any, // @types repo support 3.x
         ),
       ),
     );

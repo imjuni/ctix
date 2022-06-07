@@ -84,3 +84,17 @@ See below [.ctiignore](https://github.com/imjuni/ctix/blob/develop/example/type0
 }
 ```
 json key indicate file path. You can use glob pattern. If set '*' character at value that is totally ignore file or glob pattern. If set string array that is ignore type name array.
+
+## testcase
+ctix need manual ignore for testcase like that. testcase directory, file ignore using glob pattern.
+
+```jsonc
+{
+  // ignore testcase directory
+  "**/__tests__": "*",
+  // ignore testcase file
+  "**/__tests__/*": "*"
+}
+```
+
+ctix auto create index.ts file empty directory because that can have children directory. So, ctix need ignore directory and file both.
