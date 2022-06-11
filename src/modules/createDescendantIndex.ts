@@ -7,7 +7,7 @@ import getRelativeDepth from '@tools/getRelativeDepth';
 import ICreateIndexInfo from '@tools/interface/ICreateIndexInfo';
 import IDescendantExportInfo from '@tools/interface/IDescendantExportInfo';
 import minimatch from 'minimatch';
-import { isFalse, populate } from 'my-easy-fp';
+import { isEmpty, isFalse, populate } from 'my-easy-fp';
 import { isDescendant, replaceSepToPosix } from 'my-node-fp';
 import path from 'path';
 
@@ -43,7 +43,11 @@ a/b/c/f/g/case04.ts
 export default async function createDescendantIndex(
   dirPath: string,
   exportInfos: IExportInfo[],
-  ignores: { origin: IGetIgnoredConfigContents; evaluated: IGetIgnoredConfigContents },
+  ignores: {
+    origin: IGetIgnoredConfigContents;
+    evaluated: IGetIgnoredConfigContents;
+    dirs: IGetIgnoredConfigContents;
+  },
   option: TCreateOrSingleOption,
 ): Promise<ICreateIndexInfo[]> {
   const depth = getRelativeDepth(option.topDirs, dirPath);
@@ -53,10 +57,12 @@ export default async function createDescendantIndex(
     exportInfos,
     ignores.evaluated,
   );
-  const sortedEveryDescendants = everyDescendants.sort((l, r) => {
-    const depthDiff = r.depth - l.depth;
-    return depthDiff !== 0 ? depthDiff : r.dirPath.localeCompare(l.dirPath);
-  });
+  const sortedEveryDescendants = everyDescendants
+    .filter((descendant) => isEmpty(ignores.dirs[descendant.dirPath]))
+    .sort((l, r) => {
+      const depthDiff = r.depth - l.depth;
+      return depthDiff !== 0 ? depthDiff : r.dirPath.localeCompare(l.dirPath);
+    });
   const maxDepth = everyDescendants.reduce((max, descendant) => {
     if (max < descendant.depth) {
       return descendant.depth;
@@ -133,6 +139,7 @@ export default async function createDescendantIndex(
 
   const ignoreGlobPatterns = Object.keys(ignores.origin);
   const descendantIndexInfos = everyDescendants
+    .filter((descendant) => isEmpty(ignores.dirs[descendant.dirPath]))
     .filter((everyDescendant) => everyDescendant.depth === depth + 1)
     .filter((everyDescendant) => {
       const minimatchResult = ignoreGlobPatterns.some((ignoreGlobPattern) =>

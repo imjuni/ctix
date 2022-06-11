@@ -1,5 +1,6 @@
 import fastGlob from 'fast-glob';
 import fastSafeStringify from 'fast-safe-stringify';
+import { isNotEmpty } from 'my-easy-fp';
 import { replaceSepToPosix } from 'my-node-fp';
 import * as path from 'path';
 import * as tsm from 'ts-morph';
@@ -16,11 +17,14 @@ export function posixJoin(...args: string[]): string {
 export async function fastGlobWrap(
   pattern: string | string[],
   options: Parameters<typeof fastGlob>[1],
+  sep?: string,
 ) {
   const patterns = Array.isArray(pattern) ? pattern : [pattern];
   const unixifyPatterns = patterns.map((nonUnixifyPattern) => replaceSepToPosix(nonUnixifyPattern));
   const unixifyFiles = await fastGlob(unixifyPatterns, options);
-  const files = unixifyFiles.map((file) => file.replace(/\//g, path.sep));
+  const files = isNotEmpty(sep)
+    ? unixifyFiles.map((file) => file.replace(/\//g, sep))
+    : unixifyFiles;
   return files;
 }
 

@@ -137,8 +137,6 @@ testcase directory ignore using glob pattern.
 
 ```jsonc
 {
-  // ignore testcase directory
-  "**/__tests__": "*",
   // ignore testcase file
   "**/__tests__/*": "*"
 }

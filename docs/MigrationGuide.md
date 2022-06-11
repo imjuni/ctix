@@ -90,8 +90,6 @@ ctix need manual ignore for testcase like that. testcase directory, file ignore 
 
 ```jsonc
 {
-  // ignore testcase directory
-  "**/__tests__": "*",
   // ignore testcase file
   "**/__tests__/*": "*"
 }

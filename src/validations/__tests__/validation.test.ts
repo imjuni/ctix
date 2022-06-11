@@ -7,17 +7,18 @@ import { getTestValue, posixJoin } from '@tools/misc';
 import validateExportDuplication from '@validations/validateExportDuplication';
 import validateFileNameDuplication from '@validations/validateFileNameDuplication';
 import consola, { LogLevel } from 'consola';
-import fastGlob from 'fast-glob';
-import { replaceSepToPosix } from 'my-node-fp';
 import path from 'path';
 import * as tsm from 'ts-morph';
 
-const share: { projectPath: string; project: tsm.Project } = {} as any;
+const share: {
+  projectPath03: string;
+  project03: tsm.Project;
+} = {} as any;
 
 beforeAll(() => {
   consola.level = LogLevel.Debug;
-  share.projectPath = replaceSepToPosix(path.join(env.examplePath, 'tsconfig.json'));
-  share.project = new tsm.Project({ tsConfigFilePath: share.projectPath });
+  share.projectPath03 = posixJoin(env.exampleType03Path, 'tsconfig.json');
+  share.project03 = new tsm.Project({ tsConfigFilePath: share.projectPath03 });
 });
 
 test('c001-validateExportDuplication', async () => {
@@ -25,36 +26,20 @@ test('c001-validateExportDuplication', async () => {
     .getState()
     .currentTestName.replace(/^([cC][0-9]+)(-.+)/, 'expect$2.ts');
 
-  const files = await fastGlob(
-    [
-      posixJoin(env.exampleType01Path, '**', '*'),
-      posixJoin(env.exampleType02Path, '**', '*'),
-      posixJoin(env.exampleType04Path, '**', '*'),
-      posixJoin(env.exampleType05Path, '**', '*'),
-    ],
-    { cwd: replaceSepToPosix(env.examplePath) },
-  );
+  const projectPath = env.exampleType03Path;
+  const project = share.project03;
 
-  const ignoreFiles = await getIgnoreConfigFiles(env.exampleType03Path);
-  const ignoreContents = await getIgnoreConfigContents({
-    cwd: env.exampleType03Path,
-    ...ignoreFiles,
-  });
-
-  const ignores = files.reduce<Record<string, string | string[]>>((aggregation, file) => {
-    return { ...aggregation, [file]: '*' };
-  }, {});
-
-  ignoreContents.origin = { ...ignoreContents.origin, ...ignores };
-  ignoreContents.evaluated = { ...ignoreContents.evaluated, ...ignores };
+  const ignoreFiles = await getIgnoreConfigFiles(projectPath);
+  const ignoreContents = await getIgnoreConfigContents({ cwd: projectPath, ...ignoreFiles });
 
   const option: TCreateOptionWithDirInfo = {
     ...env.createOptionWithDirInfo,
+    project: projectPath,
     topDirDepth: 0,
-    topDirs: [env.exampleType03Path],
+    topDirs: [projectPath],
   };
 
-  const exportInfos = await getExportInfos(share.project, option, ignoreContents);
+  const exportInfos = await getExportInfos(project, option, ignoreContents);
   const result = validateExportDuplication(exportInfos);
 
   const expectation = await import(path.join(__dirname, 'expects', expectFileName));
@@ -68,36 +53,23 @@ test('c002-validateFileNameDuplication', async () => {
     .getState()
     .currentTestName.replace(/^([cC][0-9]+)(-.+)/, 'expect$2.ts');
 
-  const files = await fastGlob(
-    [
-      posixJoin(env.exampleType01Path, '**', '*'),
-      posixJoin(env.exampleType02Path, '**', '*'),
-      posixJoin(env.exampleType04Path, '**', '*'),
-      posixJoin(env.exampleType05Path, '**', '*'),
-    ],
-    { cwd: replaceSepToPosix(env.examplePath) },
-  );
+  const projectPath = env.exampleType03Path;
+  const project = share.project03;
 
-  const ignoreFiles = await getIgnoreConfigFiles(env.exampleType03Path);
+  const ignoreFiles = await getIgnoreConfigFiles(projectPath);
   const ignoreContents = await getIgnoreConfigContents({
-    cwd: env.exampleType03Path,
+    cwd: projectPath,
     ...ignoreFiles,
   });
 
-  const ignores = files.reduce<Record<string, string | string[]>>((aggregation, file) => {
-    return { ...aggregation, [file]: '*' };
-  }, {});
-
-  ignoreContents.origin = { ...ignoreContents.origin, ...ignores };
-  ignoreContents.evaluated = { ...ignoreContents.evaluated, ...ignores };
-
   const option: TCreateOptionWithDirInfo = {
     ...env.createOptionWithDirInfo,
+    project: projectPath,
     topDirDepth: 0,
     topDirs: [env.exampleType03Path],
   };
 
-  const exportInfos = await getExportInfos(share.project, option, ignoreContents);
+  const exportInfos = await getExportInfos(project, option, ignoreContents);
   const result = validateFileNameDuplication(exportInfos, option);
   const terminateCircularResult = getTestValue(result);
 

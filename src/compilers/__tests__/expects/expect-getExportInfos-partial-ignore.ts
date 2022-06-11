@@ -6,7 +6,7 @@ export default [
   {
     resolvedFilePath: posixJoin(env.exampleType04Path, 'BubbleCls.tsx'),
     resolvedDirPath: replaceSepToPosix(env.exampleType04Path),
-    relativeFilePath: posixJoin('type04', 'BubbleCls.tsx'),
+    relativeFilePath: posixJoin('BubbleCls.tsx'),
     depth: 1,
     starExported: true,
     defaultExport: undefined,
@@ -15,7 +15,7 @@ export default [
   {
     resolvedFilePath: posixJoin(env.exampleType04Path, 'ComparisonCls.tsx'),
     resolvedDirPath: replaceSepToPosix(env.exampleType04Path),
-    relativeFilePath: posixJoin('type04', 'ComparisonCls.tsx'),
+    relativeFilePath: posixJoin('ComparisonCls.tsx'),
     depth: 1,
     starExported: true,
     defaultExport: undefined,
@@ -24,7 +24,7 @@ export default [
   {
     resolvedFilePath: posixJoin(env.exampleType04Path, 'createTypeScriptIndex.d.ts'),
     resolvedDirPath: replaceSepToPosix(env.exampleType04Path),
-    relativeFilePath: posixJoin('type04', 'createTypeScriptIndex.d.ts'),
+    relativeFilePath: posixJoin('createTypeScriptIndex.d.ts'),
     depth: 1,
     starExported: true,
     defaultExport: undefined,
@@ -37,7 +37,7 @@ export default [
   {
     resolvedFilePath: posixJoin(env.exampleType04Path, 'HandsomelyCls.tsx'),
     resolvedDirPath: replaceSepToPosix(env.exampleType04Path),
-    relativeFilePath: posixJoin('type04', 'HandsomelyCls.tsx'),
+    relativeFilePath: posixJoin('HandsomelyCls.tsx'),
     depth: 1,
     starExported: true,
     defaultExport: undefined,
@@ -46,7 +46,7 @@ export default [
   {
     resolvedFilePath: posixJoin(env.exampleType04Path, 'index.tsx'),
     resolvedDirPath: replaceSepToPosix(env.exampleType04Path),
-    relativeFilePath: posixJoin('type04', 'index.tsx'),
+    relativeFilePath: posixJoin('index.tsx'),
     depth: 1,
     starExported: true,
     defaultExport: { identifier: 'ReactApplication' },
@@ -55,7 +55,7 @@ export default [
   {
     resolvedFilePath: posixJoin(env.exampleType04Path, 'SampleCls.tsx'),
     resolvedDirPath: replaceSepToPosix(env.exampleType04Path),
-    relativeFilePath: posixJoin('type04', 'SampleCls.tsx'),
+    relativeFilePath: posixJoin('SampleCls.tsx'),
     depth: 1,
     starExported: true,
     defaultExport: undefined,
@@ -64,7 +64,7 @@ export default [
   {
     resolvedFilePath: posixJoin(env.exampleType04Path, 'SampleEnum.ts'),
     resolvedDirPath: replaceSepToPosix(env.exampleType04Path),
-    relativeFilePath: posixJoin('type04', 'SampleEnum.ts'),
+    relativeFilePath: posixJoin('SampleEnum.ts'),
     depth: 1,
     starExported: true,
     defaultExport: { identifier: 'JobType' },
@@ -73,7 +73,7 @@ export default [
   {
     resolvedFilePath: posixJoin(env.exampleType04Path, 'wellmade', 'ChildlikeCls.ts'),
     resolvedDirPath: posixJoin(env.exampleType04Path, 'wellmade'),
-    relativeFilePath: posixJoin('type04', 'wellmade', 'ChildlikeCls.ts'),
+    relativeFilePath: posixJoin('wellmade', 'ChildlikeCls.ts'),
     depth: 2,
     starExported: false,
     defaultExport: undefined,
@@ -82,7 +82,7 @@ export default [
   {
     resolvedFilePath: posixJoin(env.exampleType04Path, 'wellmade', 'carpenter', 'DiscussionCls.ts'),
     resolvedDirPath: posixJoin(env.exampleType04Path, 'wellmade', 'carpenter'),
-    relativeFilePath: posixJoin('type04', 'wellmade', 'carpenter', 'DiscussionCls.ts'),
+    relativeFilePath: posixJoin('wellmade', 'carpenter', 'DiscussionCls.ts'),
     depth: 3,
     starExported: true,
     defaultExport: undefined,
@@ -91,7 +91,7 @@ export default [
   {
     resolvedFilePath: posixJoin(env.exampleType04Path, 'wellmade', 'carpenter', 'MakeshiftCls.ts'),
     resolvedDirPath: posixJoin(env.exampleType04Path, 'wellmade', 'carpenter'),
-    relativeFilePath: posixJoin('type04', 'wellmade', 'carpenter', 'MakeshiftCls.ts'),
+    relativeFilePath: posixJoin('wellmade', 'carpenter', 'MakeshiftCls.ts'),
     depth: 3,
     starExported: true,
     defaultExport: undefined,

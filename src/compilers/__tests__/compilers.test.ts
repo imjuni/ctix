@@ -7,26 +7,46 @@ import getIgnoreConfigFiles from '@ignores/getIgnoreConfigFiles';
 import * as env from '@testenv/env';
 import { getTestValue, posixJoin } from '@tools/misc';
 import consola, { LogLevel } from 'consola';
-import fastGlob from 'fast-glob';
 import fs from 'fs';
 import { isEmpty } from 'my-easy-fp';
 import { getDirname, replaceSepToPosix } from 'my-node-fp';
 import path from 'path';
 import * as tsm from 'ts-morph';
 
-const share: { projectPath: string; project: tsm.Project } = {} as any;
+const share: {
+  projectPath02: string;
+  project02: tsm.Project;
+  projectPath03: string;
+  project03: tsm.Project;
+  projectPath04: string;
+  project04: tsm.Project;
+  projectPath05: string;
+  project05: tsm.Project;
+} = {} as any;
 
 beforeAll(() => {
   consola.level = LogLevel.Debug;
-  share.projectPath = replaceSepToPosix(path.join(env.examplePath, 'tsconfig.json'));
-  share.project = new tsm.Project({ tsConfigFilePath: share.projectPath });
+
+  share.projectPath02 = posixJoin(env.exampleType02Path, 'tsconfig.json');
+  share.project02 = new tsm.Project({ tsConfigFilePath: share.projectPath02 });
+
+  share.projectPath03 = posixJoin(env.exampleType03Path, 'tsconfig.json');
+  share.project03 = new tsm.Project({ tsConfigFilePath: share.projectPath03 });
+
+  share.projectPath04 = posixJoin(env.exampleType04Path, 'tsconfig.json');
+  share.project04 = new tsm.Project({ tsConfigFilePath: share.projectPath04 });
+
+  share.projectPath05 = posixJoin(env.exampleType05Path, 'tsconfig.json');
+  share.project05 = new tsm.Project({ tsConfigFilePath: share.projectPath05 });
 });
 
 test('c001-getExportedName', async () => {
   const files = await fs.promises.readdir(env.exampleType05Path);
-  const sourceFiles = files.map((caseFile) =>
-    share.project.getSourceFileOrThrow(path.join(env.exampleType05Path, caseFile)),
-  );
+  const sourceFiles = files
+    .filter((filePath) => filePath.indexOf('tsconfig') < 0)
+    .map((caseFile) =>
+      share.project05.getSourceFileOrThrow(path.join(env.exampleType05Path, caseFile)),
+    );
 
   const names = sourceFiles.map((sourceFile) => {
     const exportedDeclarations = sourceFile.getExportedDeclarations();
@@ -62,17 +82,18 @@ test('c001-getExportedName', async () => {
 
 test('c002-getExportInfo', async () => {
   // project://example/type04/fast-maker/ChildlikeCls.ts
-  const sourceFilePath = replaceSepToPosix(
-    path.join(env.exampleType04Path, 'fast-maker', 'ChildlikeCls.ts'),
-  );
+  const projectPath = env.exampleType04Path;
+  const project = share.project04;
 
+  const sourceFilePath = posixJoin(projectPath, 'fast-maker', 'ChildlikeCls.ts');
   const option: TCreateOptionWithDirInfo = {
     ...env.createOptionWithDirInfo,
+    project: projectPath,
     topDirDepth: 0,
-    topDirs: [env.exampleType04Path],
+    topDirs: [projectPath],
   };
 
-  const sourceFile = share.project.getSourceFileOrThrow(sourceFilePath);
+  const sourceFile = project.getSourceFileOrThrow(sourceFilePath);
   const result = await getExportInfo(sourceFile, option, {
     [sourceFilePath]: ['name'],
   });
@@ -85,7 +106,7 @@ test('c002-getExportInfo', async () => {
     ),
     relativeFilePath: replaceSepToPosix(
       path.relative(
-        env.examplePath,
+        env.exampleType04Path,
         posixJoin(env.exampleType04Path, 'fast-maker', 'ChildlikeCls.ts'),
       ),
     ),
@@ -99,25 +120,23 @@ test('c002-getExportInfo', async () => {
 });
 
 test('c003-getExportInfo', async () => {
+  const projectPath = env.exampleType03Path;
+  const project = share.project03;
+
   // project://example/type04/fast-maker/ChildlikeCls.ts
   // example\type03\popcorn\lawyer\appliance\bomb.ts
-  const sourceFilePath = posixJoin(
-    env.exampleType03Path,
-    'popcorn',
-    'lawyer',
-    'appliance',
-    'bomb.ts',
-  );
+  const sourceFilePath = posixJoin(projectPath, 'popcorn', 'lawyer', 'appliance', 'bomb.ts');
 
   const option: TCreateOptionWithDirInfo = {
     ...env.createOptionWithDirInfo,
+    project: projectPath,
     skipEmptyDir: false,
     keepFileExt: false,
     topDirDepth: 0,
-    topDirs: [env.exampleType03Path],
+    topDirs: [projectPath],
   };
 
-  const sourceFile = share.project.getSourceFileOrThrow(sourceFilePath);
+  const sourceFile = project.getSourceFileOrThrow(sourceFilePath);
   const result = await getExportInfo(sourceFile, option, { [sourceFilePath]: ['name'] });
   const terminateCircularResult = getTestValue(result);
 
@@ -128,7 +147,7 @@ test('c003-getExportInfo', async () => {
     ),
     relativeFilePath: replaceSepToPosix(
       path.relative(
-        env.examplePath,
+        env.exampleType03Path,
         posixJoin(env.exampleType03Path, 'popcorn', 'lawyer', 'appliance', 'bomb.ts'),
       ),
     ),
@@ -146,31 +165,21 @@ test('c004-getExportInfos-not-ignore', async () => {
     .getState()
     .currentTestName.replace(/^([cC][0-9]+)(-.+)/, 'expect$2.ts');
 
-  const files = await fastGlob(
-    [
-      replaceSepToPosix(path.join(env.exampleType01Path, '**', '*')),
-      replaceSepToPosix(path.join(env.exampleType02Path, '**', '*')),
-      replaceSepToPosix(path.join(env.exampleType04Path, '**', '*')),
-      replaceSepToPosix(path.join(env.exampleType05Path, '**', '*')),
-    ],
-    { cwd: replaceSepToPosix(env.examplePath) },
-  );
-
-  const ignores = files.reduce<Record<string, string | string[]>>((aggregation, file) => {
-    return { ...aggregation, [file]: '*' };
-  }, {});
+  const projectPath = env.exampleType03Path;
+  const project = share.project03;
 
   const option: TCreateOptionWithDirInfo = {
     ...env.createOptionWithDirInfo,
+    project: projectPath,
     skipEmptyDir: false,
     keepFileExt: false,
     topDirDepth: 0,
-    topDirs: [replaceSepToPosix(env.exampleType03Path)],
+    topDirs: [projectPath],
   };
 
-  const result = await getExportInfos(share.project, option, {
-    origin: ignores,
-    evaluated: ignores,
+  const result = await getExportInfos(project, option, {
+    origin: {},
+    evaluated: {},
   });
   const expectation = await import(path.join(__dirname, 'expects', expectFileName));
   const terminateCircularResult = getTestValue(result);
@@ -183,38 +192,25 @@ test('c005-getExportInfos-partial-ignore', async () => {
     .getState()
     .currentTestName.replace(/^([cC][0-9]+)(-.+)/, 'expect$2.ts');
 
-  const files = await fastGlob(
-    [
-      replaceSepToPosix(path.join(env.exampleType01Path, '**', '*')),
-      replaceSepToPosix(path.join(env.exampleType02Path, '**', '*')),
-      replaceSepToPosix(path.join(env.exampleType03Path, '**', '*')),
-      replaceSepToPosix(path.join(env.exampleType05Path, '**', '*')),
-    ],
-    { cwd: replaceSepToPosix(env.examplePath) },
-  );
+  const projectPath = env.exampleType04Path;
+  const project = share.project04;
 
-  const ignoreFiles = await getIgnoreConfigFiles(env.exampleType04Path);
+  const ignoreFiles = await getIgnoreConfigFiles(projectPath);
   const ignoreContents = await getIgnoreConfigContents({
-    cwd: env.exampleType04Path,
+    cwd: projectPath,
     ...ignoreFiles,
   });
 
-  const ignores = files.reduce<Record<string, string | string[]>>((aggregation, file) => {
-    return { ...aggregation, [file]: '*' };
-  }, {});
-
-  ignoreContents.origin = { ...ignoreContents.origin, ...ignores };
-  ignoreContents.evaluated = { ...ignoreContents.evaluated, ...ignores };
-
   const option: TCreateOptionWithDirInfo = {
     ...env.createOptionWithDirInfo,
+    project: projectPath,
     skipEmptyDir: false,
     keepFileExt: false,
     topDirDepth: 0,
-    topDirs: [replaceSepToPosix(env.exampleType04Path)],
+    topDirs: [projectPath],
   };
 
-  const result = await getExportInfos(share.project, option, ignoreContents);
+  const result = await getExportInfos(project, option, ignoreContents);
   const expectation = await import(path.join(__dirname, 'expects', expectFileName));
   const terminateCircularResult = getTestValue(result);
 

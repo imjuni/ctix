@@ -2,6 +2,7 @@ import IExportInfo from '@compilers/interfaces/IExportInfo';
 import { TCreateOrSingleOption } from '@configs/interfaces/IOption';
 import IGetIgnoredConfigContents from '@ignores/interfaces/IGetIgnoredConfigContents';
 import getRelativeDepth from '@tools/getRelativeDepth';
+import { posixJoin } from '@tools/misc';
 import fastGlob from 'fast-glob';
 import minimatch from 'minimatch';
 import { isFalse } from 'my-easy-fp';
@@ -28,10 +29,7 @@ export default async function getDirPaths(
   const globFilePaths = totalGlobFilePaths.filter((totalGlobFilePath) => {
     return isFalse(
       ignoreGlobPatterns.some((ignoreGlobPattern) =>
-        minimatch(
-          totalGlobFilePath,
-          path.posix.join(option.resolvedProjectDirPath, ignoreGlobPattern),
-        ),
+        minimatch(totalGlobFilePath, posixJoin(option.resolvedProjectDirPath, ignoreGlobPattern)),
       ),
     );
   });

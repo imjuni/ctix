@@ -11,6 +11,7 @@ import {
   TSingleOptionWithDirInfo,
   TTInitOptionWithDirInfo,
 } from '@configs/interfaces/IOption';
+import getEmptyDescendantTree from '@ignores/getEmptyDescendantTree';
 import getIgnoreConfigContents from '@ignores/getIgnoreConfigContents';
 import getIgnoreConfigFiles from '@ignores/getIgnoreConfigFiles';
 import createIndexInfos from '@modules/createIndexInfos';
@@ -42,6 +43,10 @@ export async function createWritor(option: TCreateOptionWithDirInfo, isMessageDi
 
     const ignoreFiles = await getIgnoreConfigFiles(projectDirPath);
     const ignoreContents = await getIgnoreConfigContents({ cwd: projectDirPath, ...ignoreFiles });
+    const ignoreDirs = await getEmptyDescendantTree({
+      cwd: projectDirPath,
+      ignores: ignoreContents.evaluated,
+    });
 
     spinner.update('ignore file loading complete');
 
@@ -66,7 +71,11 @@ export async function createWritor(option: TCreateOptionWithDirInfo, isMessageDi
 
     spinner.update(`generate ${option.exportFilename} content`);
 
-    const indexInfos = await createIndexInfos(exportInfos, ignoreContents, option);
+    const indexInfos = await createIndexInfos(
+      exportInfos,
+      { ...ignoreContents, dirs: ignoreDirs },
+      option,
+    );
 
     spinner.update(`write each ${option.exportFilename} file`);
 
@@ -95,13 +104,13 @@ export async function singleWritor(option: TSingleOptionWithDirInfo, isMessageDi
     spinner.start("ctix 'single' mode start, ...");
     reasoner.sleep(1000);
 
-    const projectPath = await getDirname(option.resolvedProjectFilePath);
+    const projectDirPath = await getDirname(option.resolvedProjectFilePath);
     const project = getTypeScriptProject(option.resolvedProjectFilePath);
 
     spinner.update('project loading complete');
 
-    const ignoreFiles = await getIgnoreConfigFiles(projectPath);
-    const ignoreContents = await getIgnoreConfigContents({ cwd: projectPath, ...ignoreFiles });
+    const ignoreFiles = await getIgnoreConfigFiles(projectDirPath);
+    const ignoreContents = await getIgnoreConfigContents({ cwd: projectDirPath, ...ignoreFiles });
 
     spinner.update('ignore file loading complete');
 
