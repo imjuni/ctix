@@ -27,6 +27,10 @@ export default async function getIgnoreConfigContents({
         return { ...aggregation, [key]: value };
       }
 
+      if (value === '*' && aggregation[key] === '*') {
+        return { ...aggregation, [key]: value };
+      }
+
       return { ...aggregation, [key]: Array.from(new Set([...aggregation[key], ...value])) };
     }, {});
 

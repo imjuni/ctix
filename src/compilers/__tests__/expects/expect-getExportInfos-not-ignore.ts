@@ -6,7 +6,7 @@ export default [
   {
     resolvedFilePath: posixJoin(env.exampleType03Path, 'BubbleCls.tsx'),
     resolvedDirPath: replaceSepToPosix(env.exampleType03Path),
-    relativeFilePath: posixJoin('type03', 'BubbleCls.tsx'),
+    relativeFilePath: posixJoin('BubbleCls.tsx'),
     depth: 1,
     starExported: true,
     defaultExport: undefined,
@@ -15,7 +15,7 @@ export default [
   {
     resolvedFilePath: posixJoin(env.exampleType03Path, 'ComparisonCls.tsx'),
     resolvedDirPath: replaceSepToPosix(env.exampleType03Path),
-    relativeFilePath: posixJoin('type03', 'ComparisonCls.tsx'),
+    relativeFilePath: posixJoin('ComparisonCls.tsx'),
     depth: 1,
     starExported: true,
     defaultExport: undefined,
@@ -24,7 +24,7 @@ export default [
   {
     resolvedFilePath: posixJoin(env.exampleType03Path, 'createTypeScriptIndex.d.ts'),
     resolvedDirPath: replaceSepToPosix(env.exampleType03Path),
-    relativeFilePath: posixJoin('type03', 'createTypeScriptIndex.d.ts'),
+    relativeFilePath: posixJoin('createTypeScriptIndex.d.ts'),
     depth: 1,
     starExported: true,
     defaultExport: undefined,
@@ -37,7 +37,7 @@ export default [
   {
     resolvedFilePath: posixJoin(env.exampleType03Path, 'HandsomelyCls.tsx'),
     resolvedDirPath: replaceSepToPosix(env.exampleType03Path),
-    relativeFilePath: posixJoin('type03', 'HandsomelyCls.tsx'),
+    relativeFilePath: posixJoin('HandsomelyCls.tsx'),
     depth: 1,
     starExported: true,
     defaultExport: undefined,
@@ -46,7 +46,7 @@ export default [
   {
     resolvedFilePath: posixJoin(env.exampleType03Path, 'index.d.ts'),
     resolvedDirPath: replaceSepToPosix(env.exampleType03Path),
-    relativeFilePath: posixJoin('type03', 'index.d.ts'),
+    relativeFilePath: posixJoin('index.d.ts'),
     depth: 1,
     starExported: true,
     defaultExport: undefined,
@@ -59,7 +59,7 @@ export default [
   {
     resolvedFilePath: posixJoin(env.exampleType03Path, 'SampleCls.tsx'),
     resolvedDirPath: replaceSepToPosix(env.exampleType03Path),
-    relativeFilePath: posixJoin('type03', 'SampleCls.tsx'),
+    relativeFilePath: posixJoin('SampleCls.tsx'),
     depth: 1,
     starExported: true,
     defaultExport: undefined,
@@ -68,7 +68,7 @@ export default [
   {
     resolvedFilePath: posixJoin(env.exampleType03Path, 'juvenile/TriteCls.ts'),
     resolvedDirPath: posixJoin(env.exampleType03Path, 'juvenile'),
-    relativeFilePath: posixJoin('type03', 'juvenile/TriteCls.ts'),
+    relativeFilePath: posixJoin('juvenile/TriteCls.ts'),
     depth: 2,
     starExported: true,
     defaultExport: undefined,
@@ -77,7 +77,7 @@ export default [
   {
     resolvedFilePath: posixJoin(env.exampleType03Path, 'popcorn/case01.ts'),
     resolvedDirPath: posixJoin(env.exampleType03Path, 'popcorn'),
-    relativeFilePath: posixJoin('type03', 'popcorn/case01.ts'),
+    relativeFilePath: posixJoin('popcorn/case01.ts'),
     depth: 2,
     starExported: true,
     defaultExport: { identifier: 'case01' },
@@ -86,7 +86,7 @@ export default [
   {
     resolvedFilePath: posixJoin(env.exampleType03Path, 'popcorn/index.d.ts'),
     resolvedDirPath: posixJoin(env.exampleType03Path, 'popcorn'),
-    relativeFilePath: posixJoin('type03', 'popcorn/index.d.ts'),
+    relativeFilePath: posixJoin('popcorn/index.d.ts'),
     depth: 2,
     starExported: true,
     defaultExport: undefined,
@@ -95,7 +95,7 @@ export default [
   {
     resolvedFilePath: posixJoin(env.exampleType03Path, 'wellmade/ChildlikeCls.ts'),
     resolvedDirPath: posixJoin(env.exampleType03Path, 'wellmade'),
-    relativeFilePath: posixJoin('type03', 'wellmade/ChildlikeCls.ts'),
+    relativeFilePath: posixJoin('wellmade/ChildlikeCls.ts'),
     depth: 2,
     starExported: true,
     defaultExport: undefined,
@@ -104,7 +104,7 @@ export default [
   {
     resolvedFilePath: posixJoin(env.exampleType03Path, 'wellmade/FlakyCls.ts'),
     resolvedDirPath: posixJoin(env.exampleType03Path, 'wellmade'),
-    relativeFilePath: posixJoin('type03', 'wellmade/FlakyCls.ts'),
+    relativeFilePath: posixJoin('wellmade/FlakyCls.ts'),
     depth: 2,
     starExported: true,
     defaultExport: undefined,
@@ -113,7 +113,7 @@ export default [
   {
     resolvedFilePath: posixJoin(env.exampleType03Path, 'wellmade/WhisperingCls.ts'),
     resolvedDirPath: posixJoin(env.exampleType03Path, 'wellmade'),
-    relativeFilePath: posixJoin('type03', 'wellmade/WhisperingCls.ts'),
+    relativeFilePath: posixJoin('wellmade/WhisperingCls.ts'),
     depth: 2,
     starExported: true,
     defaultExport: undefined,
@@ -122,7 +122,7 @@ export default [
   {
     resolvedFilePath: posixJoin(env.exampleType03Path, 'juvenile/spill/ExperienceCls.ts'),
     resolvedDirPath: posixJoin(env.exampleType03Path, 'juvenile/spill'),
-    relativeFilePath: posixJoin('type03', 'juvenile/spill/ExperienceCls.ts'),
+    relativeFilePath: posixJoin('juvenile/spill/ExperienceCls.ts'),
     depth: 3,
     starExported: true,
     defaultExport: undefined,
@@ -131,7 +131,7 @@ export default [
   {
     resolvedFilePath: posixJoin(env.exampleType03Path, 'wellmade/carpenter/DiscussionCls.ts'),
     resolvedDirPath: posixJoin(env.exampleType03Path, 'wellmade/carpenter'),
-    relativeFilePath: posixJoin('type03', 'wellmade/carpenter/DiscussionCls.ts'),
+    relativeFilePath: posixJoin('wellmade/carpenter/DiscussionCls.ts'),
     depth: 3,
     starExported: true,
     defaultExport: undefined,
@@ -140,7 +140,7 @@ export default [
   {
     resolvedFilePath: posixJoin(env.exampleType03Path, 'wellmade/carpenter/MakeshiftCls.ts'),
     resolvedDirPath: posixJoin(env.exampleType03Path, 'wellmade/carpenter'),
-    relativeFilePath: posixJoin('type03', 'wellmade/carpenter/MakeshiftCls.ts'),
+    relativeFilePath: posixJoin('wellmade/carpenter/MakeshiftCls.ts'),
     depth: 3,
     starExported: true,
     defaultExport: undefined,
@@ -149,7 +149,7 @@ export default [
   {
     resolvedFilePath: posixJoin(env.exampleType03Path, 'popcorn/finance/discipline/case02.ts'),
     resolvedDirPath: posixJoin(env.exampleType03Path, 'popcorn/finance/discipline'),
-    relativeFilePath: posixJoin('type03', 'popcorn/finance/discipline/case02.ts'),
+    relativeFilePath: posixJoin('popcorn/finance/discipline/case02.ts'),
     depth: 4,
     starExported: true,
     defaultExport: { identifier: 'case02' },
@@ -158,7 +158,7 @@ export default [
   {
     resolvedFilePath: posixJoin(env.exampleType03Path, 'popcorn/finance/discipline/case03.ts'),
     resolvedDirPath: posixJoin(env.exampleType03Path, 'popcorn/finance/discipline'),
-    relativeFilePath: posixJoin('type03', 'popcorn/finance/discipline/case03.ts'),
+    relativeFilePath: posixJoin('popcorn/finance/discipline/case03.ts'),
     depth: 4,
     starExported: true,
     defaultExport: { identifier: 'Case03' },
@@ -167,7 +167,7 @@ export default [
   {
     resolvedFilePath: posixJoin(env.exampleType03Path, 'popcorn/lawyer/appliance/bomb.ts'),
     resolvedDirPath: posixJoin(env.exampleType03Path, 'popcorn/lawyer/appliance'),
-    relativeFilePath: posixJoin('type03', 'popcorn/lawyer/appliance/bomb.ts'),
+    relativeFilePath: posixJoin('popcorn/lawyer/appliance/bomb.ts'),
     depth: 4,
     starExported: true,
     defaultExport: { identifier: 'bomb' },
@@ -176,7 +176,7 @@ export default [
   {
     resolvedFilePath: posixJoin(env.exampleType03Path, 'popcorn/lawyer/appliance/IKittens.ts'),
     resolvedDirPath: posixJoin(env.exampleType03Path, 'popcorn/lawyer/appliance'),
-    relativeFilePath: posixJoin('type03', 'popcorn/lawyer/appliance/IKittens.ts'),
+    relativeFilePath: posixJoin('popcorn/lawyer/appliance/IKittens.ts'),
     depth: 4,
     starExported: true,
     defaultExport: { identifier: 'IKittens' },
@@ -185,7 +185,7 @@ export default [
   {
     resolvedFilePath: posixJoin(env.exampleType03Path, 'popcorn/lawyer/appliance/TomatoesCls.ts'),
     resolvedDirPath: posixJoin(env.exampleType03Path, 'popcorn/lawyer/appliance'),
-    relativeFilePath: posixJoin('type03', 'popcorn/lawyer/appliance/TomatoesCls.ts'),
+    relativeFilePath: posixJoin('popcorn/lawyer/appliance/TomatoesCls.ts'),
     depth: 4,
     starExported: true,
     defaultExport: undefined,

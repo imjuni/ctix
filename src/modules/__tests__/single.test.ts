@@ -8,18 +8,30 @@ import { getTestValue, posixJoin } from '@tools/misc';
 import validateExportDuplication from '@validations/validateExportDuplication';
 import validateFileNameDuplication from '@validations/validateFileNameDuplication';
 import consola, { LogLevel } from 'consola';
-import fastGlob from 'fast-glob';
 import { isFalse } from 'my-easy-fp';
-import { replaceSepToPosix } from 'my-node-fp';
 import path from 'path';
 import * as tsm from 'ts-morph';
 
-const share: { projectPath: string; project: tsm.Project } = {} as any;
+const share: {
+  projectPath02: string;
+  project02: tsm.Project;
+  projectPath03: string;
+  project03: tsm.Project;
+  projectPath04: string;
+  project04: tsm.Project;
+} = {} as any;
 
 beforeAll(() => {
   consola.level = LogLevel.Debug;
-  share.projectPath = posixJoin(env.examplePath, 'tsconfig.json');
-  share.project = new tsm.Project({ tsConfigFilePath: share.projectPath });
+
+  share.projectPath02 = posixJoin(env.exampleType02Path, 'tsconfig.json');
+  share.project02 = new tsm.Project({ tsConfigFilePath: share.projectPath02 });
+
+  share.projectPath03 = posixJoin(env.exampleType03Path, 'tsconfig.json');
+  share.project03 = new tsm.Project({ tsConfigFilePath: share.projectPath03 });
+
+  share.projectPath04 = posixJoin(env.exampleType04Path, 'tsconfig.json');
+  share.project04 = new tsm.Project({ tsConfigFilePath: share.projectPath04 });
 });
 
 test('c001-singleIndexInfos-type03', async () => {
@@ -27,38 +39,25 @@ test('c001-singleIndexInfos-type03', async () => {
     .getState()
     .currentTestName.replace(/^([cC][0-9]+)(-.+)/, 'expect$2.ts');
 
-  const files = await fastGlob(
-    [
-      posixJoin(env.exampleType01Path, '**', '*'),
-      posixJoin(env.exampleType02Path, '**', '*'),
-      posixJoin(env.exampleType04Path, '**', '*'),
-      posixJoin(env.exampleType05Path, '**', '*'),
-    ],
-    { cwd: replaceSepToPosix(env.examplePath) },
-  );
+  const projectPath = env.exampleType03Path;
+  const project = share.project03;
 
   // option modify for expectation
   const option: TSingleOptionWithDirInfo = {
     ...env.singleOptionWithDirInfo,
+    project: projectPath,
     keepFileExt: false,
-    output: env.exampleType03Path,
-    topDirs: [env.exampleType03Path],
+    output: projectPath,
+    topDirs: [projectPath],
   };
 
-  const ignoreFiles = await getIgnoreConfigFiles(env.exampleType03Path);
+  const ignoreFiles = await getIgnoreConfigFiles(projectPath);
   const ignoreContents = await getIgnoreConfigContents({
-    cwd: env.exampleType03Path,
+    cwd: projectPath,
     ...ignoreFiles,
   });
 
-  const ignores = files.reduce<Record<string, string | string[]>>((aggregation, file) => {
-    return { ...aggregation, [file]: '*' };
-  }, {});
-
-  ignoreContents.origin = { ...ignoreContents.origin, ...ignores };
-  ignoreContents.evaluated = { ...ignoreContents.evaluated, ...ignores };
-
-  const exportInfos = await getExportInfos(share.project, option, ignoreContents);
+  const exportInfos = await getExportInfos(project, option, ignoreContents);
   const exportDuplicationValidateResult = validateExportDuplication(exportInfos);
   const validateResult = validateFileNameDuplication(
     exportInfos.filter((exportInfo) =>
@@ -72,7 +71,7 @@ test('c001-singleIndexInfos-type03', async () => {
       isFalse(exportDuplicationValidateResult.filePaths.includes(exportInfo.resolvedFilePath)),
   );
 
-  const result = await singleIndexInfos(validExportInfos, ignoreContents, option, share.project);
+  const result = await singleIndexInfos(validExportInfos, ignoreContents, option, project);
   const terminateCircularResult = getTestValue(result);
 
   const expectation = await import(path.join(__dirname, 'expects', expectFileName));
@@ -85,38 +84,25 @@ test('c002-singleIndexInfos-type04', async () => {
     .getState()
     .currentTestName.replace(/^([cC][0-9]+)(-.+)/, 'expect$2.ts');
 
-  const files = await fastGlob(
-    [
-      posixJoin(env.exampleType01Path, '**', '*'),
-      posixJoin(env.exampleType02Path, '**', '*'),
-      posixJoin(env.exampleType03Path, '**', '*'),
-      posixJoin(env.exampleType05Path, '**', '*'),
-    ],
-    { cwd: replaceSepToPosix(env.examplePath) },
-  );
+  const projectPath = env.exampleType04Path;
+  const project = share.project04;
 
   // option modify for expectation
   const option: TSingleOptionWithDirInfo = {
     ...env.singleOptionWithDirInfo,
     keepFileExt: false,
-    output: env.exampleType04Path,
-    topDirs: [env.exampleType04Path],
+    project: projectPath,
+    output: projectPath,
+    topDirs: [projectPath],
   };
 
-  const ignoreFiles = await getIgnoreConfigFiles(env.exampleType04Path);
+  const ignoreFiles = await getIgnoreConfigFiles(projectPath);
   const ignoreContents = await getIgnoreConfigContents({
-    cwd: env.exampleType04Path,
+    cwd: projectPath,
     ...ignoreFiles,
   });
 
-  const ignores = files.reduce<Record<string, string | string[]>>((aggregation, file) => {
-    return { ...aggregation, [file]: '*' };
-  }, {});
-
-  ignoreContents.origin = { ...ignoreContents.origin, ...ignores };
-  ignoreContents.evaluated = { ...ignoreContents.evaluated, ...ignores };
-
-  const exportInfos = await getExportInfos(share.project, option, ignoreContents);
+  const exportInfos = await getExportInfos(project, option, ignoreContents);
   const exportDuplicationValidateResult = validateExportDuplication(exportInfos);
   const validateResult = validateFileNameDuplication(
     exportInfos.filter((exportInfo) =>
@@ -130,7 +116,7 @@ test('c002-singleIndexInfos-type04', async () => {
       isFalse(exportDuplicationValidateResult.filePaths.includes(exportInfo.resolvedFilePath)),
   );
 
-  const result = await singleIndexInfos(validExportInfos, ignoreContents, option, share.project);
+  const result = await singleIndexInfos(validExportInfos, ignoreContents, option, project);
   const terminateCircularResult = getTestValue(result);
 
   const expectation = await import(path.join(__dirname, 'expects', expectFileName));

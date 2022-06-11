@@ -12,7 +12,11 @@ import { isNotEmpty } from 'my-easy-fp';
 
 export default async function createIndexInfos(
   exportInfos: IExportInfo[],
-  ignores: { origin: IGetIgnoredConfigContents; evaluated: IGetIgnoredConfigContents },
+  ignores: {
+    origin: IGetIgnoredConfigContents;
+    evaluated: IGetIgnoredConfigContents;
+    dirs: IGetIgnoredConfigContents;
+  },
   option: TCreateOrSingleOption,
 ): Promise<ICreateIndexInfos[]> {
   try {

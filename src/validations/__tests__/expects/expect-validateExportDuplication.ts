@@ -15,7 +15,7 @@ export default {
       {
         resolvedFilePath: posixJoin(env.exampleType03Path, 'createTypeScriptIndex.d.ts'),
         resolvedDirPath: replaceSepToPosix(env.exampleType03Path),
-        relativeFilePath: 'type03/createTypeScriptIndex.d.ts',
+        relativeFilePath: 'createTypeScriptIndex.d.ts',
         depth: 1,
         starExported: true,
         defaultExport: undefined,
@@ -28,7 +28,7 @@ export default {
       {
         resolvedFilePath: posixJoin(env.exampleType03Path, 'index.d.ts'),
         resolvedDirPath: replaceSepToPosix(env.exampleType03Path),
-        relativeFilePath: 'type03/index.d.ts',
+        relativeFilePath: 'index.d.ts',
         depth: 1,
         starExported: true,
         defaultExport: undefined,
@@ -43,7 +43,7 @@ export default {
       {
         resolvedFilePath: posixJoin(env.exampleType03Path, 'createTypeScriptIndex.d.ts'),
         resolvedDirPath: replaceSepToPosix(env.exampleType03Path),
-        relativeFilePath: 'type03/createTypeScriptIndex.d.ts',
+        relativeFilePath: 'createTypeScriptIndex.d.ts',
         depth: 1,
         starExported: true,
         defaultExport: undefined,
@@ -56,7 +56,7 @@ export default {
       {
         resolvedFilePath: posixJoin(env.exampleType03Path, 'index.d.ts'),
         resolvedDirPath: replaceSepToPosix(env.exampleType03Path),
-        relativeFilePath: 'type03/index.d.ts',
+        relativeFilePath: 'index.d.ts',
         depth: 1,
         starExported: true,
         defaultExport: undefined,
@@ -71,7 +71,7 @@ export default {
       {
         resolvedFilePath: posixJoin(env.exampleType03Path, 'createTypeScriptIndex.d.ts'),
         resolvedDirPath: replaceSepToPosix(env.exampleType03Path),
-        relativeFilePath: 'type03/createTypeScriptIndex.d.ts',
+        relativeFilePath: 'createTypeScriptIndex.d.ts',
         depth: 1,
         starExported: true,
         defaultExport: undefined,
@@ -84,7 +84,7 @@ export default {
       {
         resolvedFilePath: posixJoin(env.exampleType03Path, 'index.d.ts'),
         resolvedDirPath: replaceSepToPosix(env.exampleType03Path),
-        relativeFilePath: 'type03/index.d.ts',
+        relativeFilePath: 'index.d.ts',
         depth: 1,
         starExported: true,
         defaultExport: undefined,
@@ -105,7 +105,7 @@ export default {
           'bomb.ts',
         ),
         resolvedDirPath: posixJoin(env.exampleType03Path, 'popcorn', 'lawyer', 'appliance'),
-        relativeFilePath: posixJoin('type03', 'popcorn', 'lawyer', 'appliance', 'bomb.ts'),
+        relativeFilePath: posixJoin('popcorn', 'lawyer', 'appliance', 'bomb.ts'),
         depth: 4,
         starExported: true,
         defaultExport: { identifier: 'bomb' },
@@ -120,7 +120,7 @@ export default {
           'bomb.ts',
         ),
         resolvedDirPath: posixJoin(env.exampleType03Path, 'popcorn', 'lawyer', 'appliance'),
-        relativeFilePath: posixJoin('type03', 'popcorn', 'lawyer', 'appliance', 'bomb.ts'),
+        relativeFilePath: posixJoin('popcorn', 'lawyer', 'appliance', 'bomb.ts'),
         depth: 4,
         starExported: true,
         defaultExport: { identifier: 'bomb' },
