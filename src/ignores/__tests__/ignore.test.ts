@@ -102,3 +102,22 @@ test('getEmptyDescendantTree-case02', async () => {
 
   expect(result).toEqual(expectation);
 });
+
+test('getEmptyDescendantTree-case03', async () => {
+  const ignoreFiles = await getIgnoreConfigFiles(env.exampleType06Path);
+  const ignoreContents = await getIgnoreConfigContents({
+    cwd: env.exampleType06Path,
+    ...ignoreFiles,
+  });
+
+  const result = await getEmptyDescendantTree({
+    cwd: env.exampleType06Path,
+    ignores: ignoreContents.evaluated,
+  });
+
+  const expectation = {
+    [posixJoin(env.exampleType06Path, 'fast-maker/__tests__')]: '*',
+  };
+
+  expect(result).toEqual(expectation);
+});

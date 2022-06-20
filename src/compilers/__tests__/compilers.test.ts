@@ -22,6 +22,8 @@ const share: {
   project04: tsm.Project;
   projectPath05: string;
   project05: tsm.Project;
+  projectPath06: string;
+  project06: tsm.Project;
 } = {} as any;
 
 beforeAll(() => {
@@ -38,6 +40,9 @@ beforeAll(() => {
 
   share.projectPath05 = posixJoin(env.exampleType05Path, 'tsconfig.json');
   share.project05 = new tsm.Project({ tsConfigFilePath: share.projectPath05 });
+
+  share.projectPath06 = posixJoin(env.exampleType06Path, 'tsconfig.json');
+  share.project06 = new tsm.Project({ tsConfigFilePath: share.projectPath06 });
 });
 
 test('c001-getExportedName', async () => {
@@ -72,6 +77,54 @@ test('c001-getExportedName', async () => {
     'ClassDeclaration',
     'Case08',
     'EN_CASE09_DEFAULT_EXPORT',
+  ];
+
+  names.sort();
+  expectation.sort();
+
+  expect(names).toEqual(expectation);
+});
+
+test('c006-getExportedName', async () => {
+  const sourceFiles = share.project06.getSourceFiles();
+
+  const names = sourceFiles
+    .map((sourceFile) => {
+      const exportedDeclarations = sourceFile.getExportedDeclarations();
+      const exportedDeclarationNames = Array.from(exportedDeclarations.keys());
+
+      consola.debug('length: ', exportedDeclarationNames.length);
+
+      return exportedDeclarationNames
+        .map((exportedDeclarationName) => exportedDeclarations.get(exportedDeclarationName))
+        .filter(
+          (exportedDeclaration): exportedDeclaration is tsm.ExportedDeclarations[] =>
+            exportedDeclaration !== undefined && exportedDeclaration !== null,
+        )
+        .flatMap((flatten) => flatten)
+        .map((exportedDeclaration) => getExportedName(exportedDeclaration));
+    })
+    .flatMap((flatten) => flatten);
+
+  const expectation = [
+    'ChildlikeCls',
+    'DiscussionCls',
+    'FlakyCls',
+    'MakeshiftCls',
+    'WhisperingCls',
+    'arrowCase003',
+    'childlike',
+    'childlikeCase002',
+    'childlikeCase003',
+    'flaky',
+    'flakyCase002',
+    'flakyCase003',
+    'funcCase003',
+    'greeting',
+    'name',
+    'nameCase001',
+    'nameCase002',
+    'nameCase003',
   ];
 
   names.sort();
