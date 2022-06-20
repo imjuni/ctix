@@ -4,7 +4,7 @@ import { replaceSepToPosix } from 'my-node-fp';
 
 export default [
   {
-    depth: 4,
+    depth: 3,
     resolvedDirPath: posixJoin(env.exampleType03Path, 'popcorn', 'finance', 'discipline'),
     exportStatements: [
       "export { default as case02 } from './case02';",
@@ -16,7 +16,7 @@ export default [
     ],
   },
   {
-    depth: 4,
+    depth: 3,
     resolvedDirPath: posixJoin(env.exampleType03Path, 'popcorn', 'lawyer', 'appliance'),
     exportStatements: [
       "export { default as IKittens } from './IKittens';",
@@ -28,13 +28,13 @@ export default [
     ],
   },
   {
-    depth: 3,
+    depth: 2,
     resolvedDirPath: posixJoin(env.exampleType03Path, 'juvenile', 'spill'),
     exportStatements: ["export * from './ExperienceCls';"],
     resolvedFilePaths: [posixJoin(env.exampleType03Path, 'juvenile', 'spill', 'ExperienceCls.ts')],
   },
   {
-    depth: 3,
+    depth: 2,
     resolvedDirPath: posixJoin(env.exampleType03Path, 'wellmade', 'carpenter'),
     exportStatements: ["export * from './DiscussionCls';", "export * from './MakeshiftCls';"],
     resolvedFilePaths: [
@@ -44,13 +44,13 @@ export default [
   },
   {
     depth: 2,
-    resolvedDirPath: posixJoin(env.exampleType03Path, 'popcorn/finance'),
+    resolvedDirPath: posixJoin(env.exampleType03Path, 'popcorn', 'finance'),
     exportStatements: ["export * from './discipline';"],
     resolvedFilePaths: undefined,
   },
   {
     depth: 2,
-    resolvedDirPath: posixJoin(env.exampleType03Path, 'popcorn/lawyer'),
+    resolvedDirPath: posixJoin(env.exampleType03Path, 'popcorn', 'lawyer'),
     exportStatements: ["export * from './appliance';"],
     resolvedFilePaths: undefined,
   },

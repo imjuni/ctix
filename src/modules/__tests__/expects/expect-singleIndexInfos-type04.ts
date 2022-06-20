@@ -4,7 +4,7 @@ import { replaceSepToPosix } from 'my-node-fp';
 
 export default [
   {
-    depth: 1,
+    depth: 0,
     resolvedDirPath: replaceSepToPosix(env.exampleType04Path),
     resolvedFilePaths: [
       posixJoin(env.exampleType04Path, 'wellmade/carpenter/DiscussionCls.ts'),

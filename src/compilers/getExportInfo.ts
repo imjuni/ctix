@@ -32,6 +32,7 @@ export default async function getExportInfo(
   ignores: IGetIgnoredConfigContents,
 ): Promise<IExportInfo> {
   const filePath = sourceFile.getFilePath().toString();
+  const dirPath = replaceSepToPosix(path.resolve(await getDirname(filePath)));
   const ignoreInFile = ignores[filePath];
   const exportedDeclarationsMap = sourceFile.getExportedDeclarations();
   const defaultExportedDeclarations = exportedDeclarationsMap.get('default');
@@ -77,9 +78,9 @@ export default async function getExportInfo(
   const relativeFilePath = path.relative(getDirnameSync(option.project), filePath);
   const exportInfo: IExportInfo = {
     resolvedFilePath: replaceSepToPosix(path.resolve(filePath)),
-    resolvedDirPath: await getDirname(replaceSepToPosix(path.resolve(filePath))),
+    resolvedDirPath: dirPath,
     relativeFilePath: replaceSepToPosix(relativeFilePath),
-    depth: getRelativeDepth(option.topDirs, replaceSepToPosix(path.resolve(filePath))),
+    depth: getRelativeDepth(option.topDirs, dirPath),
     starExported: isStarExport(ignoreInFile),
     defaultExport:
       isNotEmpty(defaultExportedName) &&

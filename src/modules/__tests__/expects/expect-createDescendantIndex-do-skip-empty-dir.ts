@@ -1,29 +1,22 @@
 import * as env from '@testenv/env';
-import { posixJoin } from '@tools/misc';
 
 export default [
   {
-    depth: 1,
-    resolvedDirPath: posixJoin(env.exampleType03Path, 'juvenile'),
+    depth: 0,
+    resolvedDirPath: env.exampleType03Path,
     resolvedFilePath: undefined,
-    exportStatement: "export * from './spill';",
+    exportStatement: "export * from './juvenile';",
   },
   {
-    depth: 1,
-    resolvedDirPath: posixJoin(env.exampleType03Path, 'popcorn'),
+    depth: 0,
+    resolvedDirPath: env.exampleType03Path,
     resolvedFilePath: undefined,
-    exportStatement: "export * from './finance/discipline';",
+    exportStatement: "export * from './popcorn';",
   },
   {
-    depth: 1,
-    resolvedDirPath: posixJoin(env.exampleType03Path, 'popcorn'),
+    depth: 0,
+    resolvedDirPath: env.exampleType03Path,
     resolvedFilePath: undefined,
-    exportStatement: "export * from './lawyer/appliance';",
-  },
-  {
-    depth: 1,
-    resolvedDirPath: posixJoin(env.exampleType03Path, 'wellmade'),
-    resolvedFilePath: undefined,
-    exportStatement: "export * from './carpenter';",
+    exportStatement: "export * from './wellmade';",
   },
 ];

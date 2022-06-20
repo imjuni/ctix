@@ -4,7 +4,7 @@ import { replaceSepToPosix } from 'my-node-fp';
 
 export default [
   {
-    depth: 1,
+    depth: 0,
     resolvedDirPath: replaceSepToPosix(env.exampleType03Path),
     resolvedFilePaths: [
       posixJoin(env.exampleType03Path, 'popcorn/finance/discipline/case02.ts'),
