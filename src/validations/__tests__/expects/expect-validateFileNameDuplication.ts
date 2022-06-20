@@ -10,7 +10,7 @@ export default {
       resolvedFilePath: posixJoin(env.exampleType03Path, 'index.d.ts'),
       resolvedDirPath: replaceSepToPosix(env.exampleType03Path),
       relativeFilePath: 'index.d.ts',
-      depth: 1,
+      depth: 0,
       starExported: true,
       defaultExport: undefined,
       namedExports: [
@@ -23,7 +23,7 @@ export default {
       resolvedFilePath: posixJoin(env.exampleType03Path, 'popcorn', 'index.d.ts'),
       resolvedDirPath: posixJoin(env.exampleType03Path, 'popcorn'),
       relativeFilePath: posixJoin('popcorn', 'index.d.ts'),
-      depth: 2,
+      depth: 1,
       starExported: true,
       defaultExport: undefined,
       namedExports: [],

@@ -174,7 +174,67 @@ test('c002-createDescendantIndex-do-skip-empty-dir', async () => {
   expect(terminateCircularResult).toEqual(expectation.default);
 });
 
-test('c003-createIndexInfos-non-skip-empty-dir', async () => {
+test('c003-createDescendantIndex-do-skip-empty-dir-case02', async () => {
+  const expectFileName = expect
+    .getState()
+    .currentTestName.replace(/^([cC][0-9]+)(-.+)/, 'expect$2.ts');
+
+  const dirPath = env.exampleType03Path;
+  const option: TCreateOptionWithDirInfo = {
+    ...env.createOptionWithDirInfo,
+    skipEmptyDir: true,
+    keepFileExt: false,
+    topDirs: [dirPath],
+  };
+
+  const ignoreFiles = await getIgnoreConfigFiles(dirPath);
+  const ignoreContents = await getIgnoreConfigContents({ cwd: dirPath, ...ignoreFiles });
+  const ignoreDirs = await getEmptyDescendantTree({
+    cwd: dirPath,
+    ignores: ignoreContents.evaluated,
+  });
+
+  const exportInfos = await getExportInfos(share.project03, option, ignoreContents);
+  const exportDuplicationValidateResult = validateExportDuplication(exportInfos);
+  const validateResult = validateFileNameDuplication(
+    exportInfos.filter((exportInfo) =>
+      isFalse(exportDuplicationValidateResult.filePaths.includes(exportInfo.resolvedFilePath)),
+    ),
+    option,
+  );
+  const validExportInfos = exportInfos.filter(
+    (exportInfo) =>
+      isFalse(validateResult.filePaths.includes(exportInfo.resolvedFilePath)) &&
+      isFalse(exportDuplicationValidateResult.filePaths.includes(exportInfo.resolvedFilePath)),
+  );
+
+  const result = await createDescendantIndex(
+    posixJoin(env.exampleType03Path, 'popcorn'),
+    validExportInfos,
+    { ...ignoreContents, dirs: ignoreDirs },
+    option,
+  );
+  const sortedResult = result.sort((l, r) => {
+    const depthDiff = l.depth - r.depth;
+    if (depthDiff !== 0) {
+      return depthDiff;
+    }
+
+    const dirDiff = l.resolvedDirPath.localeCompare(r.resolvedDirPath);
+    if (dirDiff !== 0) {
+      return dirDiff;
+    }
+
+    return l.exportStatement.localeCompare(r.exportStatement);
+  });
+  const terminateCircularResult = getTestValue(sortedResult);
+
+  const expectation = await import(path.join(__dirname, 'expects', expectFileName));
+
+  expect(terminateCircularResult).toEqual(expectation.default);
+});
+
+test('c004-createIndexInfos-non-skip-empty-dir', async () => {
   const expectFileName = expect
     .getState()
     .currentTestName.replace(/^([cC][0-9]+)(-.+)/, 'expect$2.ts');
@@ -222,7 +282,7 @@ test('c003-createIndexInfos-non-skip-empty-dir', async () => {
   expect(terminateCircularResult).toEqual(expectation.default);
 });
 
-test('c004-createIndexInfos-do-skip-empty-dir', async () => {
+test('c005-createIndexInfos-do-skip-empty-dir', async () => {
   const expectFileName = expect
     .getState()
     .currentTestName.replace(/^([cC][0-9]+)(-.+)/, 'expect$2.ts');
@@ -270,7 +330,7 @@ test('c004-createIndexInfos-do-skip-empty-dir', async () => {
   expect(terminateCircularResult).toEqual(expectation.default);
 });
 
-test('c005-createIndexInfos-partial-ignore', async () => {
+test('c006-createIndexInfos-partial-ignore', async () => {
   const expectFileName = expect
     .getState()
     .currentTestName.replace(/^([cC][0-9]+)(-.+)/, 'expect$2.ts');

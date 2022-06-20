@@ -5,7 +5,7 @@ import getRelativeDepth from '@tools/getRelativeDepth';
 import IDescendantExportInfo from '@tools/interface/IDescendantExportInfo';
 import fastGlob from 'fast-glob';
 import fs from 'fs';
-import { isEmpty, isFalse } from 'my-easy-fp';
+import { isEmpty, isFalse, isNotEmpty } from 'my-easy-fp';
 import { getDirname, isDescendant, isEmptyDir, replaceSepToPosix } from 'my-node-fp';
 import path from 'path';
 
@@ -38,24 +38,35 @@ export default async function getDescendantExportInfo(
       const includeExportInfos = exportInfos
         .filter((exportInfo) => exportInfo.resolvedDirPath === globDirPath)
         .filter((exportInfo) => {
-          const ignoreContent = ignores[exportInfo.resolvedFilePath];
+          const ignoreInFile = ignores[exportInfo.resolvedFilePath];
           const namedExportIdentifiers = exportInfo.namedExports.map(
             (namedExport) => namedExport.identifier,
           );
 
-          if (typeof ignoreContent === 'string' && ignoreContent === '*') {
+          if (typeof ignoreInFile === 'string' && ignoreInFile === '*') {
             return false;
           }
 
           if (
-            typeof ignoreContent === 'string' &&
-            (ignoreContent === exportInfo.defaultExport?.identifier ||
-              namedExportIdentifiers.includes(ignoreContent))
+            typeof ignoreInFile === 'string' &&
+            ignoreInFile === exportInfo.defaultExport?.identifier &&
+            namedExportIdentifiers.length <= 0
           ) {
             return false;
           }
 
-          return isEmpty(ignoreContent);
+          if (
+            isNotEmpty(exportInfo.defaultExport?.identifier) &&
+            ignoreInFile !== exportInfo.defaultExport?.identifier
+          ) {
+            return true;
+          }
+
+          if (namedExportIdentifiers.length > 0) {
+            return true;
+          }
+
+          return isEmpty(ignoreInFile);
         });
 
       const includeDirFilePaths = await fs.promises.readdir(globDirPath, { withFileTypes: true });

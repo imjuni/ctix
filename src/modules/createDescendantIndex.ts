@@ -7,7 +7,7 @@ import getRelativeDepth from '@tools/getRelativeDepth';
 import ICreateIndexInfo from '@tools/interface/ICreateIndexInfo';
 import IDescendantExportInfo from '@tools/interface/IDescendantExportInfo';
 import minimatch from 'minimatch';
-import { isEmpty, isFalse, populate } from 'my-easy-fp';
+import { isEmpty, isFalse } from 'my-easy-fp';
 import { isDescendant, replaceSepToPosix } from 'my-node-fp';
 import path from 'path';
 
@@ -50,7 +50,7 @@ export default async function createDescendantIndex(
   },
   option: TCreateOrSingleOption,
 ): Promise<ICreateIndexInfo[]> {
-  const depth = getRelativeDepth(option.topDirs, dirPath);
+  const currentDepth = getRelativeDepth(option.topDirs, dirPath);
   const everyDescendants = await getDescendantExportInfo(
     dirPath,
     option,
@@ -60,79 +60,53 @@ export default async function createDescendantIndex(
   const sortedEveryDescendants = everyDescendants
     .filter((descendant) => isEmpty(ignores.dirs[descendant.dirPath]))
     .sort((l, r) => {
-      const depthDiff = r.depth - l.depth;
+      const depthDiff = l.depth - r.depth;
       return depthDiff !== 0 ? depthDiff : r.dirPath.localeCompare(l.dirPath);
     });
-  const maxDepth = everyDescendants.reduce((max, descendant) => {
-    if (max < descendant.depth) {
-      return descendant.depth;
-    }
-
-    return max;
-  }, Number.MIN_SAFE_INTEGER);
 
   if (option.mode === 'create' && option.skipEmptyDir) {
+    const currentDirExportInfos = exportInfos.filter(
+      (exportInfo) => exportInfo.resolvedDirPath === dirPath,
+    );
+
     // 내가 비어있으면 스킵
     // top level 이라면, 비어 있더라도 index를 빌드해야 한다
-    if (exportInfos.length <= 0 && depth !== option.topDirDepth) {
+    // self directory is empty that will be skip
+    // If currentDepth is top level of depth that have to build index
+    if (currentDirExportInfos.length <= 0 && currentDepth !== option.topDirDepth) {
       return [];
     }
 
-    const indexNeedExportInfos = populate(maxDepth + 1, true).reduce<
-      Record<string, IDescendantExportInfo>
-    >((aggregate, currentDepth) => {
-      const alreadyRegisteredKeys = Object.keys(aggregate);
+    const indexNeedExportInfos = sortedEveryDescendants
+      .filter((descendent) => descendent.dirPath !== dirPath)
+      .reduce<Record<string, IDescendantExportInfo>>((aggregation, sortedEveryDescendant) => {
+        const alreadyRegisteredDirPaths = Object.keys(aggregation);
 
-      const currentDepthDescendantExportInfos = sortedEveryDescendants
-        .filter((sortedEveryDescendant) => sortedEveryDescendant.depth === currentDepth)
-        .filter((sortedEveryDescendant) =>
-          isFalse(alreadyRegisteredKeys.includes(sortedEveryDescendant.dirPath)),
-        )
-        .filter((sortedEveryDescendant) =>
-          isFalse(
-            alreadyRegisteredKeys.some((alreadyRegisteredKey) =>
-              isDescendant(alreadyRegisteredKey, sortedEveryDescendant.dirPath, path.posix.sep),
-            ),
-          ),
-        )
-        .filter((sortedEveryDescendant) => sortedEveryDescendant.exportInfos.length > 0);
-
-      const next = { ...aggregate };
-
-      currentDepthDescendantExportInfos.forEach((currentDepthDescendantExportInfo) => {
-        next[currentDepthDescendantExportInfo.dirPath] = currentDepthDescendantExportInfo;
-      });
-
-      return next;
-    }, {});
-
-    const descendantIndexInfos = Object.values(indexNeedExportInfos)
-      .map((indexNeedExportInfo) => {
-        const jumpedDescendents = everyDescendants
-          .filter((descendant) => descendant.dirPath !== indexNeedExportInfo.dirPath)
-          .filter((descendant) =>
-            isDescendant(indexNeedExportInfo.dirPath, descendant.dirPath, path.posix.sep),
+        if (
+          alreadyRegisteredDirPaths.some((alreadyRegisteredDirPath) =>
+            isDescendant(alreadyRegisteredDirPath, sortedEveryDescendant.dirPath, path.posix.sep),
           )
-          .filter((descendant) => descendant.exportInfos.length > 0);
+        ) {
+          return aggregation;
+        }
 
-        const jumpedIndexInfos = jumpedDescendents.map((jumpedDescendent) => {
-          const filePath = getFilePathOnIndex(
-            jumpedDescendent.dirPath,
-            option,
-            indexNeedExportInfo.dirPath,
-          );
+        if (sortedEveryDescendant.exportInfos.length <= 0) {
+          return aggregation;
+        }
 
-          return {
-            depth: indexNeedExportInfo.depth,
-            resolvedDirPath: indexNeedExportInfo.dirPath,
-            resolvedFilePath: undefined,
-            exportStatement: `export * from ${filePath}`,
-          };
-        });
+        return { ...aggregation, [sortedEveryDescendant.dirPath]: sortedEveryDescendant };
+      }, {});
 
-        return jumpedIndexInfos;
-      })
-      .flatMap((nonFlatten) => nonFlatten);
+    const descendantIndexInfos = Object.values(indexNeedExportInfos).map((indexNeedExportInfo) => {
+      const filePath = getFilePathOnIndex(indexNeedExportInfo.dirPath, option, dirPath);
+
+      return {
+        depth: currentDepth,
+        resolvedDirPath: dirPath,
+        resolvedFilePath: undefined,
+        exportStatement: `export * from ${filePath}`,
+      };
+    }, {});
 
     return descendantIndexInfos;
   }
@@ -140,7 +114,7 @@ export default async function createDescendantIndex(
   const ignoreGlobPatterns = Object.keys(ignores.origin);
   const descendantIndexInfos = everyDescendants
     .filter((descendant) => isEmpty(ignores.dirs[descendant.dirPath]))
-    .filter((everyDescendant) => everyDescendant.depth === depth + 1)
+    .filter((everyDescendant) => everyDescendant.depth === currentDepth + 1)
     .filter((everyDescendant) => {
       const minimatchResult = ignoreGlobPatterns.some((ignoreGlobPattern) =>
         minimatch(
@@ -155,7 +129,7 @@ export default async function createDescendantIndex(
       const filePath = getFilePathOnIndex(exportedDescendant.dirPath, option, dirPath);
 
       return {
-        depth,
+        depth: currentDepth,
         resolvedDirPath: replaceSepToPosix(dirPath),
         resolvedFilePath: undefined,
         exportStatement: `export * from ${filePath}`,

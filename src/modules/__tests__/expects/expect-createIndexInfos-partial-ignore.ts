@@ -4,7 +4,7 @@ import { replaceSepToPosix } from 'my-node-fp';
 
 export default [
   {
-    depth: 3,
+    depth: 2,
     resolvedDirPath: posixJoin(env.exampleType04Path, 'wellmade', 'carpenter'),
     exportStatements: ["export * from './DiscussionCls';", "export * from './MakeshiftCls';"],
     resolvedFilePaths: [
@@ -22,7 +22,7 @@ export default [
     resolvedFilePaths: [posixJoin(env.exampleType04Path, 'wellmade', 'ChildlikeCls.ts')],
   },
   {
-    depth: 1,
+    depth: 0,
     resolvedDirPath: replaceSepToPosix(env.exampleType04Path),
     exportStatements: [
       "export { default as JobType } from './SampleEnum';",
@@ -32,6 +32,7 @@ export default [
       "export * from './HandsomelyCls';",
       "export * from './SampleCls';",
       "export * from './SampleEnum';",
+      "export * from './wellmade';",
     ],
     resolvedFilePaths: [
       posixJoin(env.exampleType04Path, 'BubbleCls.tsx'),
