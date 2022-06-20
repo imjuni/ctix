@@ -97,6 +97,11 @@ export default function getExportedName(exportedDeclarationNode: tsm.ExportedDec
     return basename;
   }
 
+  if (isNotEmpty(exportedDeclarationNode.asKind(tsm.SyntaxKind.BindingElement))) {
+    const bindingElementNode = exportedDeclarationNode.asKindOrThrow(tsm.SyntaxKind.BindingElement);
+    return bindingElementNode.getName();
+  }
+
   throw new Error(
     `Cannot support type: (${exportedDeclarationNode.getKind()}) ${exportedDeclarationNode.getText()}`,
   );

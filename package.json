@@ -1,8 +1,7 @@
 {
   "name": "ctix",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Automatic create index.ts file",
-  "main": "dist/cti.js",
   "scripts": {
     "test": "cross-env NODE_ENV=develop DEBUG=ctix:* jest --runInBand",
     "win": "cross-env NODE_ENV=develop DEBUG=ctix:* jest --runInBand",
@@ -31,6 +30,7 @@
     "url": "https://github.com/imjuni/ctix/issues"
   },
   "homepage": "https://github.com/imjuni/ctix#readme",
+  "main": "dist/ctix.js",
   "types": "./dist/ctix.d.ts",
   "files": [
     "dist"
