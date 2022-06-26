@@ -2,7 +2,7 @@ import IReason from '@cli/interfaces/IReason';
 import IExportInfo from '@compilers/interfaces/IExportInfo';
 import { TCreateOrSingleOption } from '@configs/interfaces/IOption';
 import getExtname from '@tools/getExtname';
-import chalk from 'chalk';
+import colors from 'colors';
 import path from 'path';
 
 export default function validateFileNameDuplication(
@@ -34,7 +34,7 @@ export default function validateFileNameDuplication(
     const reason: IReason = {
       type: 'error',
       filePath: exportInfo.resolvedFilePath,
-      message: `already exist file: "${chalk.yellow(exportInfo.resolvedFilePath)}"`,
+      message: `already exist file: "${colors.yellow(exportInfo.resolvedFilePath)}"`,
     };
 
     return reason;

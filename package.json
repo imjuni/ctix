@@ -1,6 +1,6 @@
 {
   "name": "ctix",
-  "version": "1.1.2",
+  "version": "1.1.4",
   "description": "Automatic create index.ts file",
   "scripts": {
     "test": "cross-env NODE_ENV=develop DEBUG=ctix:* jest --runInBand",
@@ -8,11 +8,14 @@
     "test:debug": "node --nolazy --inspect ./node_modules/jest/bin/jest --runInBand",
     "start": "cross-env TS_NODE_PROJECT=tsconfig.json node -r ts-node/register -r tsconfig-paths/register ./src/cli.ts",
     "webpack:prod": "cross-env NODE_ENV=production webpack --config webpack.config.prod.cjs",
+    "postwebpack:prod": "dts-bundle-generator dist/src/ctix.d.ts -o dist/ctix.d.ts && npm run clean:dts",
     "webpack:dev": "cross-env NODE_ENV=production webpack --config webpack.config.dev.cjs",
+    "postwebpack:dev": "dts-bundle-generator dist/src/ctix.d.ts -o dist/ctix.d.ts && npm run clean:dts",
     "debug": "cross-env TS_NODE_PROJECT=tsconfig.json node -r ts-node/register -r tsconfig-paths/register --nolazy --inspect-brk=9229 ./src/cli.ts ",
     "prebuild": "npm run clean",
     "build": "tsc",
     "clean": "rimraf ./dist",
+    "clean:dts": "rimraf ./dist/src",
     "prepub": "npm run clean && npm run webpack:prod",
     "pub": "npm publish --registry http://localhost:8901 --force",
     "prepub:prod": "npm run clean && npm run webpack:prod",
@@ -36,7 +39,7 @@
     "dist"
   ],
   "bin": {
-    "ctix": "./dist/ctix.js"
+    "ctix": "./dist/cli.js"
   },
   "devDependencies": {
     "@jest/test-sequencer": "^28.1.0",
@@ -55,8 +58,8 @@
     "@typescript-eslint/eslint-plugin": "^5.27.0",
     "@typescript-eslint/eslint-plugin-tslint": "^5.27.0",
     "@typescript-eslint/parser": "^5.27.0",
-    "codecov": "^3.8.3",
     "cross-env": "^7.0.3",
+    "dts-bundle-generator": "^6.12.0",
     "eslint": "^8.16.0",
     "eslint-config-airbnb-typescript": "^17.0.0",
     "eslint-config-prettier": "^8.5.0",
@@ -75,13 +78,14 @@
     "tslint": "^6.1.3",
     "webpack": "^5.72.1",
     "webpack-cli": "^4.9.2",
+    "webpack-merge": "^5.8.0",
     "webpack-node-externals": "^3.0.0",
     "webpackbar": "^5.0.2"
   },
   "dependencies": {
-    "chalk": "^4.1.2",
     "change-case": "^4.1.2",
     "cli-progress": "^3.11.1",
+    "colors": "^1.4.0",
     "consola": "^2.15.3",
     "dayjs": "^1.11.2",
     "fast-glob": "^3.2.11",

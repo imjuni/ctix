@@ -1,78 +1,29 @@
-const webpack = require('webpack');
-const path = require('path');
-const tsconfigPathsWebpackPlugin = require('tsconfig-paths-webpack-plugin');
-const webpackNodeExternals = require('webpack-node-externals');
-const webpackBar = require('webpackbar');
+/* eslint-disable import/no-extraneous-dependencies */
 
-const distPath = path.resolve(path.join(__dirname, 'dist'));
+const TsconfigPathsWebpackPlugin = require('tsconfig-paths-webpack-plugin');
+const { merge } = require('webpack-merge');
+const devConfig = require('./webpack.config.dev.cjs');
 
-const config = {
-  externals: [
-    webpackNodeExternals({
-      allowlist: ['tslib'],
-    }),
-  ],
-  mode: 'production',
-  target: 'node',
+const [configLib, configCli] = devConfig;
 
+const configLibProd = merge(configLib, {
   resolve: {
-    extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
-    fallback: {
-      __dirname: false,
-      __filename: false,
-      console: false,
-      global: false,
-      process: false,
-    },
-    modules: [path.resolve(__dirname, 'src'), 'node_modules'],
     plugins: [
-      new tsconfigPathsWebpackPlugin({
+      new TsconfigPathsWebpackPlugin({
         configFile: 'tsconfig.prod.json',
       }),
     ],
   },
+});
 
-  plugins: [
-    new webpack.BannerPlugin({ banner: '#!/usr/bin/env node', raw: true }),
-    new webpackBar({ name: '-create-ts-index-x' }),
-  ],
-
-  entry: {
-    ctix: ['./src/cli.ts'],
-  },
-
-  output: {
-    filename: 'ctix.js',
-    libraryTarget: 'commonjs',
-    path: distPath,
-  },
-
-  optimization: {
-    minimize: false, // <---- disables uglify.
-    // minimizer: [new UglifyJsPlugin()] if you want to customize it.
-  },
-
-  module: {
-    rules: [
-      {
-        loader: 'json-loader',
-        test: /\.json$/,
-      },
-      {
-        exclude: /node_modules/,
-        loader: 'ts-loader',
-        test: /\.tsx?$/,
-        options: {
-          configFile: 'tsconfig.prod.json',
-        },
-      },
-      // {
-      //   exclude: /node_modules/,
-      //   loader: 'shebang-loader',
-      //   test: /\.tsx?$/,
-      // },
+const configCliProd = merge(configCli, {
+  resolve: {
+    plugins: [
+      new TsconfigPathsWebpackPlugin({
+        configFile: 'tsconfig.prod.json',
+      }),
     ],
   },
-};
+});
 
-module.exports = config;
+module.exports = [configLibProd, configCliProd];
