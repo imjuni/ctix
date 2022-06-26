@@ -1,12 +1,15 @@
+/* eslint-disable import/no-extraneous-dependencies */
+
 const webpack = require('webpack');
 const path = require('path');
-const tsconfigPathsWebpackPlugin = require('tsconfig-paths-webpack-plugin');
+const TsconfigPathsWebpackPlugin = require('tsconfig-paths-webpack-plugin');
 const webpackNodeExternals = require('webpack-node-externals');
-const webpackBar = require('webpackbar');
+const WebpackBar = require('webpackbar');
+const { merge } = require('webpack-merge');
 
 const distPath = path.resolve(path.join(__dirname, 'dist'));
 
-const config = {
+const configLib = {
   devtool: 'inline-source-map',
   externals: [
     webpackNodeExternals({
@@ -31,7 +34,7 @@ const config = {
       '@options': path.resolve(__dirname, 'src/options'),
     },
     plugins: [
-      new tsconfigPathsWebpackPlugin({
+      new TsconfigPathsWebpackPlugin({
         configFile: 'tsconfig.json',
       }),
     ],
@@ -39,15 +42,15 @@ const config = {
 
   plugins: [
     new webpack.BannerPlugin({ banner: '#!/usr/bin/env node', raw: true }),
-    new webpackBar({ name: '-create-ts-index-x' }),
+    new WebpackBar({ name: '-create-ts-index-x' }),
   ],
 
   entry: {
-    ctix: ['./src/cli.ts'],
+    ctix: ['./src/ctix.ts'],
   },
 
   output: {
-    filename: 'cli.js',
+    filename: 'ctix.js',
     libraryTarget: 'commonjs',
     path: distPath,
   },
@@ -68,11 +71,26 @@ const config = {
         loader: 'ts-loader',
         test: /\.tsx?$/,
         options: {
-          configFile: 'tsconfig.json',
+          compilerOptions: {
+            declaration: true /* Generates corresponding '.d.ts' file. */,
+            declarationMap: false /* Generates corresponding '.d.ts' file. */,
+          },
         },
       },
     ],
   },
 };
 
-module.exports = config;
+const configCli = merge(configLib, {
+  entry: {
+    ctix: ['./src/cli.ts'],
+  },
+
+  output: {
+    filename: 'cli.js',
+    libraryTarget: 'commonjs',
+    path: distPath,
+  },
+});
+
+module.exports = [configLib, configCli];
