@@ -27,7 +27,7 @@ export default [
     exportStatements: [
       "export { default as case02 } from './popcorn/finance/discipline/case02';",
       "export { default as Case03 } from './popcorn/finance/discipline/case03';",
-      "export { default as IKittens } from './popcorn/lawyer/appliance/IKittens';",
+      "export type { default as IKittens } from './popcorn/lawyer/appliance/IKittens';",
       "export * from './popcorn/lawyer/appliance/TomatoesCls';",
       "export * from './juvenile/spill/ExperienceCls';",
       "export * from './wellmade/carpenter/DiscussionCls';",

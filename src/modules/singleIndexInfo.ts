@@ -31,7 +31,9 @@ export default function singleIndexInfo(
         depth: exportInfo.depth,
         resolvedFilePath: exportInfo.resolvedFilePath,
         resolvedDirPath: outputDir,
-        exportStatement: `export { default as ${exportInfo.defaultExport.identifier} } from ${filePath}`,
+        exportStatement: `export ${
+          exportInfo.defaultExport.isIsolatedModules ? 'type ' : ''
+        }{ default as ${exportInfo.defaultExport.identifier} } from ${filePath}`,
       },
     ];
   }
@@ -66,7 +68,9 @@ export default function singleIndexInfo(
         depth: exportInfo.depth,
         resolvedFilePath: exportInfo.resolvedFilePath,
         resolvedDirPath: outputDir,
-        exportStatement: `export { default as ${exportInfo.defaultExport.identifier} } from ${filePath}`,
+        exportStatement: `export ${
+          exportInfo.defaultExport.isIsolatedModules ? 'type ' : ''
+        }{ default as ${exportInfo.defaultExport.identifier} } from ${filePath}`,
       },
     ];
   }
@@ -95,7 +99,9 @@ export default function singleIndexInfo(
         depth: exportInfo.depth,
         resolvedFilePath: exportInfo.resolvedFilePath,
         resolvedDirPath: outputDir,
-        exportStatement: `export { default as ${exportInfo.defaultExport.identifier} } from ${filePath}`,
+        exportStatement: `export ${
+          exportInfo.defaultExport.isIsolatedModules ? 'type ' : ''
+        }{ default as ${exportInfo.defaultExport.identifier} } from ${filePath}`,
       },
     ];
   }

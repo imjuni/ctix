@@ -11,7 +11,7 @@ export default [
     isEmpty: false,
     starExported: true,
     defaultExport: undefined,
-    namedExports: [{ identifier: 'BubbleCls' }],
+    namedExports: [{ identifier: 'BubbleCls', isIsolatedModules: false }],
   },
   {
     resolvedFilePath: posixJoin(env.exampleType03Path, 'ComparisonCls.tsx'),
@@ -21,7 +21,7 @@ export default [
     isEmpty: false,
     starExported: true,
     defaultExport: undefined,
-    namedExports: [{ identifier: 'ComparisonCls' }],
+    namedExports: [{ identifier: 'ComparisonCls', isIsolatedModules: false }],
   },
   {
     resolvedFilePath: posixJoin(env.exampleType03Path, 'createTypeScriptIndex.d.ts'),
@@ -32,9 +32,9 @@ export default [
     starExported: true,
     defaultExport: undefined,
     namedExports: [
-      { identifier: 'indexWriter' },
-      { identifier: 'createTypeScriptIndex' },
-      { identifier: 'ICreateTsIndexOption' },
+      { identifier: 'indexWriter', isIsolatedModules: false },
+      { identifier: 'createTypeScriptIndex', isIsolatedModules: false },
+      { identifier: 'ICreateTsIndexOption', isIsolatedModules: true },
     ],
   },
   {
@@ -45,7 +45,7 @@ export default [
     isEmpty: false,
     starExported: true,
     defaultExport: undefined,
-    namedExports: [{ identifier: 'HandsomelyCls' }],
+    namedExports: [{ identifier: 'HandsomelyCls', isIsolatedModules: false }],
   },
   {
     resolvedFilePath: posixJoin(env.exampleType03Path, 'index.d.ts'),
@@ -56,9 +56,9 @@ export default [
     starExported: true,
     defaultExport: undefined,
     namedExports: [
-      { identifier: 'indexWriter' },
-      { identifier: 'createTypeScriptIndex' },
-      { identifier: 'ICreateTsIndexOption' },
+      { identifier: 'indexWriter', isIsolatedModules: false },
+      { identifier: 'createTypeScriptIndex', isIsolatedModules: false },
+      { identifier: 'ICreateTsIndexOption', isIsolatedModules: true },
     ],
   },
   {
@@ -69,7 +69,7 @@ export default [
     isEmpty: false,
     starExported: true,
     defaultExport: undefined,
-    namedExports: [{ identifier: 'SampleCls' }],
+    namedExports: [{ identifier: 'SampleCls', isIsolatedModules: false }],
   },
   {
     resolvedFilePath: posixJoin(env.exampleType03Path, 'juvenile/TriteCls.ts'),
@@ -79,7 +79,7 @@ export default [
     isEmpty: false,
     starExported: true,
     defaultExport: undefined,
-    namedExports: [{ identifier: 'TriteCls' }],
+    namedExports: [{ identifier: 'TriteCls', isIsolatedModules: false }],
   },
   {
     resolvedFilePath: posixJoin(env.exampleType03Path, 'popcorn/case01.ts'),
@@ -88,7 +88,7 @@ export default [
     depth: 1,
     isEmpty: false,
     starExported: true,
-    defaultExport: { identifier: 'case01' },
+    defaultExport: { identifier: 'case01', isIsolatedModules: false },
     namedExports: [],
   },
   {
@@ -99,7 +99,7 @@ export default [
     isEmpty: false,
     starExported: true,
     defaultExport: undefined,
-    namedExports: [{ identifier: 'ChildlikeCls' }],
+    namedExports: [{ identifier: 'ChildlikeCls', isIsolatedModules: false }],
   },
   {
     resolvedFilePath: posixJoin(env.exampleType03Path, 'wellmade/FlakyCls.ts'),
@@ -109,7 +109,7 @@ export default [
     isEmpty: false,
     starExported: true,
     defaultExport: undefined,
-    namedExports: [{ identifier: 'FlakyCls' }],
+    namedExports: [{ identifier: 'FlakyCls', isIsolatedModules: false }],
   },
   {
     resolvedFilePath: posixJoin(env.exampleType03Path, 'wellmade/WhisperingCls.ts'),
@@ -119,7 +119,7 @@ export default [
     isEmpty: false,
     starExported: true,
     defaultExport: undefined,
-    namedExports: [{ identifier: 'WhisperingCls' }],
+    namedExports: [{ identifier: 'WhisperingCls', isIsolatedModules: false }],
   },
   {
     resolvedFilePath: posixJoin(env.exampleType03Path, 'juvenile/spill/ExperienceCls.ts'),
@@ -129,7 +129,7 @@ export default [
     isEmpty: false,
     starExported: true,
     defaultExport: undefined,
-    namedExports: [{ identifier: 'ExperienceCls' }],
+    namedExports: [{ identifier: 'ExperienceCls', isIsolatedModules: false }],
   },
   {
     resolvedFilePath: posixJoin(env.exampleType03Path, 'wellmade/carpenter/DiscussionCls.ts'),
@@ -139,7 +139,7 @@ export default [
     isEmpty: false,
     starExported: true,
     defaultExport: undefined,
-    namedExports: [{ identifier: 'DiscussionCls' }],
+    namedExports: [{ identifier: 'DiscussionCls', isIsolatedModules: false }],
   },
   {
     resolvedFilePath: posixJoin(env.exampleType03Path, 'wellmade/carpenter/MakeshiftCls.ts'),
@@ -149,7 +149,7 @@ export default [
     isEmpty: false,
     starExported: true,
     defaultExport: undefined,
-    namedExports: [{ identifier: 'MakeshiftCls' }],
+    namedExports: [{ identifier: 'MakeshiftCls', isIsolatedModules: false }],
   },
   {
     resolvedFilePath: posixJoin(env.exampleType03Path, 'popcorn/finance/discipline/case02.ts'),
@@ -158,7 +158,7 @@ export default [
     depth: 3,
     isEmpty: false,
     starExported: true,
-    defaultExport: { identifier: 'case02' },
+    defaultExport: { identifier: 'case02', isIsolatedModules: false },
     namedExports: [],
   },
   {
@@ -168,7 +168,7 @@ export default [
     depth: 3,
     isEmpty: false,
     starExported: true,
-    defaultExport: { identifier: 'Case03' },
+    defaultExport: { identifier: 'Case03', isIsolatedModules: false },
     namedExports: [],
   },
   {
@@ -178,8 +178,8 @@ export default [
     depth: 3,
     isEmpty: false,
     starExported: true,
-    defaultExport: { identifier: 'bomb' },
-    namedExports: [{ identifier: 'bomb' }],
+    defaultExport: { identifier: 'bomb', isIsolatedModules: false },
+    namedExports: [{ identifier: 'bomb', isIsolatedModules: false }],
   },
   {
     resolvedFilePath: posixJoin(env.exampleType03Path, 'popcorn/lawyer/appliance/IKittens.ts'),
@@ -188,7 +188,7 @@ export default [
     depth: 3,
     isEmpty: false,
     starExported: true,
-    defaultExport: { identifier: 'IKittens' },
+    defaultExport: { identifier: 'IKittens', isIsolatedModules: true },
     namedExports: [],
   },
   {
@@ -199,6 +199,6 @@ export default [
     isEmpty: false,
     starExported: true,
     defaultExport: undefined,
-    namedExports: [{ identifier: 'TomatoesCls' }],
+    namedExports: [{ identifier: 'TomatoesCls', isIsolatedModules: false }],
   },
 ];

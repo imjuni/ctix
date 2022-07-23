@@ -25,7 +25,7 @@ export default {
         isEmpty: false,
         starExported: true,
         defaultExport: undefined,
-        namedExports: [{ identifier: 'BubbleCls' }],
+        namedExports: [{ identifier: 'BubbleCls', isIsolatedModules: false }],
       },
       {
         resolvedFilePath: posixJoin(env.exampleType03Path, 'ComparisonCls.tsx'),
@@ -35,7 +35,7 @@ export default {
         isEmpty: false,
         starExported: true,
         defaultExport: undefined,
-        namedExports: [{ identifier: 'ComparisonCls' }],
+        namedExports: [{ identifier: 'ComparisonCls', isIsolatedModules: false }],
       },
       {
         resolvedFilePath: posixJoin(env.exampleType03Path, 'HandsomelyCls.tsx'),
@@ -45,7 +45,7 @@ export default {
         isEmpty: false,
         starExported: true,
         defaultExport: undefined,
-        namedExports: [{ identifier: 'HandsomelyCls' }],
+        namedExports: [{ identifier: 'HandsomelyCls', isIsolatedModules: false }],
       },
       {
         resolvedFilePath: posixJoin(env.exampleType03Path, 'SampleCls.tsx'),
@@ -55,7 +55,7 @@ export default {
         isEmpty: false,
         starExported: true,
         defaultExport: undefined,
-        namedExports: [{ identifier: 'SampleCls' }],
+        namedExports: [{ identifier: 'SampleCls', isIsolatedModules: false }],
       },
     ],
     [posixJoin(env.exampleType03Path, 'juvenile')]: [
@@ -67,7 +67,7 @@ export default {
         isEmpty: false,
         starExported: true,
         defaultExport: undefined,
-        namedExports: [{ identifier: 'TriteCls' }],
+        namedExports: [{ identifier: 'TriteCls', isIsolatedModules: false }],
       },
     ],
     [posixJoin(env.exampleType03Path, 'popcorn')]: [
@@ -78,7 +78,7 @@ export default {
         depth: 1,
         isEmpty: false,
         starExported: true,
-        defaultExport: { identifier: 'case01' },
+        defaultExport: { identifier: 'case01', isIsolatedModules: false },
         namedExports: [],
       },
     ],
@@ -91,7 +91,7 @@ export default {
         isEmpty: false,
         starExported: true,
         defaultExport: undefined,
-        namedExports: [{ identifier: 'ChildlikeCls' }],
+        namedExports: [{ identifier: 'ChildlikeCls', isIsolatedModules: false }],
       },
       {
         resolvedFilePath: posixJoin(env.exampleType03Path, 'wellmade', 'FlakyCls.ts'),
@@ -101,7 +101,7 @@ export default {
         isEmpty: false,
         starExported: true,
         defaultExport: undefined,
-        namedExports: [{ identifier: 'FlakyCls' }],
+        namedExports: [{ identifier: 'FlakyCls', isIsolatedModules: false }],
       },
       {
         resolvedFilePath: posixJoin(env.exampleType03Path, 'wellmade', 'WhisperingCls.ts'),
@@ -111,7 +111,7 @@ export default {
         isEmpty: false,
         starExported: true,
         defaultExport: undefined,
-        namedExports: [{ identifier: 'WhisperingCls' }],
+        namedExports: [{ identifier: 'WhisperingCls', isIsolatedModules: false }],
       },
     ],
     [posixJoin(env.exampleType03Path, 'juvenile', 'spill')]: [
@@ -123,7 +123,7 @@ export default {
         isEmpty: false,
         starExported: true,
         defaultExport: undefined,
-        namedExports: [{ identifier: 'ExperienceCls' }],
+        namedExports: [{ identifier: 'ExperienceCls', isIsolatedModules: false }],
       },
     ],
     [posixJoin(env.exampleType03Path, 'wellmade', 'carpenter')]: [
@@ -140,7 +140,7 @@ export default {
         isEmpty: false,
         starExported: true,
         defaultExport: undefined,
-        namedExports: [{ identifier: 'DiscussionCls' }],
+        namedExports: [{ identifier: 'DiscussionCls', isIsolatedModules: false }],
       },
       {
         resolvedFilePath: posixJoin(
@@ -155,7 +155,7 @@ export default {
         isEmpty: false,
         starExported: true,
         defaultExport: undefined,
-        namedExports: [{ identifier: 'MakeshiftCls' }],
+        namedExports: [{ identifier: 'MakeshiftCls', isIsolatedModules: false }],
       },
     ],
     [posixJoin(env.exampleType03Path, 'popcorn', 'finance', 'discipline')]: [
@@ -172,7 +172,7 @@ export default {
         depth: 3,
         isEmpty: false,
         starExported: true,
-        defaultExport: { identifier: 'case02' },
+        defaultExport: { identifier: 'case02', isIsolatedModules: false },
         namedExports: [],
       },
       {
@@ -188,7 +188,7 @@ export default {
         depth: 3,
         isEmpty: false,
         starExported: true,
-        defaultExport: { identifier: 'Case03' },
+        defaultExport: { identifier: 'Case03', isIsolatedModules: false },
         namedExports: [],
       },
     ],
@@ -206,7 +206,7 @@ export default {
         depth: 3,
         isEmpty: false,
         starExported: true,
-        defaultExport: { identifier: 'IKittens' },
+        defaultExport: { identifier: 'IKittens', isIsolatedModules: true },
         namedExports: [],
       },
       {
@@ -223,7 +223,7 @@ export default {
         isEmpty: false,
         starExported: true,
         defaultExport: undefined,
-        namedExports: [{ identifier: 'TomatoesCls' }],
+        namedExports: [{ identifier: 'TomatoesCls', isIsolatedModules: false }],
       },
     ],
     [posixJoin(env.exampleType03Path, 'popcorn', 'finance')]: [],

@@ -19,8 +19,8 @@ export default [
     depth: 3,
     resolvedDirPath: posixJoin(env.exampleType03Path, 'popcorn', 'lawyer', 'appliance'),
     exportStatements: [
-      "export { default as IKittens } from './IKittens';",
       "export * from './TomatoesCls';",
+      "export type { default as IKittens } from './IKittens';",
     ],
     resolvedFilePaths: [
       posixJoin(env.exampleType03Path, 'popcorn', 'lawyer', 'appliance', 'IKittens.ts'),
