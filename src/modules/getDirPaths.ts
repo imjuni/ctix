@@ -3,7 +3,7 @@ import { TCreateOrSingleOption } from '@configs/interfaces/IOption';
 import IGetIgnoredConfigContents from '@ignores/interfaces/IGetIgnoredConfigContents';
 import getRelativeDepth from '@tools/getRelativeDepth';
 import { posixJoin } from '@tools/misc';
-import fastGlob from 'fast-glob';
+import globby from 'globby';
 import minimatch from 'minimatch';
 import { isFalse } from 'my-easy-fp';
 import { getDirname, startSepRemove } from 'my-node-fp';
@@ -20,9 +20,9 @@ export default async function getDirPaths(
     ),
   );
 
-  const totalGlobFilePaths = await fastGlob(
+  const totalGlobFilePaths = await globby(
     filePathsFromExportInfos.map((filePath) => `${filePath}${path.posix.sep}**${path.posix.sep}*`),
-    { onlyDirectories: true },
+    { onlyDirectories: true, gitignore: true },
   );
 
   const ignoreGlobPatterns = Object.keys(ignores.origin);
