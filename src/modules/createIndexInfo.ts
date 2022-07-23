@@ -27,7 +27,9 @@ export default function createIndexInfo(
         depth: exportInfo.depth,
         resolvedFilePath: exportInfo.resolvedFilePath,
         resolvedDirPath: getDirnameSync(exportInfo.resolvedFilePath),
-        exportStatement: `export { default as ${exportInfo.defaultExport.identifier} } from ${filePath}`,
+        exportStatement: `export ${
+          exportInfo.defaultExport.isIsolatedModules ? 'type ' : ''
+        }{ default as ${exportInfo.defaultExport.identifier} } from ${filePath}`,
       },
     ];
   }
@@ -62,7 +64,9 @@ export default function createIndexInfo(
         depth: exportInfo.depth,
         resolvedFilePath: exportInfo.resolvedFilePath,
         resolvedDirPath: getDirnameSync(exportInfo.resolvedFilePath),
-        exportStatement: `export { default as ${exportInfo.defaultExport.identifier} } from ${filePath}`,
+        exportStatement: `export ${
+          exportInfo.defaultExport.isIsolatedModules ? 'type ' : ''
+        }{ default as ${exportInfo.defaultExport.identifier} } from ${filePath}`,
       },
     ];
   }
@@ -91,7 +95,9 @@ export default function createIndexInfo(
         depth: exportInfo.depth,
         resolvedFilePath: exportInfo.resolvedFilePath,
         resolvedDirPath: getDirnameSync(exportInfo.resolvedFilePath),
-        exportStatement: `export { default as ${exportInfo.defaultExport.identifier} } from ${filePath}`,
+        exportStatement: `export ${
+          exportInfo.defaultExport.isIsolatedModules ? 'type ' : ''
+        }{ default as ${exportInfo.defaultExport.identifier} } from ${filePath}`,
       },
     ];
   }

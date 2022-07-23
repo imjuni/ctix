@@ -15,9 +15,9 @@ export default {
       starExported: true,
       defaultExport: undefined,
       namedExports: [
-        { identifier: 'indexWriter' },
-        { identifier: 'createTypeScriptIndex' },
-        { identifier: 'ICreateTsIndexOption' },
+        { identifier: 'indexWriter', isIsolatedModules: false },
+        { identifier: 'createTypeScriptIndex', isIsolatedModules: false },
+        { identifier: 'ICreateTsIndexOption', isIsolatedModules: true },
       ],
     },
   ],

@@ -166,8 +166,11 @@ test('c002-getExportInfo', async () => {
     isEmpty: false,
     depth: 1,
     starExported: false,
-    defaultExport: { identifier: 'ChildlikeCls' },
-    namedExports: [{ identifier: 'ChildlikeCls' }, { identifier: 'greeting' }],
+    defaultExport: { identifier: 'ChildlikeCls', isIsolatedModules: false },
+    namedExports: [
+      { identifier: 'ChildlikeCls', isIsolatedModules: false },
+      { identifier: 'greeting', isIsolatedModules: false },
+    ],
   };
 
   expect(terminateCircularResult).toEqual(expectation);
@@ -208,8 +211,8 @@ test('c003-getExportInfo', async () => {
     depth: 3,
     isEmpty: false,
     starExported: false,
-    defaultExport: { identifier: 'bomb' },
-    namedExports: [{ identifier: 'bomb' }],
+    defaultExport: { identifier: 'bomb', isIsolatedModules: false },
+    namedExports: [{ identifier: 'bomb', isIsolatedModules: false }],
   };
 
   expect(terminateCircularResult).toEqual(expectation);

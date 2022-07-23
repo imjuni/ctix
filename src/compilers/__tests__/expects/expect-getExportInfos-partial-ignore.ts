@@ -11,7 +11,7 @@ export default [
     isEmpty: false,
     starExported: true,
     defaultExport: undefined,
-    namedExports: [{ identifier: 'BubbleCls' }],
+    namedExports: [{ identifier: 'BubbleCls', isIsolatedModules: false }],
   },
   {
     resolvedFilePath: posixJoin(env.exampleType04Path, 'ComparisonCls.tsx'),
@@ -21,7 +21,7 @@ export default [
     isEmpty: false,
     starExported: true,
     defaultExport: undefined,
-    namedExports: [{ identifier: 'ComparisonCls' }],
+    namedExports: [{ identifier: 'ComparisonCls', isIsolatedModules: false }],
   },
   {
     resolvedFilePath: posixJoin(env.exampleType04Path, 'createTypeScriptIndex.d.ts'),
@@ -32,9 +32,9 @@ export default [
     starExported: true,
     defaultExport: undefined,
     namedExports: [
-      { identifier: 'indexWriter' },
-      { identifier: 'createTypeScriptIndex' },
-      { identifier: 'ICreateTsIndexOption' },
+      { identifier: 'indexWriter', isIsolatedModules: false },
+      { identifier: 'createTypeScriptIndex', isIsolatedModules: false },
+      { identifier: 'ICreateTsIndexOption', isIsolatedModules: true },
     ],
   },
   {
@@ -45,7 +45,7 @@ export default [
     isEmpty: false,
     starExported: true,
     defaultExport: undefined,
-    namedExports: [{ identifier: 'HandsomelyCls' }],
+    namedExports: [{ identifier: 'HandsomelyCls', isIsolatedModules: false }],
   },
   {
     resolvedFilePath: posixJoin(env.exampleType04Path, 'index.tsx'),
@@ -54,8 +54,8 @@ export default [
     depth: 0,
     isEmpty: false,
     starExported: true,
-    defaultExport: { identifier: 'ReactApplication' },
-    namedExports: [{ identifier: 'hello' }],
+    defaultExport: { identifier: 'ReactApplication', isIsolatedModules: false },
+    namedExports: [{ identifier: 'hello', isIsolatedModules: false }],
   },
   {
     resolvedFilePath: posixJoin(env.exampleType04Path, 'SampleCls.tsx'),
@@ -65,7 +65,7 @@ export default [
     isEmpty: false,
     starExported: true,
     defaultExport: undefined,
-    namedExports: [{ identifier: 'SampleCls' }],
+    namedExports: [{ identifier: 'SampleCls', isIsolatedModules: false }],
   },
   {
     resolvedFilePath: posixJoin(env.exampleType04Path, 'SampleEnum.ts'),
@@ -74,8 +74,11 @@ export default [
     depth: 0,
     isEmpty: false,
     starExported: true,
-    defaultExport: { identifier: 'JobType' },
-    namedExports: [{ identifier: 'GreetingMessage' }, { identifier: 'AddressType' }],
+    defaultExport: { identifier: 'JobType', isIsolatedModules: false },
+    namedExports: [
+      { identifier: 'GreetingMessage', isIsolatedModules: false },
+      { identifier: 'AddressType', isIsolatedModules: false },
+    ],
   },
   {
     resolvedFilePath: posixJoin(env.exampleType04Path, 'wellmade', 'ChildlikeCls.ts'),
@@ -85,7 +88,10 @@ export default [
     isEmpty: false,
     starExported: false,
     defaultExport: undefined,
-    namedExports: [{ identifier: 'ChildlikeCls' }, { identifier: 'document' }],
+    namedExports: [
+      { identifier: 'ChildlikeCls', isIsolatedModules: false },
+      { identifier: 'document', isIsolatedModules: false },
+    ],
   },
   {
     resolvedFilePath: posixJoin(env.exampleType04Path, 'wellmade', 'carpenter', 'DiscussionCls.ts'),
@@ -95,7 +101,7 @@ export default [
     isEmpty: false,
     starExported: true,
     defaultExport: undefined,
-    namedExports: [{ identifier: 'DiscussionCls' }],
+    namedExports: [{ identifier: 'DiscussionCls', isIsolatedModules: false }],
   },
   {
     resolvedFilePath: posixJoin(env.exampleType04Path, 'wellmade', 'carpenter', 'MakeshiftCls.ts'),
@@ -105,6 +111,6 @@ export default [
     isEmpty: false,
     starExported: true,
     defaultExport: undefined,
-    namedExports: [{ identifier: 'MakeshiftCls' }],
+    namedExports: [{ identifier: 'MakeshiftCls', isIsolatedModules: false }],
   },
 ];

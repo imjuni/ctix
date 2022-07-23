@@ -1,4 +1,5 @@
 import getExportedName from '@compilers/getExportedName';
+import getIsIsolatedModules from '@compilers/getIsIsolatedModules';
 import IExportInfo from '@compilers/interfaces/IExportInfo';
 import { TCreateOrSingleOption } from '@configs/interfaces/IOption';
 import IGetIgnoredConfigContents from '@ignores/interfaces/IGetIgnoredConfigContents';
@@ -35,11 +36,12 @@ export default async function getExportInfo(
   const dirPath = replaceSepToPosix(path.resolve(await getDirname(filePath)));
   const ignoreInFile = ignores[filePath];
   const exportedDeclarationsMap = sourceFile.getExportedDeclarations();
-  const defaultExportedDeclarations = exportedDeclarationsMap.get('default');
+  const defaultExportedDeclarations = exportedDeclarationsMap.get('default')?.at(0);
   const defaultExportedName = isNotEmpty(defaultExportedDeclarations)
     ? {
-        identifier: getFirstExportName(defaultExportedDeclarations),
-        node: defaultExportedDeclarations[0],
+        identifier: getExportedName(defaultExportedDeclarations),
+        node: defaultExportedDeclarations,
+        isIsolatedModules: getIsIsolatedModules(defaultExportedDeclarations),
       }
     : undefined;
 
@@ -72,7 +74,11 @@ export default async function getExportInfo(
     .map((exportedDeclarationsWithKey) => {
       const [, exportedDeclarations] = exportedDeclarationsWithKey;
       const [exportedDeclaration] = exportedDeclarations;
-      return { identifier: getExportedName(exportedDeclaration), node: exportedDeclaration };
+      return {
+        identifier: getExportedName(exportedDeclaration),
+        node: exportedDeclaration,
+        isIsolatedModules: getIsIsolatedModules(exportedDeclaration),
+      };
     });
 
   const relativeFilePath = path.relative(getDirnameSync(option.project), filePath);

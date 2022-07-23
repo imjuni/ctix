@@ -16,6 +16,7 @@ export default [
         starExported: true,
         defaultExport: {
           identifier: 'case01',
+          isIsolatedModules: false,
         },
         namedExports: [],
       },
@@ -51,7 +52,7 @@ export default [
         depth: 3,
         isEmpty: false,
         starExported: true,
-        defaultExport: { identifier: 'case02' },
+        defaultExport: { identifier: 'case02', isIsolatedModules: false },
         namedExports: [],
       },
       {
@@ -67,7 +68,7 @@ export default [
         depth: 3,
         isEmpty: false,
         starExported: true,
-        defaultExport: { identifier: 'Case03' },
+        defaultExport: { identifier: 'Case03', isIsolatedModules: false },
         namedExports: [],
       },
     ],
@@ -90,7 +91,7 @@ export default [
         depth: 3,
         isEmpty: false,
         starExported: true,
-        defaultExport: { identifier: 'IKittens' },
+        defaultExport: { identifier: 'IKittens', isIsolatedModules: true },
         namedExports: [],
       },
       {
@@ -107,7 +108,7 @@ export default [
         isEmpty: false,
         starExported: true,
         defaultExport: undefined,
-        namedExports: [{ identifier: 'TomatoesCls' }],
+        namedExports: [{ identifier: 'TomatoesCls', isIsolatedModules: false }],
       },
     ],
   },
