@@ -4,13 +4,13 @@ import getCliSingleOption from '@configs/getCliSingleOption';
 import consola from 'consola';
 import * as findUp from 'find-up';
 import fs from 'fs';
-import minimist from 'minimist';
 import { isEmpty, isFalse, isNotEmpty } from 'my-easy-fp';
 import { existsSync } from 'my-node-fp';
+import yargs from 'yargs';
 
 export default function preLoadConfig() {
   try {
-    const argv = minimist([...process.argv.slice(2)]);
+    const argv = yargs(process.argv.slice(2)).parseSync() as any;
 
     const configFilePath =
       isNotEmpty(argv.config) || isNotEmpty(argv.c)

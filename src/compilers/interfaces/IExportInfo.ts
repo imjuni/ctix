@@ -1,6 +1,7 @@
 import IIdentifierWithNode from '@compilers/interfaces/IIdentifierWithNode';
 
 export default interface IExportInfo {
+  isEmpty: boolean;
   resolvedFilePath: string;
   resolvedDirPath: string;
   relativeFilePath: string;

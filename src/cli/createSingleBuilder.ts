@@ -14,33 +14,39 @@ export default function createSingleBuilder<
       alias: 's',
       describe: 'add semicolon on every export statement',
       type: 'boolean',
+      default: true,
     })
     .option('useTimestamp', {
       alias: 't',
       describe:
         'timestamp write on ctix comment right-side, only works in useComment option set true',
       type: 'boolean',
+      default: false,
     })
     .option('useComment', {
       alias: 'm',
       describe:
         'add ctix comment at first line of creted index.ts file, that remark created from ctix',
       type: 'boolean',
+      default: false,
     })
     .option('quote', {
       alias: 'q',
       describe: 'change quote character at export syntax',
       type: 'string',
+      default: "'",
     })
     .option('overwrite', {
       alias: 'w',
       describe: 'overwrite each index.ts file',
       type: 'boolean',
+      default: false,
     })
     .option('keepFileExt', {
       alias: 'k',
       describe: 'keep file extension in export statement path',
       type: 'boolean',
+      default: false,
     });
 
   return args;

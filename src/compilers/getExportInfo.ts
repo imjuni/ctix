@@ -76,17 +76,20 @@ export default async function getExportInfo(
     });
 
   const relativeFilePath = path.relative(getDirnameSync(option.project), filePath);
+  const defaultExport =
+    isNotEmpty(defaultExportedName) &&
+    isFalse((ignoreInFile ?? []).includes(defaultExportedName.identifier))
+      ? defaultExportedName
+      : undefined;
+
   const exportInfo: IExportInfo = {
+    isEmpty: isEmpty(defaultExport) && namedExports.length <= 0,
     resolvedFilePath: replaceSepToPosix(path.resolve(filePath)),
     resolvedDirPath: dirPath,
     relativeFilePath: replaceSepToPosix(relativeFilePath),
     depth: getRelativeDepth(option.topDirs, dirPath),
     starExported: isStarExport(ignoreInFile),
-    defaultExport:
-      isNotEmpty(defaultExportedName) &&
-      isFalse((ignoreInFile ?? []).includes(defaultExportedName.identifier))
-        ? defaultExportedName
-        : undefined,
+    defaultExport,
     namedExports,
   };
 

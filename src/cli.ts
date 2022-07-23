@@ -2,10 +2,9 @@
 
 import builder from '@cli/builder';
 import createBuilder from '@cli/createBuilder';
-import createSingleBuilder from '@cli/createSingleBuilder';
+import singleBuilder from '@cli/createSingleBuilder';
 import initBuilder from '@cli/initBuilder';
 import removeBuilder from '@cli/removeBuilder';
-import singleBuilder from '@cli/singleBuilder';
 import attachDiretoryInfo from '@configs/attachDiretoryInfo';
 import getRequiredCliCleanOption from '@configs/getRequiredCliCleanOption';
 import getRequiredCliCreateOption from '@configs/getRequiredCliCreateOption';
@@ -37,7 +36,7 @@ yargs(process.argv.slice(2))
     aliases: ['c'],
     describe: 'create index.ts file that each file per directory',
     builder: (argv) => {
-      return createBuilder(createSingleBuilder(builder(argv))) as any;
+      return createBuilder(singleBuilder(builder(argv))) as any;
     },
     handler: async (argv) => {
       try {
@@ -56,7 +55,7 @@ yargs(process.argv.slice(2))
     aliases: ['s'],
     describe: 'create index.ts file that aggregate on single file',
     builder: (argv) => {
-      return singleBuilder(createSingleBuilder(builder(argv))) as any;
+      return singleBuilder(singleBuilder(builder(argv))) as any;
     },
     handler: async (argv) => {
       try {

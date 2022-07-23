@@ -19,6 +19,7 @@ export default function builder<
       alias: 'f',
       describe: 'Export filename, if you not pass this field that use "index.ts" or "index.d.ts"',
       type: 'string',
+      default: 'index.ts',
     })
     .option('config', {
       alias: 'c',
