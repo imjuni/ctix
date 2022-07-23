@@ -1,6 +1,6 @@
 import * as env from '@testenv/env';
 import { posixJoin } from '@tools/misc';
-import colors from 'colors';
+import chalk from 'chalk';
 import { replaceSepToPosix } from 'my-node-fp';
 
 export default {
@@ -145,7 +145,7 @@ export default {
       },
       nodes: [null],
       filePath: posixJoin(env.exampleType03Path, 'createTypeScriptIndex.d.ts'),
-      message: `detect same name of export statement: "${colors.yellow('indexWriter')}"`,
+      message: `detect same name of export statement: "${chalk.yellow('indexWriter')}"`,
     },
     {
       type: 'error',
@@ -155,7 +155,7 @@ export default {
       },
       nodes: [null],
       filePath: posixJoin(env.exampleType03Path, 'index.d.ts'),
-      message: `detect same name of export statement: "${colors.yellow('indexWriter')}"`,
+      message: `detect same name of export statement: "${chalk.yellow('indexWriter')}"`,
     },
     {
       type: 'error',
@@ -165,7 +165,7 @@ export default {
       },
       nodes: [null],
       filePath: posixJoin(env.exampleType03Path, 'createTypeScriptIndex.d.ts'),
-      message: `detect same name of export statement: "${colors.yellow('createTypeScriptIndex')}"`,
+      message: `detect same name of export statement: "${chalk.yellow('createTypeScriptIndex')}"`,
     },
     {
       type: 'error',
@@ -175,7 +175,7 @@ export default {
       },
       nodes: [null],
       filePath: posixJoin(env.exampleType03Path, 'index.d.ts'),
-      message: `detect same name of export statement: "${colors.yellow('createTypeScriptIndex')}"`,
+      message: `detect same name of export statement: "${chalk.yellow('createTypeScriptIndex')}"`,
     },
     {
       type: 'error',
@@ -185,7 +185,7 @@ export default {
       },
       nodes: [null],
       filePath: posixJoin(env.exampleType03Path, 'createTypeScriptIndex.d.ts'),
-      message: `detect same name of export statement: "${colors.yellow('ICreateTsIndexOption')}"`,
+      message: `detect same name of export statement: "${chalk.yellow('ICreateTsIndexOption')}"`,
     },
     {
       type: 'error',
@@ -195,7 +195,7 @@ export default {
       },
       nodes: [null],
       filePath: posixJoin(env.exampleType03Path, 'index.d.ts'),
-      message: `detect same name of export statement: "${colors.yellow('ICreateTsIndexOption')}"`,
+      message: `detect same name of export statement: "${chalk.yellow('ICreateTsIndexOption')}"`,
     },
     {
       type: 'error',
@@ -205,7 +205,7 @@ export default {
       },
       nodes: [null],
       filePath: posixJoin(env.exampleType03Path, 'popcorn', 'lawyer', 'appliance', 'bomb.ts'),
-      message: `detect same name of default export statement: "${colors.yellow('bomb')}"`,
+      message: `detect same name of default export statement: "${chalk.yellow('bomb')}"`,
     },
     {
       type: 'error',
@@ -215,7 +215,7 @@ export default {
       },
       nodes: [null],
       filePath: posixJoin(env.exampleType03Path, 'popcorn', 'lawyer', 'appliance', 'bomb.ts'),
-      message: `detect same name of default export statement: "${colors.yellow('bomb')}"`,
+      message: `detect same name of default export statement: "${chalk.yellow('bomb')}"`,
     },
   ],
 };
