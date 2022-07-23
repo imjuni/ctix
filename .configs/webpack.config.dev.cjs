@@ -7,7 +7,7 @@ const webpackNodeExternals = require('webpack-node-externals');
 const WebpackBar = require('webpackbar');
 const { merge } = require('webpack-merge');
 
-const distPath = path.resolve(path.join(__dirname, 'dist'));
+const distPath = path.resolve(path.join(__dirname, '..', 'dist'));
 
 const configLib = {
   devtool: 'inline-source-map',
@@ -29,10 +29,6 @@ const configLib = {
       process: false,
     },
     modules: [path.resolve(__dirname, 'src'), 'node_modules'],
-    alias: {
-      '@tools': path.resolve(__dirname, 'src/tools'),
-      '@options': path.resolve(__dirname, 'src/options'),
-    },
     plugins: [
       new TsconfigPathsWebpackPlugin({
         configFile: 'tsconfig.json',

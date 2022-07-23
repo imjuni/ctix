@@ -17,6 +17,7 @@ export default {
         resolvedDirPath: replaceSepToPosix(env.exampleType03Path),
         relativeFilePath: 'createTypeScriptIndex.d.ts',
         depth: 0,
+        isEmpty: false,
         starExported: true,
         defaultExport: undefined,
         namedExports: [
@@ -30,6 +31,7 @@ export default {
         resolvedDirPath: replaceSepToPosix(env.exampleType03Path),
         relativeFilePath: 'index.d.ts',
         depth: 0,
+        isEmpty: false,
         starExported: true,
         defaultExport: undefined,
         namedExports: [
@@ -45,6 +47,7 @@ export default {
         resolvedDirPath: replaceSepToPosix(env.exampleType03Path),
         relativeFilePath: 'createTypeScriptIndex.d.ts',
         depth: 0,
+        isEmpty: false,
         starExported: true,
         defaultExport: undefined,
         namedExports: [
@@ -58,6 +61,7 @@ export default {
         resolvedDirPath: replaceSepToPosix(env.exampleType03Path),
         relativeFilePath: 'index.d.ts',
         depth: 0,
+        isEmpty: false,
         starExported: true,
         defaultExport: undefined,
         namedExports: [
@@ -73,6 +77,7 @@ export default {
         resolvedDirPath: replaceSepToPosix(env.exampleType03Path),
         relativeFilePath: 'createTypeScriptIndex.d.ts',
         depth: 0,
+        isEmpty: false,
         starExported: true,
         defaultExport: undefined,
         namedExports: [
@@ -86,6 +91,7 @@ export default {
         resolvedDirPath: replaceSepToPosix(env.exampleType03Path),
         relativeFilePath: 'index.d.ts',
         depth: 0,
+        isEmpty: false,
         starExported: true,
         defaultExport: undefined,
         namedExports: [
@@ -107,6 +113,7 @@ export default {
         resolvedDirPath: posixJoin(env.exampleType03Path, 'popcorn', 'lawyer', 'appliance'),
         relativeFilePath: posixJoin('popcorn', 'lawyer', 'appliance', 'bomb.ts'),
         depth: 3,
+        isEmpty: false,
         starExported: true,
         defaultExport: { identifier: 'bomb' },
         namedExports: [{ identifier: 'bomb' }],
@@ -122,6 +129,7 @@ export default {
         resolvedDirPath: posixJoin(env.exampleType03Path, 'popcorn', 'lawyer', 'appliance'),
         relativeFilePath: posixJoin('popcorn', 'lawyer', 'appliance', 'bomb.ts'),
         depth: 3,
+        isEmpty: false,
         starExported: true,
         defaultExport: { identifier: 'bomb' },
         namedExports: [{ identifier: 'bomb' }],

@@ -35,9 +35,11 @@ export default async function getExportInfos(
       isFalse(completlyIgnoreFileNames.includes(sourceFile.getFilePath().toString())),
     );
 
-  const exportInfos = await Promise.all(
-    sourceFiles.map((sourceFile) => getExportInfo(sourceFile, option, ignores.evaluated)),
-  );
+  const exportInfos = (
+    await Promise.all(
+      sourceFiles.map((sourceFile) => getExportInfo(sourceFile, option, ignores.evaluated)),
+    )
+  ).filter((exportInfo) => isFalse(exportInfo.isEmpty));
 
   const exportRecord = exportInfos.reduce<Record<string, IExportInfo>>(
     (aggregation, exportInfo) => {

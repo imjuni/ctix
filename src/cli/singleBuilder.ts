@@ -14,6 +14,7 @@ export default function singleBuilder<
       alias: 'r',
       describe: 'output file under rootDir in tsconfig.json',
       type: 'boolean',
+      default: false,
     })
     .option('output', {
       alias: 'o',

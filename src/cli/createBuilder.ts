@@ -13,6 +13,7 @@ export default function singleBuilder<
     alias: 'e',
     describe: 'If set true this option, skip empty directory',
     type: 'boolean',
+    default: true,
   });
 
   return args;

@@ -145,7 +145,7 @@ testcase directory ignore using glob pattern.
 ctix auto create index.ts file empty directory because that can have children directory. So, ctix need ignore directory and file both.
 
 ## rootDir, rootDirs
-useRootDir option activate using rootDir option in tsconfig.json. This option run below [flowchart](https://github.com/imjuni/ctix/blob/master/UseRootDir.md).
+useRootDir option activate using rootDir option in tsconfig.json. This option run below [flowchart](https://github.com/imjuni/ctix/blob/master/docs/UseRootDir.md).
 
 # CLI with .ctirc
 ctix cli support `.ctirc` configuration file. Available name is only `.ctirc`. Also cti cli arguments forced applied. And `.ctirc` file can write [json with comments](https://www.npmjs.com/package/jsonc-parser).

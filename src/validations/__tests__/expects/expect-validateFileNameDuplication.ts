@@ -11,6 +11,7 @@ export default {
       resolvedDirPath: replaceSepToPosix(env.exampleType03Path),
       relativeFilePath: 'index.d.ts',
       depth: 0,
+      isEmpty: false,
       starExported: true,
       defaultExport: undefined,
       namedExports: [
@@ -19,33 +20,14 @@ export default {
         { identifier: 'ICreateTsIndexOption' },
       ],
     },
-    {
-      resolvedFilePath: posixJoin(env.exampleType03Path, 'popcorn', 'index.d.ts'),
-      resolvedDirPath: posixJoin(env.exampleType03Path, 'popcorn'),
-      relativeFilePath: posixJoin('popcorn', 'index.d.ts'),
-      depth: 1,
-      starExported: true,
-      defaultExport: undefined,
-      namedExports: [],
-    },
   ],
-  filePaths: [
-    posixJoin(env.exampleType03Path, 'index.d.ts'),
-    posixJoin(env.exampleType03Path, 'popcorn', 'index.d.ts'),
-  ],
+  filePaths: [posixJoin(env.exampleType03Path, 'index.d.ts')],
   reasons: [
     {
       type: 'error',
       filePath: posixJoin(env.exampleType03Path, 'index.d.ts'),
       message: `already exist file: "${colors.yellow(
         posixJoin(env.exampleType03Path, 'index.d.ts'),
-      )}"`,
-    },
-    {
-      type: 'error',
-      filePath: posixJoin(env.exampleType03Path, 'popcorn', 'index.d.ts'),
-      message: `already exist file: "${colors.yellow(
-        posixJoin(env.exampleType03Path, 'popcorn', 'index.d.ts'),
       )}"`,
     },
   ],
