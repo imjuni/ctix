@@ -1,6 +1,6 @@
 {
   "name": "ctix",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "Automatic create index.ts file",
   "scripts": {
     "test": "cross-env NODE_ENV=develop DEBUG=ctix:* jest --runInBand",
@@ -91,6 +91,8 @@
     "fast-glob": "^3.2.11",
     "fast-safe-stringify": "^2.1.1",
     "find-up": "^5.0.0",
+    "globby": "^11.1.0",
+    "ignore": "^5.2.0",
     "json5": "^2.2.1",
     "jsonc-parser": "^3.0.0",
     "minimatch": "^5.1.0",

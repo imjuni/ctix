@@ -117,7 +117,7 @@ export async function singleWritor(option: TSingleOptionWithDirInfo, isMessageDi
     const totalExportInfos = await getExportInfos(project, option, ignoreContents);
     const exportDuplicationValidateResult = validateExportDuplication(totalExportInfos);
 
-    spinner.update('start validateion');
+    spinner.update('start validation');
 
     const exportInfos = totalExportInfos.filter((exportInfo) =>
       isFalse(exportDuplicationValidateResult.filePaths.includes(exportInfo.resolvedFilePath)),
