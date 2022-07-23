@@ -5,22 +5,33 @@ import consola from 'consola';
 import * as findUp from 'find-up';
 import fs from 'fs';
 import { isEmpty, isFalse, isNotEmpty } from 'my-easy-fp';
-import { existsSync } from 'my-node-fp';
+import { existsSync, getDirnameSync } from 'my-node-fp';
 import yargs from 'yargs';
+
+function getConfigFilePath(argv: { c?: string; config?: string }, projectPath?: string) {
+  const argvConfigFilePath = argv.c ?? argv.config;
+  const projectDirPath = isNotEmpty(projectPath) ? getDirnameSync(projectPath) : undefined;
+
+  const configFilePathSearchResultOnCwd = findUp.sync('.ctirc');
+  const configFilePathSearchProjectDirPath = isNotEmpty(projectDirPath)
+    ? findUp.sync('.ctirc', { cwd: projectDirPath })
+    : undefined;
+
+  return (
+    argvConfigFilePath ?? configFilePathSearchResultOnCwd ?? configFilePathSearchProjectDirPath
+  );
+}
 
 export default function preLoadConfig() {
   try {
     const argv = yargs(process.argv.slice(2)).parseSync() as any;
 
-    const configFilePath =
-      isNotEmpty(argv.config) || isNotEmpty(argv.c)
-        ? findUp.sync([argv.config, argv.c])
-        : findUp.sync('.ctirc');
-
     const tsconfigPath =
       isNotEmpty(argv.project) || isNotEmpty(argv.p)
         ? findUp.sync([argv.project, argv.p])
         : findUp.sync('tsconfig.json');
+
+    const configFilePath = getConfigFilePath(argv, tsconfigPath);
 
     if (isEmpty(configFilePath) || isFalse(existsSync(configFilePath))) {
       return {
