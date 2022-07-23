@@ -1,6 +1,6 @@
 import * as env from '@testenv/env';
 import { posixJoin } from '@tools/misc';
-import colors from 'colors';
+import chalk from 'chalk';
 import { replaceSepToPosix } from 'my-node-fp';
 
 export default {
@@ -26,7 +26,7 @@ export default {
     {
       type: 'error',
       filePath: posixJoin(env.exampleType03Path, 'index.d.ts'),
-      message: `already exist file: "${colors.yellow(
+      message: `already exist file: "${chalk.yellow(
         posixJoin(env.exampleType03Path, 'index.d.ts'),
       )}"`,
     },

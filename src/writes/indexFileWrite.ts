@@ -2,7 +2,7 @@ import IReason from '@cli/interfaces/IReason';
 import { TCreateOrSingleOption } from '@configs/interfaces/IOption';
 import ICreateIndexInfos from '@tools/interface/ICreateIndexInfos';
 import prettierApply from '@writes/prettierApply';
-import colors from 'colors';
+import chalk from 'chalk';
 import dayjs from 'dayjs';
 import fs from 'fs';
 import { isFalse, isNotEmpty, isTrue } from 'my-easy-fp';
@@ -76,7 +76,7 @@ export default async function indexFileWrite(
       const reason: IReason = {
         type: 'error',
         filePath: indexFilePath,
-        message: `Already exist "${option.exportFilename}": "${colors.yellow(indexFilePath)}"`,
+        message: `Already exist "${option.exportFilename}": "${chalk.yellow(indexFilePath)}"`,
       };
 
       return reason;

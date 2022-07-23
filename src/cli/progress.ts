@@ -1,8 +1,8 @@
+import chalk from 'chalk';
 import { SingleBar } from 'cli-progress';
-import colors from 'colors';
 
 const progressBar = new SingleBar({
-  format: `Progress [${colors.green('{bar}')}] {percentage}% | {value}/{total}`,
+  format: `Progress [${chalk.green('{bar}')}] {percentage}% | {value}/{total}`,
   barCompleteChar: '\u25A0',
   barIncompleteChar: ' ',
   stopOnComplete: true,

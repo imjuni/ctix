@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import IReason from '@cli/interfaces/IReason';
-import colors from 'colors';
+import chalk from 'chalk';
 import { isEmpty, isFalse, sleep as sleepMs } from 'my-easy-fp';
 import * as path from 'path';
 
@@ -34,8 +34,8 @@ export function start(reasons: IReason[]): void {
   reasons.forEach((reason) => {
     const typeMessage =
       reason.type === 'error'
-        ? colors.bgRed(`   ${reason.type.toUpperCase()}   `)
-        : colors.bgYellow(`   ${reason.type.toUpperCase()}    `);
+        ? chalk.bgRed(`   ${reason.type.toUpperCase()}   `)
+        : chalk.bgYellow(`   ${reason.type.toUpperCase()}    `);
 
     const { filePath } = reason;
 
@@ -45,21 +45,21 @@ export function start(reasons: IReason[]): void {
           reason.lineAndCharacter.character
         }`;
 
-    const chevronRight = reason.type === 'error' ? colors.red('>') : colors.yellow('>');
+    const chevronRight = reason.type === 'error' ? chalk.red('>') : chalk.yellow('>');
 
     console.log(typeMessage, filename);
 
     if (isEmpty(reason.lineAndCharacter)) {
-      console.log(`   ${chevronRight} ${colors.gray(`${filePath}`)}`);
+      console.log(`   ${chevronRight} ${chalk.gray(`${filePath}`)}`);
     } else {
       console.log(
-        `   ${chevronRight} ${colors.gray(
+        `   ${chevronRight} ${chalk.gray(
           `${filePath}:${reason.lineAndCharacter.line}:${reason.lineAndCharacter.character}`,
         )}`,
       );
     }
     reason.message.split('\n').forEach((splittedMessage) => {
-      console.log(`   ${chevronRight} ${colors.gray(splittedMessage.trim())}`);
+      console.log(`   ${chevronRight} ${chalk.gray(splittedMessage.trim())}`);
     });
 
     console.log('');
