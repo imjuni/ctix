@@ -1,3 +1,4 @@
+import gitignore from '@ignores/gitignore';
 import IGetIgnoredConfigContents from '@ignores/interfaces/IGetIgnoredConfigContents';
 import getDepth from '@tools/getDepth';
 import { fastGlobWrap, posixJoin } from '@tools/misc';
@@ -12,7 +13,11 @@ export default async function getEmptyDescendantTree({
   cwd: string;
   ignores: IGetIgnoredConfigContents;
 }) {
-  const filePaths = await fastGlobWrap(path.join(cwd, '**'), { cwd, onlyDirectories: true });
+  const filePaths = await fastGlobWrap(path.join(cwd, '**'), {
+    ignore: [...gitignore.globPatterns],
+    cwd,
+    onlyDirectories: true,
+  });
 
   const emptyTerminalDirectories = (
     await Promise.all(

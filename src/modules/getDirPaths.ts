@@ -1,9 +1,10 @@
 import IExportInfo from '@compilers/interfaces/IExportInfo';
 import { TCreateOrSingleOption } from '@configs/interfaces/IOption';
+import gitignore, { filter as ignoreFilter } from '@ignores/gitignore';
 import IGetIgnoredConfigContents from '@ignores/interfaces/IGetIgnoredConfigContents';
 import getRelativeDepth from '@tools/getRelativeDepth';
 import { posixJoin } from '@tools/misc';
-import globby from 'globby';
+import fastGlob from 'fast-glob';
 import minimatch from 'minimatch';
 import { isFalse } from 'my-easy-fp';
 import { getDirname, startSepRemove } from 'my-node-fp';
@@ -20,10 +21,16 @@ export default async function getDirPaths(
     ),
   );
 
-  const totalGlobFilePaths = await globby(
+  const unIgnoredGlobFilePaths = await fastGlob(
     filePathsFromExportInfos.map((filePath) => `${filePath}${path.posix.sep}**${path.posix.sep}*`),
-    { onlyDirectories: true, gitignore: true },
+    {
+      onlyDirectories: true,
+      ignore: [...gitignore.default],
+      cwd: option.resolvedProjectDirPath,
+    },
   );
+
+  const totalGlobFilePaths = ignoreFilter(unIgnoredGlobFilePaths);
 
   const ignoreGlobPatterns = Object.keys(ignores.origin);
   const globFilePaths = totalGlobFilePaths.filter((totalGlobFilePath) => {
