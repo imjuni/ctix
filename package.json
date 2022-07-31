@@ -1,6 +1,6 @@
 {
   "name": "ctix",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "Automatic create index.ts file",
   "scripts": {
     "test": "cross-env NODE_ENV=develop DEBUG=ctix:* jest --runInBand",
@@ -91,13 +91,12 @@
     "fast-glob": "^3.2.11",
     "fast-safe-stringify": "^2.1.1",
     "find-up": "^5.0.0",
-    "globby": "^11.1.0",
     "ignore": "^5.2.0",
     "json5": "^2.2.1",
     "jsonc-parser": "^3.0.0",
     "minimatch": "^5.1.0",
     "minimist": "^1.2.6",
-    "my-easy-fp": "^0.12.0",
+    "my-easy-fp": "^0.13.0",
     "my-node-fp": "^0.5.0",
     "my-only-either": "^1.1.2",
     "ora": "^5.4.1",
@@ -106,6 +105,7 @@
     "source-map-support": "^0.5.21",
     "ts-morph": "^15.0.0",
     "tslib": "^2.4.0",
+    "type-fest": "^2.17.0",
     "typescript": "^4.7.2",
     "upper-case-first": "^2.0.2",
     "yargs": "^17.5.1"

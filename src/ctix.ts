@@ -14,6 +14,7 @@ import {
 import getEmptyDescendantTree from '@ignores/getEmptyDescendantTree';
 import getIgnoreConfigContents from '@ignores/getIgnoreConfigContents';
 import getIgnoreConfigFiles from '@ignores/getIgnoreConfigFiles';
+import { bootstrap as gitignoreBootstrap } from '@ignores/gitignore';
 import createIndexInfos from '@modules/createIndexInfos';
 import getRemoveFiles from '@modules/getRemoveFiles';
 import singleIndexInfos from '@modules/singleIndexInfos';
@@ -38,6 +39,8 @@ export async function createWritor(option: TCreateOptionWithDirInfo, isMessageDi
 
     const projectDirPath = await getDirname(option.resolvedProjectFilePath);
     const project = getTypeScriptProject(option.resolvedProjectFilePath);
+
+    await gitignoreBootstrap(replaceSepToPosix(path.join(projectDirPath, '.gitignore')));
 
     spinner.update('project loading complete');
 
@@ -107,6 +110,8 @@ export async function singleWritor(option: TSingleOptionWithDirInfo, isMessageDi
     const projectDirPath = await getDirname(option.resolvedProjectFilePath);
     const project = getTypeScriptProject(option.resolvedProjectFilePath);
 
+    await gitignoreBootstrap(replaceSepToPosix(path.join(projectDirPath, '.gitignore')));
+
     spinner.update('project loading complete');
 
     const ignoreFiles = await getIgnoreConfigFiles(projectDirPath);
@@ -155,9 +160,14 @@ export async function removeIndexFile(
     reasoner.enable(isMessageDisplay ?? false);
 
     spinner.start("ctix start 'remove' mode");
-    reasoner.sleep(1000);
+    reasoner.sleep(500);
 
     const project = getTypeScriptProject(option.resolvedProjectFilePath);
+
+    await gitignoreBootstrap(
+      replaceSepToPosix(path.join(option.resolvedProjectDirPath, '.gitignore')),
+    );
+
     const filePaths = await getRemoveFiles(project, option);
 
     spinner.update(`remove each ${option.exportFilename} file`);

@@ -1,5 +1,6 @@
 import IExportInfo from '@compilers/interfaces/IExportInfo';
 import { TCreateOrSingleOption } from '@configs/interfaces/IOption';
+import gitignore, { filter as ignoreFilter } from '@ignores/gitignore';
 import IGetIgnoredConfigContents from '@ignores/interfaces/IGetIgnoredConfigContents';
 import getRelativeDepth from '@tools/getRelativeDepth';
 import IDescendantExportInfo from '@tools/interface/IDescendantExportInfo';
@@ -24,11 +25,13 @@ export default async function getDescendantExportInfo(
     .filter(([, ignoreContent]) => ignoreContent === '*')
     .map(([ignoreFilePath]) => replaceSepToPosix(path.join(ignoreFilePath, '*')));
 
-  const globDirPaths = await fastGlob(globPattern, {
-    ignore: globIgnorePatterns,
+  const globDirPathsAsis = await fastGlob(globPattern, {
+    ignore: [...globIgnorePatterns, ...gitignore.default],
     dot: true,
     onlyDirectories: true,
   });
+
+  const globDirPaths = ignoreFilter(globDirPathsAsis);
 
   const parentExportInfo = exportInfos.filter(
     (exportInfo) => exportInfo.resolvedDirPath === filePath,

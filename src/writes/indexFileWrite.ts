@@ -36,13 +36,12 @@ export default async function indexFileWrite(
       const indexFilePath = path.join(indexInfo.resolvedDirPath, option.exportFilename);
       const indexFileContent = indexInfo.exportStatements.join(option.eol);
       const firstLine = getFirstLineComment(option);
+      const prettierApplied = await prettierApply(
+        option.project,
+        `${firstLine}${indexFileContent}${option.eol}`,
+      );
 
       if (isTrue(option.overwrite ?? false)) {
-        const prettierApplied = await prettierApply(
-          option.project,
-          `${firstLine}${indexFileContent}${option.eol}`,
-        );
-
         // index.ts file already exist, create backup file
         if (await exists(indexFilePath)) {
           await fs.promises.writeFile(
@@ -50,24 +49,12 @@ export default async function indexFileWrite(
             await fs.promises.readFile(indexFilePath),
           );
         }
-
-        await fs.promises.writeFile(
-          indexFilePath,
-          `${firstLine}${prettierApplied.contents}${option.eol}`,
-        );
-
-        return undefined;
       }
 
       if (isFalse(await exists(indexFilePath))) {
-        const prettierApplied = await prettierApply(
-          option.project,
-          `${firstLine}${indexFileContent}${option.eol}`,
-        );
-
         await fs.promises.writeFile(
           indexFilePath,
-          `${firstLine}${prettierApplied.contents}${option.eol}`,
+          `${`${firstLine}${prettierApplied.contents}`.trim()}${option.eol}`,
         );
 
         return undefined;

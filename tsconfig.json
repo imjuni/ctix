@@ -7,14 +7,13 @@
     // It is faster to skip typechecking.
     // Remove if you want ts-node to do typechecking.
     "transpileOnly": true,
-
     "files": true,
-
     "compilerOptions": {
       // compilerOptions specified here will override those declared below,
       // but *only* in ts-node.  Useful if you want ts-node and tsc to use
       // different options with a single tsconfig.json.
-    }
+    },
+    "require": ["tsconfig-paths/register"]
   },
   "compileOnSave": false,
   "buildOnSave": false,
@@ -59,5 +58,5 @@
     "emitDecoratorMetadata": true /* Enables experimental support for emitting type metadata for decorators. */,
     "pretty": true
   },
-  "exclude": ["example/**", "dist/**", "erdia_eg/**"]
+  "exclude": ["example/**", "dist/**", "**/erdia_eg"]
 }

@@ -2,6 +2,7 @@ import getExportInfos from '@compilers/getExportInfos';
 import { TSingleOptionWithDirInfo } from '@configs/interfaces/IOption';
 import getIgnoreConfigContents from '@ignores/getIgnoreConfigContents';
 import getIgnoreConfigFiles from '@ignores/getIgnoreConfigFiles';
+import { bootstrap as gitignoreBootstrap } from '@ignores/gitignore';
 import singleIndexInfos from '@modules/singleIndexInfos';
 import * as env from '@testenv/env';
 import { getTestValue, posixJoin } from '@tools/misc';
@@ -41,6 +42,8 @@ test('c001-singleIndexInfos-type03', async () => {
 
   const projectPath = env.exampleType03Path;
   const project = share.project03;
+
+  await gitignoreBootstrap(posixJoin(projectPath, '.gitignore'));
 
   // option modify for expectation
   const option: TSingleOptionWithDirInfo = {
@@ -86,6 +89,8 @@ test('c002-singleIndexInfos-type04', async () => {
 
   const projectPath = env.exampleType04Path;
   const project = share.project04;
+
+  await gitignoreBootstrap(posixJoin(projectPath, '.gitignore'));
 
   // option modify for expectation
   const option: TSingleOptionWithDirInfo = {

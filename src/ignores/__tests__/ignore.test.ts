@@ -1,6 +1,7 @@
 import getEmptyDescendantTree from '@ignores/getEmptyDescendantTree';
 import getIgnoreConfigContents from '@ignores/getIgnoreConfigContents';
 import getIgnoreConfigFiles from '@ignores/getIgnoreConfigFiles';
+import { bootstrap as gitignoreBootstrap } from '@ignores/gitignore';
 import * as env from '@testenv/env';
 import { posixJoin } from '@tools/misc';
 import consola, { LogLevel } from 'consola';
@@ -59,64 +60,70 @@ test('getIgnoreConfigContents', async () => {
 });
 
 test('getEmptyDescendantTree-case01', async () => {
-  const ignoreFiles = await getIgnoreConfigFiles(env.exampleType02Path);
+  const projectPath = env.exampleType02Path;
+  await gitignoreBootstrap(posixJoin(projectPath, '.gitignore'));
+
+  const ignoreFiles = await getIgnoreConfigFiles(projectPath);
   const ignoreContents = await getIgnoreConfigContents({
-    cwd: env.exampleType02Path,
+    cwd: projectPath,
     ...ignoreFiles,
   });
 
   const result = await getEmptyDescendantTree({
-    cwd: env.exampleType02Path,
+    cwd: projectPath,
     ignores: ignoreContents.evaluated,
   });
 
   const expectation = {
-    [posixJoin(env.exampleType02Path, 'juvenile')]: '*',
-    [posixJoin(env.exampleType02Path, 'juvenile', 'spill')]: '*',
-    [posixJoin(env.exampleType02Path, 'juvenile', '__tests__')]: '*',
-    [posixJoin(env.exampleType02Path, 'wellmade', '__tests__')]: '*',
+    [posixJoin(projectPath, 'juvenile')]: '*',
+    [posixJoin(projectPath, 'juvenile', 'spill')]: '*',
+    [posixJoin(projectPath, 'juvenile', '__tests__')]: '*',
+    [posixJoin(projectPath, 'wellmade', '__tests__')]: '*',
   };
 
   expect(result).toEqual(expectation);
 });
 
 test('getEmptyDescendantTree-case02', async () => {
-  const ignoreFiles = await getIgnoreConfigFiles(env.exampleType04Path);
+  const projectPath = env.exampleType04Path;
+  await gitignoreBootstrap(posixJoin(projectPath, '.gitignore'));
+
+  const ignoreFiles = await getIgnoreConfigFiles(projectPath);
   const ignoreContents = await getIgnoreConfigContents({
-    cwd: env.exampleType04Path,
+    cwd: projectPath,
     ...ignoreFiles,
   });
 
   const result = await getEmptyDescendantTree({
-    cwd: env.exampleType04Path,
+    cwd: projectPath,
     ignores: ignoreContents.evaluated,
   });
 
   const expectation = {
-    [posixJoin(env.exampleType04Path, 'fast-maker')]: '*',
-    [posixJoin(env.exampleType04Path, 'fast-maker/__tests__')]: '*',
-    [posixJoin(env.exampleType04Path, 'fast-maker/carpenter')]: '*',
-    [posixJoin(env.exampleType04Path, 'juvenile')]: '*',
-    [posixJoin(env.exampleType04Path, 'juvenile', 'spill')]: '*',
+    [posixJoin(projectPath, 'juvenile')]: '*',
+    [posixJoin(projectPath, 'juvenile', 'spill')]: '*',
   };
 
   expect(result).toEqual(expectation);
 });
 
 test('getEmptyDescendantTree-case03', async () => {
-  const ignoreFiles = await getIgnoreConfigFiles(env.exampleType06Path);
+  const projectPath = env.exampleType06Path;
+  await gitignoreBootstrap(posixJoin(projectPath, '.gitignore'));
+
+  const ignoreFiles = await getIgnoreConfigFiles(projectPath);
   const ignoreContents = await getIgnoreConfigContents({
-    cwd: env.exampleType06Path,
+    cwd: projectPath,
     ...ignoreFiles,
   });
 
   const result = await getEmptyDescendantTree({
-    cwd: env.exampleType06Path,
+    cwd: projectPath,
     ignores: ignoreContents.evaluated,
   });
 
   const expectation = {
-    [posixJoin(env.exampleType06Path, 'fast-maker/__tests__')]: '*',
+    [posixJoin(projectPath, 'fast-maker/__tests__')]: '*',
   };
 
   expect(result).toEqual(expectation);
