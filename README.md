@@ -16,11 +16,11 @@ ctix create -p ./tsconfig.json
 
 # Introduction
 
-You have to create a list of files when bundling with webpack and rollup, or creating documents with typedoc. It's boring to re-list files every time they change files change. ctix is a simple tool that automates the creation of file lists.
+You have to create a list of files when bundling with [webpack](https://webpack.js.org/) and [rollup.js](https://rollupjs.org/guide/en/), or creating documents with [typedoc](https://typedoc.org/). It's boring to re-list files every time they change files change. ctix is a simple tool that automates the creation of file lists.
 
 # Why ctix?
 
-An application project has a clear entry point, but if it is a library project, the entry point is not clear, so you have to organize it yourself. Typedoc must explicitly specify what to document, even for an application project.
+An application project has a clear [entry point](https://webpack.js.org/concepts/entry-points/), but if it is a library project, the entry point is not clear, so you have to create it yourself. typedoc have to explicitly specify what to document, even for an application project.
 
 1. use TypeScript compiler API
 1. create index.ts file by separating default export and export
