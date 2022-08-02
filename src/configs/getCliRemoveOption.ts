@@ -1,10 +1,10 @@
 import { TRemoveOption } from '@configs/interfaces/IOption';
 import jsonLoader from '@configs/jsonLoader';
-import minimist from 'minimist';
+import { ArgumentsCamelCase } from 'yargs';
 
 export default function getCliRemoveOption(
   configBuf: Buffer,
-  argv: minimist.ParsedArgs,
+  argv: ArgumentsCamelCase<TRemoveOption>,
   configFilePath: string,
   project: string,
 ): TRemoveOption {

@@ -1,10 +1,10 @@
 import { TSingleOption } from '@configs/interfaces/IOption';
 import jsonLoader from '@configs/jsonLoader';
-import minimist from 'minimist';
+import { ArgumentsCamelCase } from 'yargs';
 
 export default function getCliSingleOption(
   configBuf: Buffer,
-  argv: minimist.ParsedArgs,
+  argv: ArgumentsCamelCase<TSingleOption>,
   configFilePath: string,
   project: string,
 ): TSingleOption {
@@ -35,7 +35,7 @@ export default function getCliSingleOption(
     quote: argv.q ?? argv.quote ?? rawConfig.quote,
 
     w: argv.w ?? argv.overwrite ?? rawConfig.overwrite,
-    overwrite: argv.b ?? argv.overwrite ?? rawConfig.overwrite,
+    overwrite: argv.w ?? argv.overwrite ?? rawConfig.overwrite,
 
     k: argv.k ?? argv.keepFileExt ?? rawConfig.keepFileExt,
     keepFileExt: argv.k ?? argv.keepFileExt ?? rawConfig.keepFileExt,

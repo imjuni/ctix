@@ -6,7 +6,8 @@ import * as findUp from 'find-up';
 import fs from 'fs';
 import { isEmpty, isFalse, isNotEmpty } from 'my-easy-fp';
 import { existsSync, getDirnameSync } from 'my-node-fp';
-import yargs from 'yargs';
+import yargs, { ArgumentsCamelCase } from 'yargs';
+import { TCreateOption, TRemoveOption, TSingleOption } from './interfaces/IOption';
 
 function getConfigFilePath(argv: { c?: string; config?: string }, projectPath?: string) {
   const argvConfigFilePath = argv.c ?? argv.config;
@@ -51,15 +52,18 @@ export default function preLoadConfig() {
     const configBuf = fs.readFileSync(configFilePath);
 
     if (command === 'c' || command === 'create') {
-      return getCliCreateOption(configBuf, argv, configFilePath, tsconfigPath);
+      const createArgv: ArgumentsCamelCase<TCreateOption> = argv as any;
+      return getCliCreateOption(configBuf, createArgv, configFilePath, tsconfigPath);
     }
 
     if (command === 's' || command === 'single') {
-      return getCliSingleOption(configBuf, argv, configFilePath, tsconfigPath);
+      const singleArgv: ArgumentsCamelCase<TSingleOption> = argv as any;
+      return getCliSingleOption(configBuf, singleArgv, configFilePath, tsconfigPath);
     }
 
     if (command === 'r' || command === 'remove') {
-      return getCliRemoveOption(configBuf, argv, configFilePath, tsconfigPath);
+      const removeArgv: ArgumentsCamelCase<TRemoveOption> = argv as any;
+      return getCliRemoveOption(configBuf, removeArgv, configFilePath, tsconfigPath);
     }
 
     if (command === 'i' || command === 'init') {
