@@ -1,4 +1,6 @@
 import getTypeScriptConfig from '@compilers/getTypeScriptConfig';
+import defaultIgnoreFileName from '@configs/defaultIgnoreFileName';
+import getSourceFileEol from '@configs/getSourceFileEol';
 import IDirectoryInfo from '@configs/interfaces/IDirectoryInfo';
 import {
   TCreateOption,
@@ -8,9 +10,9 @@ import {
 } from '@configs/interfaces/IOption';
 import getDepth from '@tools/getDepth';
 import { settify } from '@tools/misc';
+import findUp from 'find-up';
 import { getDirnameSync, replaceSepToPosix, replaceSepToWin32 } from 'my-node-fp';
 import path from 'path';
-import getSourceFileEol from './getSourceFileEol';
 
 export default function attachDiretoryInfo<
   T extends TCreateOption | TSingleOption | TRemoveOption | TInitOption,
@@ -46,6 +48,11 @@ export default function attachDiretoryInfo<
 
   const eol = getSourceFileEol([...tsconfig.fileNames].slice(0, 30));
 
+  const resolvedIgnoreFilePath =
+    option.mode === 'create' || option.mode === 'single'
+      ? findUp.sync(option.ignoreFile) ?? option.ignoreFile
+      : defaultIgnoreFileName;
+
   return {
     ...option,
     eol,
@@ -53,5 +60,6 @@ export default function attachDiretoryInfo<
     topDirDepth: 0,
     resolvedProjectDirPath: getDirnameSync(project),
     resolvedProjectFilePath: project,
+    resolvedIgnoreFilePath,
   };
 }

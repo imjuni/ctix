@@ -252,8 +252,9 @@ test('c005-getExportInfos-partial-ignore', async () => {
 
   const projectPath = env.exampleType04Path;
   const project = share.project04;
+  const ignoreFilePath = posixJoin(projectPath, '.ctiignore_another_name');
 
-  const ignoreFiles = await getIgnoreConfigFiles(projectPath);
+  const ignoreFiles = await getIgnoreConfigFiles(projectPath, ignoreFilePath);
   const ignoreContents = await getIgnoreConfigContents({
     cwd: projectPath,
     ...ignoreFiles,

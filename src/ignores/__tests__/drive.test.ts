@@ -29,5 +29,24 @@ test('drive.char.test', () => {
 
   const ret = testInputs.map((inp) => getRefineIgnorePath(inp));
 
-  console.log(ret);
+  const expectation = [
+    'project/node/github/erdia/src/cli/initSample.ts',
+    'project/node/github/erdia/src/cli',
+    'project/node/github/erdia/src/cli/initSample.ts',
+    'project/node/github/erdia/src/cli',
+    'project/node/github/erdia/src/cli/initSample.ts',
+    'project/node/github/erdia/src/cli',
+    'project/node/github/erdia/src/cli/initSample.ts',
+    'project/node/github/erdia/src/cli',
+    'project/node/github/erdia/src/cli/initSample.ts',
+    'project/node/github/erdia/src/cli',
+    'project/node/github/erdia/src/cli/initSample.ts',
+    'project/node/github/erdia/src/cli',
+    'initSample.ts',
+    'initSample.ts',
+    'cli',
+    'cli',
+  ];
+
+  expect(ret).toEqual(expectation);
 });

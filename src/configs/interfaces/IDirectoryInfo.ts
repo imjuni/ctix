@@ -13,4 +13,7 @@ export default interface IDirectoryInfo {
 
   /** resolved tsconfig.json directory with filename */
   resolvedProjectFilePath: string;
+
+  /** resolved ignoreFile(eg. .ctiignore) directory with filename */
+  resolvedIgnoreFilePath: string;
 }

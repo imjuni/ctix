@@ -47,6 +47,12 @@ export default function createSingleBuilder<
       describe: 'keep file extension in export statement path',
       type: 'boolean',
       default: false,
+    })
+    .option('ignoreFile', {
+      alias: 'g',
+      describe:
+        'ignore file name. You can pass ignore, config file at ctix and use it like profile',
+      type: 'string',
     });
 
   return args;

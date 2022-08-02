@@ -1,4 +1,5 @@
 import getExportInfos from '@compilers/getExportInfos';
+import defaultIgnoreFileName from '@configs/defaultIgnoreFileName';
 import { TCreateOptionWithDirInfo, TSingleOptionWithDirInfo } from '@configs/interfaces/IOption';
 import getIgnoreConfigContents from '@ignores/getIgnoreConfigContents';
 import getIgnoreConfigFiles from '@ignores/getIgnoreConfigFiles';
@@ -44,9 +45,11 @@ test('c001-getDirPaths', async () => {
     .currentTestName.replace(/^([cC][0-9]+)(-.+)/, 'expect$2.ts');
 
   const projectPath = env.exampleType03Path;
+
+  const ignoreFilePath = posixJoin(projectPath, defaultIgnoreFileName);
   await gitignoreBootstrap(posixJoin(projectPath, '.gitignore'));
 
-  const ignoreFiles = await getIgnoreConfigFiles(projectPath);
+  const ignoreFiles = await getIgnoreConfigFiles(projectPath, ignoreFilePath);
   const ignoreContents = await getIgnoreConfigContents({
     cwd: projectPath,
     ...ignoreFiles,
@@ -129,6 +132,7 @@ test('c003-getDescendantExportInfo', async () => {
     .currentTestName.replace(/^([cC][0-9]+)(-.+)/, 'expect$2.ts');
 
   const projectPath = env.exampleType03Path;
+  const ignoreFilePath = posixJoin(projectPath, defaultIgnoreFileName);
 
   const option: TCreateOptionWithDirInfo = {
     ...env.createOptionWithDirInfo,
@@ -139,7 +143,7 @@ test('c003-getDescendantExportInfo', async () => {
     topDirs: [projectPath],
   };
 
-  const ignoreFiles = await getIgnoreConfigFiles(projectPath);
+  const ignoreFiles = await getIgnoreConfigFiles(projectPath, ignoreFilePath);
   const ignoreContents = await getIgnoreConfigContents({
     cwd: projectPath,
     ...ignoreFiles,

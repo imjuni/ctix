@@ -44,10 +44,11 @@ export async function createWritor(option: TCreateOptionWithDirInfo, isMessageDi
 
     spinner.update('project loading complete');
 
-    const ignoreFiles = await getIgnoreConfigFiles(projectDirPath);
+    const ignoreFiles = await getIgnoreConfigFiles(projectDirPath, option.resolvedIgnoreFilePath);
     const ignoreContents = await getIgnoreConfigContents({ cwd: projectDirPath, ...ignoreFiles });
     const ignoreDirs = await getEmptyDescendantTree({
       cwd: projectDirPath,
+      ignoreFilePath: option.resolvedIgnoreFilePath,
       ignores: ignoreContents.evaluated,
     });
 
@@ -114,7 +115,7 @@ export async function singleWritor(option: TSingleOptionWithDirInfo, isMessageDi
 
     spinner.update('project loading complete');
 
-    const ignoreFiles = await getIgnoreConfigFiles(projectDirPath);
+    const ignoreFiles = await getIgnoreConfigFiles(projectDirPath, option.resolvedIgnoreFilePath);
     const ignoreContents = await getIgnoreConfigContents({ cwd: projectDirPath, ...ignoreFiles });
 
     spinner.update('ignore file loading complete');

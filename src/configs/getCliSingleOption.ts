@@ -1,5 +1,7 @@
+import defaultIgnoreFileName from '@configs/defaultIgnoreFileName';
 import { TSingleOption } from '@configs/interfaces/IOption';
 import jsonLoader from '@configs/jsonLoader';
+import { getDirnameSync } from 'my-node-fp';
 import { ArgumentsCamelCase } from 'yargs';
 
 export default function getCliSingleOption(
@@ -43,8 +45,11 @@ export default function getCliSingleOption(
     r: argv.r ?? argv.useRootDir ?? rawConfig.useRootDir,
     useRootDir: argv.r ?? argv.useRootDir ?? rawConfig.useRootDir,
 
-    o: argv.o ?? argv.output ?? rawConfig.output,
-    output: argv.o ?? argv.output ?? rawConfig.output,
+    o: argv.o ?? argv.output ?? rawConfig.output ?? getDirnameSync(project),
+    output: argv.o ?? argv.output ?? rawConfig.output ?? getDirnameSync(project),
+
+    g: argv.g ?? argv.ignoreFile ?? rawConfig.ignoreFile ?? defaultIgnoreFileName,
+    ignoreFile: argv.g ?? argv.ignoreFile ?? rawConfig.ignoreFile ?? defaultIgnoreFileName,
   };
 
   return option;

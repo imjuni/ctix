@@ -13,17 +13,20 @@ export interface IGetIgnoreConfigFiles {
  * @param cwd current working directory
  * @returns return value is eithered. string array or error class.
  */
-export default async function getIgnoreConfigFiles(cwd: string): Promise<IGetIgnoreConfigFiles> {
+export default async function getIgnoreConfigFiles(
+  cwd: string,
+  ignoreFilePath: string,
+): Promise<IGetIgnoreConfigFiles> {
   const resolvedCWD = path.resolve(cwd); // absolute path
 
   // create gitignore glob pattern
   const gitignorePattern = replaceSepToPosix(path.join(resolvedCWD, '.gitignore'));
 
-  // create ctiignore glob pattern
-  const ctiignorePattern = replaceSepToPosix(path.join(resolvedCWD, '.ctiignore'));
-
   // create npmignore glob pattern
   const npmignorePattern = replaceSepToPosix(path.join(resolvedCWD, '.npmignore'));
+
+  // create ctiignore glob pattern
+  const ctiignorePattern = ignoreFilePath;
 
   // ctiignore file have dot charactor at file first so set true dot flag
   const ignoreFiles = {

@@ -84,4 +84,13 @@ export default interface ICreateSingleCommonCliOption {
    * @default false
    */
   keepFileExt?: boolean;
+
+  /**
+   * ignore file name. You can pass ignore, config file at ctix and use it like profile
+   *
+   * @mode create, single
+   * @default .ctiignore
+   */
+  g: string;
+  ignoreFile: string;
 }
