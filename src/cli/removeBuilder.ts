@@ -13,6 +13,7 @@ export default function removeBuilder<
     alias: 'b',
     describe: 'clean with backup file',
     type: 'boolean',
+    default: false,
   });
 
   return args;

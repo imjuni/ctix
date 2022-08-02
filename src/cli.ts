@@ -6,9 +6,6 @@ import singleBuilder from '@cli/createSingleBuilder';
 import initBuilder from '@cli/initBuilder';
 import removeBuilder from '@cli/removeBuilder';
 import attachDiretoryInfo from '@configs/attachDiretoryInfo';
-import getRequiredCliCleanOption from '@configs/getRequiredCliCleanOption';
-import getRequiredCliCreateOption from '@configs/getRequiredCliCreateOption';
-import getRequiredCliSingleOption from '@configs/getRequiredCliSingleOption';
 import {
   TCreateOption,
   TInitOption,
@@ -40,10 +37,7 @@ yargs(process.argv.slice(2))
     },
     handler: async (argv) => {
       try {
-        const option = getRequiredCliCreateOption(argv);
-        const optionWithDirectoryInfo = attachDiretoryInfo(option);
-
-        await createWritor(optionWithDirectoryInfo, true);
+        await createWritor(attachDiretoryInfo(argv), true);
       } catch (catched) {
         const err = catched instanceof Error ? catched : new Error('unknown error raised');
         consola.error(err);
@@ -59,10 +53,7 @@ yargs(process.argv.slice(2))
     },
     handler: async (argv) => {
       try {
-        const option = getRequiredCliSingleOption(argv);
-        const optionWithDirectoryInfo = attachDiretoryInfo(option);
-
-        await singleWritor(optionWithDirectoryInfo, true);
+        await singleWritor(attachDiretoryInfo(argv), true);
       } catch (catched) {
         const err = catched instanceof Error ? catched : new Error('unknown error raised');
         consola.error(err);
@@ -78,10 +69,7 @@ yargs(process.argv.slice(2))
     },
     handler: async (argv) => {
       try {
-        const option = getRequiredCliCleanOption(argv);
-        const optionWithDirectoryInfo = attachDiretoryInfo(option);
-
-        await removeIndexFile(optionWithDirectoryInfo, true);
+        await removeIndexFile(attachDiretoryInfo(argv), true);
       } catch (catched) {
         const err = catched instanceof Error ? catched : new Error('unknown error raised');
         consola.error(err);

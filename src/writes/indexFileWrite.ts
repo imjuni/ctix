@@ -49,6 +49,13 @@ export default async function indexFileWrite(
             await fs.promises.readFile(indexFilePath),
           );
         }
+
+        await fs.promises.writeFile(
+          indexFilePath,
+          `${`${firstLine}${prettierApplied.contents}`.trim()}${option.eol}`,
+        );
+
+        return undefined;
       }
 
       if (isFalse(await exists(indexFilePath))) {

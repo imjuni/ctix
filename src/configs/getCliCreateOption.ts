@@ -1,10 +1,10 @@
 import { TCreateOption } from '@configs/interfaces/IOption';
 import jsonLoader from '@configs/jsonLoader';
-import minimist from 'minimist';
+import { ArgumentsCamelCase } from 'yargs';
 
 export default function getCliCreateOption(
   configBuf: Buffer,
-  argv: minimist.ParsedArgs,
+  argv: ArgumentsCamelCase<TCreateOption>,
   configFilePath: string,
   project: string,
 ): TCreateOption {
@@ -35,13 +35,13 @@ export default function getCliCreateOption(
     quote: argv.q ?? argv.quote ?? rawConfig.quote,
 
     w: argv.w ?? argv.overwrite ?? rawConfig.overwrite,
-    overwrite: argv.b ?? argv.overwrite ?? rawConfig.overwrite,
+    overwrite: argv.w ?? argv.overwrite ?? rawConfig.overwrite,
 
-    k: argv.b ?? argv.keepFileExt ?? rawConfig.keepFileExt,
-    keepFileExt: argv.b ?? argv.keepFileExt ?? rawConfig.keepFileExt,
+    k: argv.k ?? argv.keepFileExt ?? rawConfig.keepFileExt,
+    keepFileExt: argv.k ?? argv.keepFileExt ?? rawConfig.keepFileExt,
 
     e: argv.e ?? argv.skipEmptyDir ?? rawConfig.skipEmptyDir,
-    skipEmptyDir: argv.r ?? argv.skipEmptyDir ?? rawConfig.skipEmptyDir,
+    skipEmptyDir: argv.e ?? argv.skipEmptyDir ?? rawConfig.skipEmptyDir,
   };
 
   return option;
