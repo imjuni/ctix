@@ -14,7 +14,7 @@ export type TSingleOptionWithDirInfo = TSingleOption & IDirectoryInfo;
 export type TRemoveOption = ICommonCliOption & IOnlyRemoveCliOption;
 export type TRemoveOptionWithDirInfo = TRemoveOption & IDirectoryInfo;
 
-export type TInitOption = ICommonCliOption &
+export type TInitOption = { mode: 'init' } & ICommonCliOption &
   Omit<ICreateSingleCommonCliOption, 'mode'> &
   Omit<IOnlyCreateCliOption, 'mode'> &
   Omit<IOnlySingleCliOption, 'mode'> &

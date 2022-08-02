@@ -1,3 +1,4 @@
+import defaultIgnoreFileName from '@configs/defaultIgnoreFileName';
 import getEmptyDescendantTree from '@ignores/getEmptyDescendantTree';
 import getIgnoreConfigContents from '@ignores/getIgnoreConfigContents';
 import getIgnoreConfigFiles from '@ignores/getIgnoreConfigFiles';
@@ -5,29 +6,33 @@ import { bootstrap as gitignoreBootstrap } from '@ignores/gitignore';
 import * as env from '@testenv/env';
 import { posixJoin } from '@tools/misc';
 import consola, { LogLevel } from 'consola';
-import { replaceSepToPosix } from 'my-node-fp';
-import path from 'path';
 
 beforeAll(() => {
   consola.level = LogLevel.Debug;
 });
 
 test('getIgnoreFiles', async () => {
-  const result = await getIgnoreConfigFiles(env.exampleType04Path);
+  const projectPath = env.exampleType04Path;
+
+  const ignoreFilePath = posixJoin(projectPath, '.ctiignore_another_name');
+  const result = await getIgnoreConfigFiles(projectPath, ignoreFilePath);
 
   const expectation = {
-    cti: replaceSepToPosix(path.join(env.exampleType04Path, '.ctiignore')),
-    git: replaceSepToPosix(path.join(env.exampleType04Path, '.gitignore')),
-    npm: replaceSepToPosix(path.join(env.exampleType04Path, '.npmignore')),
+    cti: posixJoin(projectPath, '.ctiignore_another_name'),
+    git: posixJoin(projectPath, '.gitignore'),
+    npm: posixJoin(projectPath, '.npmignore'),
   };
 
   expect(result).toEqual(expectation);
 });
 
 test('getIgnoreConfigContents', async () => {
-  const ignoreFiles = await getIgnoreConfigFiles(env.exampleType04Path);
+  const projectPath = env.exampleType04Path;
+
+  const ignoreFilePath = posixJoin(projectPath, '.ctiignore_another_name');
+  const ignoreFiles = await getIgnoreConfigFiles(projectPath, ignoreFilePath);
   const result = await getIgnoreConfigContents({
-    cwd: env.exampleType04Path,
+    cwd: projectPath,
     ...ignoreFiles,
   });
 
@@ -35,7 +40,6 @@ test('getIgnoreConfigContents', async () => {
 
   const expectation = {
     origin: {
-      '**/__tests__/*': '*',
       'juvenile/**': '*',
       'wellmade/FlakyCls.ts': '*',
       'wellmade/WhisperingCls.ts': '*',
@@ -61,9 +65,11 @@ test('getIgnoreConfigContents', async () => {
 
 test('getEmptyDescendantTree-case01', async () => {
   const projectPath = env.exampleType02Path;
+
+  const ignoreFilePath = posixJoin(projectPath, defaultIgnoreFileName);
   await gitignoreBootstrap(posixJoin(projectPath, '.gitignore'));
 
-  const ignoreFiles = await getIgnoreConfigFiles(projectPath);
+  const ignoreFiles = await getIgnoreConfigFiles(projectPath, ignoreFilePath);
   const ignoreContents = await getIgnoreConfigContents({
     cwd: projectPath,
     ...ignoreFiles,
@@ -71,6 +77,7 @@ test('getEmptyDescendantTree-case01', async () => {
 
   const result = await getEmptyDescendantTree({
     cwd: projectPath,
+    ignoreFilePath,
     ignores: ignoreContents.evaluated,
   });
 
@@ -86,9 +93,11 @@ test('getEmptyDescendantTree-case01', async () => {
 
 test('getEmptyDescendantTree-case02', async () => {
   const projectPath = env.exampleType04Path;
+
+  const ignoreFilePath = posixJoin(projectPath, '.ctiignore_another_name');
   await gitignoreBootstrap(posixJoin(projectPath, '.gitignore'));
 
-  const ignoreFiles = await getIgnoreConfigFiles(projectPath);
+  const ignoreFiles = await getIgnoreConfigFiles(projectPath, ignoreFilePath);
   const ignoreContents = await getIgnoreConfigContents({
     cwd: projectPath,
     ...ignoreFiles,
@@ -96,6 +105,7 @@ test('getEmptyDescendantTree-case02', async () => {
 
   const result = await getEmptyDescendantTree({
     cwd: projectPath,
+    ignoreFilePath,
     ignores: ignoreContents.evaluated,
   });
 
@@ -109,9 +119,11 @@ test('getEmptyDescendantTree-case02', async () => {
 
 test('getEmptyDescendantTree-case03', async () => {
   const projectPath = env.exampleType06Path;
+
+  const ignoreFilePath = posixJoin(projectPath, defaultIgnoreFileName);
   await gitignoreBootstrap(posixJoin(projectPath, '.gitignore'));
 
-  const ignoreFiles = await getIgnoreConfigFiles(projectPath);
+  const ignoreFiles = await getIgnoreConfigFiles(projectPath, ignoreFilePath);
   const ignoreContents = await getIgnoreConfigContents({
     cwd: projectPath,
     ...ignoreFiles,
@@ -119,6 +131,7 @@ test('getEmptyDescendantTree-case03', async () => {
 
   const result = await getEmptyDescendantTree({
     cwd: projectPath,
+    ignoreFilePath,
     ignores: ignoreContents.evaluated,
   });
 

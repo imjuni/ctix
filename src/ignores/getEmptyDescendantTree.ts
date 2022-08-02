@@ -1,3 +1,4 @@
+import defaultIgnoreFileName from '@configs/defaultIgnoreFileName';
 import gitignore from '@ignores/gitignore';
 import IGetIgnoredConfigContents from '@ignores/interfaces/IGetIgnoredConfigContents';
 import getDepth from '@tools/getDepth';
@@ -8,9 +9,11 @@ import path from 'path';
 
 export default async function getEmptyDescendantTree({
   cwd,
+  ignoreFilePath,
   ignores,
 }: {
   cwd: string;
+  ignoreFilePath: string;
   ignores: IGetIgnoredConfigContents;
 }) {
   const filePaths = await fastGlobWrap(path.join(cwd, '**'), {
@@ -42,6 +45,7 @@ export default async function getEmptyDescendantTree({
   // isTerminal 이면서 비어 있는 것
   // 전체 계보가 다 비어 있는 것을 찾는다
 
+  const ignoreFileBaseName = path.basename(ignoreFilePath);
   const emptyDescendantDirPaths = (
     await Promise.all(
       Array.from(
@@ -63,7 +67,12 @@ export default async function getEmptyDescendantTree({
         ),
       ).map(async (filePath) => {
         const dirs = (await fs.promises.readdir(filePath, { withFileTypes: true }))
-          .filter((dirent) => dirent.name !== '.ctirc' && dirent.name !== '.ctiignore')
+          .filter(
+            (dirent) =>
+              dirent.name !== '.ctirc' &&
+              dirent.name !== ignoreFileBaseName &&
+              dirent.name !== defaultIgnoreFileName,
+          )
           .filter((dirent) => dirent.isFile())
           .map((dirent) => posixJoin(filePath, dirent.name))
           .filter((dirent) => isEmpty(ignores[dirent]));

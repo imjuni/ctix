@@ -1,4 +1,5 @@
 import getExportInfos from '@compilers/getExportInfos';
+import defaultIgnoreFileName from '@configs/defaultIgnoreFileName';
 import { TCreateOptionWithDirInfo } from '@configs/interfaces/IOption';
 import getIgnoreConfigContents from '@ignores/getIgnoreConfigContents';
 import getIgnoreConfigFiles from '@ignores/getIgnoreConfigFiles';
@@ -29,7 +30,7 @@ test('c001-validateExportDuplication', async () => {
   const projectPath = env.exampleType03Path;
   const project = share.project03;
 
-  const ignoreFiles = await getIgnoreConfigFiles(projectPath);
+  const ignoreFiles = await getIgnoreConfigFiles(projectPath, defaultIgnoreFileName);
   const ignoreContents = await getIgnoreConfigContents({ cwd: projectPath, ...ignoreFiles });
 
   const option: TCreateOptionWithDirInfo = {
@@ -55,8 +56,9 @@ test('c002-validateFileNameDuplication', async () => {
 
   const projectPath = env.exampleType03Path;
   const project = share.project03;
+  const ignoreFilePath = posixJoin(projectPath, defaultIgnoreFileName);
 
-  const ignoreFiles = await getIgnoreConfigFiles(projectPath);
+  const ignoreFiles = await getIgnoreConfigFiles(projectPath, ignoreFilePath);
   const ignoreContents = await getIgnoreConfigContents({
     cwd: projectPath,
     ...ignoreFiles,

@@ -20,7 +20,8 @@ export default function singleBuilder<
       alias: 'o',
       describe: 'output directory',
       type: 'string',
-    });
+    })
+    .demandOption(['project', 'exportFilename', 'output']);
 
   return args;
 }

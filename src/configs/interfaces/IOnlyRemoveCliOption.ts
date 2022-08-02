@@ -1,9 +1,9 @@
 export default interface IOnlyRemoveCliOption {
-  mode: 'clean';
+  mode: 'remove';
 
   /**
    * remove with backup file
-   * @mode clean
+   * @mode remove
    * @default false
    */
   b?: boolean;

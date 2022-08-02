@@ -1,3 +1,4 @@
+import defaultIgnoreFileName from '@configs/defaultIgnoreFileName';
 import { TCreateOption } from '@configs/interfaces/IOption';
 import jsonLoader from '@configs/jsonLoader';
 import { ArgumentsCamelCase } from 'yargs';
@@ -42,6 +43,9 @@ export default function getCliCreateOption(
 
     e: argv.e ?? argv.skipEmptyDir ?? rawConfig.skipEmptyDir,
     skipEmptyDir: argv.e ?? argv.skipEmptyDir ?? rawConfig.skipEmptyDir,
+
+    g: argv.g ?? argv.ignoreFile ?? rawConfig.ignoreFile ?? defaultIgnoreFileName,
+    ignoreFile: argv.g ?? argv.ignoreFile ?? rawConfig.ignoreFile ?? defaultIgnoreFileName,
   };
 
   return option;

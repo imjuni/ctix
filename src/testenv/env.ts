@@ -1,4 +1,5 @@
 import attachDiretoryInfo from '@configs/attachDiretoryInfo';
+import defaultIgnoreFileName from '@configs/defaultIgnoreFileName';
 import ICommonCliOption from '@configs/interfaces/ICommonCliOption';
 import ICreateSingleCommonCliOption from '@configs/interfaces/ICreateSingleCommonCliOption';
 import { TCreateOption, TRemoveOption, TSingleOption } from '@configs/interfaces/IOption';
@@ -43,6 +44,9 @@ export const createSingleCommonOption: ICreateSingleCommonCliOption = {
 
   w: true,
   overwrite: true,
+
+  g: defaultIgnoreFileName,
+  ignoreFile: defaultIgnoreFileName,
 };
 
 export const createOption: TCreateOption = {
@@ -67,7 +71,7 @@ export const singleOption: TSingleOption = {
 
 export const cleanOption: TRemoveOption = {
   ...commonOption,
-  mode: 'clean',
+  mode: 'remove',
   b: true,
   project: replaceSepToPosix(path.join(exampleType04Path, 'tsconfig.json')),
   includeBackup: true,
