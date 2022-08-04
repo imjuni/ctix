@@ -31,9 +31,9 @@ export default function singleIndexInfo(
         depth: exportInfo.depth,
         resolvedFilePath: exportInfo.resolvedFilePath,
         resolvedDirPath: outputDir,
-        exportStatement: `export ${
-          exportInfo.defaultExport.isIsolatedModules ? 'type ' : ''
-        }{ default as ${exportInfo.defaultExport.identifier} } from ${filePath}`,
+        exportStatement: exportInfo.defaultExport.isIsolatedModules
+          ? `export type { default as ${exportInfo.defaultExport.identifier} } from ${filePath}`
+          : `export { default as ${exportInfo.defaultExport.identifier} } from ${filePath}`,
       },
     ];
   }
@@ -54,7 +54,11 @@ export default function singleIndexInfo(
   if (isNotEmpty(exportInfo.defaultExport) && exportInfo.namedExports.length > 0) {
     const filePath = getFilePathOnIndex(exportInfo.resolvedFilePath, option, outputDir);
     const statement = exportInfo.namedExports
-      .map((namedExport) => namedExport.identifier)
+      .map((namedExport) =>
+        namedExport.isIsolatedModules
+          ? `type ${namedExport.identifier}`
+          : `${namedExport.identifier}`,
+      )
       .join(', ');
 
     return [
@@ -68,9 +72,9 @@ export default function singleIndexInfo(
         depth: exportInfo.depth,
         resolvedFilePath: exportInfo.resolvedFilePath,
         resolvedDirPath: outputDir,
-        exportStatement: `export ${
-          exportInfo.defaultExport.isIsolatedModules ? 'type ' : ''
-        }{ default as ${exportInfo.defaultExport.identifier} } from ${filePath}`,
+        exportStatement: exportInfo.defaultExport.isIsolatedModules
+          ? `export type { default as ${exportInfo.defaultExport.identifier} } from ${filePath}`
+          : `export { default as ${exportInfo.defaultExport.identifier} } from ${filePath}`,
       },
     ];
   }
@@ -78,7 +82,11 @@ export default function singleIndexInfo(
   if (isEmpty(exportInfo.defaultExport) && exportInfo.namedExports.length > 0) {
     const filePath = getFilePathOnIndex(exportInfo.resolvedFilePath, option, outputDir);
     const statement = exportInfo.namedExports
-      .map((namedExport) => namedExport.identifier)
+      .map((namedExport) =>
+        namedExport.isIsolatedModules
+          ? `type ${namedExport.identifier}`
+          : `${namedExport.identifier}`,
+      )
       .join(', ');
 
     return [
@@ -99,9 +107,9 @@ export default function singleIndexInfo(
         depth: exportInfo.depth,
         resolvedFilePath: exportInfo.resolvedFilePath,
         resolvedDirPath: outputDir,
-        exportStatement: `export ${
-          exportInfo.defaultExport.isIsolatedModules ? 'type ' : ''
-        }{ default as ${exportInfo.defaultExport.identifier} } from ${filePath}`,
+        exportStatement: exportInfo.defaultExport.isIsolatedModules
+          ? `export type { default as ${exportInfo.defaultExport.identifier} } from ${filePath}`
+          : `export { default as ${exportInfo.defaultExport.identifier} } from ${filePath}`,
       },
     ];
   }

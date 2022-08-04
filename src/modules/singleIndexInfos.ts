@@ -1,7 +1,7 @@
 import * as progress from '@cli/progress';
 import IExportInfo from '@compilers/interfaces/IExportInfo';
 import { TSingleOptionWithDirInfo } from '@configs/interfaces/IOption';
-import IGetIgnoredConfigContents from '@ignores/interfaces/IGetIgnoredConfigContents';
+import getIgnoreConfigContents from '@ignores/getIgnoreConfigContents';
 import getDirPaths from '@modules/getDirPaths';
 import mergeCreateIndexInfo from '@modules/mergeCreateIndexInfo';
 import singleIndexInfo from '@modules/singleIndexInfo';
@@ -9,10 +9,11 @@ import ICreateIndexInfos from '@tools/interface/ICreateIndexInfos';
 import { settify } from '@tools/misc';
 import { isNotEmpty } from 'my-easy-fp';
 import * as tsm from 'ts-morph';
+import { AsyncReturnType } from 'type-fest';
 
 export default async function singleIndexInfos(
   exportInfos: IExportInfo[],
-  ignores: { origin: IGetIgnoredConfigContents; evaluated: IGetIgnoredConfigContents },
+  ignores: AsyncReturnType<typeof getIgnoreConfigContents>,
   option: TSingleOptionWithDirInfo,
   project: tsm.Project,
 ): Promise<ICreateIndexInfos[]> {

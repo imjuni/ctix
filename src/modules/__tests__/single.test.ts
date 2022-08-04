@@ -3,7 +3,6 @@ import defaultIgnoreFileName from '@configs/defaultIgnoreFileName';
 import { TSingleOptionWithDirInfo } from '@configs/interfaces/IOption';
 import getIgnoreConfigContents from '@ignores/getIgnoreConfigContents';
 import getIgnoreConfigFiles from '@ignores/getIgnoreConfigFiles';
-import { bootstrap as gitignoreBootstrap } from '@ignores/gitignore';
 import singleIndexInfos from '@modules/singleIndexInfos';
 import * as env from '@testenv/env';
 import { getTestValue, posixJoin } from '@tools/misc';
@@ -44,9 +43,6 @@ test('c001-singleIndexInfos-type03', async () => {
   const projectPath = env.exampleType03Path;
   const project = share.project03;
 
-  const ignoreFilePath = posixJoin(projectPath, defaultIgnoreFileName);
-  await gitignoreBootstrap(posixJoin(projectPath, '.gitignore'));
-
   // option modify for expectation
   const option: TSingleOptionWithDirInfo = {
     ...env.singleOptionWithDirInfo,
@@ -56,6 +52,7 @@ test('c001-singleIndexInfos-type03', async () => {
     topDirs: [projectPath],
   };
 
+  const ignoreFilePath = posixJoin(projectPath, defaultIgnoreFileName);
   const ignoreFiles = await getIgnoreConfigFiles(projectPath, ignoreFilePath);
   const ignoreContents = await getIgnoreConfigContents({
     cwd: projectPath,
@@ -92,9 +89,6 @@ test('c002-singleIndexInfos-type04', async () => {
   const projectPath = env.exampleType04Path;
   const project = share.project04;
 
-  const ignoreFilePath = posixJoin(projectPath, '.ctiignore_another_name');
-  await gitignoreBootstrap(posixJoin(projectPath, '.gitignore'));
-
   // option modify for expectation
   const option: TSingleOptionWithDirInfo = {
     ...env.singleOptionWithDirInfo,
@@ -104,6 +98,7 @@ test('c002-singleIndexInfos-type04', async () => {
     topDirs: [projectPath],
   };
 
+  const ignoreFilePath = posixJoin(projectPath, '.ctiignore_another_name');
   const ignoreFiles = await getIgnoreConfigFiles(projectPath, ignoreFilePath);
   const ignoreContents = await getIgnoreConfigContents({
     cwd: projectPath,

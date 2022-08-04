@@ -1,38 +1,40 @@
 import getCtiignoreFiles from '@ignores/getCtiignoreFiles';
 import getGitignoreFiles from '@ignores/getGitignoreFiles';
 import type { IGetIgnoreConfigFiles } from '@ignores/getIgnoreConfigFiles';
-import IGetIgnoredConfigContents from '@ignores/interfaces/IGetIgnoredConfigContents';
-import { isEmpty } from 'my-easy-fp';
+import getNpmignoreFiles from '@ignores/getNpmignoreFiles';
+import { Ignore } from 'ignore';
+import { AsyncReturnType } from 'type-fest';
+
+interface IGetIgnoreConfigContentsReturn {
+  git: Ignore;
+  cti: Ignore;
+  npm: string[];
+
+  data: {
+    git: AsyncReturnType<typeof getGitignoreFiles>;
+    npm: AsyncReturnType<typeof getNpmignoreFiles>;
+    cti: AsyncReturnType<typeof getCtiignoreFiles>;
+  };
+}
 
 export default async function getIgnoreConfigContents({
   git,
   npm,
   cti,
-  cwd,
-}: IGetIgnoreConfigFiles & { cwd: string }): Promise<{
-  origin: IGetIgnoredConfigContents;
-  evaluated: IGetIgnoredConfigContents;
-}> {
-  const gitignoreRecord = await getGitignoreFiles(cwd, git);
-  const npmignoreRecord = await getGitignoreFiles(cwd, npm);
-  const ctiignoreRecord = await getCtiignoreFiles(cwd, cti);
+}: IGetIgnoreConfigFiles & { cwd: string }): Promise<IGetIgnoreConfigContentsReturn> {
+  const gitignoreRecord = await getGitignoreFiles(git);
+  const npmignoreRecord = await getNpmignoreFiles(npm);
+  const ctiignoreRecord = await getCtiignoreFiles(cti);
 
-  const ignoreConfigContents = Object.entries(gitignoreRecord)
-    .concat(Object.entries(npmignoreRecord))
-    .concat(Object.entries(ctiignoreRecord.evaluated))
-    .reduce<IGetIgnoredConfigContents>((aggregation, file) => {
-      const [key, value] = file;
+  return {
+    git: gitignoreRecord.ignore,
+    cti: ctiignoreRecord.ignore,
+    npm: npmignoreRecord.patterns,
 
-      if (isEmpty(aggregation[key])) {
-        return { ...aggregation, [key]: value };
-      }
-
-      if (value === '*' && aggregation[key] === '*') {
-        return { ...aggregation, [key]: value };
-      }
-
-      return { ...aggregation, [key]: Array.from(new Set([...aggregation[key], ...value])) };
-    }, {});
-
-  return { origin: ctiignoreRecord.origin, evaluated: ignoreConfigContents };
+    data: {
+      git: gitignoreRecord,
+      cti: ctiignoreRecord,
+      npm: npmignoreRecord,
+    },
+  };
 }

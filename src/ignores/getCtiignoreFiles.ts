@@ -1,66 +1,57 @@
+import getRefineIgnorePath from '@ignores/getRefineIgnorePath';
 import IGetIgnoredConfigContents from '@ignores/interfaces/IGetIgnoredConfigContents';
 import { posixJoin } from '@tools/misc';
-import fastGlob, { isDynamicPattern } from 'fast-glob';
 import fs from 'fs';
+import ignore, { Ignore } from 'ignore';
 import { parse } from 'jsonc-parser';
-import { isEmpty, isFalse } from 'my-easy-fp';
+import { isFalse } from 'my-easy-fp';
 import { exists, getDirname } from 'my-node-fp';
+import path from 'path';
+
+type TWithValue = Array<{ filePath: string; ignore: Ignore; pattern: string | string[] }>;
+
+interface IGetCtiignoreFilesReturn {
+  origin: IGetIgnoredConfigContents;
+  ignore: Ignore;
+  withValue: TWithValue;
+}
 
 export default async function getCtiignoreFiles(
-  cwd: string,
   filePath: string,
-): Promise<{ origin: IGetIgnoredConfigContents; evaluated: IGetIgnoredConfigContents }> {
-  if (isFalse(await exists(filePath))) {
-    return { origin: {}, evaluated: {} };
+): Promise<IGetCtiignoreFilesReturn> {
+  try {
+    if (isFalse(await exists(filePath))) {
+      throw new Error(`invalid ignore filePath: ${filePath}`);
+    }
+
+    const fileBuf = await fs.promises.readFile(filePath);
+    const dirPath = await getDirname(filePath);
+    const ignoreFiles: IGetIgnoredConfigContents = parse(fileBuf.toString());
+    const ig: IGetCtiignoreFilesReturn = { origin: ignoreFiles, ignore: ignore(), withValue: [] };
+
+    ig.ignore.add(
+      Object.keys(ignoreFiles)
+        .map((ignoreFile) =>
+          path.isAbsolute(ignoreFile) ? ignoreFile : posixJoin(dirPath, ignoreFile),
+        )
+        .map((pattern) => getRefineIgnorePath(pattern)),
+    );
+
+    ig.withValue = Object.entries(ignoreFiles).map((ignoreFile) => {
+      const [ignoreFilePathKey, pattern] = ignoreFile;
+      const subIgnore = ignore().add(
+        [ignoreFilePathKey]
+          .map((filePathKey) =>
+            path.isAbsolute(filePathKey) ? filePathKey : posixJoin(dirPath, filePathKey),
+          )
+          .map((filePathKey) => getRefineIgnorePath(filePathKey)),
+      );
+
+      return { ignore: subIgnore, filePath: ignoreFilePathKey, pattern };
+    });
+
+    return ig;
+  } catch {
+    return { origin: {}, ignore: ignore(), withValue: [] };
   }
-
-  const fileBuf = await fs.promises.readFile(filePath);
-  const dirPath = await getDirname(filePath);
-  const ignoreFiles: IGetIgnoredConfigContents = parse(fileBuf.toString());
-
-  const resolvedPathIgnoreFiles = Object.entries(ignoreFiles).reduce<IGetIgnoredConfigContents>(
-    (aggregation, file) => {
-      const [relativeFilePath, value] = file;
-
-      const key = posixJoin(dirPath, relativeFilePath);
-
-      if (isEmpty(aggregation[key])) {
-        return { ...aggregation, [key]: value };
-      }
-
-      return aggregation;
-    },
-    {},
-  );
-
-  const evaluatedCtiignoreConfigContents = (
-    await Promise.all(
-      Object.entries(resolvedPathIgnoreFiles).map(
-        async ([key, value]): Promise<Array<[string, string | string[]]>> => {
-          if (isDynamicPattern(key)) {
-            const files = await fastGlob(key, { dot: true, cwd });
-            const ignoreEntries = files.map<[string, string | string[]]>((ignoreFilePathKey) => [
-              ignoreFilePathKey,
-              value,
-            ]);
-
-            return ignoreEntries;
-          }
-
-          return [[key, value]];
-        },
-      ),
-    )
-  )
-    .flatMap((ignoreFilePath) => ignoreFilePath)
-    .reduce<IGetIgnoredConfigContents>((aggregation, file) => {
-      const [key, value] = file;
-      if (isEmpty(aggregation[key])) {
-        return { ...aggregation, [key]: value };
-      }
-
-      return aggregation;
-    }, {});
-
-  return { origin: ignoreFiles, evaluated: evaluatedCtiignoreConfigContents };
 }

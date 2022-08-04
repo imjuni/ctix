@@ -20,6 +20,10 @@ jobs:
           command: npm run clean
           no_output_timeout: 10m
       - run:
+          name: npm-update-snapshot
+          command: npm run test:update
+          no_output_timeout: 10m
+      - run:
           name: npm-test
           command: npm run test
           no_output_timeout: 10m

@@ -2,12 +2,14 @@ import getExportedName from '@compilers/getExportedName';
 import getIsIsolatedModules from '@compilers/getIsIsolatedModules';
 import IExportInfo from '@compilers/interfaces/IExportInfo';
 import { TCreateOrSingleOption } from '@configs/interfaces/IOption';
-import IGetIgnoredConfigContents from '@ignores/interfaces/IGetIgnoredConfigContents';
+import getCtiIgnorePattern from '@ignores/getCtiIgnorePattern';
+import getIgnoreConfigContents from '@ignores/getIgnoreConfigContents';
 import getRelativeDepth from '@tools/getRelativeDepth';
 import { isEmpty, isFalse, isNotEmpty } from 'my-easy-fp';
 import { getDirname, getDirnameSync, replaceSepToPosix } from 'my-node-fp';
 import path from 'path';
 import * as tsm from 'ts-morph';
+import { AsyncReturnType } from 'type-fest';
 
 function getFirstExportName(exportedDeclarations: tsm.ExportedDeclarations[]): string {
   const [exportedDeclaration] = exportedDeclarations;
@@ -30,11 +32,11 @@ function isStarExport(ignoreInFile?: string | string[]) {
 export default async function getExportInfo(
   sourceFile: tsm.SourceFile,
   option: TCreateOrSingleOption,
-  ignores: IGetIgnoredConfigContents,
+  ignores: AsyncReturnType<typeof getIgnoreConfigContents>,
 ): Promise<IExportInfo> {
   const filePath = sourceFile.getFilePath().toString();
   const dirPath = replaceSepToPosix(path.resolve(await getDirname(filePath)));
-  const ignoreInFile = ignores[filePath];
+  const ignoreInFile = getCtiIgnorePattern(ignores, filePath);
   const exportedDeclarationsMap = sourceFile.getExportedDeclarations();
   const defaultExportedDeclarations = exportedDeclarationsMap.get('default')?.at(0);
   const defaultExportedName = isNotEmpty(defaultExportedDeclarations)
