@@ -1,44 +1,27 @@
 import getExportInfo from '@compilers/getExportInfo';
 import IExportInfo from '@compilers/interfaces/IExportInfo';
 import { TCreateOrSingleOption } from '@configs/interfaces/IOption';
-import IGetIgnoredConfigContents from '@ignores/interfaces/IGetIgnoredConfigContents';
+import getIgnoreConfigContents from '@ignores/getIgnoreConfigContents';
+import isIgnored from '@ignores/isIgnored';
 import { isEmpty, isFalse } from 'my-easy-fp';
 import path from 'path';
 import * as tsm from 'ts-morph';
+import { AsyncReturnType } from 'type-fest';
 
 export default async function getExportInfos(
   project: tsm.Project,
   option: TCreateOrSingleOption,
-  ignores: { origin: IGetIgnoredConfigContents; evaluated: IGetIgnoredConfigContents },
+  ignores: AsyncReturnType<typeof getIgnoreConfigContents>,
 ) {
-  const ignoreFileNames = Object.keys(ignores.evaluated);
-  const completlyIgnoreFileNames = ignoreFileNames.filter((ignoreFileName) => {
-    const ignoreInfo = ignores.evaluated[ignoreFileName];
-
-    if (typeof ignoreInfo === 'string' && ignoreInfo === '*') {
-      return true;
-    }
-
-    if (typeof ignoreInfo === 'string') {
-      return false;
-    }
-
-    return false;
-  });
-
   const sourceFiles = project
     .getSourceFiles()
     .filter(
       (sourceFile) => path.basename(sourceFile.getFilePath().toString()) !== option.exportFilename,
     )
-    .filter((sourceFile) =>
-      isFalse(completlyIgnoreFileNames.includes(sourceFile.getFilePath().toString())),
-    );
+    .filter((sourceFile) => isFalse(isIgnored(ignores, sourceFile.getFilePath().toString())));
 
   const exportInfos = (
-    await Promise.all(
-      sourceFiles.map((sourceFile) => getExportInfo(sourceFile, option, ignores.evaluated)),
-    )
+    await Promise.all(sourceFiles.map((sourceFile) => getExportInfo(sourceFile, option, ignores)))
   ).filter((exportInfo) => isFalse(exportInfo.isEmpty));
 
   const exportRecord = exportInfos.reduce<Record<string, IExportInfo>>(

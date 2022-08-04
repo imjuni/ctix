@@ -1,6 +1,7 @@
 import getExportedName from '@compilers/getExportedName';
 import getExportInfo from '@compilers/getExportInfo';
 import getExportInfos from '@compilers/getExportInfos';
+import defaultIgnoreFileName from '@configs/defaultIgnoreFileName';
 import { TCreateOptionWithDirInfo } from '@configs/interfaces/IOption';
 import getIgnoreConfigContents from '@ignores/getIgnoreConfigContents';
 import getIgnoreConfigFiles from '@ignores/getIgnoreConfigFiles';
@@ -9,7 +10,6 @@ import { getTestValue, posixJoin } from '@tools/misc';
 import consola, { LogLevel } from 'consola';
 import fs from 'fs';
 import { isEmpty } from 'my-easy-fp';
-import { getDirname, replaceSepToPosix } from 'my-node-fp';
 import path from 'path';
 import * as tsm from 'ts-morph';
 
@@ -138,6 +138,10 @@ test('c002-getExportInfo', async () => {
   const projectPath = env.exampleType04Path;
   const project = share.project04;
 
+  const ignoreFilePath = posixJoin(projectPath, defaultIgnoreFileName);
+  const ignoreFiles = await getIgnoreConfigFiles(projectPath, ignoreFilePath);
+  const ignoreContents = await getIgnoreConfigContents({ cwd: projectPath, ...ignoreFiles });
+
   const sourceFilePath = posixJoin(projectPath, 'fast-maker', 'ChildlikeCls.ts');
   const option: TCreateOptionWithDirInfo = {
     ...env.createOptionWithDirInfo,
@@ -147,33 +151,9 @@ test('c002-getExportInfo', async () => {
   };
 
   const sourceFile = project.getSourceFileOrThrow(sourceFilePath);
-  const result = await getExportInfo(sourceFile, option, {
-    [sourceFilePath]: ['name'],
-  });
-  const terminateCircularResult = getTestValue(result);
+  const exportInfo = await getExportInfo(sourceFile, option, ignoreContents);
 
-  const expectation = {
-    resolvedFilePath: posixJoin(env.exampleType04Path, 'fast-maker', 'ChildlikeCls.ts'),
-    resolvedDirPath: await getDirname(
-      posixJoin(env.exampleType04Path, 'fast-maker', 'ChildlikeCls.ts'),
-    ),
-    relativeFilePath: replaceSepToPosix(
-      path.relative(
-        env.exampleType04Path,
-        posixJoin(env.exampleType04Path, 'fast-maker', 'ChildlikeCls.ts'),
-      ),
-    ),
-    isEmpty: false,
-    depth: 1,
-    starExported: false,
-    defaultExport: { identifier: 'ChildlikeCls', isIsolatedModules: false },
-    namedExports: [
-      { identifier: 'ChildlikeCls', isIsolatedModules: false },
-      { identifier: 'greeting', isIsolatedModules: false },
-    ],
-  };
-
-  expect(terminateCircularResult).toEqual(expectation);
+  expect(getTestValue(exportInfo)).toMatchSnapshot();
 });
 
 test('c003-getExportInfo', async () => {
@@ -193,29 +173,14 @@ test('c003-getExportInfo', async () => {
     topDirs: [projectPath],
   };
 
+  const ignoreFilePath = posixJoin(projectPath, defaultIgnoreFileName);
+  const ignoreFiles = await getIgnoreConfigFiles(projectPath, ignoreFilePath);
+  const ignoreContents = await getIgnoreConfigContents({ cwd: projectPath, ...ignoreFiles });
+
   const sourceFile = project.getSourceFileOrThrow(sourceFilePath);
-  const result = await getExportInfo(sourceFile, option, { [sourceFilePath]: ['name'] });
-  const terminateCircularResult = getTestValue(result);
+  const exportInfo = await getExportInfo(sourceFile, option, ignoreContents);
 
-  const expectation = {
-    resolvedFilePath: posixJoin(env.exampleType03Path, 'popcorn', 'lawyer', 'appliance', 'bomb.ts'),
-    resolvedDirPath: await getDirname(
-      posixJoin(env.exampleType03Path, 'popcorn', 'lawyer', 'appliance', 'bomb.ts'),
-    ),
-    relativeFilePath: replaceSepToPosix(
-      path.relative(
-        env.exampleType03Path,
-        posixJoin(env.exampleType03Path, 'popcorn', 'lawyer', 'appliance', 'bomb.ts'),
-      ),
-    ),
-    depth: 3,
-    isEmpty: false,
-    starExported: false,
-    defaultExport: { identifier: 'bomb', isIsolatedModules: false },
-    namedExports: [{ identifier: 'bomb', isIsolatedModules: false }],
-  };
-
-  expect(terminateCircularResult).toEqual(expectation);
+  expect(getTestValue(exportInfo)).toMatchSnapshot();
 });
 
 test('c004-getExportInfos-not-ignore', async () => {
@@ -226,6 +191,10 @@ test('c004-getExportInfos-not-ignore', async () => {
   const projectPath = env.exampleType03Path;
   const project = share.project03;
 
+  const ignoreFilePath = posixJoin(projectPath, defaultIgnoreFileName);
+  const ignoreFiles = await getIgnoreConfigFiles(projectPath, ignoreFilePath);
+  const ignoreContents = await getIgnoreConfigContents({ cwd: projectPath, ...ignoreFiles });
+
   const option: TCreateOptionWithDirInfo = {
     ...env.createOptionWithDirInfo,
     project: projectPath,
@@ -235,10 +204,7 @@ test('c004-getExportInfos-not-ignore', async () => {
     topDirs: [projectPath],
   };
 
-  const result = await getExportInfos(project, option, {
-    origin: {},
-    evaluated: {},
-  });
+  const result = await getExportInfos(project, option, ignoreContents);
   const expectation = await import(path.join(__dirname, 'expects', expectFileName));
   const terminateCircularResult = getTestValue(result);
 
@@ -252,8 +218,8 @@ test('c005-getExportInfos-partial-ignore', async () => {
 
   const projectPath = env.exampleType04Path;
   const project = share.project04;
-  const ignoreFilePath = posixJoin(projectPath, '.ctiignore_another_name');
 
+  const ignoreFilePath = posixJoin(projectPath, '.ctiignore_another_name');
   const ignoreFiles = await getIgnoreConfigFiles(projectPath, ignoreFilePath);
   const ignoreContents = await getIgnoreConfigContents({
     cwd: projectPath,

@@ -56,8 +56,8 @@ test('c002-validateFileNameDuplication', async () => {
 
   const projectPath = env.exampleType03Path;
   const project = share.project03;
-  const ignoreFilePath = posixJoin(projectPath, defaultIgnoreFileName);
 
+  const ignoreFilePath = posixJoin(projectPath, defaultIgnoreFileName);
   const ignoreFiles = await getIgnoreConfigFiles(projectPath, ignoreFilePath);
   const ignoreContents = await getIgnoreConfigContents({
     cwd: projectPath,

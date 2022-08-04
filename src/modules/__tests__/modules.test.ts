@@ -3,7 +3,6 @@ import defaultIgnoreFileName from '@configs/defaultIgnoreFileName';
 import { TCreateOptionWithDirInfo, TSingleOptionWithDirInfo } from '@configs/interfaces/IOption';
 import getIgnoreConfigContents from '@ignores/getIgnoreConfigContents';
 import getIgnoreConfigFiles from '@ignores/getIgnoreConfigFiles';
-import { bootstrap as gitignoreBootstrap } from '@ignores/gitignore';
 import getDescendantExportInfo from '@modules/getDescendantExportInfo';
 import getDirPaths from '@modules/getDirPaths';
 import getFilePathOnIndex from '@modules/getFilePathOnIndex';
@@ -45,9 +44,7 @@ test('c001-getDirPaths', async () => {
     .currentTestName.replace(/^([cC][0-9]+)(-.+)/, 'expect$2.ts');
 
   const projectPath = env.exampleType03Path;
-
   const ignoreFilePath = posixJoin(projectPath, defaultIgnoreFileName);
-  await gitignoreBootstrap(posixJoin(projectPath, '.gitignore'));
 
   const ignoreFiles = await getIgnoreConfigFiles(projectPath, ignoreFilePath);
   const ignoreContents = await getIgnoreConfigContents({
@@ -164,12 +161,7 @@ test('c003-getDescendantExportInfo', async () => {
   );
 
   const dirPath = posixJoin(env.exampleType03Path, 'popcorn');
-  const result = await getDescendantExportInfo(
-    dirPath,
-    option,
-    validExportInfos,
-    ignoreContents.evaluated,
-  );
+  const result = await getDescendantExportInfo(dirPath, option, validExportInfos, ignoreContents);
   const terminateCircularResult = getTestValue(result);
 
   const expectation = await import(path.join(__dirname, 'expects', expectFileName));

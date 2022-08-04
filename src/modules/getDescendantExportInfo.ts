@@ -1,43 +1,39 @@
 import IExportInfo from '@compilers/interfaces/IExportInfo';
 import { TCreateOrSingleOption } from '@configs/interfaces/IOption';
-import gitignore, { filter as ignoreFilter } from '@ignores/gitignore';
-import IGetIgnoredConfigContents from '@ignores/interfaces/IGetIgnoredConfigContents';
+import defaultIgnore from '@ignores/defaultIgnore';
+import getIgnoreConfigContents from '@ignores/getIgnoreConfigContents';
+import isIgnored from '@ignores/isIgnored';
 import getRelativeDepth from '@tools/getRelativeDepth';
 import IDescendantExportInfo from '@tools/interface/IDescendantExportInfo';
+import { posixJoin } from '@tools/misc';
 import fastGlob from 'fast-glob';
 import fs from 'fs';
 import { isEmpty, isFalse, isNotEmpty } from 'my-easy-fp';
-import { getDirname, isDescendant, isEmptyDir, replaceSepToPosix } from 'my-node-fp';
-import path from 'path';
+import { getDirname, isEmptyDir, replaceSepToPosix } from 'my-node-fp';
+import { AsyncReturnType } from 'type-fest';
 
 export default async function getDescendantExportInfo(
   parentFilePath: string,
   option: TCreateOrSingleOption,
   exportInfos: IExportInfo[],
-  ignores: IGetIgnoredConfigContents,
+  ignores: AsyncReturnType<typeof getIgnoreConfigContents>,
 ): Promise<IDescendantExportInfo[]> {
   const filePath = replaceSepToPosix(parentFilePath);
-  const dirPath = await getDirname(filePath);
-  const globPattern = replaceSepToPosix(path.join(dirPath, '**', '*'));
+  const globPattern = replaceSepToPosix(posixJoin(await getDirname(filePath), '**', '*'));
 
-  const globIgnorePatterns = Object.entries(ignores)
-    .filter(([ignoreFilePath]) => isDescendant(parentFilePath, ignoreFilePath, path.posix.sep))
-    .filter(([, ignoreContent]) => ignoreContent === '*')
-    .map(([ignoreFilePath]) => replaceSepToPosix(path.join(ignoreFilePath, '*')));
-
-  const globDirPathsAsis = await fastGlob(globPattern, {
-    ignore: [...globIgnorePatterns, ...gitignore.default],
+  const unIgnoredDirPaths = await fastGlob(globPattern, {
+    ignore: defaultIgnore,
     dot: true,
     onlyDirectories: true,
   });
 
-  const globDirPaths = ignoreFilter(globDirPathsAsis);
+  const dirPaths = unIgnoredDirPaths.filter((dirPath) => isFalse(isIgnored(ignores, dirPath)));
 
   const parentExportInfo = exportInfos.filter(
     (exportInfo) => exportInfo.resolvedDirPath === filePath,
   );
   const descendants = await Promise.all(
-    globDirPaths.map(async (globDirPath) => {
+    dirPaths.map(async (globDirPath) => {
       const includeExportInfos = exportInfos
         .filter((exportInfo) => exportInfo.resolvedDirPath === globDirPath)
         .filter((exportInfo) => {

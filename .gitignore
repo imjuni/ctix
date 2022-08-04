@@ -103,6 +103,7 @@ dist
 # TernJS port file
 .tern-port
 
+**/__tests__/__snapshots__/**
 jin-frame/
 erdia_eg/
 docs/TODO.md

@@ -11,8 +11,29 @@ import {
 import getDepth from '@tools/getDepth';
 import { settify } from '@tools/misc';
 import findUp from 'find-up';
-import { getDirnameSync, replaceSepToPosix, replaceSepToWin32 } from 'my-node-fp';
+import { existsSync, getDirnameSync, replaceSepToPosix, replaceSepToWin32 } from 'my-node-fp';
 import path from 'path';
+
+function getCustomIgnoreFile(option: TCreateOption | TSingleOption) {
+  const resolvedIgnoreFilePath = path.resolve(option.ignoreFile);
+
+  if (existsSync(resolvedIgnoreFilePath)) {
+    return resolvedIgnoreFilePath;
+  }
+
+  if (option.ignoreFile === defaultIgnoreFileName) {
+    const findUpResultIgnoreFile = findUp.sync(option.ignoreFile);
+    const nonNullableIgnoreFile = findUpResultIgnoreFile ?? defaultIgnoreFileName;
+
+    if (existsSync(nonNullableIgnoreFile)) {
+      return nonNullableIgnoreFile;
+    }
+
+    return defaultIgnoreFileName;
+  }
+
+  return defaultIgnoreFileName;
+}
 
 export default function attachDiretoryInfo<
   T extends TCreateOption | TSingleOption | TRemoveOption | TInitOption,
@@ -50,7 +71,7 @@ export default function attachDiretoryInfo<
 
   const resolvedIgnoreFilePath =
     option.mode === 'create' || option.mode === 'single'
-      ? findUp.sync(option.ignoreFile) ?? option.ignoreFile
+      ? getCustomIgnoreFile(option)
       : defaultIgnoreFileName;
 
   return {

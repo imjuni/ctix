@@ -1,10 +1,8 @@
 import getExportInfos from '@compilers/getExportInfos';
 import defaultIgnoreFileName from '@configs/defaultIgnoreFileName';
 import { TCreateOptionWithDirInfo } from '@configs/interfaces/IOption';
-import getEmptyDescendantTree from '@ignores/getEmptyDescendantTree';
 import getIgnoreConfigContents from '@ignores/getIgnoreConfigContents';
 import getIgnoreConfigFiles from '@ignores/getIgnoreConfigFiles';
-import { bootstrap as gitignoreBootstrap } from '@ignores/gitignore';
 import createDescendantIndex from '@modules/createDescendantIndex';
 import createIndexInfos from '@modules/createIndexInfos';
 import * as env from '@testenv/env';
@@ -42,10 +40,9 @@ test('c001-createDescendantIndex-non-skip-empty-dir', async () => {
   const expectFileName = expect
     .getState()
     .currentTestName.replace(/^([cC][0-9]+)(-.+)/, 'expect$2.ts');
-  const projectPath = env.exampleType03Path;
 
+  const projectPath = env.exampleType03Path;
   const ignoreFilePath = posixJoin(projectPath, defaultIgnoreFileName);
-  await gitignoreBootstrap(posixJoin(projectPath, '.gitignore'));
 
   const option: TCreateOptionWithDirInfo = {
     ...env.createOptionWithDirInfo,
@@ -59,11 +56,6 @@ test('c001-createDescendantIndex-non-skip-empty-dir', async () => {
   const ignoreContents = await getIgnoreConfigContents({
     cwd: projectPath,
     ...ignoreFiles,
-  });
-  const ignoreDirs = await getEmptyDescendantTree({
-    cwd: projectPath,
-    ignoreFilePath,
-    ignores: ignoreContents.evaluated,
   });
 
   const exportInfos = await getExportInfos(share.project03, option, ignoreContents);
@@ -83,7 +75,7 @@ test('c001-createDescendantIndex-non-skip-empty-dir', async () => {
   const result = await createDescendantIndex(
     replaceSepToPosix(env.exampleType03Path),
     validExportInfos,
-    { ...ignoreContents, dirs: ignoreDirs },
+    ignoreContents,
     option,
   );
 
@@ -126,9 +118,7 @@ test('c002-createDescendantIndex-do-skip-empty-dir', async () => {
     .currentTestName.replace(/^([cC][0-9]+)(-.+)/, 'expect$2.ts');
 
   const projectPath = env.exampleType03Path;
-
   const ignoreFilePath = posixJoin(projectPath, defaultIgnoreFileName);
-  await gitignoreBootstrap(posixJoin(projectPath, '.gitignore'));
 
   const option: TCreateOptionWithDirInfo = {
     ...env.createOptionWithDirInfo,
@@ -139,11 +129,6 @@ test('c002-createDescendantIndex-do-skip-empty-dir', async () => {
 
   const ignoreFiles = await getIgnoreConfigFiles(projectPath, ignoreFilePath);
   const ignoreContents = await getIgnoreConfigContents({ cwd: projectPath, ...ignoreFiles });
-  const ignoreDirs = await getEmptyDescendantTree({
-    cwd: projectPath,
-    ignoreFilePath,
-    ignores: ignoreContents.evaluated,
-  });
 
   const exportInfos = await getExportInfos(share.project03, option, ignoreContents);
   const exportDuplicationValidateResult = validateExportDuplication(exportInfos);
@@ -162,7 +147,7 @@ test('c002-createDescendantIndex-do-skip-empty-dir', async () => {
   const result = await createDescendantIndex(
     replaceSepToPosix(env.exampleType03Path),
     validExportInfos,
-    { ...ignoreContents, dirs: ignoreDirs },
+    ignoreContents,
     option,
   );
   const sortedResult = result.sort((l, r) => {
@@ -191,9 +176,7 @@ test('c003-createDescendantIndex-do-skip-empty-dir-case02', async () => {
     .currentTestName.replace(/^([cC][0-9]+)(-.+)/, 'expect$2.ts');
 
   const projectPath = env.exampleType03Path;
-
   const ignoreFilePath = posixJoin(projectPath, defaultIgnoreFileName);
-  await gitignoreBootstrap(posixJoin(projectPath, '.gitignore'));
 
   const option: TCreateOptionWithDirInfo = {
     ...env.createOptionWithDirInfo,
@@ -204,11 +187,6 @@ test('c003-createDescendantIndex-do-skip-empty-dir-case02', async () => {
 
   const ignoreFiles = await getIgnoreConfigFiles(projectPath, ignoreFilePath);
   const ignoreContents = await getIgnoreConfigContents({ cwd: projectPath, ...ignoreFiles });
-  const ignoreDirs = await getEmptyDescendantTree({
-    cwd: projectPath,
-    ignoreFilePath,
-    ignores: ignoreContents.evaluated,
-  });
 
   const exportInfos = await getExportInfos(share.project03, option, ignoreContents);
   const exportDuplicationValidateResult = validateExportDuplication(exportInfos);
@@ -227,7 +205,7 @@ test('c003-createDescendantIndex-do-skip-empty-dir-case02', async () => {
   const result = await createDescendantIndex(
     posixJoin(env.exampleType03Path, 'popcorn'),
     validExportInfos,
-    { ...ignoreContents, dirs: ignoreDirs },
+    ignoreContents,
     option,
   );
   const sortedResult = result.sort((l, r) => {
@@ -256,9 +234,7 @@ test('c004-createIndexInfos-non-skip-empty-dir', async () => {
     .currentTestName.replace(/^([cC][0-9]+)(-.+)/, 'expect$2.ts');
 
   const projectPath = env.exampleType03Path;
-
   const ignoreFilePath = posixJoin(projectPath, defaultIgnoreFileName);
-  await gitignoreBootstrap(posixJoin(projectPath, '.gitignore'));
 
   // option modify for expectation
   const option: TCreateOptionWithDirInfo = {
@@ -270,11 +246,6 @@ test('c004-createIndexInfos-non-skip-empty-dir', async () => {
 
   const ignoreFiles = await getIgnoreConfigFiles(projectPath, ignoreFilePath);
   const ignoreContents = await getIgnoreConfigContents({ cwd: projectPath, ...ignoreFiles });
-  const ignoreDirs = await getEmptyDescendantTree({
-    cwd: projectPath,
-    ignoreFilePath,
-    ignores: ignoreContents.evaluated,
-  });
 
   const exportInfos = await getExportInfos(share.project03, option, ignoreContents);
   const exportDuplicationValidateResult = validateExportDuplication(exportInfos);
@@ -290,11 +261,7 @@ test('c004-createIndexInfos-non-skip-empty-dir', async () => {
       isFalse(exportDuplicationValidateResult.filePaths.includes(exportInfo.resolvedFilePath)),
   );
 
-  const result = await createIndexInfos(
-    validExportInfos,
-    { ...ignoreContents, dirs: ignoreDirs },
-    option,
-  );
+  const result = await createIndexInfos(validExportInfos, ignoreContents, option);
   const terminateCircularResult = getTestValue(result);
 
   const expectation = await import(path.join(__dirname, 'expects', expectFileName));
@@ -310,8 +277,6 @@ test('c005-createIndexInfos-do-skip-empty-dir', async () => {
   const projectPath = env.exampleType03Path;
   const ignoreFilePath = posixJoin(projectPath, defaultIgnoreFileName);
 
-  await gitignoreBootstrap(posixJoin(projectPath, '.gitignore'));
-
   // option modify for expectation
   const option: TCreateOptionWithDirInfo = {
     ...env.createOptionWithDirInfo,
@@ -322,11 +287,6 @@ test('c005-createIndexInfos-do-skip-empty-dir', async () => {
 
   const ignoreFiles = await getIgnoreConfigFiles(projectPath, ignoreFilePath);
   const ignoreContents = await getIgnoreConfigContents({ cwd: projectPath, ...ignoreFiles });
-  const ignoreDirs = await getEmptyDescendantTree({
-    cwd: projectPath,
-    ignoreFilePath,
-    ignores: ignoreContents.evaluated,
-  });
 
   const exportInfos = await getExportInfos(share.project03, option, ignoreContents);
   const exportDuplicationValidateResult = validateExportDuplication(exportInfos);
@@ -342,11 +302,7 @@ test('c005-createIndexInfos-do-skip-empty-dir', async () => {
       isFalse(exportDuplicationValidateResult.filePaths.includes(exportInfo.resolvedFilePath)),
   );
 
-  const result = await createIndexInfos(
-    validExportInfos,
-    { ...ignoreContents, dirs: ignoreDirs },
-    option,
-  );
+  const result = await createIndexInfos(validExportInfos, ignoreContents, option);
   const terminateCircularResult = getTestValue(result);
 
   const expectation = await import(path.join(__dirname, 'expects', expectFileName));
@@ -360,9 +316,7 @@ test('c006-createIndexInfos-partial-ignore', async () => {
     .currentTestName.replace(/^([cC][0-9]+)(-.+)/, 'expect$2.ts');
 
   const projectPath = env.exampleType04Path;
-
   const ignoreFilePath = posixJoin(projectPath, '.ctiignore_another_name');
-  await gitignoreBootstrap(posixJoin(projectPath, '.gitignore'));
 
   // option modify for expectation
   const option: TCreateOptionWithDirInfo = {
@@ -374,11 +328,6 @@ test('c006-createIndexInfos-partial-ignore', async () => {
 
   const ignoreFiles = await getIgnoreConfigFiles(projectPath, ignoreFilePath);
   const ignoreContents = await getIgnoreConfigContents({ cwd: projectPath, ...ignoreFiles });
-  const ignoreDirs = await getEmptyDescendantTree({
-    cwd: projectPath,
-    ignoreFilePath,
-    ignores: ignoreContents.evaluated,
-  });
 
   const exportInfos = await getExportInfos(share.project04, option, ignoreContents);
   const exportDuplicationValidateResult = validateExportDuplication(exportInfos);
@@ -394,11 +343,7 @@ test('c006-createIndexInfos-partial-ignore', async () => {
       isFalse(exportDuplicationValidateResult.filePaths.includes(exportInfo.resolvedFilePath)),
   );
 
-  const result = await createIndexInfos(
-    validExportInfos,
-    { ...ignoreContents, dirs: ignoreDirs },
-    option,
-  );
+  const result = await createIndexInfos(validExportInfos, ignoreContents, option);
   const terminateCircularResult = getTestValue(result);
 
   const expectation = await import(path.join(__dirname, 'expects', expectFileName));

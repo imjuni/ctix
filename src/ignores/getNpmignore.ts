@@ -8,7 +8,7 @@ import getRefineIgnorePath from './getRefineIgnorePath';
 
 export default async function getGitignoreFiles(
   filePath: string,
-): Promise<{ patterns: string[]; state?: gitignore.State; ignore: Ignore }> {
+): Promise<{ patterns: string[]; parsed?: gitignore.State; ignore: Ignore }> {
   try {
     if (isFalse(await exists(filePath))) {
       throw new Error('invalid .gitignore filepath');
@@ -31,6 +31,6 @@ export default async function getGitignoreFiles(
 
     return ig;
   } catch {
-    return { patterns: [], state: undefined, ignore: ignore() };
+    return { patterns: [], parsed: undefined, ignore: ignore() };
   }
 }

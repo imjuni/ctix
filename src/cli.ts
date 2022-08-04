@@ -38,7 +38,7 @@ yargs(process.argv.slice(2))
     },
     handler: async (argv) => {
       try {
-        await createWritor(attachDiretoryInfo(argv), true);
+        await createWritor(attachDiretoryInfo({ ...argv, mode: 'create' }), true);
       } catch (catched) {
         const err = catched instanceof Error ? catched : new Error('unknown error raised');
         consola.error(err);
@@ -54,7 +54,7 @@ yargs(process.argv.slice(2))
     },
     handler: async (argv) => {
       try {
-        await singleWritor(attachDiretoryInfo(argv), true);
+        await singleWritor(attachDiretoryInfo({ ...argv, mode: 'single' }), true);
       } catch (catched) {
         const err = catched instanceof Error ? catched : new Error('unknown error raised');
         consola.error(err);
@@ -70,7 +70,7 @@ yargs(process.argv.slice(2))
     },
     handler: async (argv) => {
       try {
-        await removeIndexFile(attachDiretoryInfo(argv), true);
+        await removeIndexFile(attachDiretoryInfo({ ...argv, mode: 'remove' }), true);
       } catch (catched) {
         const err = catched instanceof Error ? catched : new Error('unknown error raised');
         consola.error(err);
@@ -86,7 +86,7 @@ yargs(process.argv.slice(2))
     },
     handler: async (argv) => {
       try {
-        const optionWithDirectoryInfo = attachDiretoryInfo(argv);
+        const optionWithDirectoryInfo = attachDiretoryInfo({ ...argv, mode: 'init' });
         await createInitFile(optionWithDirectoryInfo, true);
       } catch (catched) {
         const err = catched instanceof Error ? catched : new Error('unknown error raised');

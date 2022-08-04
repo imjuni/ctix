@@ -11,7 +11,7 @@ export default function getCliRemoveOption(
   const rawConfig: Partial<TRemoveOption> = jsonLoader(configBuf.toString());
 
   const option: TRemoveOption = {
-    mode: 'clean',
+    mode: 'remove',
 
     c: configFilePath,
     config: configFilePath,

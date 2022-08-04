@@ -1,15 +1,14 @@
 import IExportInfo from '@compilers/interfaces/IExportInfo';
 import { TCreateOrSingleOption } from '@configs/interfaces/IOption';
-import IGetIgnoredConfigContents from '@ignores/interfaces/IGetIgnoredConfigContents';
+import getIgnoreConfigContents from '@ignores/getIgnoreConfigContents';
 import getDescendantExportInfo from '@modules/getDescendantExportInfo';
 import getFilePathOnIndex from '@modules/getFilePathOnIndex';
 import getRelativeDepth from '@tools/getRelativeDepth';
 import ICreateIndexInfo from '@tools/interface/ICreateIndexInfo';
 import IDescendantExportInfo from '@tools/interface/IDescendantExportInfo';
-import minimatch from 'minimatch';
-import { isEmpty, isFalse } from 'my-easy-fp';
 import { isDescendant, replaceSepToPosix } from 'my-node-fp';
 import path from 'path';
+import { AsyncReturnType } from 'type-fest';
 
 /*
 
@@ -43,26 +42,15 @@ a/b/c/f/g/case04.ts
 export default async function createDescendantIndex(
   dirPath: string,
   exportInfos: IExportInfo[],
-  ignores: {
-    origin: IGetIgnoredConfigContents;
-    evaluated: IGetIgnoredConfigContents;
-    dirs: IGetIgnoredConfigContents;
-  },
+  ignores: AsyncReturnType<typeof getIgnoreConfigContents>,
   option: TCreateOrSingleOption,
 ): Promise<ICreateIndexInfo[]> {
   const currentDepth = getRelativeDepth(option.topDirs, dirPath);
-  const everyDescendants = await getDescendantExportInfo(
-    dirPath,
-    option,
-    exportInfos,
-    ignores.evaluated,
-  );
-  const sortedEveryDescendants = everyDescendants
-    .filter((descendant) => isEmpty(ignores.dirs[descendant.dirPath]))
-    .sort((l, r) => {
-      const depthDiff = l.depth - r.depth;
-      return depthDiff !== 0 ? depthDiff : r.dirPath.localeCompare(l.dirPath);
-    });
+  const everyDescendants = await getDescendantExportInfo(dirPath, option, exportInfos, ignores);
+  const sortedEveryDescendants = everyDescendants.sort((l, r) => {
+    const depthDiff = l.depth - r.depth;
+    return depthDiff !== 0 ? depthDiff : r.dirPath.localeCompare(l.dirPath);
+  });
 
   if (option.mode === 'create' && option.skipEmptyDir) {
     const currentDirExportInfos = exportInfos.filter(
@@ -111,20 +99,8 @@ export default async function createDescendantIndex(
     return descendantIndexInfos;
   }
 
-  const ignoreGlobPatterns = Object.keys(ignores.origin);
   const descendantIndexInfos = everyDescendants
-    .filter((descendant) => isEmpty(ignores.dirs[descendant.dirPath]))
     .filter((everyDescendant) => everyDescendant.depth === currentDepth + 1)
-    .filter((everyDescendant) => {
-      const minimatchResult = ignoreGlobPatterns.some((ignoreGlobPattern) =>
-        minimatch(
-          everyDescendant.dirPath,
-          path.posix.join(option.resolvedProjectDirPath, ignoreGlobPattern),
-        ),
-      );
-
-      return isFalse(minimatchResult);
-    })
     .map((exportedDescendant) => {
       const filePath = getFilePathOnIndex(exportedDescendant.dirPath, option, dirPath);
 
