@@ -15,6 +15,10 @@ import { existsSync, getDirnameSync, replaceSepToPosix, replaceSepToWin32 } from
 import path from 'path';
 
 function getCustomIgnoreFile(option: TCreateOption | TSingleOption) {
+  if (option.ignoreFile === undefined || option.ignoreFile === null) {
+    return defaultIgnoreFileName;
+  }
+
   const resolvedIgnoreFilePath = path.resolve(option.ignoreFile);
 
   if (existsSync(resolvedIgnoreFilePath)) {
