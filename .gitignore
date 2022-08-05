@@ -105,5 +105,6 @@ dist
 
 **/__tests__/__snapshots__/**
 jin-frame/
+jin-frame_eg/
 erdia_eg/
 docs/TODO.md
