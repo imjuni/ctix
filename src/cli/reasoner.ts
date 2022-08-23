@@ -29,7 +29,7 @@ export function start(reasons: IReason[]): void {
     return;
   }
 
-  console.log('');
+  console.error('');
 
   reasons.forEach((reason) => {
     const typeMessage =
@@ -47,21 +47,21 @@ export function start(reasons: IReason[]): void {
 
     const chevronRight = reason.type === 'error' ? chalk.red('>') : chalk.yellow('>');
 
-    console.log(typeMessage, filename);
+    console.error(typeMessage, filename);
 
     if (isEmpty(reason.lineAndCharacter)) {
-      console.log(`   ${chevronRight} ${chalk.gray(`${filePath}`)}`);
+      console.error(`   ${chevronRight} ${chalk.gray(`${filePath}`)}`);
     } else {
-      console.log(
+      console.error(
         `   ${chevronRight} ${chalk.gray(
           `${filePath}:${reason.lineAndCharacter.line}:${reason.lineAndCharacter.character}`,
         )}`,
       );
     }
     reason.message.split('\n').forEach((splittedMessage) => {
-      console.log(`   ${chevronRight} ${chalk.gray(splittedMessage.trim())}`);
+      console.error(`   ${chevronRight} ${chalk.gray(splittedMessage.trim())}`);
     });
 
-    console.log('');
+    console.error('');
   });
 }

@@ -64,6 +64,10 @@ export async function createWritor(option: TCreateOptionWithDirInfo, isMessageDi
         isFalse(exportDuplicationValidateResult.filePaths.includes(exportInfo.resolvedFilePath)),
     );
 
+    if (!fileNameDuplicationValidateResult.valid || !exportDuplicationValidateResult.valid) {
+      process.exitCode = 1;
+    }
+
     spinner.update(`generate ${option.exportFilename} content`);
 
     const indexInfos = await createIndexInfos(exportInfos, ignoreContents, option);
@@ -113,6 +117,10 @@ export async function singleWritor(option: TSingleOptionWithDirInfo, isMessageDi
     const exportInfos = totalExportInfos.filter((exportInfo) =>
       isFalse(exportDuplicationValidateResult.filePaths.includes(exportInfo.resolvedFilePath)),
     );
+
+    if (!exportDuplicationValidateResult.valid) {
+      process.exitCode = 1;
+    }
 
     const indexInfos = await singleIndexInfos(exportInfos, ignoreContents, option, project);
 
