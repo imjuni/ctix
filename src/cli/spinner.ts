@@ -1,7 +1,7 @@
 import { isNotEmpty } from 'my-easy-fp';
 import ora from 'ora';
 
-const spinner = ora('');
+const spinner = ora({ stream: process.stdout });
 
 let isMessageDisplay = false;
 
