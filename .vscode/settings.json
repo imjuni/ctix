@@ -1,7 +1,4 @@
 {
-  "[typescript]": {
-    "editor.formatOnSave": true
-  },
   "files.exclude": {
     "**/.git": true,
     "**/.svn": true,
@@ -33,6 +30,8 @@
     "**/.ctiignore": "jsonc",
     ".ctirc": "jsonc"
   },
+  "editor.formatOnSave": true,
+  "formattingToggle.affects": ["editor.formatOnSave"],
   "jest.autoRun": {
     "watch": false
     // "onStartup": ["all-tests"],

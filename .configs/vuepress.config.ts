@@ -35,6 +35,10 @@ const navs: NavbarConfig = [
     text: 'API Reference',
     link: '/api/README.md',
   },
+  {
+    text: 'Github',
+    link: 'https://github.com/imjuni/ctix',
+  },
 ];
 
 export default defineUserConfig({
