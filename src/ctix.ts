@@ -83,7 +83,6 @@ export async function createWritor(option: TCreateOptionWithDirInfo, isMessageDi
     const writeReasons = await indexFileWrite(indexInfos, option);
 
     spinner.update(`ctix 'create' mode complete!`);
-    spinner.stop();
 
     reasoner.start([...exportDuplicationValidateResult.reasons, ...writeReasons]);
   } catch (catched) {
@@ -141,7 +140,6 @@ export async function singleWritor(option: TSingleOptionWithDirInfo, isMessageDi
     spinner.update(`write each ${option.exportFilename} file`);
 
     spinner.update(`ctix 'single' mode complete!`);
-    spinner.stop();
 
     reasoner.start([...exportDuplicationValidateResult.reasons, ...writeReasons]);
   } catch (catched) {
@@ -186,7 +184,6 @@ export async function removeIndexFile(
 
     reasoner.space();
     spinner.update(`ctix 'remove' mode complete!`);
-    spinner.stop();
   } catch (catched) {
     const err =
       catched instanceof Error ? catched : new Error('Unknown error raised from createWritor');
@@ -350,7 +347,6 @@ export async function createInitFile(option: TTInitOptionWithDirInfo, isMessageD
     }
 
     spinner.update("ctix 'init' mode complete!");
-    spinner.stop();
   } catch (catched) {
     const err =
       catched instanceof Error ? catched : new Error('Unknown error raised from createWritor');
