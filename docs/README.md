@@ -60,14 +60,14 @@ After `ctix create -p ./tsconfig.json` command.
 │  │  ├─ Nav.tsx
 │  │  ├─ Button.tsx
 │  │  ├─ Input.tsx
-│  │  ├─ index.ts   # created
+│  │  ├─ index.ts   # create
 │  ├─ pages/
 │  │  ├─ Hero.tsx
 │  │  ├─ User.tsx
-│  │  ├─ index.ts   # created
-│  ├─ index.ts      # created
+│  │  ├─ index.ts   # create
+│  ├─ index.ts      # create
 ├─ App.tsx
-├─ index.ts         # created
+├─ index.ts         # create
 ```
 
 Each file is as belows:
@@ -133,7 +133,7 @@ After `ctix single -p ./tsconfig.json` command. single mode create one `index.ts
 │  │  ├─ Hero.tsx
 │  │  ├─ User.tsx
 ├─ App.tsx
-├─ index.ts         # created
+├─ index.ts         # create
 ```
 
 Each file is as belows:
