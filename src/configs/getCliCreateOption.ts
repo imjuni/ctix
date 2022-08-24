@@ -23,6 +23,10 @@ export default function getCliCreateOption(
     f: argv.f ?? argv.exportFilename ?? rawConfig.exportFilename ?? 'index.ts',
     exportFilename: argv.f ?? argv.exportFilename ?? rawConfig.exportFilename ?? 'index.ts',
 
+    progressStream: argv.progressStream ?? rawConfig.progressStream ?? 'stdout',
+    spinnerStream: argv.spinnerStream ?? rawConfig.spinnerStream ?? 'stdout',
+    reasonerStream: argv.reasonerStream ?? rawConfig.reasonerStream ?? 'stderr',
+
     s: argv.s ?? argv.useSemicolon ?? rawConfig.useSemicolon,
     useSemicolon: argv.s ?? argv.useSemicolon ?? rawConfig.useSemicolon,
 

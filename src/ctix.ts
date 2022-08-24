@@ -1,7 +1,7 @@
 import IReason from '@cli/interfaces/IReason';
-import * as progress from '@cli/progress';
-import * as reasoner from '@cli/reasoner';
-import * as spinner from '@cli/spinner';
+import progress from '@cli/progress';
+import reasoner from '@cli/reasoner';
+import spinner from '@cli/spinner';
 import getExportInfos from '@compilers/getExportInfos';
 import getTypeScriptProject from '@compilers/getTypeScriptProject';
 import initialConfigLiteral from '@configs/initialConfigLiteral';
@@ -28,12 +28,15 @@ import path from 'path';
 
 export async function createWritor(option: TCreateOptionWithDirInfo, isMessageDisplay?: boolean) {
   try {
-    progress.enable(isMessageDisplay ?? false);
-    spinner.enable(isMessageDisplay ?? false);
-    reasoner.enable(isMessageDisplay ?? false);
+    progress.isEnable = isMessageDisplay ?? false;
+    spinner.isEnable = isMessageDisplay ?? false;
+    reasoner.isEnable = isMessageDisplay ?? false;
+
+    progress.stream = option.progressStream;
+    spinner.stream = option.spinnerStream;
+    reasoner.stream = option.reasonerStream;
 
     spinner.start("ctix 'create' mode start, ...");
-    reasoner.sleep(1000);
 
     const projectDirPath = await getDirname(option.resolvedProjectFilePath);
     const project = getTypeScriptProject(option.resolvedProjectFilePath);
@@ -64,7 +67,10 @@ export async function createWritor(option: TCreateOptionWithDirInfo, isMessageDi
         isFalse(exportDuplicationValidateResult.filePaths.includes(exportInfo.resolvedFilePath)),
     );
 
-    if (!fileNameDuplicationValidateResult.valid || !exportDuplicationValidateResult.valid) {
+    if (
+      isFalse(fileNameDuplicationValidateResult.valid) ||
+      isFalse(exportDuplicationValidateResult.valid)
+    ) {
       process.exitCode = 1;
     }
 
@@ -77,6 +83,7 @@ export async function createWritor(option: TCreateOptionWithDirInfo, isMessageDi
     const writeReasons = await indexFileWrite(indexInfos, option);
 
     spinner.update(`ctix 'create' mode complete!`);
+    spinner.stop();
 
     reasoner.start([...exportDuplicationValidateResult.reasons, ...writeReasons]);
   } catch (catched) {
@@ -92,12 +99,15 @@ export async function createWritor(option: TCreateOptionWithDirInfo, isMessageDi
 
 export async function singleWritor(option: TSingleOptionWithDirInfo, isMessageDisplay?: boolean) {
   try {
-    progress.enable(isMessageDisplay ?? false);
-    spinner.enable(isMessageDisplay ?? false);
-    reasoner.enable(isMessageDisplay ?? false);
+    progress.isEnable = isMessageDisplay ?? false;
+    spinner.isEnable = isMessageDisplay ?? false;
+    reasoner.isEnable = isMessageDisplay ?? false;
+
+    progress.stream = option.progressStream;
+    spinner.stream = option.spinnerStream;
+    reasoner.stream = option.reasonerStream;
 
     spinner.start("ctix 'single' mode start, ...");
-    reasoner.sleep(1000);
 
     const projectDirPath = await getDirname(option.resolvedProjectFilePath);
     const project = getTypeScriptProject(option.resolvedProjectFilePath);
@@ -118,7 +128,7 @@ export async function singleWritor(option: TSingleOptionWithDirInfo, isMessageDi
       isFalse(exportDuplicationValidateResult.filePaths.includes(exportInfo.resolvedFilePath)),
     );
 
-    if (!exportDuplicationValidateResult.valid) {
+    if (isFalse(exportDuplicationValidateResult.valid)) {
       process.exitCode = 1;
     }
 
@@ -131,6 +141,7 @@ export async function singleWritor(option: TSingleOptionWithDirInfo, isMessageDi
     spinner.update(`write each ${option.exportFilename} file`);
 
     spinner.update(`ctix 'single' mode complete!`);
+    spinner.stop();
 
     reasoner.start([...exportDuplicationValidateResult.reasons, ...writeReasons]);
   } catch (catched) {
@@ -149,9 +160,9 @@ export async function removeIndexFile(
   isMessageDisplay?: boolean,
 ) {
   try {
-    progress.enable(isMessageDisplay ?? false);
-    spinner.enable(isMessageDisplay ?? false);
-    reasoner.enable(isMessageDisplay ?? false);
+    progress.isEnable = isMessageDisplay ?? false;
+    spinner.isEnable = isMessageDisplay ?? false;
+    reasoner.isEnable = isMessageDisplay ?? false;
 
     spinner.start("ctix start 'remove' mode");
     reasoner.sleep(500);
@@ -175,6 +186,7 @@ export async function removeIndexFile(
 
     reasoner.space();
     spinner.update(`ctix 'remove' mode complete!`);
+    spinner.stop();
   } catch (catched) {
     const err =
       catched instanceof Error ? catched : new Error('Unknown error raised from createWritor');
@@ -187,9 +199,9 @@ export async function removeIndexFile(
 }
 
 export async function createInitFile(option: TTInitOptionWithDirInfo, isMessageDisplay?: boolean) {
-  progress.enable(isMessageDisplay ?? false);
-  spinner.enable(isMessageDisplay ?? false);
-  reasoner.enable(isMessageDisplay ?? false);
+  progress.isEnable = isMessageDisplay ?? false;
+  spinner.isEnable = isMessageDisplay ?? false;
+  reasoner.isEnable = isMessageDisplay ?? false;
 
   try {
     spinner.start("ctix 'init' mode start, ...");
@@ -337,7 +349,8 @@ export async function createInitFile(option: TTInitOptionWithDirInfo, isMessageD
       await fs.promises.writeFile(configFilePath, modifiedInitialConfig);
     }
 
-    spinner.start("ctix 'init' mode complete!");
+    spinner.update("ctix 'init' mode complete!");
+    spinner.stop();
   } catch (catched) {
     const err =
       catched instanceof Error ? catched : new Error('Unknown error raised from createWritor');

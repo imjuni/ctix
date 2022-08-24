@@ -6,7 +6,7 @@ import {
 } from '@configs/interfaces/IOption';
 import { Argv } from 'yargs';
 
-export default function singleBuilder<
+export default function createBuilder<
   T extends TRemoveOption | TCreateOption | TInitOption | TSingleOption,
 >(args: Argv<T>) {
   args

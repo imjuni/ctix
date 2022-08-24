@@ -27,6 +27,10 @@ export const commonOption: ICommonCliOption = {
 
   f: 'index.ts',
   exportFilename: 'index.ts',
+
+  progressStream: 'stdout',
+  spinnerStream: 'stdout',
+  reasonerStream: 'stderr',
 };
 
 export const createSingleCommonOption: ICreateSingleCommonCliOption = {

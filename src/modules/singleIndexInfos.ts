@@ -1,4 +1,4 @@
-import * as progress from '@cli/progress';
+import progress from '@cli/progress';
 import IExportInfo from '@compilers/interfaces/IExportInfo';
 import { TSingleOptionWithDirInfo } from '@configs/interfaces/IOption';
 import getIgnoreConfigContents from '@ignores/getIgnoreConfigContents';
