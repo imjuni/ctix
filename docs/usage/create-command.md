@@ -8,35 +8,41 @@ Collect exported something(variable, function, object, class, interface etc.) in
 
 ## create command option schema
 
-| Name             | Short | Default  | Type    | Required | Command |
-| :--------------- | ----- | -------- | ------- | -------- | ------- |
-| --config         | -c    |          | string  |          | create  |
-| --project        | -p    |          | string  | required | create  |
-| --exportFilename | -f    | index.ts | string  | required | create  |
-| --useSemicolon   | -s    | true     | string  |          | create  |
-| --useTimestamp   | -t    | false    | boolean |          | create  |
-| --useComment     | -m    | true     | boolean |          | create  |
-| --quote          | -q    | '        | string  |          | create  |
-| --keepFileExt    | -k    | false    | boolean |          | create  |
-| --overwrite      | -w    | false    | boolean |          | create  |
-| --ignoreFile     | -g    |          | string  |          | create  |
-| --skipEmptyDir   | -e    | true     | boolean |          | create  |
+| Name             | Short | Default  | Type                 | Required | Command |
+| :--------------- | ----- | -------- | -------------------- | -------- | ------- |
+| --config         | -c    |          | string               |          | create  |
+| --project        | -p    |          | string               | required | create  |
+| --exportFilename | -f    | index.ts | string               | required | create  |
+| --useSemicolon   | -s    | true     | string               |          | create  |
+| --useTimestamp   | -t    | false    | boolean              |          | create  |
+| --useComment     | -m    | true     | boolean              |          | create  |
+| --quote          | -q    | '        | string               |          | create  |
+| --keepFileExt    | -k    | false    | boolean              |          | create  |
+| --overwrite      | -w    | false    | boolean              |          | create  |
+| --ignoreFile     | -g    |          | string               |          | create  |
+| --skipEmptyDir   | -e    | true     | boolean              |          | create  |
+| --spinnerStream  |       | stdout   | enum(stdout, stderr) |          | create  |
+| --progressStream |       | stdout   | enum(stdout, stderr) |          | create  |
+| --reasonerStream |       | stderr   | enum(stdout, stderr) |          | create  |
 
 ## create command option description
 
-| Name             | Description                                                                                                |
-| :--------------- | ---------------------------------------------------------------------------------------------------------- |
-| --config         | configuration file(.ctirc) path                                                                            |
-| --project        | tsconfig.json path: you must pass path with filename, like this "./tsconfig.json"                          |
-| --exportFilename | Export filename, if you not pass this field that use "index.ts" or "index.d.ts"                            |
-| --useSemicolon   | add semicolon on line ending at every export statement                                                     |
-| --useTimestamp   | timestamp write on ctix comment right-side, only works in useComment option set true                       |
-| --useComment     | ctix comment add on first line of creted export file(default index.ts) file, that remark created from ctix |
-| --quote          | change quote character at export syntax                                                                    |
-| --keepFileExt    | keep file extension on export statement path literal                                                       |
-| --overwrite      | overwrite each index.ts file                                                                               |
-| --ignoreFile     | ignore file name. You can pass ignore, config file at ctix and use it like profile                         |
-| --skipEmptyDir   | If set true this option, skip empty directory                                                              |
+| Name             | Description                                                                                                                    |
+| :--------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| --config         | configuration file(.ctirc) path                                                                                                |
+| --project        | tsconfig.json path: you must pass path with filename, like this "./tsconfig.json"                                              |
+| --exportFilename | Export filename, if you not pass this field that use "index.ts" or "index.d.ts"                                                |
+| --useSemicolon   | add semicolon on line ending at every export statement                                                                         |
+| --useTimestamp   | timestamp write on ctix comment right-side, only works in useComment option set true                                           |
+| --useComment     | ctix comment add on first line of creted export file(default index.ts) file, that remark created from ctix                     |
+| --quote          | change quote character at export syntax                                                                                        |
+| --keepFileExt    | keep file extension on export statement path literal                                                                           |
+| --overwrite      | overwrite each index.ts file                                                                                                   |
+| --ignoreFile     | ignore file name. You can pass ignore, config file at ctix and use it like profile                                             |
+| --skipEmptyDir   | If set true this option, skip empty directory                                                                                  |
+| --spinnerStream  | Stream of cli spinner, you can pass stdout or stderr                                                                           |
+| --progressStream | Stream of cli progress, you can pass stdout or stderr                                                                          |
+| --reasonerStream | Stream of cli reasoner. Reasoner show name conflict error and already exist index.ts file error. You can pass stdout or stderr |
 
 ## skipEmptyDir mechanishm
 

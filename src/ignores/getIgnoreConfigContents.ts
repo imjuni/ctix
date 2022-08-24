@@ -21,10 +21,11 @@ export default async function getIgnoreConfigContents({
   git,
   npm,
   cti,
+  cwd,
 }: IGetIgnoreConfigFiles & { cwd: string }): Promise<IGetIgnoreConfigContentsReturn> {
   const gitignoreRecord = await getGitignoreFiles(git);
   const npmignoreRecord = await getNpmignoreFiles(npm);
-  const ctiignoreRecord = await getCtiignoreFiles(cti);
+  const ctiignoreRecord = await getCtiignoreFiles(cwd, cti);
 
   return {
     git: gitignoreRecord.ignore,
