@@ -43,9 +43,11 @@
     "dist"
   ],
   "exports": {
-    "types": "./dist/esm/ctix.d.ts",
-    "require": "./dist/cjs/ctix.js",
-    "import": "./dist/esm/ctix.js"
+    ".": {
+      "types": "./dist/esm/ctix.d.ts",
+      "require": "./dist/cjs/ctix.js",
+      "import": "./dist/esm/ctix.js"
+    }
   },
   "bin": {
     "ctix": "./dist/cli.js"
@@ -82,6 +84,7 @@
     "mermaid": "^9.1.4",
     "prettier-eslint": "^15.0.1",
     "prettier-plugin-organize-imports": "^2.3.4",
+    "read-pkg": "^5.2.0",
     "rimraf": "^3.0.2",
     "rollup": "^2.77.2",
     "rollup-plugin-sourcemaps": "^0.6.3",

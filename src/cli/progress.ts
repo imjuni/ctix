@@ -16,10 +16,10 @@ class CtixProgress {
       barIncompleteChar: ' ',
       stopOnComplete: true,
       barsize: 40,
-      stream: process.stderr,
+      stream: process.stdout,
     });
 
-    this.#stream = 'stderr';
+    this.#stream = 'stdout';
 
     this.#isEnable = false;
   }

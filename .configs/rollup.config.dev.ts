@@ -1,5 +1,8 @@
-import sourcemaps from 'rollup-plugin-sourcemaps';
+import { nodeResolve } from '@rollup/plugin-node-resolve';
+import readPackage from 'read-pkg';
 import ts from 'rollup-plugin-ts';
+
+const pkg = readPackage.sync();
 
 export default [
   {
@@ -9,7 +12,19 @@ export default [
       format: 'cjs',
       banner: '#!/usr/bin/env node',
     },
-    plugins: [ts({ tsconfig: 'tsconfig.json' })],
+    plugins: [
+      nodeResolve({
+        resolveOnly: (module) => {
+          const isLocal =
+            (pkg?.dependencies?.[module] === undefined || pkg?.dependencies?.[module] === null) &&
+            (pkg?.devDependencies?.[module] === undefined ||
+              pkg?.devDependencies?.[module] === null);
+
+          return isLocal;
+        },
+      }),
+      ts({ tsconfig: 'tsconfig.json' }),
+    ],
   },
   {
     input: 'src/ctix.ts',
@@ -25,6 +40,18 @@ export default [
         sourcemap: true,
       },
     ],
-    plugins: [sourcemaps(), ts({ tsconfig: 'tsconfig.json' })],
+    plugins: [
+      nodeResolve({
+        resolveOnly: (module) => {
+          const isLocal =
+            (pkg?.dependencies?.[module] === undefined || pkg?.dependencies?.[module] === null) &&
+            (pkg?.devDependencies?.[module] === undefined ||
+              pkg?.devDependencies?.[module] === null);
+
+          return isLocal;
+        },
+      }),
+      ts({ tsconfig: 'tsconfig.json' }),
+    ],
   },
 ];
