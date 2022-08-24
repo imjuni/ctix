@@ -5,7 +5,7 @@ import fs from 'fs';
 import ignore, { Ignore } from 'ignore';
 import { parse } from 'jsonc-parser';
 import { isFalse } from 'my-easy-fp';
-import { exists, getDirname } from 'my-node-fp';
+import { exists } from 'my-node-fp';
 import path from 'path';
 
 type TWithValue = Array<{ filePath: string; ignore: Ignore; pattern: string | string[] }>;
@@ -17,6 +17,7 @@ interface IGetCtiignoreFilesReturn {
 }
 
 export default async function getCtiignoreFiles(
+  cwd: string,
   filePath: string,
 ): Promise<IGetCtiignoreFilesReturn> {
   try {
@@ -25,14 +26,13 @@ export default async function getCtiignoreFiles(
     }
 
     const fileBuf = await fs.promises.readFile(filePath);
-    const dirPath = await getDirname(filePath);
     const ignoreFiles: IGetIgnoredConfigContents = parse(fileBuf.toString());
     const ig: IGetCtiignoreFilesReturn = { origin: ignoreFiles, ignore: ignore(), withValue: [] };
 
     ig.ignore.add(
       Object.keys(ignoreFiles)
         .map((ignoreFile) =>
-          path.isAbsolute(ignoreFile) ? ignoreFile : posixJoin(dirPath, ignoreFile),
+          path.isAbsolute(ignoreFile) ? ignoreFile : posixJoin(cwd, ignoreFile),
         )
         .map((pattern) => getRefineIgnorePath(pattern)),
     );
@@ -42,7 +42,7 @@ export default async function getCtiignoreFiles(
       const subIgnore = ignore().add(
         [ignoreFilePathKey]
           .map((filePathKey) =>
-            path.isAbsolute(filePathKey) ? filePathKey : posixJoin(dirPath, filePathKey),
+            path.isAbsolute(filePathKey) ? filePathKey : posixJoin(cwd, filePathKey),
           )
           .map((filePathKey) => getRefineIgnorePath(filePathKey)),
       );
