@@ -1,67 +1,98 @@
 /* eslint-disable no-console */
 import IReason from '@cli/interfaces/IReason';
+import TStreamType from '@configs/interfaces/TStreamType';
 import chalk from 'chalk';
 import { isEmpty, isFalse, sleep as sleepMs } from 'my-easy-fp';
 import * as path from 'path';
 
-let isMessageDisplay = false;
+class CtixReasoner {
+  #isEnable: boolean;
 
-export function enable(flag: boolean) {
-  isMessageDisplay = flag;
-}
+  #stream: TStreamType;
 
-export async function sleep(ms: number): Promise<void> {
-  if (isMessageDisplay) {
-    await sleepMs(ms);
-  }
-}
+  #streamWrite: typeof console.log;
 
-export function space(): void {
-  if (isFalse(isMessageDisplay)) {
-    return;
+  constructor() {
+    this.#isEnable = false;
+    this.#streamWrite = console.error;
+    this.#stream = 'stderr';
   }
 
-  console.log('');
-}
-
-export function start(reasons: IReason[]): void {
-  if (isFalse(isMessageDisplay)) {
-    return;
-  }
-
-  console.error('');
-
-  reasons.forEach((reason) => {
-    const typeMessage =
-      reason.type === 'error'
-        ? chalk.bgRed(`   ${reason.type.toUpperCase()}   `)
-        : chalk.bgYellow(`   ${reason.type.toUpperCase()}    `);
-
-    const { filePath } = reason;
-
-    const filename = isEmpty(reason.lineAndCharacter)
-      ? `${path.basename(filePath)}`
-      : `${path.basename(filePath)}:${reason.lineAndCharacter.line}:${
-          reason.lineAndCharacter.character
-        }`;
-
-    const chevronRight = reason.type === 'error' ? chalk.red('>') : chalk.yellow('>');
-
-    console.error(typeMessage, filename);
-
-    if (isEmpty(reason.lineAndCharacter)) {
-      console.error(`   ${chevronRight} ${chalk.gray(`${filePath}`)}`);
-    } else {
-      console.error(
-        `   ${chevronRight} ${chalk.gray(
-          `${filePath}:${reason.lineAndCharacter.line}:${reason.lineAndCharacter.character}`,
-        )}`,
-      );
+  set stream(value: TStreamType) {
+    if (value === 'stderr' && this.#stream === 'stdout') {
+      this.#streamWrite = console.error;
+      this.#stream = 'stderr';
+    } else if (value === 'stdout' && this.#stream === 'stderr') {
+      this.#streamWrite = console.log;
+      this.#stream = 'stdout';
     }
-    reason.message.split('\n').forEach((splittedMessage) => {
-      console.error(`   ${chevronRight} ${chalk.gray(splittedMessage.trim())}`);
-    });
+  }
 
-    console.error('');
-  });
+  get isEnable() {
+    return this.#isEnable;
+  }
+
+  set isEnable(value) {
+    this.#isEnable = value;
+  }
+
+  async sleep(ms: number): Promise<void> {
+    if (this.#isEnable) {
+      await sleepMs(ms);
+    }
+  }
+
+  space(): void {
+    if (isFalse(this.#isEnable)) {
+      return;
+    }
+
+    this.#streamWrite('');
+  }
+
+  start(reasons: IReason[]): void {
+    if (isFalse(this.#isEnable)) {
+      return;
+    }
+
+    this.#streamWrite('');
+
+    reasons.forEach((reason) => {
+      const typeMessage =
+        reason.type === 'error'
+          ? chalk.bgRed(`   ${reason.type.toUpperCase()}   `)
+          : chalk.bgYellow(`   ${reason.type.toUpperCase()}    `);
+
+      const { filePath } = reason;
+
+      const filename = isEmpty(reason.lineAndCharacter)
+        ? `${path.basename(filePath)}`
+        : `${path.basename(filePath)}:${reason.lineAndCharacter.line}:${
+            reason.lineAndCharacter.character
+          }`;
+
+      const chevronRight = reason.type === 'error' ? chalk.red('>') : chalk.yellow('>');
+
+      this.#streamWrite(typeMessage, filename);
+
+      if (isEmpty(reason.lineAndCharacter)) {
+        this.#streamWrite(`   ${chevronRight} ${chalk.gray(`${filePath}`)}`);
+      } else {
+        this.#streamWrite(
+          `   ${chevronRight} ${chalk.gray(
+            `${filePath}:${reason.lineAndCharacter.line}:${reason.lineAndCharacter.character}`,
+          )}`,
+        );
+      }
+      reason.message.split('\n').forEach((splittedMessage) => {
+        this.#streamWrite(`   ${chevronRight} ${chalk.gray(splittedMessage.trim())}`);
+      });
+
+      this.#streamWrite('');
+    });
+  }
 }
+
+const reasoner = new CtixReasoner();
+
+export default reasoner;

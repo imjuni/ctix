@@ -22,6 +22,10 @@ export default function getCliRemoveOption(
     f: argv.f ?? argv.exportFilename ?? rawConfig.exportFilename ?? 'index.ts',
     exportFilename: argv.f ?? argv.exportFilename ?? rawConfig.exportFilename ?? 'index.ts',
 
+    progressStream: argv.progressStream ?? rawConfig.progressStream ?? 'stdout',
+    spinnerStream: argv.spinnerStream ?? rawConfig.spinnerStream ?? 'stdout',
+    reasonerStream: argv.reasonerStream ?? rawConfig.reasonerStream ?? 'stderr',
+
     b: argv.b ?? argv.includeBackup ?? rawConfig.includeBackup,
     includeBackup: argv.b ?? argv.includeBackup ?? rawConfig.includeBackup,
   };

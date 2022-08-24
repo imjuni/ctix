@@ -25,6 +25,28 @@ export default function builder<
       alias: 'c',
       describe: 'configuration file path',
       type: 'string',
+    })
+    .option('spinnerStream', {
+      describe: 'Stream of cli spinner, you can pass stdout or stderr',
+      type: 'string',
+      choices: ['stdout', 'stderr'],
+      default: 'stdout',
+    })
+    .option('progressStream', {
+      describe: 'Stream of cli progress, you can pass stdout or stderr',
+      type: 'string',
+      choices: ['stdout', 'stderr'],
+      default: 'stdout',
+    })
+    .option('reasonerStream', {
+      describe: [
+        'Stream of cli reasoner.',
+        'Reasoner show name conflict error and already exist index.ts file error.',
+        'You can pass stdout or stderr',
+      ].join(''),
+      type: 'string',
+      choices: ['stdout', 'stderr'],
+      default: 'stderr',
     });
 
   return args;

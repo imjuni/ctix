@@ -68,12 +68,16 @@ export default function preLoadConfig() {
 
     if (command === 'i' || command === 'init') {
       return {
+        mode: 'init',
         p: tsconfigPath,
         project: tsconfigPath,
         c: configFilePath,
         config: configFilePath,
         f: argv.f ?? argv.exportFilename ?? 'index.ts',
         exportFilename: argv.f ?? argv.exportFilename ?? 'index.ts',
+        progressStream: argv.progressStream ?? 'stdout',
+        spinnerStream: argv.spinnerStream ?? 'stdout',
+        reasonerStream: argv.reasonerStream ?? 'stderr',
       };
     }
 
