@@ -1,9 +1,8 @@
 import IReason from '@cli/interfaces/IReason';
 import IExportInfo from '@compilers/interfaces/IExportInfo';
 import IIdentifierWithNode from '@compilers/interfaces/IIdentifierWithNode';
-import { settify } from '@tools/misc';
 import chalk from 'chalk';
-import { isNotEmpty } from 'my-easy-fp';
+import { isNotEmpty, settify } from 'my-easy-fp';
 
 function createReason(exportInfo: IExportInfo, identifier: string) {
   if (isNotEmpty(exportInfo.defaultExport) && exportInfo.defaultExport.identifier === identifier) {

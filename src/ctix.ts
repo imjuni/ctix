@@ -278,6 +278,13 @@ export async function createInitFile(option: TTInitOptionWithDirInfo, isMessageD
       );
     }
 
+    if (isNotEmpty(option.startAt)) {
+      modifiedInitialConfig = applyEdits(
+        modifiedInitialConfig,
+        modify(modifiedInitialConfig, ['startAt'], option.startAt, options),
+      );
+    }
+
     if (isNotEmpty(option.useSemicolon)) {
       modifiedInitialConfig = applyEdits(
         modifiedInitialConfig,

@@ -1,9 +1,10 @@
 import path from 'path';
 import ts from 'typescript';
+
 /**
  * tsconfig.json file find in current working director or cli execute path
  *
- * @param project project directory
+ * @param project - project directory
  */
 export default function getTypeScriptConfig(project: string): ts.ParsedCommandLine {
   const resolvedProjectPath = path.resolve(project);
@@ -21,9 +22,6 @@ export default function getTypeScriptConfig(project: string): ts.ParsedCommandLi
     parseConfigHost,
     path.dirname(resolvedProjectPath),
   );
-
-  // ts.ParsedCommandLine object already contains typescript file in project
-  // consola.debug('tsconfig filenames: ', tsconfig.fileNames);
 
   return tsconfig;
 }

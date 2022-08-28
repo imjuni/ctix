@@ -95,7 +95,7 @@ export default async function getExportInfo(
     resolvedFilePath: replaceSepToPosix(path.resolve(filePath)),
     resolvedDirPath: dirPath,
     relativeFilePath: replaceSepToPosix(relativeFilePath),
-    depth: getRelativeDepth(option.topDirs, dirPath),
+    depth: getRelativeDepth(option.startAt, dirPath),
     starExported: isStarExport(ignoreInFile),
     defaultExport,
     namedExports,

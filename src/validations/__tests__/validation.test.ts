@@ -7,7 +7,6 @@ import * as env from '@testenv/env';
 import { getTestValue, posixJoin } from '@tools/misc';
 import validateExportDuplication from '@validations/validateExportDuplication';
 import validateFileNameDuplication from '@validations/validateFileNameDuplication';
-import consola, { LogLevel } from 'consola';
 import path from 'path';
 import * as tsm from 'ts-morph';
 
@@ -17,15 +16,13 @@ const share: {
 } = {} as any;
 
 beforeAll(() => {
-  consola.level = LogLevel.Debug;
   share.projectPath03 = posixJoin(env.exampleType03Path, 'tsconfig.json');
   share.project03 = new tsm.Project({ tsConfigFilePath: share.projectPath03 });
 });
 
 test('c001-validateExportDuplication', async () => {
-  const expectFileName = expect
-    .getState()
-    .currentTestName.replace(/^([cC][0-9]+)(-.+)/, 'expect$2.ts');
+  const expectFileName =
+    expect.getState().currentTestName?.replace(/^([cC][0-9]+)(-.+)/, 'expect$2.ts') ?? '';
 
   const projectPath = env.exampleType03Path;
   const project = share.project03;
@@ -37,6 +34,7 @@ test('c001-validateExportDuplication', async () => {
     ...env.createOptionWithDirInfo,
     project: projectPath,
     topDirDepth: 0,
+    startAt: projectPath,
     topDirs: [projectPath],
   };
 
@@ -50,9 +48,8 @@ test('c001-validateExportDuplication', async () => {
 });
 
 test('c002-validateFileNameDuplication', async () => {
-  const expectFileName = expect
-    .getState()
-    .currentTestName.replace(/^([cC][0-9]+)(-.+)/, 'expect$2.ts');
+  const expectFileName =
+    expect.getState().currentTestName?.replace(/^([cC][0-9]+)(-.+)/, 'expect$2.ts') ?? '';
 
   const projectPath = env.exampleType03Path;
   const project = share.project03;
@@ -67,6 +64,7 @@ test('c002-validateFileNameDuplication', async () => {
   const option: TCreateOptionWithDirInfo = {
     ...env.createOptionWithDirInfo,
     project: projectPath,
+    startAt: projectPath,
     topDirDepth: 0,
     topDirs: [env.exampleType03Path],
   };

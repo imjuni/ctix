@@ -8,22 +8,23 @@ Collect exported something(variable, function, object, class, interface etc.) in
 
 ## create command option schema
 
-| Name             | Short | Default  | Type                 | Required | Command |
-| :--------------- | ----- | -------- | -------------------- | -------- | ------- |
-| --config         | -c    |          | string               |          | create  |
-| --project        | -p    |          | string               | required | create  |
-| --exportFilename | -f    | index.ts | string               | required | create  |
-| --useSemicolon   | -s    | true     | string               |          | create  |
-| --useTimestamp   | -t    | false    | boolean              |          | create  |
-| --useComment     | -m    | true     | boolean              |          | create  |
-| --quote          | -q    | '        | string               |          | create  |
-| --keepFileExt    | -k    | false    | boolean              |          | create  |
-| --overwrite      | -w    | false    | boolean              |          | create  |
-| --ignoreFile     | -g    |          | string               |          | create  |
-| --skipEmptyDir   | -e    | true     | boolean              |          | create  |
-| --spinnerStream  |       | stdout   | enum(stdout, stderr) |          | create  |
-| --progressStream |       | stdout   | enum(stdout, stderr) |          | create  |
-| --reasonerStream |       | stderr   | enum(stdout, stderr) |          | create  |
+| Name             | Short | Default             | Type                 | Required | Command |
+| :--------------- | ----- | ------------------- | -------------------- | -------- | ------- |
+| --config         | -c    |                     | string               |          | create  |
+| --project        | -p    |                     | string               | required | create  |
+| --startAt        | -a    | use --project value | string               | required | create  |
+| --exportFilename | -f    | index.ts            | string               | required | create  |
+| --useSemicolon   | -s    | true                | string               |          | create  |
+| --useTimestamp   | -t    | false               | boolean              |          | create  |
+| --useComment     | -m    | true                | boolean              |          | create  |
+| --quote          | -q    | '                   | string               |          | create  |
+| --keepFileExt    | -k    | false               | boolean              |          | create  |
+| --overwrite      | -w    | false               | boolean              |          | create  |
+| --ignoreFile     | -g    |                     | string               |          | create  |
+| --skipEmptyDir   | -e    | true                | boolean              |          | create  |
+| --spinnerStream  |       | stdout              | enum(stdout, stderr) |          | create  |
+| --progressStream |       | stdout              | enum(stdout, stderr) |          | create  |
+| --reasonerStream |       | stderr              | enum(stdout, stderr) |          | create  |
 
 ## create command option description
 
@@ -31,6 +32,7 @@ Collect exported something(variable, function, object, class, interface etc.) in
 | :--------------- | ------------------------------------------------------------------------------------------------------------------------------ |
 | --config         | configuration file(.ctirc) path                                                                                                |
 | --project        | tsconfig.json path: you must pass path with filename, like this "./tsconfig.json"                                              |
+| --startAt        | start working from startAt directory. If you do not pass startAt use project directory.                                        |
 | --exportFilename | Export filename, if you not pass this field that use "index.ts" or "index.d.ts"                                                |
 | --useSemicolon   | add semicolon on line ending at every export statement                                                                         |
 | --useTimestamp   | timestamp write on ctix comment right-side, only works in useComment option set true                                           |
@@ -145,20 +147,31 @@ export * from './Tree';
 export * from './Grid';
 ```
 
-#### `src/pages/index.ts`
+## startAt mechanishm
+
+### in case of startAt set `src`
+
+Passing the startAt option create `index.ts` file from startAt directory.
 
 ```text
-// created from 'ctix'
-export * from './Hero';
-export * from './User';
-```
-
-#### `index.ts`
-
-```text
-// created from 'ctix'
-export * from './component/nav';
-export * from './component/small';
-export * from './component/large';
-export * from './pages';
+# To-Be
+├─ src/
+│  ├─ component/
+│  │  ├─ nav/
+│  │  │  ├─ Nav.tsx
+│  │  │  ├─ index.ts      # created
+│  │  ├─ small/
+│  │  │  ├─ Button.tsx
+│  │  │  ├─ Input.tsx
+│  │  │  ├─ index.ts      # created
+│  │  ├─ large/
+│  │  │  ├─ Tree.tsx
+│  │  │  ├─ Grid.tsx
+│  │  │  ├─ index.ts      # created
+│  ├─ pages/
+│  │  ├─ Hero.tsx
+│  │  ├─ User.tsx
+│  │  ├─ index.ts         # created
+│  ├─ index.ts         # created
+├─ App.tsx
 ```

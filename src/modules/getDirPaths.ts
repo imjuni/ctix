@@ -7,7 +7,7 @@ import getRelativeDepth from '@tools/getRelativeDepth';
 import { posixJoin } from '@tools/misc';
 import fastGlob from 'fast-glob';
 import { isFalse } from 'my-easy-fp';
-import { getDirname, startSepRemove } from 'my-node-fp';
+import { startSepRemove } from 'my-node-fp';
 import path from 'path';
 import { AsyncReturnType } from 'type-fest';
 
@@ -23,26 +23,18 @@ export default async function getDirPaths(
   ignores: AsyncReturnType<typeof getIgnoreConfigContents>,
   option: TCreateOrSingleOption,
 ): Promise<{ depths: Record<string, number>; dirPaths: Record<string, IExportInfo[]> }> {
-  const dirPathsFromExportInfos = Array.from(
-    new Set(
-      await Promise.all(exportInfos.map((exportInfo) => getDirname(exportInfo.resolvedFilePath))),
-    ),
+  const dirPathsFromExportInfos = await fastGlob(posixJoin(option.startAt, '**', '*'), {
+    onlyDirectories: true,
+    ignore: defaultIgnore,
+    cwd: option.startAt,
+  });
+
+  const filePaths = [option.startAt, ...dirPathsFromExportInfos].filter((dirPath) =>
+    isFalse(isIgnored(ignores, dirPath)),
   );
 
-  const totalDirPaths = await fastGlob(
-    dirPathsFromExportInfos.map((filePath) => posixJoin(filePath, '**', '*')),
-    {
-      onlyDirectories: true,
-      ignore: defaultIgnore,
-      cwd: option.resolvedProjectDirPath,
-    },
-  );
-
-  const unIgnoredDirPaths = totalDirPaths.filter((dirPath) => isFalse(isIgnored(ignores, dirPath)));
-
-  const filePaths = Array.from(new Set([...dirPathsFromExportInfos, ...unIgnoredDirPaths]));
   const depths = filePaths.reduce<Record<string, number>>((aggregation, filePath) => {
-    return { ...aggregation, [filePath]: getRelativeDepth(option.topDirs, filePath) };
+    return { ...aggregation, [filePath]: getRelativeDepth(option.startAt, filePath) };
   }, {});
 
   const dirPaths = filePaths.reduce<Record<string, IExportInfo[]>>((aggregation, filePath) => {

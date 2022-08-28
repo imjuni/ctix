@@ -2,11 +2,6 @@ import getIgnoreConfigContents from '@ignores/getIgnoreConfigContents';
 import getIgnoreConfigFiles from '@ignores/getIgnoreConfigFiles';
 import * as env from '@testenv/env';
 import { posixJoin } from '@tools/misc';
-import consola, { LogLevel } from 'consola';
-
-beforeAll(() => {
-  consola.level = LogLevel.Debug;
-});
 
 test('getIgnoreFiles', async () => {
   const projectPath = env.exampleType04Path;

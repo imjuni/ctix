@@ -4,7 +4,7 @@ import ICommonCliOption from '@configs/interfaces/ICommonCliOption';
 import ICreateSingleCommonCliOption from '@configs/interfaces/ICreateSingleCommonCliOption';
 import { TCreateOption, TRemoveOption, TSingleOption } from '@configs/interfaces/IOption';
 import { posixJoin } from '@tools/misc';
-import { replaceSepToPosix } from 'my-node-fp';
+import { getDirnameSync, replaceSepToPosix } from 'my-node-fp';
 import path from 'path';
 
 export const examplePath = replaceSepToPosix(
@@ -24,6 +24,9 @@ export const commonOption: ICommonCliOption = {
 
   p: posixJoin(examplePath, 'tsconfig.json'),
   project: posixJoin(examplePath, 'tsconfig.json'),
+
+  a: getDirnameSync(posixJoin(examplePath, 'tsconfig.json')),
+  startAt: getDirnameSync(posixJoin(examplePath, 'tsconfig.json')),
 
   f: 'index.ts',
   exportFilename: 'index.ts',

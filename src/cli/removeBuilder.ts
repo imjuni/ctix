@@ -12,7 +12,7 @@ export default function removeBuilder<
   args
     .option('includeBackup', {
       alias: 'b',
-      describe: 'clean with backup file',
+      describe: 'remove with backup file',
       type: 'boolean',
       default: false,
     })

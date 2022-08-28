@@ -1,6 +1,7 @@
 import defaultIgnoreFileName from '@configs/defaultIgnoreFileName';
 import { TCreateOption } from '@configs/interfaces/IOption';
 import jsonLoader from '@configs/jsonLoader';
+import { getDirnameSync } from 'my-node-fp';
 import { ArgumentsCamelCase } from 'yargs';
 
 export default function getCliCreateOption(
@@ -22,6 +23,9 @@ export default function getCliCreateOption(
 
     f: argv.f ?? argv.exportFilename ?? rawConfig.exportFilename ?? 'index.ts',
     exportFilename: argv.f ?? argv.exportFilename ?? rawConfig.exportFilename ?? 'index.ts',
+
+    a: argv.a ?? argv.startAt ?? rawConfig.startAt ?? getDirnameSync(project),
+    startAt: argv.a ?? argv.startAt ?? rawConfig.startAt ?? getDirnameSync(project),
 
     progressStream: argv.progressStream ?? rawConfig.progressStream ?? 'stdout',
     spinnerStream: argv.spinnerStream ?? rawConfig.spinnerStream ?? 'stdout',

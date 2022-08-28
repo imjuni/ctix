@@ -1,11 +1,12 @@
 import initialConfigLiteral from '@configs/initialConfigLiteral';
-import consola, { LogLevel } from 'consola';
+import logger from '@tools/logger';
 import { applyEdits, FormattingOptions, ModificationOptions, modify } from 'jsonc-parser';
 
+const log = logger();
 const share: { formattingOptions: FormattingOptions; options: ModificationOptions } = {} as any;
 
 beforeAll(() => {
-  consola.level = LogLevel.Debug;
+  log.level = 'debug';
   share.formattingOptions = {
     insertSpaces: true,
     tabSize: 2,
@@ -18,13 +19,13 @@ beforeAll(() => {
 });
 
 test('defaultConfig', async () => {
-  consola.debug('AS-IS -------------------------------------------------------------------');
-  consola.debug(initialConfigLiteral);
-  consola.debug('------------------------------------------------------------------------');
+  log.debug('AS-IS -------------------------------------------------------------------');
+  log.debug(initialConfigLiteral);
+  log.debug('------------------------------------------------------------------------');
 
   const modified = modify(initialConfigLiteral, ['project'], 'helloworld', share.options);
 
-  consola.debug('TO-BE -------------------------------------------------------------------');
-  consola.debug(applyEdits(initialConfigLiteral, modified));
-  consola.debug('------------------------------------------------------------------------');
+  log.debug('TO-BE -------------------------------------------------------------------');
+  log.debug(applyEdits(initialConfigLiteral, modified));
+  log.debug('------------------------------------------------------------------------');
 });

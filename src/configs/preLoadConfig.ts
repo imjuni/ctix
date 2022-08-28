@@ -1,13 +1,15 @@
 import getCliCreateOption from '@configs/getCliCreateOption';
 import getCliRemoveOption from '@configs/getCliRemoveOption';
 import getCliSingleOption from '@configs/getCliSingleOption';
-import consola from 'consola';
-import * as findUp from 'find-up';
+import logger from '@tools/logger';
+import findUp from 'find-up';
 import fs from 'fs';
 import { isEmpty, isFalse, isNotEmpty } from 'my-easy-fp';
 import { existsSync, getDirnameSync } from 'my-node-fp';
 import yargs, { ArgumentsCamelCase } from 'yargs';
 import { TCreateOption, TRemoveOption, TSingleOption } from './interfaces/IOption';
+
+const log = logger();
 
 function getConfigFilePath(argv: { c?: string; config?: string }, projectPath?: string) {
   const argvConfigFilePath = argv.c ?? argv.config;
@@ -84,7 +86,9 @@ export default function preLoadConfig() {
     return {};
   } catch (catched) {
     const err = catched instanceof Error ? catched : new Error('unknown error raised');
-    consola.error(err);
+
+    log.error(err);
+    log.error(err.stack);
 
     return {};
   }

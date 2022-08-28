@@ -15,9 +15,9 @@ module.exports = {
   ignorePatterns: ['__test__/*', '__tests__/*'],
   parser: '@typescript-eslint/parser',
   parserOptions: {
-    project: './tsconfig.json',
+    project: './tsconfig.eslint.json',
   },
-  plugins: ['@typescript-eslint', '@typescript-eslint/tslint', 'prettier', 'import'],
+  plugins: ['@typescript-eslint', 'prettier', 'import'],
   rules: {
     '@typescript-eslint/indent': 'off',
     'max-len': ['error', { code: 120 }],

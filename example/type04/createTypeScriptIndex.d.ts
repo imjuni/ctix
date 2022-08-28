@@ -1,6 +1,4 @@
-/// <reference types="glob" />
-
-import * as glob from 'glob';
+import fastGlob from 'fast-glob';
 
 export interface ICreateTsIndexOption {
   fileFirst?: boolean;
@@ -11,7 +9,7 @@ export interface ICreateTsIndexOption {
   excludes?: string[];
   fileExcludePatterns?: string[];
   targetExts?: string[];
-  globOptions?: glob.IOptions;
+  globOptions?: fastGlob.IOptions;
 }
 
 export declare function indexWriter(

@@ -26,6 +26,12 @@ export default function builder<
       describe: 'configuration file path',
       type: 'string',
     })
+    .option('startAt', {
+      alias: 'a',
+      describe:
+        'start working from startAt directory. If you do not pass startAt use project directory.',
+      type: 'string',
+    })
     .option('spinnerStream', {
       describe: 'Stream of cli spinner, you can pass stdout or stderr',
       type: 'string',

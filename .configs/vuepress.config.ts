@@ -20,6 +20,10 @@ const navs: NavbarConfig = [
         text: 'Create',
         link: '/usage/create-command.md',
       },
+      {
+        text: 'Remove',
+        link: '/usage/remove-command.md',
+      },
     ],
   },
   {
