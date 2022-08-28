@@ -175,21 +175,26 @@ It is not recommanded to use `index.ts` file to re-map paths or shorten the path
 
 ## Option
 
-| Name             | Short | Default  | Command                | Description                                                                                                |
-| :--------------- | ----- | -------- | ---------------------- | ---------------------------------------------------------------------------------------------------------- |
-| --config         | -c    |          | All                    | configuration file(.ctirc) path                                                                            |
-| --project        | -p    | required | All                    | tsconfig.json path: you must pass path with filename, like this "./tsconfig.json"                          |
-| --exportFilename | -f    | index.ts | create, single, remove | Export filename, if you not pass this field that use "index.ts" or "index.d.ts"                            |
-| --useSemicolon   | -s    | true     | create, single         | add semicolon on line ending at every export statement                                                     |
-| --useTimestamp   | -t    | false    | create, single         | timestamp write on ctix comment right-side, only works in useComment option set true                       |
-| --useComment     | -m    | true     | create, single         | ctix comment add on first line of creted export file(default index.ts) file, that remark created from ctix |
-| --quote          | -q    | '        | create, single         | change quote character at export syntax                                                                    |
-| --keepFileExt    | -k    | '        | create, single         | keep file extension on export statement path literal                                                       |
-| --overwrite      | -w    | '        | create, single         | overwrite each index.ts file                                                                               |
-| --skipEmptyDir   | -e    | '        | create                 | empty directory skip create index.ts file                                                                  |
-| --output         | -o    | N/A      | single                 | output directory                                                                                           |
-| --useRootDir     | -r    | false    | single                 | output file under rootDir in tsconfig.json.                                                                |
-| --includeBackup  | N/A   | false    | remove                 | If this option set true on remove mode what will be delete backup file.                                    |
+| Name             | Short | Default     | Command                | Description                                                                                                                    |
+| :--------------- | ----- | ----------- | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| --config         | -c    |             | All                    | configuration file(.ctirc) path                                                                                                |
+| --project        | -p    | required    | All                    | tsconfig.json path: you must pass path with filename, like this "./tsconfig.json"                                              |
+| --spinnerStream  |       | stdout      | All                    | Stream of cli spinner, you can pass stdout or stderr                                                                           |
+| --progressStream |       | stdout      | All                    | Stream of cli progress, you can pass stdout or stderr                                                                          |
+| --reasonerStream |       | stderr      | All                    | Stream of cli reasoner. Reasoner show name conflict error and already exist index.ts file error. You can pass stdout or stderr |
+| --startAt        | -a    | = --project | All                    | start working from startAt directory. If you do not pass startAt use project directory.                                        |
+| --exportFilename | -f    | index.ts    | create, single, remove | Export filename, if you not pass this field that use "index.ts" or "index.d.ts"                                                |
+| --useSemicolon   | -s    | true        | create, single         | add semicolon on line ending at every export statement                                                                         |
+| --useTimestamp   | -t    | false       | create, single         | timestamp write on ctix comment right-side, only works in useComment option set true                                           |
+| --useComment     | -m    | true        | create, single         | ctix comment add on first line of creted export file(default index.ts) file, that remark created from ctix                     |
+| --quote          | -q    | '           | create, single         | change quote character at export syntax                                                                                        |
+| --keepFileExt    | -k    | '           | create, single         | keep file extension on export statement path literal                                                                           |
+| --overwrite      | -w    | '           | create, single         | overwrite each index.ts file                                                                                                   |
+| --ignoreFile     | -g    |             | create, single         | ignore file name. You can pass ignore, config file at ctix and use it like profile                                             |
+| --skipEmptyDir   | -e    | '           | create                 | empty directory skip create index.ts file                                                                                      |
+| --output         | -o    | N/A         | single                 | output directory                                                                                                               |
+| --useRootDir     | -r    | false       | single                 | output file under rootDir in tsconfig.json.                                                                                    |
+| --includeBackup  | -b    | false       | remove                 | If this option set true on remove mode what will be delete backup file.                                                        |
 
 ## Ignore
 

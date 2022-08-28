@@ -75,7 +75,7 @@ export default async function getDescendantExportInfo(
         isTerminal: isFalse(
           includeDirFilePaths.some((includeDirFilePath) => includeDirFilePath.isDirectory()),
         ),
-        depth: getRelativeDepth(option.topDirs, globDirPath),
+        depth: getRelativeDepth(option.startAt, globDirPath),
         exportInfos: includeExportInfos,
       };
     }),
@@ -85,7 +85,7 @@ export default async function getDescendantExportInfo(
     {
       dirPath: filePath,
       isTerminal: await isEmptyDir(filePath),
-      depth: getRelativeDepth(option.topDirs, filePath),
+      depth: getRelativeDepth(option.startAt, filePath),
       exportInfos: parentExportInfo,
     },
     ...descendants,

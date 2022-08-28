@@ -14,19 +14,21 @@ import {
   TSingleOption,
 } from '@configs/interfaces/IOption';
 import preLoadConfig from '@configs/preLoadConfig';
-import consola, { LogLevel } from 'consola';
+import logger from '@tools/logger';
+import { isError } from 'my-easy-fp';
 import sourceMapSupport from 'source-map-support';
 import yargsAnyType, { Argv } from 'yargs';
 import { createInitFile, createWritor, removeIndexFile, singleWritor } from './ctix';
 
 sourceMapSupport.install();
 
+const log = logger();
+
 // Yargs default type using object type(= {}). But object type cause error that
 // fast-maker cli option interface type. So we make concrete type yargs instance
 // make using by any type.
 const yargs: Argv<TRemoveOption | TCreateOption | TInitOption | TSingleOption> =
   yargsAnyType as any;
-consola.level = LogLevel.Debug;
 
 yargs(process.argv.slice(2))
   .command<TCreateOption>({
@@ -40,8 +42,10 @@ yargs(process.argv.slice(2))
       try {
         await createWritor(attachDiretoryInfo({ ...argv, mode: 'create' }), true);
       } catch (catched) {
-        const err = catched instanceof Error ? catched : new Error('unknown error raised');
-        consola.error(err);
+        const err = isError(catched) ?? new Error('unknown error raised');
+
+        log.error(err.message);
+        log.error(err.stack);
       }
     },
   })
@@ -56,8 +60,10 @@ yargs(process.argv.slice(2))
       try {
         await singleWritor(attachDiretoryInfo({ ...argv, mode: 'single' }), true);
       } catch (catched) {
-        const err = catched instanceof Error ? catched : new Error('unknown error raised');
-        consola.error(err);
+        const err = isError(catched) ?? new Error('unknown error raised');
+
+        log.error(err.message);
+        log.error(err.stack);
       }
     },
   })
@@ -72,8 +78,10 @@ yargs(process.argv.slice(2))
       try {
         await removeIndexFile(attachDiretoryInfo({ ...argv, mode: 'remove' }), true);
       } catch (catched) {
-        const err = catched instanceof Error ? catched : new Error('unknown error raised');
-        consola.error(err);
+        const err = isError(catched) ?? new Error('unknown error raised');
+
+        log.error(err.message);
+        log.error(err.stack);
       }
     },
   })
@@ -89,12 +97,14 @@ yargs(process.argv.slice(2))
         const optionWithDirectoryInfo = attachDiretoryInfo({ ...argv, mode: 'init' });
         await createInitFile(optionWithDirectoryInfo, true);
       } catch (catched) {
-        const err = catched instanceof Error ? catched : new Error('unknown error raised');
-        consola.error(err);
+        const err = isError(catched) ?? new Error('unknown error raised');
+
+        log.error(err.message);
+        log.error(err.stack);
       }
     },
   })
   .demandCommand()
   .recommendCommands()
   .config(preLoadConfig())
-  .help().argv;
+  .help('help').argv;

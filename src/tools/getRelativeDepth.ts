@@ -1,12 +1,13 @@
+import { isEmpty } from 'my-easy-fp';
 import { replaceSepToPosix } from 'my-node-fp';
 import path from 'path';
 
 export default function getRelativeDepth(basePaths: string | string[], dirPath: string) {
-  if (Array.isArray(basePaths) && basePaths.length <= 0) {
+  const basePath = typeof basePaths === 'string' ? basePaths : basePaths.at(0);
+
+  if (isEmpty(basePath)) {
     throw new Error('[getRelativeDepth] basePaths is empty array');
   }
-
-  const basePath = typeof basePaths === 'string' ? basePaths : basePaths[0];
 
   const relativePath = replaceSepToPosix(
     path.relative(replaceSepToPosix(basePath), replaceSepToPosix(dirPath)),

@@ -1,7 +1,6 @@
 import ICreateIndexInfo from '@tools/interface/ICreateIndexInfo';
 import ICreateIndexInfos from '@tools/interface/ICreateIndexInfos';
-import { settify } from '@tools/misc';
-import { isNotEmpty } from 'my-easy-fp';
+import { isNotEmpty, settify } from 'my-easy-fp';
 
 export default function mergeCreateIndexInfo(
   origin: ICreateIndexInfos,

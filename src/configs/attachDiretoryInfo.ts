@@ -9,9 +9,9 @@ import {
   TSingleOption,
 } from '@configs/interfaces/IOption';
 import getDepth from '@tools/getDepth';
-import { settify } from '@tools/misc';
 import findUp from 'find-up';
-import { existsSync, getDirnameSync, replaceSepToPosix, replaceSepToWin32 } from 'my-node-fp';
+import { isEmpty, settify } from 'my-easy-fp';
+import { existsSync, getDirnameSync, replaceSepToPosix } from 'my-node-fp';
 import path from 'path';
 
 function getCustomIgnoreFile(option: TCreateOption | TSingleOption) {
@@ -39,6 +39,28 @@ function getCustomIgnoreFile(option: TCreateOption | TSingleOption) {
   return defaultIgnoreFileName;
 }
 
+function getStartAtDir(startAtArgs: string | undefined, projectDirPath: string) {
+  if (isEmpty(startAtArgs)) {
+    return replaceSepToPosix(projectDirPath);
+  }
+
+  if (path.isAbsolute(startAtArgs)) {
+    return replaceSepToPosix(startAtArgs);
+  }
+
+  // src가 absolute path가 아니라면 projectDirPath에서 찾아야함,
+  // 안그러면 엉뚱한데서 찾음
+  if (startAtArgs.startsWith('.')) {
+    return replaceSepToPosix(path.resolve(path.join(projectDirPath, startAtArgs)));
+  }
+
+  const filePath =
+    findUp.sync(startAtArgs, { cwd: projectDirPath, type: 'directory' }) ?? projectDirPath;
+  const startAt = replaceSepToPosix(path.resolve(filePath));
+
+  return startAt;
+}
+
 export default function attachDiretoryInfo<
   T extends TCreateOption | TSingleOption | TRemoveOption | TInitOption,
 >(option: T): T & IDirectoryInfo {
@@ -47,7 +69,7 @@ export default function attachDiretoryInfo<
 
   const topDirDepth = tsconfig.fileNames
     .map((filePath) => {
-      const dirPath = replaceSepToWin32(path.resolve(getDirnameSync(filePath)));
+      const dirPath = replaceSepToPosix(path.resolve(getDirnameSync(filePath)));
       return {
         filePaths: [dirPath],
         depth: getDepth(dirPath),
@@ -78,12 +100,14 @@ export default function attachDiretoryInfo<
       ? getCustomIgnoreFile(option)
       : defaultIgnoreFileName;
 
+  const resolvedProjectDirPath = replaceSepToPosix(getDirnameSync(project));
+
   return {
-    ...option,
+    ...{ ...option, startAt: getStartAtDir(option.startAt, resolvedProjectDirPath) },
     eol,
     topDirs: topDirDepth.filePaths,
     topDirDepth: 0,
-    resolvedProjectDirPath: getDirnameSync(project),
+    resolvedProjectDirPath,
     resolvedProjectFilePath: project,
     resolvedIgnoreFilePath,
   };

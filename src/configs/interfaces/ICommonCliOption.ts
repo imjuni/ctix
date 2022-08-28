@@ -24,6 +24,17 @@ export default interface ICommonCliOption {
   project: string;
 
   /**
+   * start working from startAt directory. If you do not pass startAt use project directory.
+   * @mode all
+   */
+  a: string;
+  /**
+   * start working from startAt directory. If you do not pass startAt use project directory.
+   * @mode all
+   */
+  startAt: string;
+
+  /**
    * Export filename, if you not pass this field that use "index.ts" or "index.d.ts"
    * @mode create, single, remove
    * @default index.ts

@@ -45,7 +45,7 @@ export default async function createDescendantIndex(
   ignores: AsyncReturnType<typeof getIgnoreConfigContents>,
   option: TCreateOrSingleOption,
 ): Promise<ICreateIndexInfo[]> {
-  const currentDepth = getRelativeDepth(option.topDirs, dirPath);
+  const currentDepth = getRelativeDepth(option.startAt, dirPath);
   const everyDescendants = await getDescendantExportInfo(dirPath, option, exportInfos, ignores);
   const sortedEveryDescendants = everyDescendants.sort((l, r) => {
     const depthDiff = l.depth - r.depth;
@@ -61,7 +61,7 @@ export default async function createDescendantIndex(
     // top level 이라면, 비어 있더라도 index를 빌드해야 한다
     // self directory is empty that will be skip
     // If currentDepth is top level of depth that have to build index
-    if (currentDirExportInfos.length <= 0 && currentDepth !== option.topDirDepth) {
+    if (currentDirExportInfos.length <= 0 && currentDepth !== 0) {
       return [];
     }
 

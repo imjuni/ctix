@@ -1,6 +1,8 @@
 import { TRemoveOptionWithDirInfo } from '@configs/interfaces/IOption';
+import { posixJoin } from '@tools/misc';
 import fastGlob from 'fast-glob';
-import { getDirname, replaceSepToPosix } from 'my-node-fp';
+import { settify } from 'my-easy-fp';
+import { getDirname, isDescendant, replaceSepToPosix } from 'my-node-fp';
 import path from 'path';
 import * as tsm from 'ts-morph';
 
@@ -10,26 +12,28 @@ export default async function getRemoveFiles(
 ) {
   const filePaths = project
     .getSourceFiles()
+    .filter((sourceFile) =>
+      isDescendant(option.startAt, sourceFile.getFilePath().toString(), path.posix.sep),
+    )
     .map((sourceFile) => replaceSepToPosix(sourceFile.getFilePath()));
 
   const dirPaths = (await Promise.all(filePaths.map((filePath) => getDirname(filePath)))).map(
     (dirPath) => replaceSepToPosix(dirPath),
   );
 
-  const cwd = await getDirname(option.project);
-
   const globPatterns = option.includeBackup
-    ? [
-        ...dirPaths.map((dirPath) =>
-          replaceSepToPosix(path.join(dirPath, '**', option.exportFilename)),
-        ),
-        ...dirPaths.map((dirPath) =>
-          replaceSepToPosix(path.join(dirPath, '**', `${option.exportFilename}.bak`)),
-        ),
-      ]
-    : dirPaths.map((dirPath) => replaceSepToPosix(path.join(dirPath, '**', option.exportFilename)));
+    ? settify([
+        posixJoin(option.startAt, option.exportFilename),
+        posixJoin(option.startAt, `${option.exportFilename}.bak`),
+        ...dirPaths.map((dirPath) => posixJoin(dirPath, '**', option.exportFilename)),
+        ...dirPaths.map((dirPath) => posixJoin(dirPath, '**', `${option.exportFilename}.bak`)),
+      ])
+    : settify([
+        posixJoin(option.startAt, option.exportFilename),
+        ...dirPaths.map((dirPath) => posixJoin(dirPath, '**', option.exportFilename)),
+      ]);
 
-  const files = await fastGlob(globPatterns, { dot: true, cwd });
+  const files = await fastGlob(globPatterns, { dot: true, cwd: option.startAt });
 
   return files;
 }

@@ -8,7 +8,6 @@ import * as env from '@testenv/env';
 import { getTestValue, posixJoin } from '@tools/misc';
 import validateExportDuplication from '@validations/validateExportDuplication';
 import validateFileNameDuplication from '@validations/validateFileNameDuplication';
-import consola, { LogLevel } from 'consola';
 import { isFalse } from 'my-easy-fp';
 import path from 'path';
 import * as tsm from 'ts-morph';
@@ -23,8 +22,6 @@ const share: {
 } = {} as any;
 
 beforeAll(() => {
-  consola.level = LogLevel.Debug;
-
   share.projectPath02 = posixJoin(env.exampleType02Path, 'tsconfig.json');
   share.project02 = new tsm.Project({ tsConfigFilePath: share.projectPath02 });
 
@@ -36,9 +33,8 @@ beforeAll(() => {
 });
 
 test('c001-singleIndexInfos-type03', async () => {
-  const expectFileName = expect
-    .getState()
-    .currentTestName.replace(/^([cC][0-9]+)(-.+)/, 'expect$2.ts');
+  const expectFileName =
+    expect.getState().currentTestName?.replace(/^([cC][0-9]+)(-.+)/, 'expect$2.ts') ?? '';
 
   const projectPath = env.exampleType03Path;
   const project = share.project03;
@@ -49,6 +45,7 @@ test('c001-singleIndexInfos-type03', async () => {
     project: projectPath,
     keepFileExt: false,
     output: projectPath,
+    startAt: projectPath,
     topDirs: [projectPath],
   };
 
@@ -82,9 +79,8 @@ test('c001-singleIndexInfos-type03', async () => {
 });
 
 test('c002-singleIndexInfos-type04', async () => {
-  const expectFileName = expect
-    .getState()
-    .currentTestName.replace(/^([cC][0-9]+)(-.+)/, 'expect$2.ts');
+  const expectFileName =
+    expect.getState().currentTestName?.replace(/^([cC][0-9]+)(-.+)/, 'expect$2.ts') ?? '';
 
   const projectPath = env.exampleType04Path;
   const project = share.project04;
@@ -95,6 +91,7 @@ test('c002-singleIndexInfos-type04', async () => {
     keepFileExt: false,
     project: projectPath,
     output: projectPath,
+    startAt: projectPath,
     topDirs: [projectPath],
   };
 

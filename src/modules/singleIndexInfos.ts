@@ -6,8 +6,7 @@ import getDirPaths from '@modules/getDirPaths';
 import mergeCreateIndexInfo from '@modules/mergeCreateIndexInfo';
 import singleIndexInfo from '@modules/singleIndexInfo';
 import ICreateIndexInfos from '@tools/interface/ICreateIndexInfos';
-import { settify } from '@tools/misc';
-import { isNotEmpty } from 'my-easy-fp';
+import { isNotEmpty, settify } from 'my-easy-fp';
 import * as tsm from 'ts-morph';
 import { AsyncReturnType } from 'type-fest';
 

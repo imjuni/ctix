@@ -6,7 +6,7 @@ const case003 = {
   childlikeCase003: new ChildlikeCls(),
   nameCase003: 'case003',
   arrowCase003: () => 'hello',
-  funcCase003: function () {
+  funcCase003() {
     return 'hero';
   },
 };

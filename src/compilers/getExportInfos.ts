@@ -4,6 +4,7 @@ import { TCreateOrSingleOption } from '@configs/interfaces/IOption';
 import getIgnoreConfigContents from '@ignores/getIgnoreConfigContents';
 import isIgnored from '@ignores/isIgnored';
 import { isEmpty, isFalse } from 'my-easy-fp';
+import { isDescendant } from 'my-node-fp';
 import path from 'path';
 import * as tsm from 'ts-morph';
 import { AsyncReturnType } from 'type-fest';
@@ -15,6 +16,9 @@ export default async function getExportInfos(
 ) {
   const sourceFiles = project
     .getSourceFiles()
+    .filter((sourceFile) =>
+      isDescendant(option.startAt, sourceFile.getFilePath().toString(), path.posix.sep),
+    )
     .filter(
       (sourceFile) => path.basename(sourceFile.getFilePath().toString()) !== option.exportFilename,
     )

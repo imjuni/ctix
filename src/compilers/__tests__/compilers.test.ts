@@ -6,13 +6,14 @@ import { TCreateOptionWithDirInfo } from '@configs/interfaces/IOption';
 import getIgnoreConfigContents from '@ignores/getIgnoreConfigContents';
 import getIgnoreConfigFiles from '@ignores/getIgnoreConfigFiles';
 import * as env from '@testenv/env';
+import logger from '@tools/logger';
 import { getTestValue, posixJoin } from '@tools/misc';
-import consola, { LogLevel } from 'consola';
 import fs from 'fs';
 import { isEmpty } from 'my-easy-fp';
 import path from 'path';
 import * as tsm from 'ts-morph';
 
+const log = logger();
 const share: {
   projectPath02: string;
   project02: tsm.Project;
@@ -27,8 +28,7 @@ const share: {
 } = {} as any;
 
 beforeAll(() => {
-  consola.level = LogLevel.Debug;
-
+  log.level = 'debug';
   share.projectPath02 = posixJoin(env.exampleType02Path, 'tsconfig.json');
   share.project02 = new tsm.Project({ tsConfigFilePath: share.projectPath02 });
 
@@ -61,7 +61,7 @@ test('c001-getExportedName', async () => {
       throw new Error('default export not found!');
     }
 
-    consola.debug('length: ', defaultExporteddeclarations.length);
+    log.debug('length: ', defaultExporteddeclarations.length);
 
     const [defaultExporteddeclaration] = defaultExporteddeclarations;
     return getExportedName(defaultExporteddeclaration);
@@ -93,7 +93,7 @@ test('c006-getExportedName', async () => {
       const exportedDeclarations = sourceFile.getExportedDeclarations();
       const exportedDeclarationNames = Array.from(exportedDeclarations.keys());
 
-      consola.debug('length: ', exportedDeclarationNames.length);
+      log.debug('length: ', exportedDeclarationNames.length);
 
       return exportedDeclarationNames
         .map((exportedDeclarationName) => exportedDeclarations.get(exportedDeclarationName))
@@ -147,6 +147,7 @@ test('c002-getExportInfo', async () => {
     ...env.createOptionWithDirInfo,
     project: projectPath,
     topDirDepth: 0,
+    startAt: projectPath,
     topDirs: [projectPath],
   };
 
@@ -184,9 +185,8 @@ test('c003-getExportInfo', async () => {
 });
 
 test('c004-getExportInfos-not-ignore', async () => {
-  const expectFileName = expect
-    .getState()
-    .currentTestName.replace(/^([cC][0-9]+)(-.+)/, 'expect$2.ts');
+  const expectFileName =
+    expect.getState().currentTestName?.replace(/^([cC][0-9]+)(-.+)/, 'expect$2.ts') ?? '';
 
   const projectPath = env.exampleType03Path;
   const project = share.project03;
@@ -201,6 +201,7 @@ test('c004-getExportInfos-not-ignore', async () => {
     skipEmptyDir: false,
     keepFileExt: false,
     topDirDepth: 0,
+    startAt: projectPath,
     topDirs: [projectPath],
   };
 
@@ -212,9 +213,8 @@ test('c004-getExportInfos-not-ignore', async () => {
 });
 
 test('c005-getExportInfos-partial-ignore', async () => {
-  const expectFileName = expect
-    .getState()
-    .currentTestName.replace(/^([cC][0-9]+)(-.+)/, 'expect$2.ts');
+  const expectFileName =
+    expect.getState().currentTestName?.replace(/^([cC][0-9]+)(-.+)/, 'expect$2.ts') ?? '';
 
   const projectPath = env.exampleType04Path;
   const project = share.project04;
@@ -232,6 +232,7 @@ test('c005-getExportInfos-partial-ignore', async () => {
     skipEmptyDir: false,
     keepFileExt: false,
     topDirDepth: 0,
+    startAt: projectPath,
     topDirs: [projectPath],
   };
 

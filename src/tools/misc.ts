@@ -5,11 +5,6 @@ import { replaceSepToPosix } from 'my-node-fp';
 import * as path from 'path';
 import * as tsm from 'ts-morph';
 
-/** create set, dedupe duplicated element after return array type */
-export function settify<T>(arr: T[]): T[] {
-  return Array.from(new Set(arr));
-}
-
 export function posixJoin(...args: string[]): string {
   return replaceSepToPosix(path.join(...args));
 }

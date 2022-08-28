@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "allowJs": true
+  },
+  "exclude": [
+    "**/node_modules/**",
+    "**/dist/**/*",
+    "**/.configs/**",
+    "**/docs/**"
+  ]
+}

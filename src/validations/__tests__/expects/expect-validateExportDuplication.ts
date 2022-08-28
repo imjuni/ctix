@@ -160,7 +160,7 @@ export default {
     {
       type: 'error',
       lineAndCharacter: {
-        line: 19,
+        line: 20,
         character: 1,
       },
       nodes: [null],
@@ -170,7 +170,7 @@ export default {
     {
       type: 'error',
       lineAndCharacter: {
-        line: 19,
+        line: 20,
         character: 1,
       },
       nodes: [null],

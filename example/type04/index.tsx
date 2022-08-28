@@ -4,7 +4,7 @@ export function hello() {
 
 // tslint:disable-next-line
 const ReactApplication = () => {
-  return (<div>Hello world</div>);
-}
+  return <div>Hello world</div>;
+};
 
 export default ReactApplication;

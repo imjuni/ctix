@@ -7,8 +7,7 @@ import createIndexInfo from '@modules/createIndexInfo';
 import getDirPaths from '@modules/getDirPaths';
 import mergeCreateIndexInfo from '@modules/mergeCreateIndexInfo';
 import ICreateIndexInfos from '@tools/interface/ICreateIndexInfos';
-import { settify } from '@tools/misc';
-import { isNotEmpty } from 'my-easy-fp';
+import { isNotEmpty, settify } from 'my-easy-fp';
 import { AsyncReturnType } from 'type-fest';
 
 export default async function createIndexInfos(
@@ -38,13 +37,13 @@ export default async function createIndexInfos(
             const indexInfo = createIndexInfo(exportInfo, option);
             return indexInfo;
           })
-          .flatMap((nonFlatted) => nonFlatted);
+          .flat();
 
         progress.increment();
 
         return statements;
       })
-      .flatMap((nonFlatted) => nonFlatted)
+      .flat()
       .reduce<Record<string, ICreateIndexInfos>>((aggregation, indexInfo) => {
         if (isNotEmpty(aggregation[indexInfo.resolvedDirPath])) {
           return {
@@ -87,7 +86,7 @@ export default async function createIndexInfos(
         }),
       )
     )
-      .flatMap((nonFlatted) => nonFlatted)
+      .flat()
       .reduce<Record<string, ICreateIndexInfos>>((aggregation, indexInfo) => {
         if (isNotEmpty(aggregation[indexInfo.resolvedDirPath])) {
           return {

@@ -8,23 +8,24 @@ Create an entrypoint index.ts file for use with webpack and rollup.js, typedoc
 
 ## single command option
 
-| Name             | Short | Default  | Type                 | Required | Command |
-| :--------------- | ----- | -------- | -------------------- | -------- | ------- |
-| --config         | -c    |          | string               |          | single  |
-| --project        | -p    |          | string               | required | single  |
-| --exportFilename | -f    | index.ts | string               | required | single  |
-| --useSemicolon   | -s    | true     | string               |          | single  |
-| --useTimestamp   | -t    | false    | boolean              |          | single  |
-| --useComment     | -m    | true     | boolean              |          | single  |
-| --quote          | -q    | '        | string               |          | single  |
-| --keepFileExt    | -k    | false    | boolean              |          | single  |
-| --overwrite      | -w    | false    | boolean              |          | single  |
-| --ignoreFile     | -g    |          | string               |          | single  |
-| --output         | -o    |          | string               | required | single  |
-| --useRootDir     | -r    | false    | boolean              |          | single  |
-| --spinnerStream  |       | stdout   | enum(stdout, stderr) |          | single  |
-| --progressStream |       | stdout   | enum(stdout, stderr) |          | single  |
-| --reasonerStream |       | stderr   | enum(stdout, stderr) |          | single  |
+| Name             | Short | Default             | Type                 | Required | Command |
+| :--------------- | ----- | ------------------- | -------------------- | -------- | ------- |
+| --config         | -c    |                     | string               |          | single  |
+| --project        | -p    |                     | string               | required | single  |
+| --startAt        | -a    | use --project value | string               | required | single  |
+| --exportFilename | -f    | index.ts            | string               | required | single  |
+| --useSemicolon   | -s    | true                | string               |          | single  |
+| --useTimestamp   | -t    | false               | boolean              |          | single  |
+| --useComment     | -m    | true                | boolean              |          | single  |
+| --quote          | -q    | '                   | string               |          | single  |
+| --keepFileExt    | -k    | false               | boolean              |          | single  |
+| --overwrite      | -w    | false               | boolean              |          | single  |
+| --ignoreFile     | -g    |                     | string               |          | single  |
+| --output         | -o    |                     | string               | required | single  |
+| --useRootDir     | -r    | false               | boolean              |          | single  |
+| --spinnerStream  |       | stdout              | enum(stdout, stderr) |          | single  |
+| --progressStream |       | stdout              | enum(stdout, stderr) |          | single  |
+| --reasonerStream |       | stderr              | enum(stdout, stderr) |          | single  |
 
 ## single command option description
 
@@ -32,6 +33,7 @@ Create an entrypoint index.ts file for use with webpack and rollup.js, typedoc
 | :--------------- | ------------------------------------------------------------------------------------------------------------------------------ |
 | --config         | configuration file(.ctirc) path                                                                                                |
 | --project        | tsconfig.json path: you must pass path with filename, like this "./tsconfig.json"                                              |
+| --startAt        | start working from startAt directory. If you do not pass startAt use project directory.                                        |
 | --exportFilename | Export filename, if you not pass this field that use "index.ts" or "index.d.ts"                                                |
 | --useSemicolon   | add semicolon on line ending at every export statement                                                                         |
 | --useTimestamp   | timestamp write on ctix comment right-side, only works in useComment option set true                                           |

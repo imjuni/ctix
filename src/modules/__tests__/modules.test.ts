@@ -8,15 +8,16 @@ import getDirPaths from '@modules/getDirPaths';
 import getFilePathOnIndex from '@modules/getFilePathOnIndex';
 import mergeCreateIndexInfo from '@modules/mergeCreateIndexInfo';
 import * as env from '@testenv/env';
+import logger from '@tools/logger';
 import { getTestValue, posixJoin } from '@tools/misc';
 import validateExportDuplication from '@validations/validateExportDuplication';
 import validateFileNameDuplication from '@validations/validateFileNameDuplication';
-import consola, { LogLevel } from 'consola';
 import { isFalse } from 'my-easy-fp';
 import { replaceSepToPosix } from 'my-node-fp';
 import path from 'path';
 import * as tsm from 'ts-morph';
 
+const log = logger();
 const share: {
   projectPath02: string;
   project02: tsm.Project;
@@ -27,7 +28,7 @@ const share: {
 } = {} as any;
 
 beforeAll(() => {
-  consola.level = LogLevel.Debug;
+  log.level = 'debug';
   share.projectPath02 = posixJoin(env.exampleType02Path, 'tsconfig.json');
   share.project02 = new tsm.Project({ tsConfigFilePath: share.projectPath02 });
 
@@ -39,9 +40,8 @@ beforeAll(() => {
 });
 
 test('c001-getDirPaths', async () => {
-  const expectFileName = expect
-    .getState()
-    .currentTestName.replace(/^([cC][0-9]+)(-.+)/, 'expect$2.ts');
+  const expectFileName =
+    expect.getState().currentTestName?.replace(/^([cC][0-9]+)(-.+)/, 'expect$2.ts') ?? '';
 
   const projectPath = env.exampleType03Path;
   const ignoreFilePath = posixJoin(projectPath, defaultIgnoreFileName);
@@ -55,6 +55,7 @@ test('c001-getDirPaths', async () => {
   const option: TCreateOptionWithDirInfo = {
     ...env.createOptionWithDirInfo,
     project: projectPath,
+    startAt: projectPath,
     skipEmptyDir: false,
     keepFileExt: false,
     topDirDepth: 0,
@@ -94,6 +95,7 @@ test('c002-getFilePathOnIndex', async () => {
   const option: TSingleOptionWithDirInfo = {
     ...env.singleOptionWithDirInfo,
     project: env.exampleType04Path,
+    startAt: env.exampleType04Path,
     keepFileExt: false,
     topDirDepth: 0,
     topDirs: [env.exampleType04Path],
@@ -118,15 +120,14 @@ test('c002-getFilePathOnIndex', async () => {
   ].sort();
 
   const result = [filePathCase01, filePathCase02, filePathCase03, filePathCase04].sort();
-  consola.debug(filePathCase01, filePathCase02, filePathCase03, filePathCase04);
+  log.debug(filePathCase01, filePathCase02, filePathCase03, filePathCase04);
 
   expect(result).toEqual(expectation);
 });
 
 test('c003-getDescendantExportInfo', async () => {
-  const expectFileName = expect
-    .getState()
-    .currentTestName.replace(/^([cC][0-9]+)(-.+)/, 'expect$2.ts');
+  const expectFileName =
+    expect.getState().currentTestName?.replace(/^([cC][0-9]+)(-.+)/, 'expect$2.ts') ?? '';
 
   const projectPath = env.exampleType03Path;
   const ignoreFilePath = posixJoin(projectPath, defaultIgnoreFileName);
@@ -134,6 +135,7 @@ test('c003-getDescendantExportInfo', async () => {
   const option: TCreateOptionWithDirInfo = {
     ...env.createOptionWithDirInfo,
     project: projectPath,
+    startAt: projectPath,
     skipEmptyDir: false,
     keepFileExt: false,
     topDirDepth: 0,

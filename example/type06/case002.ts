@@ -1,3 +1,5 @@
+/* eslint-disable prefer-destructuring */
+
 import { ChildlikeCls } from './fast-maker/ChildlikeCls';
 import { FlakyCls } from './fast-maker/FlakyCls';
 
