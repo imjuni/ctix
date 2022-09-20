@@ -79,7 +79,7 @@ export default async function getExportInfo(
       return {
         identifier: getExportedName(exportedDeclaration),
         node: exportedDeclaration,
-        isIsolatedModules: getIsIsolatedModules(exportedDeclaration),
+        isIsolatedModules: getIsIsolatedModules(...exportedDeclarations),
       };
     });
 
