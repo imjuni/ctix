@@ -1,6 +1,7 @@
 import getExportedName from '@compilers/getExportedName';
 import getExportInfo from '@compilers/getExportInfo';
 import getExportInfos from '@compilers/getExportInfos';
+import IExportInfo from '@compilers/interfaces/IExportInfo';
 import defaultIgnoreFileName from '@configs/defaultIgnoreFileName';
 import { TCreateOptionWithDirInfo } from '@configs/interfaces/IOption';
 import getIgnoreConfigContents from '@ignores/getIgnoreConfigContents';
@@ -25,6 +26,8 @@ const share: {
   project05: tsm.Project;
   projectPath06: string;
   project06: tsm.Project;
+  projectPath07: string;
+  project07: tsm.Project;
 } = {} as any;
 
 beforeAll(() => {
@@ -43,6 +46,9 @@ beforeAll(() => {
 
   share.projectPath06 = posixJoin(env.exampleType06Path, 'tsconfig.json');
   share.project06 = new tsm.Project({ tsConfigFilePath: share.projectPath06 });
+
+  share.projectPath07 = posixJoin(env.exampleType07Path, 'tsconfig.json');
+  share.project07 = new tsm.Project({ tsConfigFilePath: share.projectPath07 });
 });
 
 test('c001-getExportedName', async () => {
@@ -131,6 +137,45 @@ test('c006-getExportedName', async () => {
   expectation.sort();
 
   expect(names).toEqual(expectation);
+});
+
+test('c007-getIsIsolatedModules', async () => {
+  // project://example/type04/fast-maker/ChildlikeCls.ts
+  const expectFileName =
+    expect.getState().currentTestName?.replace(/^([cC][0-9]+)(-.+)/, 'expect$2.ts') ?? '';
+
+  const projectPath = env.exampleType07Path;
+  const project = share.project07;
+
+  const ignoreFilePath = posixJoin(projectPath, defaultIgnoreFileName);
+  const ignoreFiles = await getIgnoreConfigFiles(projectPath, ignoreFilePath);
+  const ignoreContents = await getIgnoreConfigContents({ cwd: projectPath, ...ignoreFiles });
+
+  const sourceFilePaths = [posixJoin(projectPath, 'Foo.ts'), posixJoin(projectPath, 'Bar.ts')];
+  const option: TCreateOptionWithDirInfo = {
+    ...env.createOptionWithDirInfo,
+    project: projectPath,
+    topDirDepth: 0,
+    startAt: projectPath,
+    topDirs: [projectPath],
+  };
+
+  const results = (
+    await Promise.all(
+      sourceFilePaths.map(async (sourceFilePath) => {
+        const sourceFile = project.getSourceFileOrThrow(sourceFilePath);
+        const exportInfo = await getExportInfo(sourceFile, option, ignoreContents);
+        return getTestValue(exportInfo) as IExportInfo;
+      }),
+    )
+  ).sort((l, r) => l.resolvedFilePath.localeCompare(r.resolvedFilePath));
+
+  const expectation: IExportInfo[] = (await import(path.join(__dirname, 'expects', expectFileName)))
+    .default;
+
+  expect(results).toEqual(
+    expectation.sort((l, r) => l.resolvedFilePath.localeCompare(r.resolvedFilePath)),
+  );
 });
 
 test('c002-getExportInfo', async () => {
