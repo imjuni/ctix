@@ -7,12 +7,16 @@ import initBuilder from '@cli/initBuilder';
 import removeBuilder from '@cli/removeBuilder';
 import singleBuilder from '@cli/singleBuilder';
 import attachDiretoryInfo from '@configs/attachDiretoryInfo';
+import getCreateOption from '@configs/getCreateOption';
+import getRemoveOption from '@configs/getRemoveOption';
+import getSingleOption from '@configs/getSingleOption';
 import {
   TCreateOption,
   TInitOption,
   TRemoveOption,
   TSingleOption,
 } from '@configs/interfaces/IOption';
+import isValidConfig from '@configs/isValidConfig';
 import preLoadConfig from '@configs/preLoadConfig';
 import logger from '@tools/logger';
 import { isError } from 'my-easy-fp';
@@ -40,7 +44,10 @@ yargs(process.argv.slice(2))
     },
     handler: async (argv) => {
       try {
-        await createWritor(attachDiretoryInfo({ ...argv, mode: 'create' }), true);
+        const withDefaultOption = getCreateOption(argv);
+        const withDirectoryInfo = attachDiretoryInfo(withDefaultOption);
+
+        await createWritor(withDirectoryInfo, true);
       } catch (catched) {
         const err = isError(catched) ?? new Error('unknown error raised');
 
@@ -58,7 +65,10 @@ yargs(process.argv.slice(2))
     },
     handler: async (argv) => {
       try {
-        await singleWritor(attachDiretoryInfo({ ...argv, mode: 'single' }), true);
+        const withDefaultOption = getSingleOption(argv);
+        const withDirectoryInfo = attachDiretoryInfo(withDefaultOption);
+
+        await singleWritor(withDirectoryInfo, true);
       } catch (catched) {
         const err = isError(catched) ?? new Error('unknown error raised');
 
@@ -76,7 +86,10 @@ yargs(process.argv.slice(2))
     },
     handler: async (argv) => {
       try {
-        await removeIndexFile(attachDiretoryInfo({ ...argv, mode: 'remove' }), true);
+        const withDefaultOption = getRemoveOption(argv);
+        const withDirectoryInfo = attachDiretoryInfo(withDefaultOption);
+
+        await removeIndexFile(withDirectoryInfo, true);
       } catch (catched) {
         const err = isError(catched) ?? new Error('unknown error raised');
 
@@ -94,8 +107,9 @@ yargs(process.argv.slice(2))
     },
     handler: async (argv) => {
       try {
-        const optionWithDirectoryInfo = attachDiretoryInfo({ ...argv, mode: 'init' });
-        await createInitFile(optionWithDirectoryInfo, true);
+        const withDirectoryInfo = attachDiretoryInfo({ ...argv, mode: 'init' });
+
+        await createInitFile(withDirectoryInfo, true);
       } catch (catched) {
         const err = isError(catched) ?? new Error('unknown error raised');
 
@@ -104,6 +118,7 @@ yargs(process.argv.slice(2))
       }
     },
   })
+  .check(isValidConfig)
   .demandCommand()
   .recommendCommands()
   .config(preLoadConfig())

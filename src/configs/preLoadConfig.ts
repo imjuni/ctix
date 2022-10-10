@@ -1,24 +1,19 @@
-import getCliCreateOption from '@configs/getCliCreateOption';
-import getCliRemoveOption from '@configs/getCliRemoveOption';
-import getCliSingleOption from '@configs/getCliSingleOption';
+import jsonLoader from '@configs/jsonLoader';
 import logger from '@tools/logger';
 import findUp from 'find-up';
 import fs from 'fs';
-import { isEmpty, isFalse, isNotEmpty } from 'my-easy-fp';
-import { existsSync, getDirnameSync } from 'my-node-fp';
-import yargs, { ArgumentsCamelCase } from 'yargs';
-import { TCreateOption, TRemoveOption, TSingleOption } from './interfaces/IOption';
+import { getDirnameSync } from 'my-node-fp';
+import yargs from 'yargs';
 
 const log = logger();
 
 function getConfigFilePath(argv: { c?: string; config?: string }, projectPath?: string) {
   const argvConfigFilePath = argv.c ?? argv.config;
-  const projectDirPath = isNotEmpty(projectPath) ? getDirnameSync(projectPath) : undefined;
+  const projectDirPath = projectPath != null ? getDirnameSync(projectPath) : undefined;
 
   const configFilePathSearchResultOnCwd = findUp.sync('.ctirc');
-  const configFilePathSearchProjectDirPath = isNotEmpty(projectDirPath)
-    ? findUp.sync('.ctirc', { cwd: projectDirPath })
-    : undefined;
+  const configFilePathSearchProjectDirPath =
+    projectDirPath != null ? findUp.sync('.ctirc', { cwd: projectDirPath }) : undefined;
 
   return (
     argvConfigFilePath ?? configFilePathSearchResultOnCwd ?? configFilePathSearchProjectDirPath
@@ -30,60 +25,21 @@ export default function preLoadConfig() {
     const argv = yargs(process.argv.slice(2)).parseSync() as any;
 
     const tsconfigPath =
-      isNotEmpty(argv.project) || isNotEmpty(argv.p)
+      argv.project != null || argv.p != null
         ? findUp.sync([argv.project, argv.p])
         : findUp.sync('tsconfig.json');
 
     const configFilePath = getConfigFilePath(argv, tsconfigPath);
+    const config =
+      configFilePath != null ? jsonLoader(fs.readFileSync(configFilePath).toString()) : {};
 
-    if (isEmpty(configFilePath) || isFalse(existsSync(configFilePath))) {
-      return {
-        p: tsconfigPath,
-        project: tsconfigPath,
-        f: argv.f ?? argv.exportFilename ?? 'index.ts',
-        exportFilename: argv.f ?? argv.exportFilename ?? 'index.ts',
-      };
-    }
-
-    if (isEmpty(tsconfigPath) || isFalse(existsSync(tsconfigPath))) {
-      return {};
-    }
-
-    const [command] = argv._;
-
-    const configBuf = fs.readFileSync(configFilePath);
-
-    if (command === 'c' || command === 'create') {
-      const createArgv: ArgumentsCamelCase<TCreateOption> = argv as any;
-      return getCliCreateOption(configBuf, createArgv, configFilePath, tsconfigPath);
-    }
-
-    if (command === 's' || command === 'single') {
-      const singleArgv: ArgumentsCamelCase<TSingleOption> = argv as any;
-      return getCliSingleOption(configBuf, singleArgv, configFilePath, tsconfigPath);
-    }
-
-    if (command === 'r' || command === 'remove') {
-      const removeArgv: ArgumentsCamelCase<TRemoveOption> = argv as any;
-      return getCliRemoveOption(configBuf, removeArgv, configFilePath, tsconfigPath);
-    }
-
-    if (command === 'i' || command === 'init') {
-      return {
-        mode: 'init',
-        p: tsconfigPath,
-        project: tsconfigPath,
-        c: configFilePath,
-        config: configFilePath,
-        f: argv.f ?? argv.exportFilename ?? 'index.ts',
-        exportFilename: argv.f ?? argv.exportFilename ?? 'index.ts',
-        progressStream: argv.progressStream ?? 'stdout',
-        spinnerStream: argv.spinnerStream ?? 'stdout',
-        reasonerStream: argv.reasonerStream ?? 'stderr',
-      };
-    }
-
-    return {};
+    return {
+      ...config,
+      p: tsconfigPath,
+      project: tsconfigPath,
+      c: configFilePath,
+      config: configFilePath,
+    };
   } catch (catched) {
     const err = catched instanceof Error ? catched : new Error('unknown error raised');
 

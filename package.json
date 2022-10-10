@@ -114,6 +114,7 @@
     "pino": "^8.6.1",
     "pino-pretty": "^9.1.1",
     "prettier": "^2.7.1",
+    "resolve-from": "^5.0.0",
     "source-map-support": "^0.5.21",
     "ts-morph": "^16.0.0",
     "tslib": "^2.4.0",
