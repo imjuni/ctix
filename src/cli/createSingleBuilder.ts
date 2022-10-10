@@ -53,6 +53,11 @@ export default function createSingleBuilder<
       describe:
         'ignore file name. You can pass ignore, config file at ctix and use it like profile',
       type: 'string',
+    })
+    .option('noBackup', {
+      describe: 'not create backup file even if set overwrite option enable',
+      type: 'boolean',
+      default: false,
     });
 
   return args;

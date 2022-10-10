@@ -8,6 +8,7 @@ import removeBuilder from '@cli/removeBuilder';
 import singleBuilder from '@cli/singleBuilder';
 import attachDiretoryInfo from '@configs/attachDiretoryInfo';
 import getCreateOption from '@configs/getCreateOption';
+import getInitOption from '@configs/getInitOption';
 import getRemoveOption from '@configs/getRemoveOption';
 import getSingleOption from '@configs/getSingleOption';
 import {
@@ -107,7 +108,8 @@ yargs(process.argv.slice(2))
     },
     handler: async (argv) => {
       try {
-        const withDirectoryInfo = attachDiretoryInfo({ ...argv, mode: 'init' });
+        const withDefaultOption = getInitOption(argv);
+        const withDirectoryInfo = attachDiretoryInfo(withDefaultOption);
 
         await createInitFile(withDirectoryInfo, true);
       } catch (catched) {

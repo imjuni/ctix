@@ -55,6 +55,8 @@ export const createSingleCommonOption: ICreateSingleCommonCliOption = {
 
   g: defaultIgnoreFileName,
   ignoreFile: defaultIgnoreFileName,
+
+  noBackup: false,
 };
 
 export const createOption: TCreateOption = {

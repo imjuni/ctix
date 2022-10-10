@@ -3,7 +3,6 @@ import IExportInfo from '@compilers/interfaces/IExportInfo';
 import { TCreateOrSingleOption } from '@configs/interfaces/IOption';
 import getIgnoreConfigContents from '@ignores/getIgnoreConfigContents';
 import isIgnored from '@ignores/isIgnored';
-import { isEmpty, isFalse } from 'my-easy-fp';
 import { isDescendant } from 'my-node-fp';
 import path from 'path';
 import * as tsm from 'ts-morph';
@@ -22,15 +21,15 @@ export default async function getExportInfos(
     .filter(
       (sourceFile) => path.basename(sourceFile.getFilePath().toString()) !== option.exportFilename,
     )
-    .filter((sourceFile) => isFalse(isIgnored(ignores, sourceFile.getFilePath().toString())));
+    .filter((sourceFile) => isIgnored(ignores, sourceFile.getFilePath().toString()) === false);
 
   const exportInfos = (
     await Promise.all(sourceFiles.map((sourceFile) => getExportInfo(sourceFile, option, ignores)))
-  ).filter((exportInfo) => isFalse(exportInfo.isEmpty));
+  ).filter((exportInfo) => exportInfo.isEmpty === false);
 
   const exportRecord = exportInfos.reduce<Record<string, IExportInfo>>(
     (aggregation, exportInfo) => {
-      if (isEmpty(aggregation[exportInfo.resolvedFilePath])) {
+      if (aggregation[exportInfo.resolvedFilePath] == null) {
         return { ...aggregation, [exportInfo.resolvedFilePath]: exportInfo };
       }
 

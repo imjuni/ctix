@@ -5,7 +5,6 @@ import prettierApply from '@writes/prettierApply';
 import chalk from 'chalk';
 import dayjs from 'dayjs';
 import fs from 'fs';
-import { isFalse, isNotEmpty, isTrue } from 'my-easy-fp';
 import { exists } from 'my-node-fp';
 import path from 'path';
 
@@ -41,9 +40,9 @@ export default async function indexFileWrite(
         `${firstLine}${indexFileContent}${option.eol}`,
       );
 
-      if (isTrue(option.overwrite ?? false)) {
+      if ((option.overwrite ?? false) === true) {
         // index.ts file already exist, create backup file
-        if (await exists(indexFilePath)) {
+        if ((await exists(indexFilePath)) && option.noBackup === false) {
           await fs.promises.writeFile(
             `${indexFilePath}.bak`,
             await fs.promises.readFile(indexFilePath),
@@ -58,7 +57,7 @@ export default async function indexFileWrite(
         return undefined;
       }
 
-      if (isFalse(await exists(indexFilePath))) {
+      if ((await exists(indexFilePath)) === false) {
         await fs.promises.writeFile(
           indexFilePath,
           `${`${firstLine}${prettierApplied.contents}`.trim()}${option.eol}`,
@@ -77,7 +76,7 @@ export default async function indexFileWrite(
     }),
   );
 
-  const reasons = nullableReasons.filter((reason): reason is IReason => isNotEmpty(reason));
+  const reasons = nullableReasons.filter((reason): reason is IReason => reason != null);
 
   return reasons;
 }

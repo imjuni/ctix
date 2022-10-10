@@ -93,4 +93,12 @@ export default interface ICreateSingleCommonCliOption {
    */
   g: string;
   ignoreFile: string;
+
+  /**
+   * not create backup file even if set overwrite option enable
+   *
+   * @mode create, single
+   * @defulat false
+   * */
+  noBackup: boolean;
 }
