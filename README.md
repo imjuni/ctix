@@ -186,11 +186,12 @@ It is not recommended to use `index.ts` file to re-map paths or shorten the path
 | --exportFilename | -f    | index.ts    | create, single, remove | Export filename, if you not pass this field that use "index.ts" or "index.d.ts"                                                |
 | --useSemicolon   | -s    | true        | create, single         | add semicolon on line ending at every export statement                                                                         |
 | --useTimestamp   | -t    | false       | create, single         | timestamp write on ctix comment right-side, only works in useComment option set true                                           |
-| --useComment     | -m    | true        | create, single         | ctix comment add on first line of created export file(default index.ts) file, that remark created from ctix                     |
+| --useComment     | -m    | true        | create, single         | ctix comment add on first line of created export file(default index.ts) file, that remark created from ctix                    |
 | --quote          | -q    | '           | create, single         | change quote character at export syntax                                                                                        |
 | --keepFileExt    | -k    | '           | create, single         | keep file extension on export statement path literal                                                                           |
 | --overwrite      | -w    | '           | create, single         | overwrite each index.ts file                                                                                                   |
 | --ignoreFile     | -g    |             | create, single         | ignore file name. You can pass ignore, config file at ctix and use it like profile                                             |
+| --noBackup       |       | false       | create, single         | not create backup file even if set overwrite option enable                                                                     |
 | --skipEmptyDir   | -e    | '           | create                 | empty directory skip create index.ts file                                                                                      |
 | --output         | -o    | N/A         | single                 | output directory                                                                                                               |
 | --useRootDir     | -r    | false       | single                 | output file under rootDir in tsconfig.json.                                                                                    |

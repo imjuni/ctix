@@ -12,8 +12,8 @@ Remove an entrypoint index.ts file on project directory
 | :--------------- | ----- | ------------------- | -------------------- | -------- | ------- |
 | --config         | -c    |                     | string               |          | remove  |
 | --project        | -p    |                     | string               | required | remove  |
-| --startAt        | -a    | use --project value | string               | required | remove  |
-| --exportFilename | -f    | index.ts            | string               | required | remove  |
+| --startAt        | -a    | use --project value | string               |          | remove  |
+| --exportFilename | -f    | index.ts            | string               |          | remove  |
 | --includeBackup  | -b    | false               | boolean              |          | remove  |
 | --spinnerStream  |       | stdout              | enum(stdout, stderr) |          | remove  |
 | --progressStream |       | stdout              | enum(stdout, stderr) |          | remove  |

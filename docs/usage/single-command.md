@@ -12,17 +12,18 @@ Create an entrypoint index.ts file for use with webpack and rollup.js, typedoc
 | :--------------- | ----- | ------------------- | -------------------- | -------- | ------- |
 | --config         | -c    |                     | string               |          | single  |
 | --project        | -p    |                     | string               | required | single  |
-| --startAt        | -a    | use --project value | string               | required | single  |
-| --exportFilename | -f    | index.ts            | string               | required | single  |
+| --startAt        | -a    | use --project value | string               |          | single  |
+| --exportFilename | -f    | index.ts            | string               |          | single  |
 | --useSemicolon   | -s    | true                | string               |          | single  |
 | --useTimestamp   | -t    | false               | boolean              |          | single  |
 | --useComment     | -m    | true                | boolean              |          | single  |
 | --quote          | -q    | '                   | string               |          | single  |
 | --keepFileExt    | -k    | false               | boolean              |          | single  |
 | --overwrite      | -w    | false               | boolean              |          | single  |
-| --ignoreFile     | -g    |                     | string               |          | single  |
+| --ignoreFile     | -g    | .ctiignore          | string               |          | single  |
 | --output         | -o    |                     | string               | required | single  |
 | --useRootDir     | -r    | false               | boolean              |          | single  |
+| --noBackup       |       | false               | boolean              |          | single  |
 | --spinnerStream  |       | stdout              | enum(stdout, stderr) |          | single  |
 | --progressStream |       | stdout              | enum(stdout, stderr) |          | single  |
 | --reasonerStream |       | stderr              | enum(stdout, stderr) |          | single  |
@@ -42,6 +43,7 @@ Create an entrypoint index.ts file for use with webpack and rollup.js, typedoc
 | --keepFileExt    | keep file extension on export statement path literal                                                                           |
 | --overwrite      | overwrite each index.ts file                                                                                                   |
 | --ignoreFile     | ignore file name. You can pass ignore, config file at ctix and use it like profile                                             |
+| --noBackup       | not create backup file even if set overwrite option enable                                                                     |
 | --output         | output directory                                                                                                               |
 | --useRootDir     | output file under rootDir in tsconfig.json.                                                                                    |
 | --spinnerStream  | Stream of cli spinner, you can pass stdout or stderr                                                                           |

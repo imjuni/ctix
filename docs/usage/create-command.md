@@ -12,16 +12,17 @@ Collect exported something(variable, function, object, class, interface etc.) in
 | :--------------- | ----- | ------------------- | -------------------- | -------- | ------- |
 | --config         | -c    |                     | string               |          | create  |
 | --project        | -p    |                     | string               | required | create  |
-| --startAt        | -a    | use --project value | string               | required | create  |
-| --exportFilename | -f    | index.ts            | string               | required | create  |
+| --startAt        | -a    | use --project value | string               |          | create  |
+| --exportFilename | -f    | index.ts            | string               |          | create  |
 | --useSemicolon   | -s    | true                | string               |          | create  |
 | --useTimestamp   | -t    | false               | boolean              |          | create  |
 | --useComment     | -m    | true                | boolean              |          | create  |
 | --quote          | -q    | '                   | string               |          | create  |
 | --keepFileExt    | -k    | false               | boolean              |          | create  |
 | --overwrite      | -w    | false               | boolean              |          | create  |
-| --ignoreFile     | -g    |                     | string               |          | create  |
+| --ignoreFile     | -g    | .ctiignore          | string               |          | create  |
 | --skipEmptyDir   | -e    | true                | boolean              |          | create  |
+| --noBackup       |       | false               | boolean              |          | create  |
 | --spinnerStream  |       | stdout              | enum(stdout, stderr) |          | create  |
 | --progressStream |       | stdout              | enum(stdout, stderr) |          | create  |
 | --reasonerStream |       | stderr              | enum(stdout, stderr) |          | create  |
@@ -42,6 +43,7 @@ Collect exported something(variable, function, object, class, interface etc.) in
 | --overwrite      | overwrite each index.ts file                                                                                                   |
 | --ignoreFile     | ignore file name. You can pass ignore, config file at ctix and use it like profile                                             |
 | --skipEmptyDir   | If set true this option, skip empty directory                                                                                  |
+| --noBackup       | not create backup file even if set overwrite option enable                                                                     |
 | --spinnerStream  | Stream of cli spinner, you can pass stdout or stderr                                                                           |
 | --progressStream | Stream of cli progress, you can pass stdout or stderr                                                                          |
 | --reasonerStream | Stream of cli reasoner. Reasoner show name conflict error and already exist index.ts file error. You can pass stdout or stderr |
@@ -149,13 +151,13 @@ export * from './Grid';
 
 ## startAt mechanishm
 
-### in case of startAt set `src`
+### in case of startAt set `lib`
 
 Passing the startAt option create `index.ts` file from startAt directory.
 
 ```text
 # To-Be
-├─ src/
+├─ lib/
 │  ├─ component/
 │  │  ├─ nav/
 │  │  │  ├─ Nav.tsx
