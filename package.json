@@ -1,6 +1,6 @@
 {
   "name": "ctix",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "description": "Automatic create index.ts file",
   "scripts": {
     "prepublishOnly": "node prepublish.js",
@@ -23,11 +23,11 @@
     "prepub:prod": "npm run clean && npm run rollup:prod",
     "pub:prod": "cross-env RELEASE_MODE=true npm publish",
     "lint": "eslint --cache .",
+    "deps-diff": "deps-diff md -d prod -d dev --title-list-type '*' --deps-list-type '*' --content-list-type '*'",
     "docs:dev": "vuepress dev docs --config ./.configs/vuepress.config.ts",
     "docs:build": "vuepress build docs --config ./.configs/vuepress.config.ts",
     "predocs:deploy": "npm run docs:build",
-    "docs:deploy": "cross-env PUBLIC_URL=\"ctix\" gh-pages -d docs/.vuepress/dist",
-    "deps-diff": "deps-diff md -d dev -d prod -p ."
+    "docs:deploy": "cross-env PUBLIC_URL=\"ctix\" gh-pages -d docs/.vuepress/dist"
   },
   "repository": {
     "type": "git",
@@ -61,6 +61,7 @@
     "@types/jest": "^28.1.8",
     "@types/json5": "^2.2.0",
     "@types/minimatch": "^5.1.2",
+    "@types/minimist": "^1.2.2",
     "@types/node": "^18.8.3",
     "@types/parse-gitignore": "^1.0.0",
     "@types/source-map-support": "^0.5.6",
@@ -68,7 +69,7 @@
     "@typescript-eslint/eslint-plugin": "^5.39.0",
     "@typescript-eslint/parser": "^5.39.0",
     "cross-env": "^7.0.3",
-    "deps-diff": "^0.6.0",
+    "deps-diff": "^1.0.0",
     "eslint": "^8.25.0",
     "eslint-config-airbnb-typescript": "^17.0.0",
     "eslint-config-prettier": "^8.5.0",
@@ -108,6 +109,7 @@
     "json5": "^2.2.1",
     "jsonc-parser": "^3.2.0",
     "minimatch": "^5.1.0",
+    "minimist": "^1.2.7",
     "my-easy-fp": "^0.15.0",
     "my-node-fp": "^0.8.1",
     "my-only-either": "^1.3.0",
