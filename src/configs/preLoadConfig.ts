@@ -2,12 +2,12 @@ import jsonLoader from '@configs/jsonLoader';
 import logger from '@tools/logger';
 import findUp from 'find-up';
 import fs from 'fs';
+import minimist from 'minimist';
 import { getDirnameSync } from 'my-node-fp';
-import yargs from 'yargs';
 
 const log = logger();
 
-function getConfigFilePath(argv: { c?: string; config?: string }, projectPath?: string) {
+function getConfigFilePath(argv: minimist.ParsedArgs, projectPath?: string) {
   const argvConfigFilePath = argv.c ?? argv.config;
   const projectDirPath = projectPath != null ? getDirnameSync(projectPath) : undefined;
 
@@ -22,7 +22,7 @@ function getConfigFilePath(argv: { c?: string; config?: string }, projectPath?: 
 
 export default function preLoadConfig() {
   try {
-    const argv = yargs(process.argv.slice(2)).parseSync() as any;
+    const argv = minimist(process.argv.slice(2));
 
     const tsconfigPath =
       argv.project != null || argv.p != null
