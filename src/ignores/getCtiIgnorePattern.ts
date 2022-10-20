@@ -1,5 +1,6 @@
 import getIgnoreConfigContents from '@ignores/getIgnoreConfigContents';
 import getRefineIgnorePath from '@ignores/getRefineIgnorePath';
+import { first } from 'my-easy-fp';
 import { AsyncReturnType } from 'type-fest';
 
 export default function getCtiIgnorePattern(
@@ -21,7 +22,7 @@ export default function getCtiIgnorePattern(
       .filter((ignored) => ignored.ignored);
 
     // detailIgnoreds가 1개 이상이라면 사실 ignore 파일 설계가 잘못된 것이라서 warning을 해주는게 필요하다
-    return detailIgnoreds.at(0)?.pattern;
+    return first(detailIgnoreds)?.pattern;
   }
 
   return undefined;

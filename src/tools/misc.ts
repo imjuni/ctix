@@ -1,6 +1,5 @@
 import fastGlob from 'fast-glob';
 import fastSafeStringify from 'fast-safe-stringify';
-import { isNotEmpty } from 'my-easy-fp';
 import { replaceSepToPosix } from 'my-node-fp';
 import * as path from 'path';
 import * as tsm from 'ts-morph';
@@ -17,9 +16,7 @@ export async function fastGlobWrap(
   const patterns = Array.isArray(pattern) ? pattern : [pattern];
   const unixifyPatterns = patterns.map((nonUnixifyPattern) => replaceSepToPosix(nonUnixifyPattern));
   const unixifyFiles = await fastGlob(unixifyPatterns, options);
-  const files = isNotEmpty(sep)
-    ? unixifyFiles.map((file) => file.replace(/\//g, sep))
-    : unixifyFiles;
+  const files = sep != null ? unixifyFiles.map((file) => file.replace(/\//g, sep)) : unixifyFiles;
   return files;
 }
 

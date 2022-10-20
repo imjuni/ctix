@@ -10,7 +10,6 @@ import * as env from '@testenv/env';
 import logger from '@tools/logger';
 import { getTestValue, posixJoin } from '@tools/misc';
 import fs from 'fs';
-import { isEmpty } from 'my-easy-fp';
 import path from 'path';
 import * as tsm from 'ts-morph';
 
@@ -63,7 +62,7 @@ test('c001-getExportedName', async () => {
     const exportedDeclarations = sourceFile.getExportedDeclarations();
     const defaultExporteddeclarations = exportedDeclarations.get('default');
 
-    if (isEmpty(defaultExporteddeclarations)) {
+    if (defaultExporteddeclarations == null) {
       throw new Error('default export not found!');
     }
 

@@ -6,7 +6,6 @@ import isIgnored from '@ignores/isIgnored';
 import getRelativeDepth from '@tools/getRelativeDepth';
 import { posixJoin } from '@tools/misc';
 import fastGlob from 'fast-glob';
-import { isFalse } from 'my-easy-fp';
 import { startSepRemove } from 'my-node-fp';
 import path from 'path';
 import { AsyncReturnType } from 'type-fest';
@@ -29,8 +28,8 @@ export default async function getDirPaths(
     cwd: option.startAt,
   });
 
-  const filePaths = [option.startAt, ...dirPathsFromExportInfos].filter((dirPath) =>
-    isFalse(isIgnored(ignores, dirPath)),
+  const filePaths = [option.startAt, ...dirPathsFromExportInfos].filter(
+    (dirPath) => isIgnored(ignores, dirPath) === false,
   );
 
   const depths = filePaths.reduce<Record<string, number>>((aggregation, filePath) => {

@@ -2,7 +2,6 @@ import IExportInfo from '@compilers/interfaces/IExportInfo';
 import { TCreateOrSingleOption } from '@configs/interfaces/IOption';
 import getFilePathOnIndex from '@modules/getFilePathOnIndex';
 import ICreateIndexInfo from '@tools/interface/ICreateIndexInfo';
-import { isEmpty, isNotEmpty } from 'my-easy-fp';
 import { getDirnameSync } from 'my-node-fp';
 
 export default function createIndexInfo(
@@ -11,7 +10,7 @@ export default function createIndexInfo(
 ): ICreateIndexInfo[] {
   if (
     exportInfo.starExported &&
-    isNotEmpty(exportInfo.defaultExport) &&
+    exportInfo.defaultExport != null &&
     exportInfo.namedExports.length > 0
   ) {
     const filePath = getFilePathOnIndex(exportInfo.resolvedFilePath, option);
@@ -34,7 +33,7 @@ export default function createIndexInfo(
     ];
   }
 
-  if (exportInfo.starExported && isEmpty(exportInfo.defaultExport)) {
+  if (exportInfo.starExported && exportInfo.defaultExport == null) {
     const filePath = getFilePathOnIndex(exportInfo.resolvedFilePath, option);
 
     return [
@@ -47,7 +46,7 @@ export default function createIndexInfo(
     ];
   }
 
-  if (isNotEmpty(exportInfo.defaultExport) && exportInfo.namedExports.length > 0) {
+  if (exportInfo.defaultExport != null && exportInfo.namedExports.length > 0) {
     const filePath = getFilePathOnIndex(exportInfo.resolvedFilePath, option);
     const statement = exportInfo.namedExports
       .map((namedExport) =>
@@ -75,7 +74,7 @@ export default function createIndexInfo(
     ];
   }
 
-  if (isEmpty(exportInfo.defaultExport) && exportInfo.namedExports.length > 0) {
+  if (exportInfo.defaultExport == null && exportInfo.namedExports.length > 0) {
     const filePath = getFilePathOnIndex(exportInfo.resolvedFilePath, option);
     const statement = exportInfo.namedExports
       .map((namedExport) =>
@@ -95,7 +94,7 @@ export default function createIndexInfo(
     ];
   }
 
-  if (isNotEmpty(exportInfo.defaultExport)) {
+  if (exportInfo.defaultExport != null) {
     const filePath = getFilePathOnIndex(exportInfo.resolvedFilePath, option);
 
     return [

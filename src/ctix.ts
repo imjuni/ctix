@@ -22,7 +22,6 @@ import validateFileNameDuplication from '@validations/validateFileNameDuplicatio
 import indexFileWrite from '@writes/indexFileWrite';
 import fs from 'fs';
 import { applyEdits, FormattingOptions, ModificationOptions, modify } from 'jsonc-parser';
-import { isFalse, isNotEmpty } from 'my-easy-fp';
 import { exists, getDirname, replaceSepToPosix } from 'my-node-fp';
 import path from 'path';
 
@@ -54,22 +53,22 @@ export async function createWritor(option: TCreateOptionWithDirInfo, isMessageDi
 
     const exportDuplicationValidateResult = validateExportDuplication(totalExportInfos);
     const fileNameDuplicationValidateResult = validateFileNameDuplication(
-      totalExportInfos.filter((exportInfo) =>
-        isFalse(exportDuplicationValidateResult.filePaths.includes(exportInfo.resolvedFilePath)),
+      totalExportInfos.filter(
+        (exportInfo) =>
+          exportDuplicationValidateResult.filePaths.includes(exportInfo.resolvedFilePath) === false,
       ),
       option,
     );
     const exportInfos = totalExportInfos.filter(
       (exportInfo) =>
-        isFalse(
-          fileNameDuplicationValidateResult.filePaths.includes(exportInfo.resolvedFilePath),
-        ) &&
-        isFalse(exportDuplicationValidateResult.filePaths.includes(exportInfo.resolvedFilePath)),
+        fileNameDuplicationValidateResult.filePaths.includes(exportInfo.resolvedFilePath) ===
+          false &&
+        exportDuplicationValidateResult.filePaths.includes(exportInfo.resolvedFilePath) === false,
     );
 
     if (
-      isFalse(fileNameDuplicationValidateResult.valid) ||
-      isFalse(exportDuplicationValidateResult.valid)
+      fileNameDuplicationValidateResult.valid === false ||
+      exportDuplicationValidateResult.valid === false
     ) {
       process.exitCode = 1;
     }
@@ -123,11 +122,12 @@ export async function singleWritor(option: TSingleOptionWithDirInfo, isMessageDi
 
     spinner.update('start validation');
 
-    const exportInfos = totalExportInfos.filter((exportInfo) =>
-      isFalse(exportDuplicationValidateResult.filePaths.includes(exportInfo.resolvedFilePath)),
+    const exportInfos = totalExportInfos.filter(
+      (exportInfo) =>
+        exportDuplicationValidateResult.filePaths.includes(exportInfo.resolvedFilePath) === false,
     );
 
-    if (isFalse(exportDuplicationValidateResult.valid)) {
+    if (exportDuplicationValidateResult.valid === false) {
       process.exitCode = 1;
     }
 
@@ -221,7 +221,7 @@ export async function createInitFile(option: TTInitOptionWithDirInfo, isMessageD
 
     let modifiedInitialConfig: string = initialConfigLiteral;
 
-    if (isNotEmpty(option.project)) {
+    if (option.project != null) {
       const projectFilePath = appendDotDirPrefix(
         replaceSepToPosix(
           path.join(
@@ -238,7 +238,7 @@ export async function createInitFile(option: TTInitOptionWithDirInfo, isMessageD
       );
     }
 
-    if (isNotEmpty(option.output)) {
+    if (option.output != null) {
       modifiedInitialConfig = applyEdits(
         modifiedInitialConfig,
         modify(
@@ -251,7 +251,7 @@ export async function createInitFile(option: TTInitOptionWithDirInfo, isMessageD
           options,
         ),
       );
-    } else if (isNotEmpty(option.project)) {
+    } else if (option.project != null) {
       modifiedInitialConfig = applyEdits(
         modifiedInitialConfig,
         modify(
@@ -271,70 +271,70 @@ export async function createInitFile(option: TTInitOptionWithDirInfo, isMessageD
       );
     }
 
-    if (isNotEmpty(option.exportFilename)) {
+    if (option.exportFilename != null) {
       modifiedInitialConfig = applyEdits(
         modifiedInitialConfig,
         modify(modifiedInitialConfig, ['exportFilename'], option.exportFilename, options),
       );
     }
 
-    if (isNotEmpty(option.startAt)) {
+    if (option.startAt != null) {
       modifiedInitialConfig = applyEdits(
         modifiedInitialConfig,
         modify(modifiedInitialConfig, ['startAt'], option.startAt, options),
       );
     }
 
-    if (isNotEmpty(option.useSemicolon)) {
+    if (option.useSemicolon != null) {
       modifiedInitialConfig = applyEdits(
         modifiedInitialConfig,
         modify(modifiedInitialConfig, ['useSemicolon'], option.useSemicolon, options),
       );
     }
 
-    if (isNotEmpty(option.useTimestamp)) {
+    if (option.useTimestamp != null) {
       modifiedInitialConfig = applyEdits(
         modifiedInitialConfig,
         modify(modifiedInitialConfig, ['useTimestamp'], option.useTimestamp, options),
       );
     }
 
-    if (isNotEmpty(option.useComment)) {
+    if (option.useComment != null) {
       modifiedInitialConfig = applyEdits(
         modifiedInitialConfig,
         modify(modifiedInitialConfig, ['useComment'], option.useComment, options),
       );
     }
 
-    if (isNotEmpty(option.quote)) {
+    if (option.quote != null) {
       modifiedInitialConfig = applyEdits(
         modifiedInitialConfig,
         modify(modifiedInitialConfig, ['quote'], option.quote, options),
       );
     }
 
-    if (isNotEmpty(option.keepFileExt)) {
+    if (option.keepFileExt != null) {
       modifiedInitialConfig = applyEdits(
         modifiedInitialConfig,
         modify(modifiedInitialConfig, ['keepFileExt'], option.keepFileExt, options),
       );
     }
 
-    if (isNotEmpty(option.skipEmptyDir)) {
+    if (option.skipEmptyDir != null) {
       modifiedInitialConfig = applyEdits(
         modifiedInitialConfig,
         modify(modifiedInitialConfig, ['skipEmptyDir'], option.skipEmptyDir, options),
       );
     }
 
-    if (isNotEmpty(option.useRootDir)) {
+    if (option.useRootDir != null) {
       modifiedInitialConfig = applyEdits(
         modifiedInitialConfig,
         modify(modifiedInitialConfig, ['useRootDir'], option.useRootDir, options),
       );
     }
 
-    if (isNotEmpty(option.includeBackup)) {
+    if (option.includeBackup != null) {
       modifiedInitialConfig = applyEdits(
         modifiedInitialConfig,
         modify(modifiedInitialConfig, ['includeBackup'], option.includeBackup, options),

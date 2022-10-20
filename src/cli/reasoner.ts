@@ -2,7 +2,7 @@
 import IReason from '@cli/interfaces/IReason';
 import TStreamType from '@configs/interfaces/TStreamType';
 import chalk from 'chalk';
-import { isEmpty, isFalse, sleep as sleepMs } from 'my-easy-fp';
+import { sleep as sleepMs } from 'my-easy-fp';
 import * as path from 'path';
 
 class CtixReasoner {
@@ -43,7 +43,7 @@ class CtixReasoner {
   }
 
   space(): void {
-    if (isFalse(this.#isEnable)) {
+    if (this.#isEnable === false) {
       return;
     }
 
@@ -51,7 +51,7 @@ class CtixReasoner {
   }
 
   start(reasons: IReason[]): void {
-    if (isFalse(this.#isEnable)) {
+    if (this.#isEnable === false) {
       return;
     }
 
@@ -65,17 +65,18 @@ class CtixReasoner {
 
       const { filePath } = reason;
 
-      const filename = isEmpty(reason.lineAndCharacter)
-        ? `${path.basename(filePath)}`
-        : `${path.basename(filePath)}:${reason.lineAndCharacter.line}:${
-            reason.lineAndCharacter.character
-          }`;
+      const filename =
+        reason.lineAndCharacter == null
+          ? `${path.basename(filePath)}`
+          : `${path.basename(filePath)}:${reason.lineAndCharacter.line}:${
+              reason.lineAndCharacter.character
+            }`;
 
       const chevronRight = reason.type === 'error' ? chalk.red('>') : chalk.yellow('>');
 
       this.#streamWrite(typeMessage, filename);
 
-      if (isEmpty(reason.lineAndCharacter)) {
+      if (reason.lineAndCharacter == null) {
         this.#streamWrite(`   ${chevronRight} ${chalk.gray(`${filePath}`)}`);
       } else {
         this.#streamWrite(

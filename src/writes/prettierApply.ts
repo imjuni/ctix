@@ -1,4 +1,3 @@
-import { isNotEmpty } from 'my-easy-fp';
 import prettier from 'prettier';
 
 export default async function prettierApply(project: string, contents: string) {
@@ -7,7 +6,7 @@ export default async function prettierApply(project: string, contents: string) {
       editorconfig: true,
     });
 
-    if (isNotEmpty(option) && option.parser === 'typescript') {
+    if (option != null && option.parser === 'typescript') {
       const prettiered = prettier.format(contents, option);
       return { apply: true, contents: prettiered };
     }

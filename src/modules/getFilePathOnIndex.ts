@@ -2,7 +2,6 @@ import { TCreateOrSingleOption } from '@configs/interfaces/IOption';
 import appendDotDirPrefix from '@tools/appendDotDirPrefix';
 import extensions from '@tools/extensions';
 import getExtname from '@tools/getExtname';
-import { isEmpty, isNotEmpty } from 'my-easy-fp';
 import { replaceSepToPosix } from 'my-node-fp';
 import path from 'path';
 
@@ -17,11 +16,11 @@ function isKeepExt({
   extname: string;
   isIndex: boolean;
 }) {
-  if (isNotEmpty(relativePath) && declareExtensions.includes(extname)) {
+  if (relativePath != null && declareExtensions.includes(extname)) {
     return true;
   }
 
-  if (isNotEmpty(relativePath) && isIndex && extname === '.tsx') {
+  if (relativePath != null && isIndex && extname === '.tsx') {
     return true;
   }
 
@@ -35,7 +34,7 @@ function getRelativePath(filePath: string, option: TCreateOrSingleOption, relati
   const isIndex = basename.endsWith('index');
 
   if (isKeepExt({ relativePath, declareExtensions, extname, isIndex })) {
-    if (isEmpty(relativePath)) {
+    if (relativePath == null) {
       throw new Error(`empty path: ${relativePath}`);
     }
 
@@ -51,7 +50,7 @@ function getRelativePath(filePath: string, option: TCreateOrSingleOption, relati
     return relativeDirPathWithDot;
   }
 
-  if (isNotEmpty(relativePath) && option.keepFileExt) {
+  if (relativePath != null && option.keepFileExt) {
     const relativeDirPath = replaceSepToPosix(
       path.posix.relative(relativePath, path.dirname(filePath)),
     );
@@ -64,7 +63,7 @@ function getRelativePath(filePath: string, option: TCreateOrSingleOption, relati
     return relativeDirPathWithDot;
   }
 
-  if (isNotEmpty(relativePath)) {
+  if (relativePath != null) {
     const relativeDirPath = replaceSepToPosix(
       path.posix.relative(relativePath, path.dirname(filePath)),
     );

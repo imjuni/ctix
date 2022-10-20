@@ -1,5 +1,4 @@
 import { TSingleOptionWithDirInfo } from '@configs/interfaces/IOption';
-import { isFalse } from 'my-easy-fp';
 import { getDirnameSync, replaceSepToPosix } from 'my-node-fp';
 import path from 'path';
 import * as tsm from 'ts-morph';
@@ -25,7 +24,7 @@ export default function getOutputDir(
   project: tsm.Project,
   option: TSingleOptionWithDirInfo,
 ): string {
-  if (isFalse(option.useRootDir ?? false)) {
+  if ((option.useRootDir ?? false) === false) {
     return replaceSepToPosix(path.resolve(getDirnameSync(option.output)));
   }
 

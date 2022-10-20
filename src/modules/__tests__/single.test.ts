@@ -8,7 +8,6 @@ import * as env from '@testenv/env';
 import { getTestValue, posixJoin } from '@tools/misc';
 import validateExportDuplication from '@validations/validateExportDuplication';
 import validateFileNameDuplication from '@validations/validateFileNameDuplication';
-import { isFalse } from 'my-easy-fp';
 import path from 'path';
 import * as tsm from 'ts-morph';
 
@@ -59,15 +58,16 @@ test('c001-singleIndexInfos-type03', async () => {
   const exportInfos = await getExportInfos(project, option, ignoreContents);
   const exportDuplicationValidateResult = validateExportDuplication(exportInfos);
   const validateResult = validateFileNameDuplication(
-    exportInfos.filter((exportInfo) =>
-      isFalse(exportDuplicationValidateResult.filePaths.includes(exportInfo.resolvedFilePath)),
+    exportInfos.filter(
+      (exportInfo) =>
+        exportDuplicationValidateResult.filePaths.includes(exportInfo.resolvedFilePath) === false,
     ),
     option,
   );
   const validExportInfos = exportInfos.filter(
     (exportInfo) =>
-      isFalse(validateResult.filePaths.includes(exportInfo.resolvedFilePath)) &&
-      isFalse(exportDuplicationValidateResult.filePaths.includes(exportInfo.resolvedFilePath)),
+      validateResult.filePaths.includes(exportInfo.resolvedFilePath) === false &&
+      exportDuplicationValidateResult.filePaths.includes(exportInfo.resolvedFilePath) === false,
   );
 
   const result = await singleIndexInfos(validExportInfos, ignoreContents, option, project);
@@ -105,15 +105,16 @@ test('c002-singleIndexInfos-type04', async () => {
   const exportInfos = await getExportInfos(project, option, ignoreContents);
   const exportDuplicationValidateResult = validateExportDuplication(exportInfos);
   const validateResult = validateFileNameDuplication(
-    exportInfos.filter((exportInfo) =>
-      isFalse(exportDuplicationValidateResult.filePaths.includes(exportInfo.resolvedFilePath)),
+    exportInfos.filter(
+      (exportInfo) =>
+        exportDuplicationValidateResult.filePaths.includes(exportInfo.resolvedFilePath) === false,
     ),
     option,
   );
   const validExportInfos = exportInfos.filter(
     (exportInfo) =>
-      isFalse(validateResult.filePaths.includes(exportInfo.resolvedFilePath)) &&
-      isFalse(exportDuplicationValidateResult.filePaths.includes(exportInfo.resolvedFilePath)),
+      validateResult.filePaths.includes(exportInfo.resolvedFilePath) === false &&
+      exportDuplicationValidateResult.filePaths.includes(exportInfo.resolvedFilePath) === false,
   );
 
   const result = await singleIndexInfos(validExportInfos, ignoreContents, option, project);

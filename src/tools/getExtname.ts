@@ -1,9 +1,8 @@
 import extensions from '@tools/extensions';
-import { isFalse } from 'my-easy-fp';
 import path from 'path';
 
 export default function getExtname(filePath: string): string {
-  if (extensions.every((extension) => isFalse(filePath.endsWith(extension)))) {
+  if (extensions.every((extension) => filePath.endsWith(extension) === false)) {
     return path.extname(filePath);
   }
 

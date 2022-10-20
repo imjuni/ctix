@@ -1,4 +1,3 @@
-import { isNotEmpty } from 'my-easy-fp';
 import * as tsm from 'ts-morph';
 
 export default function getIsIsolatedModules(
@@ -6,47 +5,47 @@ export default function getIsIsolatedModules(
 ): boolean {
   return exportedDeclarationNodes
     .map((exportedDeclarationNode) => {
-      if (isNotEmpty(exportedDeclarationNode.asKind(tsm.SyntaxKind.ClassDeclaration))) {
+      if (exportedDeclarationNode.asKind(tsm.SyntaxKind.ClassDeclaration) != null) {
         return false;
       }
 
-      if (isNotEmpty(exportedDeclarationNode.asKind(tsm.SyntaxKind.VariableDeclaration))) {
+      if (exportedDeclarationNode.asKind(tsm.SyntaxKind.VariableDeclaration) != null) {
         return false;
       }
 
-      if (isNotEmpty(exportedDeclarationNode.asKind(tsm.SyntaxKind.ArrowFunction))) {
+      if (exportedDeclarationNode.asKind(tsm.SyntaxKind.ArrowFunction) != null) {
         return false;
       }
 
-      if (isNotEmpty(exportedDeclarationNode.asKind(tsm.SyntaxKind.FunctionDeclaration))) {
+      if (exportedDeclarationNode.asKind(tsm.SyntaxKind.FunctionDeclaration) != null) {
         return false;
       }
 
-      if (isNotEmpty(exportedDeclarationNode.asKind(tsm.SyntaxKind.InterfaceDeclaration))) {
+      if (exportedDeclarationNode.asKind(tsm.SyntaxKind.InterfaceDeclaration) != null) {
         return true;
       }
 
-      if (isNotEmpty(exportedDeclarationNode.asKind(tsm.SyntaxKind.TypeAliasDeclaration))) {
+      if (exportedDeclarationNode.asKind(tsm.SyntaxKind.TypeAliasDeclaration) != null) {
         return true;
       }
 
-      if (isNotEmpty(exportedDeclarationNode.asKind(tsm.SyntaxKind.EnumDeclaration))) {
+      if (exportedDeclarationNode.asKind(tsm.SyntaxKind.EnumDeclaration) != null) {
         return false;
       }
 
-      if (isNotEmpty(exportedDeclarationNode.asKind(tsm.SyntaxKind.ModuleDeclaration))) {
+      if (exportedDeclarationNode.asKind(tsm.SyntaxKind.ModuleDeclaration) != null) {
         return false;
       }
 
-      if (isNotEmpty(exportedDeclarationNode.asKind(tsm.SyntaxKind.ArrayLiteralExpression))) {
+      if (exportedDeclarationNode.asKind(tsm.SyntaxKind.ArrayLiteralExpression) != null) {
         return false;
       }
 
-      if (isNotEmpty(exportedDeclarationNode.asKind(tsm.SyntaxKind.ObjectLiteralExpression))) {
+      if (exportedDeclarationNode.asKind(tsm.SyntaxKind.ObjectLiteralExpression) != null) {
         return false;
       }
 
-      if (isNotEmpty(exportedDeclarationNode.asKind(tsm.SyntaxKind.BindingElement))) {
+      if (exportedDeclarationNode.asKind(tsm.SyntaxKind.BindingElement) != null) {
         return false;
       }
 

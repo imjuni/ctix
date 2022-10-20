@@ -1,6 +1,5 @@
 import { posixJoin } from '@tools/misc';
 import fs from 'fs';
-import { isFalse } from 'my-easy-fp';
 import { exists, getDirname } from 'my-node-fp';
 import gitignore, { parse as parseGitignore } from 'parse-gitignore';
 import path from 'path';
@@ -9,7 +8,7 @@ export default async function getNpmignoreFiles(
   filePath: string,
 ): Promise<{ patterns: string[]; origin: string[]; state?: gitignore.State }> {
   try {
-    if (isFalse(await exists(filePath))) {
+    if ((await exists(filePath)) === false) {
       return { patterns: [], origin: [], state: undefined };
     }
 

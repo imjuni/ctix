@@ -1,7 +1,6 @@
 import getIgnoreConfigContents from '@ignores/getIgnoreConfigContents';
 import getRefineIgnorePath from '@ignores/getRefineIgnorePath';
 import minimatch from 'minimatch';
-import { isFalse } from 'my-easy-fp';
 import { AsyncReturnType } from 'type-fest';
 
 export default function isIgnored(
@@ -32,7 +31,7 @@ export default function isIgnored(
       }))
       .filter((ignored) => ignored.ignored);
 
-    return isFalse(detailIgnoreds.some((ignored) => ignored.pattern !== '*'));
+    return detailIgnoreds.some((ignored) => ignored.pattern !== '*') === false;
   }
 
   return false;
