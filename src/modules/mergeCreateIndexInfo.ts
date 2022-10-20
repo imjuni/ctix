@@ -1,6 +1,6 @@
 import ICreateIndexInfo from '@tools/interface/ICreateIndexInfo';
 import ICreateIndexInfos from '@tools/interface/ICreateIndexInfos';
-import { isNotEmpty, settify } from 'my-easy-fp';
+import { settify } from 'my-easy-fp';
 
 export default function mergeCreateIndexInfo(
   origin: ICreateIndexInfos,
@@ -14,13 +14,13 @@ export default function mergeCreateIndexInfo(
   if ('exportStatement' in target) {
     merged.exportStatements = settify(
       [...merged.exportStatements, target.exportStatement].filter(
-        (exportStatement): exportStatement is string => isNotEmpty(exportStatement),
+        (exportStatement): exportStatement is string => exportStatement != null,
       ),
     );
 
     merged.resolvedFilePaths = settify(
       [...(merged.resolvedFilePaths ?? []), target.resolvedFilePath].filter(
-        (resolvedFilePath): resolvedFilePath is string => isNotEmpty(resolvedFilePath),
+        (resolvedFilePath): resolvedFilePath is string => resolvedFilePath != null,
       ),
     );
 
@@ -34,7 +34,7 @@ export default function mergeCreateIndexInfo(
 
     merged.resolvedFilePaths = settify(
       [...(merged.resolvedFilePaths ?? []), ...(target.resolvedFilePaths ?? [])].filter(
-        (resolvedFilePath): resolvedFilePath is string => isNotEmpty(resolvedFilePath),
+        (resolvedFilePath): resolvedFilePath is string => resolvedFilePath != null,
       ),
     );
     merged.resolvedFilePaths =

@@ -1,6 +1,6 @@
 {
   "name": "ctix",
-  "version": "1.5.1",
+  "version": "1.5.2",
   "description": "Automatic create index.ts file",
   "scripts": {
     "prepublishOnly": "node prepublish.js",
@@ -32,6 +32,9 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/imjuni/ctix.git"
+  },
+  "engines": {
+    "node": ">=14"
   },
   "keywords": [],
   "author": "ByungJoon Lee",

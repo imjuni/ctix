@@ -4,7 +4,6 @@ import { posixJoin } from '@tools/misc';
 import fs from 'fs';
 import ignore, { Ignore } from 'ignore';
 import { parse } from 'jsonc-parser';
-import { isFalse } from 'my-easy-fp';
 import { exists } from 'my-node-fp';
 import path from 'path';
 
@@ -21,7 +20,7 @@ export default async function getCtiignoreFiles(
   filePath: string,
 ): Promise<IGetCtiignoreFilesReturn> {
   try {
-    if (isFalse(await exists(filePath))) {
+    if ((await exists(filePath)) === false) {
       throw new Error(`invalid ignore filePath: ${filePath}`);
     }
 

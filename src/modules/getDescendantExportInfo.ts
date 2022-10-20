@@ -8,7 +8,6 @@ import IDescendantExportInfo from '@tools/interface/IDescendantExportInfo';
 import { posixJoin } from '@tools/misc';
 import fastGlob from 'fast-glob';
 import fs from 'fs';
-import { isEmpty, isFalse, isNotEmpty } from 'my-easy-fp';
 import { getDirname, isEmptyDir, replaceSepToPosix } from 'my-node-fp';
 import { AsyncReturnType } from 'type-fest';
 
@@ -27,7 +26,7 @@ export default async function getDescendantExportInfo(
     onlyDirectories: true,
   });
 
-  const dirPaths = unIgnoredDirPaths.filter((dirPath) => isFalse(isIgnored(ignores, dirPath)));
+  const dirPaths = unIgnoredDirPaths.filter((dirPath) => isIgnored(ignores, dirPath) === false);
 
   const parentExportInfo = exportInfos.filter(
     (exportInfo) => exportInfo.resolvedDirPath === filePath,
@@ -55,7 +54,7 @@ export default async function getDescendantExportInfo(
           }
 
           if (
-            isNotEmpty(exportInfo.defaultExport?.identifier) &&
+            exportInfo.defaultExport?.identifier != null &&
             ignoreInFile !== exportInfo.defaultExport?.identifier
           ) {
             return true;
@@ -65,16 +64,16 @@ export default async function getDescendantExportInfo(
             return true;
           }
 
-          return isEmpty(ignoreInFile);
+          return ignoreInFile == null;
         });
 
       const includeDirFilePaths = await fs.promises.readdir(globDirPath, { withFileTypes: true });
 
       return {
         dirPath: globDirPath,
-        isTerminal: isFalse(
-          includeDirFilePaths.some((includeDirFilePath) => includeDirFilePath.isDirectory()),
-        ),
+        isTerminal:
+          includeDirFilePaths.some((includeDirFilePath) => includeDirFilePath.isDirectory()) ===
+          false,
         depth: getRelativeDepth(option.startAt, globDirPath),
         exportInfos: includeExportInfos,
       };

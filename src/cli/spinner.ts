@@ -1,5 +1,4 @@
 import TStreamType from '@configs/interfaces/TStreamType';
-import { isNotEmpty } from 'my-easy-fp';
 import ora from 'ora';
 
 class CtixSpinner {
@@ -38,7 +37,7 @@ class CtixSpinner {
   }
 
   start(message?: string) {
-    if (this.#isEnable && isNotEmpty(message)) {
+    if (this.#isEnable && message != null) {
       this.#spinner.text = message;
       this.#spinner.start();
     } else if (this.#isEnable) {

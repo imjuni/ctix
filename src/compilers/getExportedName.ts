@@ -1,9 +1,8 @@
 import getRefinedFilename from '@tools/getRefinedFilename';
-import { isEmpty, isNotEmpty } from 'my-easy-fp';
 import * as tsm from 'ts-morph';
 
 export default function getExportedName(exportedDeclarationNode: tsm.ExportedDeclarations): string {
-  if (isNotEmpty(exportedDeclarationNode.asKind(tsm.SyntaxKind.ClassDeclaration))) {
+  if (exportedDeclarationNode.asKind(tsm.SyntaxKind.ClassDeclaration) != null) {
     const classDeclarationNode = exportedDeclarationNode.asKindOrThrow(
       tsm.SyntaxKind.ClassDeclaration,
     );
@@ -11,14 +10,14 @@ export default function getExportedName(exportedDeclarationNode: tsm.ExportedDec
     return classDeclarationNode.getNameOrThrow().toString();
   }
 
-  if (isNotEmpty(exportedDeclarationNode.asKind(tsm.SyntaxKind.VariableDeclaration))) {
+  if (exportedDeclarationNode.asKind(tsm.SyntaxKind.VariableDeclaration) != null) {
     const variableDeclarationNode = exportedDeclarationNode.asKindOrThrow(
       tsm.SyntaxKind.VariableDeclaration,
     );
     return variableDeclarationNode.getName();
   }
 
-  if (isNotEmpty(exportedDeclarationNode.asKind(tsm.SyntaxKind.ArrowFunction))) {
+  if (exportedDeclarationNode.asKind(tsm.SyntaxKind.ArrowFunction) != null) {
     const arrowFunctionNode = exportedDeclarationNode.asKindOrThrow(tsm.SyntaxKind.ArrowFunction);
     const name = arrowFunctionNode.getSymbolOrThrow().getEscapedName();
 
@@ -30,14 +29,14 @@ export default function getExportedName(exportedDeclarationNode: tsm.ExportedDec
     }
   }
 
-  if (isNotEmpty(exportedDeclarationNode.asKind(tsm.SyntaxKind.FunctionDeclaration))) {
+  if (exportedDeclarationNode.asKind(tsm.SyntaxKind.FunctionDeclaration) != null) {
     const functionDeclarationNode = exportedDeclarationNode.asKindOrThrow(
       tsm.SyntaxKind.FunctionDeclaration,
     );
 
     const name = functionDeclarationNode.getName();
 
-    if (isEmpty(name)) {
+    if (name == null) {
       const sourceFile = functionDeclarationNode.getSourceFile();
       const filename = sourceFile.getBaseName();
       const basename = getRefinedFilename(filename);
@@ -47,35 +46,35 @@ export default function getExportedName(exportedDeclarationNode: tsm.ExportedDec
     return functionDeclarationNode.getNameOrThrow().toString();
   }
 
-  if (isNotEmpty(exportedDeclarationNode.asKind(tsm.SyntaxKind.InterfaceDeclaration))) {
+  if (exportedDeclarationNode.asKind(tsm.SyntaxKind.InterfaceDeclaration) != null) {
     const interfaceDeclarationNode = exportedDeclarationNode.asKindOrThrow(
       tsm.SyntaxKind.InterfaceDeclaration,
     );
     return interfaceDeclarationNode.getName();
   }
 
-  if (isNotEmpty(exportedDeclarationNode.asKind(tsm.SyntaxKind.TypeAliasDeclaration))) {
+  if (exportedDeclarationNode.asKind(tsm.SyntaxKind.TypeAliasDeclaration) != null) {
     const typeAliasDeclarationNode = exportedDeclarationNode.asKindOrThrow(
       tsm.SyntaxKind.TypeAliasDeclaration,
     );
     return typeAliasDeclarationNode.getName();
   }
 
-  if (isNotEmpty(exportedDeclarationNode.asKind(tsm.SyntaxKind.EnumDeclaration))) {
+  if (exportedDeclarationNode.asKind(tsm.SyntaxKind.EnumDeclaration) != null) {
     const enumDeclarationNode = exportedDeclarationNode.asKindOrThrow(
       tsm.SyntaxKind.EnumDeclaration,
     );
     return enumDeclarationNode.getName();
   }
 
-  if (isNotEmpty(exportedDeclarationNode.asKind(tsm.SyntaxKind.ModuleDeclaration))) {
+  if (exportedDeclarationNode.asKind(tsm.SyntaxKind.ModuleDeclaration) != null) {
     const moduleDeclarationNode = exportedDeclarationNode.asKindOrThrow(
       tsm.SyntaxKind.ModuleDeclaration,
     );
     return moduleDeclarationNode.getName();
   }
 
-  if (isNotEmpty(exportedDeclarationNode.asKind(tsm.SyntaxKind.ArrayLiteralExpression))) {
+  if (exportedDeclarationNode.asKind(tsm.SyntaxKind.ArrayLiteralExpression) != null) {
     const arrayLiteralExpressionNode = exportedDeclarationNode.asKindOrThrow(
       tsm.SyntaxKind.ArrayLiteralExpression,
     );
@@ -86,7 +85,7 @@ export default function getExportedName(exportedDeclarationNode: tsm.ExportedDec
     return basename;
   }
 
-  if (isNotEmpty(exportedDeclarationNode.asKind(tsm.SyntaxKind.ObjectLiteralExpression))) {
+  if (exportedDeclarationNode.asKind(tsm.SyntaxKind.ObjectLiteralExpression) != null) {
     const objectLiteralExpressionNode = exportedDeclarationNode.asKindOrThrow(
       tsm.SyntaxKind.ObjectLiteralExpression,
     );
@@ -97,7 +96,7 @@ export default function getExportedName(exportedDeclarationNode: tsm.ExportedDec
     return basename;
   }
 
-  if (isNotEmpty(exportedDeclarationNode.asKind(tsm.SyntaxKind.BindingElement))) {
+  if (exportedDeclarationNode.asKind(tsm.SyntaxKind.BindingElement) != null) {
     const bindingElementNode = exportedDeclarationNode.asKindOrThrow(tsm.SyntaxKind.BindingElement);
     return bindingElementNode.getName();
   }

@@ -7,7 +7,7 @@ import createIndexInfo from '@modules/createIndexInfo';
 import getDirPaths from '@modules/getDirPaths';
 import mergeCreateIndexInfo from '@modules/mergeCreateIndexInfo';
 import ICreateIndexInfos from '@tools/interface/ICreateIndexInfos';
-import { isNotEmpty, settify } from 'my-easy-fp';
+import { settify } from 'my-easy-fp';
 import { AsyncReturnType } from 'type-fest';
 
 export default async function createIndexInfos(
@@ -20,8 +20,8 @@ export default async function createIndexInfos(
 
     const depthPairs = Object.keys(dirPaths)
       .map((dirPath) => ({ dirPath, depth: depths[dirPath], exportInfos: dirPaths[dirPath] }))
-      .filter((depthPair) => isNotEmpty(depthPair.depth))
-      .filter((depthPair) => isNotEmpty(depthPair.exportInfos))
+      .filter((depthPair) => depthPair.depth != null)
+      .filter((depthPair) => depthPair.exportInfos != null)
       .sort((l, r) => r.depth - l.depth);
 
     progress.start(depthPairs.length * 2, 0);
@@ -45,7 +45,7 @@ export default async function createIndexInfos(
       })
       .flat()
       .reduce<Record<string, ICreateIndexInfos>>((aggregation, indexInfo) => {
-        if (isNotEmpty(aggregation[indexInfo.resolvedDirPath])) {
+        if (aggregation[indexInfo.resolvedDirPath] != null) {
           return {
             ...aggregation,
             [indexInfo.resolvedDirPath]: mergeCreateIndexInfo(
@@ -61,8 +61,8 @@ export default async function createIndexInfos(
             depth: indexInfo.depth,
             resolvedDirPath: indexInfo.resolvedDirPath,
             resolvedFilePaths: settify(
-              [indexInfo.resolvedFilePath].filter((resolvedFilePath): resolvedFilePath is string =>
-                isNotEmpty(resolvedFilePath),
+              [indexInfo.resolvedFilePath].filter(
+                (resolvedFilePath): resolvedFilePath is string => resolvedFilePath != null,
               ),
             ),
             exportStatements: [indexInfo.exportStatement],
@@ -88,7 +88,7 @@ export default async function createIndexInfos(
     )
       .flat()
       .reduce<Record<string, ICreateIndexInfos>>((aggregation, indexInfo) => {
-        if (isNotEmpty(aggregation[indexInfo.resolvedDirPath])) {
+        if (aggregation[indexInfo.resolvedDirPath] != null) {
           return {
             ...aggregation,
             [indexInfo.resolvedDirPath]: mergeCreateIndexInfo(
@@ -103,9 +103,10 @@ export default async function createIndexInfos(
           [indexInfo.resolvedDirPath]: {
             depth: indexInfo.depth,
             resolvedDirPath: indexInfo.resolvedDirPath,
-            resolvedFilePaths: isNotEmpty(indexInfo.resolvedFilePath)
-              ? [indexInfo.resolvedFilePath]
-              : indexInfo.resolvedFilePath,
+            resolvedFilePaths:
+              indexInfo.resolvedFilePath != null
+                ? [indexInfo.resolvedFilePath]
+                : indexInfo.resolvedFilePath,
             exportStatements: [indexInfo.exportStatement],
           },
         };
@@ -116,7 +117,7 @@ export default async function createIndexInfos(
         const statementInfo = statementInfos[depthPair.dirPath];
         const descendantExportInfo = descendantExportInfos[depthPair.dirPath];
 
-        if (isNotEmpty(statementInfo) && isNotEmpty(descendantExportInfo)) {
+        if (statementInfo != null && descendantExportInfo != null) {
           return {
             ...aggregation,
             [depthPair.dirPath]: mergeCreateIndexInfo(
@@ -126,7 +127,7 @@ export default async function createIndexInfos(
           };
         }
 
-        if (isNotEmpty(statementInfo)) {
+        if (statementInfo != null) {
           return {
             ...aggregation,
             [depthPair.dirPath]: mergeCreateIndexInfo(
@@ -136,7 +137,7 @@ export default async function createIndexInfos(
           };
         }
 
-        if (isNotEmpty(descendantExportInfo)) {
+        if (descendantExportInfo != null) {
           return {
             ...aggregation,
             [depthPair.dirPath]: mergeCreateIndexInfo(

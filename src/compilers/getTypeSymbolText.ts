@@ -1,4 +1,3 @@
-import { isEmpty, isNotEmpty } from 'my-easy-fp';
 import * as tsm from 'ts-morph';
 
 export default function getTypeSymbolText(
@@ -8,14 +7,14 @@ export default function getTypeSymbolText(
   const symbol = typeNode.getSymbol();
   const aliasSymbol = typeNode.getAliasSymbol();
 
-  if (isNotEmpty(symbol)) {
+  if (symbol != null) {
     const [declarationNode] = symbol.getDeclarations();
-    return isEmpty(declarationNodeCallback)
+    return declarationNodeCallback == null
       ? declarationNode.getText()
       : declarationNodeCallback(declarationNode);
   }
 
-  if (isNotEmpty(aliasSymbol)) {
+  if (aliasSymbol != null) {
     return aliasSymbol.getEscapedName();
   }
 

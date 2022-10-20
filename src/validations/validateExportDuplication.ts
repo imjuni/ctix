@@ -2,10 +2,10 @@ import IReason from '@cli/interfaces/IReason';
 import IExportInfo from '@compilers/interfaces/IExportInfo';
 import IIdentifierWithNode from '@compilers/interfaces/IIdentifierWithNode';
 import chalk from 'chalk';
-import { isNotEmpty, settify } from 'my-easy-fp';
+import { settify } from 'my-easy-fp';
 
 function createReason(exportInfo: IExportInfo, identifier: string) {
-  if (isNotEmpty(exportInfo.defaultExport) && exportInfo.defaultExport.identifier === identifier) {
+  if (exportInfo.defaultExport != null && exportInfo.defaultExport.identifier === identifier) {
     const lineAndCharacter = exportInfo.defaultExport.node
       .getSourceFile()
       .getLineAndColumnAtPos(exportInfo.defaultExport.node.getStart(true));
@@ -53,7 +53,7 @@ export default function validateExportDuplication(exportInfos: IExportInfo[]) {
     (aggregation, exportInfo) => {
       const next = { ...aggregation };
       const exportedNames = [exportInfo.defaultExport, ...exportInfo.namedExports].filter(
-        (exportedName): exportedName is IIdentifierWithNode => isNotEmpty(exportedName),
+        (exportedName): exportedName is IIdentifierWithNode => exportedName != null,
       );
 
       exportedNames.forEach((exportedName) => {
@@ -90,7 +90,7 @@ export default function validateExportDuplication(exportInfos: IExportInfo[]) {
         return duplicateRecordElement.map((element) => element.resolvedFilePath);
       })
       .flatMap((nonFlatted) => nonFlatted)
-      .filter((filePath): filePath is string => isNotEmpty(filePath) && filePath !== ''),
+      .filter((filePath): filePath is string => filePath != null && filePath !== ''),
   );
 
   return {

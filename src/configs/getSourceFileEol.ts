@@ -1,12 +1,11 @@
 import fs from 'fs';
-import { isEmpty, isNotEmpty } from 'my-easy-fp';
 import os from 'os';
 
 // https://stackoverflow.com/questions/34820267/detecting-type-of-line-breaks
 export function getEOL(text: string) {
   const eolMatched = text.match(/\r\n|\n/g);
 
-  if (isEmpty(eolMatched)) {
+  if (eolMatched == null) {
     return os.EOL;
   }
 
@@ -31,7 +30,7 @@ export default function getSourceFileEol(sourceFiles: string[]): string {
         return undefined;
       }
     })
-    .filter((eol): eol is string => isNotEmpty(eol));
+    .filter((eol): eol is string => eol != null);
 
   const eolRecord = eols.reduce<Record<string, number>>((aggregated, eol) => {
     return { ...aggregated, [eol]: (aggregated[eol] ?? 0) + 1 };

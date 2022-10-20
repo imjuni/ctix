@@ -6,7 +6,7 @@ import getDirPaths from '@modules/getDirPaths';
 import mergeCreateIndexInfo from '@modules/mergeCreateIndexInfo';
 import singleIndexInfo from '@modules/singleIndexInfo';
 import ICreateIndexInfos from '@tools/interface/ICreateIndexInfos';
-import { isNotEmpty, settify } from 'my-easy-fp';
+import { settify } from 'my-easy-fp';
 import * as tsm from 'ts-morph';
 import { AsyncReturnType } from 'type-fest';
 
@@ -21,8 +21,8 @@ export default async function singleIndexInfos(
 
     const depthPairs = Object.keys(dirPaths)
       .map((dirPath) => ({ dirPath, depth: depths[dirPath], exportInfos: dirPaths[dirPath] }))
-      .filter((depthPair) => isNotEmpty(depthPair.depth))
-      .filter((depthPair) => isNotEmpty(depthPair.exportInfos))
+      .filter((depthPair) => depthPair.depth != null)
+      .filter((depthPair) => depthPair.exportInfos != null)
       .sort((l, r) => r.depth - l.depth);
 
     progress.start(depthPairs.length, 0);
@@ -43,7 +43,7 @@ export default async function singleIndexInfos(
       })
       .flatMap((nonFlatted) => nonFlatted)
       .reduce<Record<string, ICreateIndexInfos>>((aggregation, indexInfo) => {
-        if (isNotEmpty(aggregation[indexInfo.resolvedDirPath])) {
+        if (aggregation[indexInfo.resolvedDirPath] != null) {
           return {
             ...aggregation,
             [indexInfo.resolvedDirPath]: mergeCreateIndexInfo(
@@ -59,8 +59,8 @@ export default async function singleIndexInfos(
             depth: indexInfo.depth,
             resolvedDirPath: indexInfo.resolvedDirPath,
             resolvedFilePaths: settify(
-              [indexInfo.resolvedFilePath].filter((resolvedFilePath): resolvedFilePath is string =>
-                isNotEmpty(resolvedFilePath),
+              [indexInfo.resolvedFilePath].filter(
+                (resolvedFilePath): resolvedFilePath is string => resolvedFilePath != null,
               ),
             ),
             exportStatements: [indexInfo.exportStatement],

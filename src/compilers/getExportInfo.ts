@@ -5,7 +5,7 @@ import { TCreateOrSingleOption } from '@configs/interfaces/IOption';
 import getCtiIgnorePattern from '@ignores/getCtiIgnorePattern';
 import getIgnoreConfigContents from '@ignores/getIgnoreConfigContents';
 import getRelativeDepth from '@tools/getRelativeDepth';
-import { isEmpty, isFalse, isNotEmpty } from 'my-easy-fp';
+import { first } from 'my-easy-fp';
 import { getDirname, getDirnameSync, replaceSepToPosix } from 'my-node-fp';
 import path from 'path';
 import * as tsm from 'ts-morph';
@@ -26,7 +26,7 @@ function isStarExport(ignoreInFile?: string | string[]) {
     return true;
   }
 
-  return isEmpty(ignoreInFile);
+  return ignoreInFile == null;
 }
 
 export default async function getExportInfo(
@@ -38,14 +38,15 @@ export default async function getExportInfo(
   const dirPath = replaceSepToPosix(path.resolve(await getDirname(filePath)));
   const ignoreInFile = getCtiIgnorePattern(ignores, filePath);
   const exportedDeclarationsMap = sourceFile.getExportedDeclarations();
-  const defaultExportedDeclarations = exportedDeclarationsMap.get('default')?.at(0);
-  const defaultExportedName = isNotEmpty(defaultExportedDeclarations)
-    ? {
-        identifier: getExportedName(defaultExportedDeclarations),
-        node: defaultExportedDeclarations,
-        isIsolatedModules: getIsIsolatedModules(defaultExportedDeclarations),
-      }
-    : undefined;
+  const defaultExportedDeclarations = first(exportedDeclarationsMap.get('default'));
+  const defaultExportedName =
+    defaultExportedDeclarations != null
+      ? {
+          identifier: getExportedName(defaultExportedDeclarations),
+          node: defaultExportedDeclarations,
+          isIsolatedModules: getIsIsolatedModules(defaultExportedDeclarations),
+        }
+      : undefined;
 
   const namedExports = Array.from(exportedDeclarationsMap.entries())
     .filter(([identifier]) => identifier !== 'default')
@@ -68,10 +69,10 @@ export default async function getExportInfo(
         typeof ignoreInFile[0] === 'string'
       ) {
         const name = getFirstExportName(exportedDeclarations);
-        return isFalse(ignoreInFile.includes(name));
+        return ignoreInFile.includes(name) === false;
       }
 
-      return isEmpty(ignoreInFile);
+      return ignoreInFile == null;
     })
     .map((exportedDeclarationsWithKey) => {
       const [, exportedDeclarations] = exportedDeclarationsWithKey;
@@ -85,13 +86,13 @@ export default async function getExportInfo(
 
   const relativeFilePath = path.relative(getDirnameSync(option.project), filePath);
   const defaultExport =
-    isNotEmpty(defaultExportedName) &&
-    isFalse((ignoreInFile ?? []).includes(defaultExportedName.identifier))
+    defaultExportedName != null &&
+    (ignoreInFile ?? []).includes(defaultExportedName.identifier) === false
       ? defaultExportedName
       : undefined;
 
   const exportInfo: IExportInfo = {
-    isEmpty: isEmpty(defaultExport) && namedExports.length <= 0,
+    isEmpty: defaultExport == null && namedExports.length <= 0,
     resolvedFilePath: replaceSepToPosix(path.resolve(filePath)),
     resolvedDirPath: dirPath,
     relativeFilePath: replaceSepToPosix(relativeFilePath),

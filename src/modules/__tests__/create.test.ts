@@ -9,7 +9,6 @@ import * as env from '@testenv/env';
 import { getTestValue, posixJoin } from '@tools/misc';
 import validateExportDuplication from '@validations/validateExportDuplication';
 import validateFileNameDuplication from '@validations/validateFileNameDuplication';
-import { isFalse } from 'my-easy-fp';
 import { replaceSepToPosix } from 'my-node-fp';
 import path from 'path';
 import * as tsm from 'ts-morph';
@@ -59,15 +58,16 @@ test('c001-createDescendantIndex-non-skip-empty-dir', async () => {
   const exportInfos = await getExportInfos(share.project03, option, ignoreContents);
   const exportDuplicationValidateResult = validateExportDuplication(exportInfos);
   const validateResult = validateFileNameDuplication(
-    exportInfos.filter((exportInfo) =>
-      isFalse(exportDuplicationValidateResult.filePaths.includes(exportInfo.resolvedFilePath)),
+    exportInfos.filter(
+      (exportInfo) =>
+        exportDuplicationValidateResult.filePaths.includes(exportInfo.resolvedFilePath) === false,
     ),
     option,
   );
   const validExportInfos = exportInfos.filter(
     (exportInfo) =>
-      isFalse(validateResult.filePaths.includes(exportInfo.resolvedFilePath)) &&
-      isFalse(exportDuplicationValidateResult.filePaths.includes(exportInfo.resolvedFilePath)),
+      validateResult.filePaths.includes(exportInfo.resolvedFilePath) === false &&
+      exportDuplicationValidateResult.filePaths.includes(exportInfo.resolvedFilePath) === false,
   );
 
   const result = await createDescendantIndex(
@@ -131,15 +131,16 @@ test('c002-createDescendantIndex-do-skip-empty-dir', async () => {
   const exportInfos = await getExportInfos(share.project03, option, ignoreContents);
   const exportDuplicationValidateResult = validateExportDuplication(exportInfos);
   const validateResult = validateFileNameDuplication(
-    exportInfos.filter((exportInfo) =>
-      isFalse(exportDuplicationValidateResult.filePaths.includes(exportInfo.resolvedFilePath)),
+    exportInfos.filter(
+      (exportInfo) =>
+        exportDuplicationValidateResult.filePaths.includes(exportInfo.resolvedFilePath) === false,
     ),
     option,
   );
   const validExportInfos = exportInfos.filter(
     (exportInfo) =>
-      isFalse(validateResult.filePaths.includes(exportInfo.resolvedFilePath)) &&
-      isFalse(exportDuplicationValidateResult.filePaths.includes(exportInfo.resolvedFilePath)),
+      validateResult.filePaths.includes(exportInfo.resolvedFilePath) === false &&
+      exportDuplicationValidateResult.filePaths.includes(exportInfo.resolvedFilePath) === false,
   );
 
   const result = await createDescendantIndex(
@@ -189,15 +190,16 @@ test('c003-createDescendantIndex-do-skip-empty-dir-case02', async () => {
   const exportInfos = await getExportInfos(share.project03, option, ignoreContents);
   const exportDuplicationValidateResult = validateExportDuplication(exportInfos);
   const validateResult = validateFileNameDuplication(
-    exportInfos.filter((exportInfo) =>
-      isFalse(exportDuplicationValidateResult.filePaths.includes(exportInfo.resolvedFilePath)),
+    exportInfos.filter(
+      (exportInfo) =>
+        exportDuplicationValidateResult.filePaths.includes(exportInfo.resolvedFilePath) === false,
     ),
     option,
   );
   const validExportInfos = exportInfos.filter(
     (exportInfo) =>
-      isFalse(validateResult.filePaths.includes(exportInfo.resolvedFilePath)) &&
-      isFalse(exportDuplicationValidateResult.filePaths.includes(exportInfo.resolvedFilePath)),
+      validateResult.filePaths.includes(exportInfo.resolvedFilePath) === false &&
+      exportDuplicationValidateResult.filePaths.includes(exportInfo.resolvedFilePath) === false,
   );
 
   const result = await createDescendantIndex(
@@ -248,15 +250,16 @@ test('c004-createIndexInfos-non-skip-empty-dir', async () => {
   const exportInfos = await getExportInfos(share.project03, option, ignoreContents);
   const exportDuplicationValidateResult = validateExportDuplication(exportInfos);
   const validateResult = validateFileNameDuplication(
-    exportInfos.filter((exportInfo) =>
-      isFalse(exportDuplicationValidateResult.filePaths.includes(exportInfo.resolvedFilePath)),
+    exportInfos.filter(
+      (exportInfo) =>
+        exportDuplicationValidateResult.filePaths.includes(exportInfo.resolvedFilePath) === false,
     ),
     option,
   );
   const validExportInfos = exportInfos.filter(
     (exportInfo) =>
-      isFalse(validateResult.filePaths.includes(exportInfo.resolvedFilePath)) &&
-      isFalse(exportDuplicationValidateResult.filePaths.includes(exportInfo.resolvedFilePath)),
+      validateResult.filePaths.includes(exportInfo.resolvedFilePath) === false &&
+      exportDuplicationValidateResult.filePaths.includes(exportInfo.resolvedFilePath) === false,
   );
 
   const result = await createIndexInfos(validExportInfos, ignoreContents, option);
@@ -294,15 +297,16 @@ test('c005-createIndexInfos-do-skip-empty-dir', async () => {
   const exportInfos = await getExportInfos(share.project03, option, ignoreContents);
   const exportDuplicationValidateResult = validateExportDuplication(exportInfos);
   const validateResult = validateFileNameDuplication(
-    exportInfos.filter((exportInfo) =>
-      isFalse(exportDuplicationValidateResult.filePaths.includes(exportInfo.resolvedFilePath)),
+    exportInfos.filter(
+      (exportInfo) =>
+        exportDuplicationValidateResult.filePaths.includes(exportInfo.resolvedFilePath) === false,
     ),
     option,
   );
   const validExportInfos = exportInfos.filter(
     (exportInfo) =>
-      isFalse(validateResult.filePaths.includes(exportInfo.resolvedFilePath)) &&
-      isFalse(exportDuplicationValidateResult.filePaths.includes(exportInfo.resolvedFilePath)),
+      validateResult.filePaths.includes(exportInfo.resolvedFilePath) === false &&
+      exportDuplicationValidateResult.filePaths.includes(exportInfo.resolvedFilePath) === false,
   );
 
   const result = await createIndexInfos(validExportInfos, ignoreContents, option);
@@ -335,15 +339,16 @@ test('c006-createIndexInfos-partial-ignore', async () => {
   const exportInfos = await getExportInfos(share.project04, option, ignoreContents);
   const exportDuplicationValidateResult = validateExportDuplication(exportInfos);
   const validateResult = validateFileNameDuplication(
-    exportInfos.filter((exportInfo) =>
-      isFalse(exportDuplicationValidateResult.filePaths.includes(exportInfo.resolvedFilePath)),
+    exportInfos.filter(
+      (exportInfo) =>
+        exportDuplicationValidateResult.filePaths.includes(exportInfo.resolvedFilePath) === false,
     ),
     option,
   );
   const validExportInfos = exportInfos.filter(
     (exportInfo) =>
-      isFalse(validateResult.filePaths.includes(exportInfo.resolvedFilePath)) &&
-      isFalse(exportDuplicationValidateResult.filePaths.includes(exportInfo.resolvedFilePath)),
+      validateResult.filePaths.includes(exportInfo.resolvedFilePath) === false &&
+      exportDuplicationValidateResult.filePaths.includes(exportInfo.resolvedFilePath) === false,
   );
 
   const result = await createIndexInfos(validExportInfos, ignoreContents, option);

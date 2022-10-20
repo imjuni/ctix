@@ -1,7 +1,6 @@
 import { posixJoin } from '@tools/misc';
 import fs from 'fs';
 import ignore, { Ignore } from 'ignore';
-import { isFalse } from 'my-easy-fp';
 import { exists, getDirname } from 'my-node-fp';
 import gitignore, { parse as parseGitignore } from 'parse-gitignore';
 import getRefineIgnorePath from './getRefineIgnorePath';
@@ -10,7 +9,7 @@ export default async function getGitignoreFiles(
   filePath: string,
 ): Promise<{ patterns: string[]; state?: gitignore.State; ignore: Ignore }> {
   try {
-    if (isFalse(await exists(filePath))) {
+    if ((await exists(filePath)) === false) {
       throw new Error('invalid .gitignore filepath');
     }
 
