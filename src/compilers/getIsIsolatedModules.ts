@@ -45,8 +45,24 @@ export default function getIsIsolatedModules(
         return false;
       }
 
+      // BindingElement
+      // eg. export const { Button, Text, Accordion } = CoreModule;
       if (exportedDeclarationNode.asKind(tsm.SyntaxKind.BindingElement) != null) {
         return false;
+      }
+
+      // CallExpression
+      // eg. export default withTheme()(ReactComponent);
+      // CallExpression don't have name and only working non-named-export
+      if (exportedDeclarationNode.asKind(tsm.SyntaxKind.CallExpression) != null) {
+        return true;
+      }
+
+      // NewExpression
+      // eg. export default new MyComponent();
+      // NewExpression don't have name and only working non-named-export
+      if (exportedDeclarationNode.asKind(tsm.SyntaxKind.NewExpression) != null) {
+        return true;
       }
 
       throw new Error(
