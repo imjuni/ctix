@@ -85,6 +85,8 @@ export default function getExportedName(exportedDeclarationNode: tsm.ExportedDec
     return basename;
   }
 
+  // ObjectLiteralExpression
+  // eg. export { Button, Text, Accordion };
   if (exportedDeclarationNode.asKind(tsm.SyntaxKind.ObjectLiteralExpression) != null) {
     const objectLiteralExpressionNode = exportedDeclarationNode.asKindOrThrow(
       tsm.SyntaxKind.ObjectLiteralExpression,
@@ -96,9 +98,47 @@ export default function getExportedName(exportedDeclarationNode: tsm.ExportedDec
     return basename;
   }
 
+  // BindingElement
+  // eg. export const { Button, Text, Accordion } = CoreModule;
   if (exportedDeclarationNode.asKind(tsm.SyntaxKind.BindingElement) != null) {
     const bindingElementNode = exportedDeclarationNode.asKindOrThrow(tsm.SyntaxKind.BindingElement);
     return bindingElementNode.getName();
+  }
+
+  // CallExpression
+  // eg. export default withTheme()(ReactComponent);
+  // CallExpression don't have name and only working non-named-export
+  if (exportedDeclarationNode.asKind(tsm.SyntaxKind.CallExpression) != null) {
+    const callExpression = exportedDeclarationNode.asKindOrThrow(tsm.SyntaxKind.CallExpression);
+
+    const name = callExpression.getSymbol()?.getEscapedName();
+
+    if (name == null) {
+      const sourceFile = callExpression.getSourceFile();
+      const filename = sourceFile.getBaseName();
+      const basename = getRefinedFilename(filename);
+      return basename;
+    }
+
+    return name;
+  }
+
+  // NewExpression
+  // eg. export default new MyComponent();
+  // NewExpression don't have name and only working non-named-export
+  if (exportedDeclarationNode.asKind(tsm.SyntaxKind.NewExpression) != null) {
+    const newExpression = exportedDeclarationNode.asKindOrThrow(tsm.SyntaxKind.NewExpression);
+
+    const name = newExpression.getSymbol()?.getEscapedName();
+
+    if (name == null) {
+      const sourceFile = newExpression.getSourceFile();
+      const filename = sourceFile.getBaseName();
+      const basename = getRefinedFilename(filename);
+      return basename;
+    }
+
+    return name;
   }
 
   throw new Error(

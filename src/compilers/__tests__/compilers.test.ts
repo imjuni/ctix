@@ -118,6 +118,7 @@ test('c006-getExportedName', async () => {
     'MakeshiftCls',
     'WhisperingCls',
     'arrowCase003',
+    'case004',
     'childlike',
     'childlikeCase002',
     'childlikeCase003',
