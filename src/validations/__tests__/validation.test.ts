@@ -1,4 +1,5 @@
 import getExportInfos from '@compilers/getExportInfos';
+import tsMorphProjectOption from '@compilers/tsMorphProjectOption';
 import defaultIgnoreFileName from '@configs/defaultIgnoreFileName';
 import { TCreateOptionWithDirInfo } from '@configs/interfaces/IOption';
 import getIgnoreConfigContents from '@ignores/getIgnoreConfigContents';
@@ -17,7 +18,10 @@ const share: {
 
 beforeAll(() => {
   share.projectPath03 = posixJoin(env.exampleType03Path, 'tsconfig.json');
-  share.project03 = new tsm.Project({ tsConfigFilePath: share.projectPath03 });
+  share.project03 = new tsm.Project({
+    tsConfigFilePath: share.projectPath03,
+    ...tsMorphProjectOption,
+  });
 });
 
 test('c001-validateExportDuplication', async () => {

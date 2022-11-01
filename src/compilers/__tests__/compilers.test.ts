@@ -2,6 +2,7 @@ import getExportedName from '@compilers/getExportedName';
 import getExportInfo from '@compilers/getExportInfo';
 import getExportInfos from '@compilers/getExportInfos';
 import IExportInfo from '@compilers/interfaces/IExportInfo';
+import tsMorphProjectOption from '@compilers/tsMorphProjectOption';
 import defaultIgnoreFileName from '@configs/defaultIgnoreFileName';
 import { TCreateOptionWithDirInfo } from '@configs/interfaces/IOption';
 import getIgnoreConfigContents from '@ignores/getIgnoreConfigContents';
@@ -31,23 +32,42 @@ const share: {
 
 beforeAll(() => {
   log.level = 'debug';
+
   share.projectPath02 = posixJoin(env.exampleType02Path, 'tsconfig.json');
-  share.project02 = new tsm.Project({ tsConfigFilePath: share.projectPath02 });
+  share.project02 = new tsm.Project({
+    tsConfigFilePath: share.projectPath02,
+    ...tsMorphProjectOption,
+  });
 
   share.projectPath03 = posixJoin(env.exampleType03Path, 'tsconfig.json');
-  share.project03 = new tsm.Project({ tsConfigFilePath: share.projectPath03 });
+  share.project03 = new tsm.Project({
+    tsConfigFilePath: share.projectPath03,
+    ...tsMorphProjectOption,
+  });
 
   share.projectPath04 = posixJoin(env.exampleType04Path, 'tsconfig.json');
-  share.project04 = new tsm.Project({ tsConfigFilePath: share.projectPath04 });
+  share.project04 = new tsm.Project({
+    tsConfigFilePath: share.projectPath04,
+    ...tsMorphProjectOption,
+  });
 
   share.projectPath05 = posixJoin(env.exampleType05Path, 'tsconfig.json');
-  share.project05 = new tsm.Project({ tsConfigFilePath: share.projectPath05 });
+  share.project05 = new tsm.Project({
+    tsConfigFilePath: share.projectPath05,
+    ...tsMorphProjectOption,
+  });
 
   share.projectPath06 = posixJoin(env.exampleType06Path, 'tsconfig.json');
-  share.project06 = new tsm.Project({ tsConfigFilePath: share.projectPath06 });
+  share.project06 = new tsm.Project({
+    tsConfigFilePath: share.projectPath06,
+    ...tsMorphProjectOption,
+  });
 
   share.projectPath07 = posixJoin(env.exampleType07Path, 'tsconfig.json');
-  share.project07 = new tsm.Project({ tsConfigFilePath: share.projectPath07 });
+  share.project07 = new tsm.Project({
+    tsConfigFilePath: share.projectPath07,
+    ...tsMorphProjectOption,
+  });
 });
 
 test('c001-getExportedName', async () => {
