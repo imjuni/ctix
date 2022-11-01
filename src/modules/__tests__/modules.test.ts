@@ -1,4 +1,5 @@
 import getExportInfos from '@compilers/getExportInfos';
+import tsMorphProjectOption from '@compilers/tsMorphProjectOption';
 import defaultIgnoreFileName from '@configs/defaultIgnoreFileName';
 import { TCreateOptionWithDirInfo, TSingleOptionWithDirInfo } from '@configs/interfaces/IOption';
 import getIgnoreConfigContents from '@ignores/getIgnoreConfigContents';
@@ -29,13 +30,22 @@ const share: {
 beforeAll(() => {
   log.level = 'debug';
   share.projectPath02 = posixJoin(env.exampleType02Path, 'tsconfig.json');
-  share.project02 = new tsm.Project({ tsConfigFilePath: share.projectPath02 });
+  share.project02 = new tsm.Project({
+    tsConfigFilePath: share.projectPath02,
+    ...tsMorphProjectOption,
+  });
 
   share.projectPath03 = posixJoin(env.exampleType03Path, 'tsconfig.json');
-  share.project03 = new tsm.Project({ tsConfigFilePath: share.projectPath03 });
+  share.project03 = new tsm.Project({
+    tsConfigFilePath: share.projectPath03,
+    ...tsMorphProjectOption,
+  });
 
   share.projectPath04 = posixJoin(env.exampleType04Path, 'tsconfig.json');
-  share.project04 = new tsm.Project({ tsConfigFilePath: share.projectPath04 });
+  share.project04 = new tsm.Project({
+    tsConfigFilePath: share.projectPath04,
+    ...tsMorphProjectOption,
+  });
 });
 
 test('c001-getDirPaths', async () => {

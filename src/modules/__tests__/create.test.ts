@@ -1,4 +1,5 @@
 import getExportInfos from '@compilers/getExportInfos';
+import tsMorphProjectOption from '@compilers/tsMorphProjectOption';
 import defaultIgnoreFileName from '@configs/defaultIgnoreFileName';
 import { TCreateOptionWithDirInfo } from '@configs/interfaces/IOption';
 import getIgnoreConfigContents from '@ignores/getIgnoreConfigContents';
@@ -24,13 +25,22 @@ const share: {
 
 beforeAll(() => {
   share.project02Path = posixJoin(env.exampleType02Path, 'tsconfig.json');
-  share.project02 = new tsm.Project({ tsConfigFilePath: share.project02Path });
+  share.project02 = new tsm.Project({
+    tsConfigFilePath: share.project02Path,
+    ...tsMorphProjectOption,
+  });
 
   share.project03Path = posixJoin(env.exampleType03Path, 'tsconfig.json');
-  share.project03 = new tsm.Project({ tsConfigFilePath: share.project03Path });
+  share.project03 = new tsm.Project({
+    tsConfigFilePath: share.project03Path,
+    ...tsMorphProjectOption,
+  });
 
   share.project04Path = posixJoin(env.exampleType04Path, 'tsconfig.json');
-  share.project04 = new tsm.Project({ tsConfigFilePath: share.project04Path });
+  share.project04 = new tsm.Project({
+    tsConfigFilePath: share.project04Path,
+    ...tsMorphProjectOption,
+  });
 });
 
 test('c001-createDescendantIndex-non-skip-empty-dir', async () => {

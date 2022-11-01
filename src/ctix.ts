@@ -4,6 +4,7 @@ import reasoner from '@cli/reasoner';
 import spinner from '@cli/spinner';
 import getExportInfos from '@compilers/getExportInfos';
 import getTypeScriptProject from '@compilers/getTypeScriptProject';
+import tsMorphProjectOption from '@compilers/tsMorphProjectOption';
 import initialConfigLiteral from '@configs/initialConfigLiteral';
 import {
   TCreateOptionWithDirInfo,
@@ -38,7 +39,10 @@ export async function createWritor(option: TCreateOptionWithDirInfo, isMessageDi
     spinner.start("ctix 'create' mode start, ...");
 
     const projectDirPath = await getDirname(option.resolvedProjectFilePath);
-    const project = getTypeScriptProject(option.resolvedProjectFilePath);
+    const project = getTypeScriptProject({
+      tsConfigFilePath: option.resolvedProjectFilePath,
+      ...tsMorphProjectOption,
+    });
 
     spinner.update('project loading complete');
 
@@ -108,7 +112,10 @@ export async function singleWritor(option: TSingleOptionWithDirInfo, isMessageDi
     spinner.start("ctix 'single' mode start, ...");
 
     const projectDirPath = await getDirname(option.resolvedProjectFilePath);
-    const project = getTypeScriptProject(option.resolvedProjectFilePath);
+    const project = getTypeScriptProject({
+      tsConfigFilePath: option.resolvedProjectFilePath,
+      ...tsMorphProjectOption,
+    });
 
     spinner.update('project loading complete');
 
@@ -165,7 +172,10 @@ export async function removeIndexFile(
     spinner.start("ctix start 'remove' mode");
     reasoner.sleep(500);
 
-    const project = getTypeScriptProject(option.resolvedProjectFilePath);
+    const project = getTypeScriptProject({
+      tsConfigFilePath: option.resolvedProjectFilePath,
+      ...tsMorphProjectOption,
+    });
     const filePaths = await getRemoveFiles(project, option);
 
     spinner.update(`remove each ${option.exportFilename} file`);
