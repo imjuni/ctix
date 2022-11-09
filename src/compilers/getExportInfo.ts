@@ -29,6 +29,15 @@ function isStarExport(ignoreInFile?: string | string[]) {
   return ignoreInFile == null;
 }
 
+function shouldIncludeExport(exportDeclaration: tsm.ExportedDeclarations): boolean {
+  const moduleDeclaration = exportDeclaration?.asKind(tsm.SyntaxKind.ModuleDeclaration);
+  if (moduleDeclaration != null) {
+    return !/^declare module "\*.*";$/.test(moduleDeclaration.getText());
+  } else {
+    return true;
+  }
+}
+
 export default async function getExportInfo(
   sourceFile: tsm.SourceFile,
   option: TCreateOrSingleOption,
@@ -38,7 +47,11 @@ export default async function getExportInfo(
   const dirPath = replaceSepToPosix(path.resolve(await getDirname(filePath)));
   const ignoreInFile = getCtiIgnorePattern(ignores, filePath);
   const exportedDeclarationsMap = sourceFile.getExportedDeclarations();
-  const defaultExportedDeclarations = first(exportedDeclarationsMap.get('default'));
+  const possibleDeclarations = first(exportedDeclarationsMap.get('default'));
+  const defaultExportedDeclarations =
+    possibleDeclarations && shouldIncludeExport(possibleDeclarations)
+      ? possibleDeclarations
+      : undefined;
   const defaultExportedName =
     defaultExportedDeclarations != null
       ? {
@@ -50,6 +63,10 @@ export default async function getExportInfo(
 
   const namedExports = Array.from(exportedDeclarationsMap.entries())
     .filter(([identifier]) => identifier !== 'default')
+    .map(
+      ([identifier, exportedDeclarations]) =>
+        [identifier, exportedDeclarations.filter(shouldIncludeExport)] as const,
+    )
     .filter((exportedDeclarationsWithKey) => {
       const [, exportedDeclarations] = exportedDeclarationsWithKey;
 
@@ -74,6 +91,7 @@ export default async function getExportInfo(
 
       return ignoreInFile == null;
     })
+    .filter(([, exportedDeclarations]) => exportedDeclarations.length > 0)
     .map((exportedDeclarationsWithKey) => {
       const [, exportedDeclarations] = exportedDeclarationsWithKey;
       const [exportedDeclaration] = exportedDeclarations;
