@@ -28,6 +28,8 @@ const share: {
   project06: tsm.Project;
   projectPath07: string;
   project07: tsm.Project;
+  projectPath08: string;
+  project08: tsm.Project;
 } = {} as any;
 
 beforeAll(() => {
@@ -66,6 +68,12 @@ beforeAll(() => {
   share.projectPath07 = posixJoin(env.exampleType07Path, 'tsconfig.json');
   share.project07 = new tsm.Project({
     tsConfigFilePath: share.projectPath07,
+    ...tsMorphProjectOption,
+  });
+
+  share.projectPath08 = posixJoin(env.exampleType08Path, 'tsconfig.json');
+  share.project08 = new tsm.Project({
+    tsConfigFilePath: share.projectPath08,
     ...tsMorphProjectOption,
   });
 });
@@ -306,4 +314,35 @@ test('c005-getExportInfos-partial-ignore', async () => {
   const terminateCircularResult = getTestValue(result);
 
   expect(terminateCircularResult).toEqual(expectation.default);
+});
+
+test('c006-getExportInfos-module-wildcard', async () => {
+  const expectFileName =
+    expect.getState().currentTestName?.replace(/^([cC][0-9]+)(-.+)/, 'expect$2.ts') ?? '';
+
+  const projectPath = env.exampleType08Path;
+  const project = share.project08;
+
+  const ignoreFilePath = posixJoin(projectPath, defaultIgnoreFileName);
+  const ignoreFiles = await getIgnoreConfigFiles(projectPath, ignoreFilePath);
+  const ignoreContents = await getIgnoreConfigContents({
+    cwd: projectPath,
+    ...ignoreFiles,
+  });
+
+  const option: TCreateOptionWithDirInfo = {
+    ...env.createOptionWithDirInfo,
+    project: projectPath,
+    skipEmptyDir: false,
+    keepFileExt: false,
+    topDirDepth: 0,
+    startAt: projectPath,
+    topDirs: [projectPath],
+  };
+
+  const result = await getExportInfos(project, option, ignoreContents);
+  const expectation = await import(path.join(__dirname, 'expects', expectFileName));
+  const moduleDeclarationExcludedResult = getTestValue(result);
+
+  expect(moduleDeclarationExcludedResult).toEqual(expectation.default);
 });
