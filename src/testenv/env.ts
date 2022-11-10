@@ -18,6 +18,7 @@ export const exampleType04Path = posixJoin(examplePath, 'type04');
 export const exampleType05Path = posixJoin(examplePath, 'type05');
 export const exampleType06Path = posixJoin(examplePath, 'type06');
 export const exampleType07Path = posixJoin(examplePath, 'type07');
+export const exampleType08Path = posixJoin(examplePath, 'type08');
 
 export const commonOption: ICommonCliOption = {
   c: posixJoin(exampleRcloaderPath, '.ctirc'),

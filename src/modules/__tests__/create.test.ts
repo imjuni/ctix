@@ -21,6 +21,8 @@ const share: {
   project03: tsm.Project;
   project04Path: string;
   project04: tsm.Project;
+  project08Path: string;
+  project08: tsm.Project;
 } = {} as any;
 
 beforeAll(() => {
@@ -39,6 +41,12 @@ beforeAll(() => {
   share.project04Path = posixJoin(env.exampleType04Path, 'tsconfig.json');
   share.project04 = new tsm.Project({
     tsConfigFilePath: share.project04Path,
+    ...tsMorphProjectOption,
+  });
+
+  share.project08Path = posixJoin(env.exampleType08Path, 'tsconfig.json');
+  share.project08 = new tsm.Project({
+    tsConfigFilePath: share.project08Path,
     ...tsMorphProjectOption,
   });
 });
@@ -361,6 +369,47 @@ test('c006-createIndexInfos-partial-ignore', async () => {
       exportDuplicationValidateResult.filePaths.includes(exportInfo.resolvedFilePath) === false,
   );
 
+  const result = await createIndexInfos(validExportInfos, ignoreContents, option);
+  const terminateCircularResult = getTestValue(result);
+
+  const expectation = await import(path.join(__dirname, 'expects', expectFileName));
+
+  expect(terminateCircularResult).toEqual(expectation.default);
+});
+
+test('c007-createIndexInfos-module-wildcard', async () => {
+  const expectFileName =
+    expect.getState().currentTestName?.replace(/^([cC][0-9]+)(-.+)/, 'expect$2.ts') ?? '';
+
+  const projectPath = env.exampleType08Path;
+  const ignoreFilePath = posixJoin(projectPath, defaultIgnoreFileName);
+
+  // option modify for expectation
+  const option: TCreateOptionWithDirInfo = {
+    ...env.createOptionWithDirInfo,
+    startAt: projectPath,
+    skipEmptyDir: true,
+    keepFileExt: false,
+    topDirs: [projectPath],
+  };
+
+  const ignoreFiles = await getIgnoreConfigFiles(projectPath, ignoreFilePath);
+  const ignoreContents = await getIgnoreConfigContents({ cwd: projectPath, ...ignoreFiles });
+
+  const exportInfos = await getExportInfos(share.project08, option, ignoreContents);
+  const exportDuplicationValidateResult = validateExportDuplication(exportInfos);
+  const validateResult = validateFileNameDuplication(
+    exportInfos.filter(
+      (exportInfo) =>
+        exportDuplicationValidateResult.filePaths.includes(exportInfo.resolvedFilePath) === false,
+    ),
+    option,
+  );
+  const validExportInfos = exportInfos.filter(
+    (exportInfo) =>
+      validateResult.filePaths.includes(exportInfo.resolvedFilePath) === false &&
+      exportDuplicationValidateResult.filePaths.includes(exportInfo.resolvedFilePath) === false,
+  );
   const result = await createIndexInfos(validExportInfos, ignoreContents, option);
   const terminateCircularResult = getTestValue(result);
 
