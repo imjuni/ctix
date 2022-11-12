@@ -12,12 +12,14 @@ export default [
     starExported: true,
     namedExports: [
       {
-        identifier: "'*.ttf'",
+        identifier: 'Friend',
         isIsolatedModules: false,
+        moduleDeclaration: "'*.ttf'",
       },
       {
-        identifier: "'*.ttf'",
+        identifier: 'AlsoFriend',
         isIsolatedModules: false,
+        moduleDeclaration: "'*.ttf'",
       },
     ],
   },

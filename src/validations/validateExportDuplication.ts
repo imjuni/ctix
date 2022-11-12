@@ -42,8 +42,6 @@ function createReason(exportInfo: IExportInfo, identifier: string) {
     });
 }
 
-const MATCH_WILDCARD_DECLARATION_IDENTIFIER = /['"]\*/;
-
 /**
  * Detect export duplication from every typescript source file.
  *
@@ -59,9 +57,7 @@ export default function validateExportDuplication(exportInfos: IExportInfo[]) {
       );
 
       exportedNames.forEach((exportedName) => {
-        if (!MATCH_WILDCARD_DECLARATION_IDENTIFIER.test(exportedName.identifier)) {
-          next[exportedName.identifier] = [...(next[exportedName.identifier] ?? []), exportInfo];
-        }
+        next[exportedName.identifier] = [...(next[exportedName.identifier] ?? []), exportInfo];
       });
 
       return next;
