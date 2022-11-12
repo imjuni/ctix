@@ -1,10 +1,12 @@
 import getExportedName from '@compilers/getExportedName';
 import getIsIsolatedModules from '@compilers/getIsIsolatedModules';
 import IExportInfo from '@compilers/interfaces/IExportInfo';
+import IIdentifierWithNode from '@compilers/interfaces/IIdentifierWithNode';
 import { TCreateOrSingleOption } from '@configs/interfaces/IOption';
 import getCtiIgnorePattern from '@ignores/getCtiIgnorePattern';
 import getIgnoreConfigContents from '@ignores/getIgnoreConfigContents';
 import getRelativeDepth from '@tools/getRelativeDepth';
+import fastGlob from 'fast-glob';
 import { first } from 'my-easy-fp';
 import { getDirname, getDirnameSync, replaceSepToPosix } from 'my-node-fp';
 import path from 'path';
@@ -75,13 +77,31 @@ export default async function getExportInfo(
       return ignoreInFile == null;
     })
     .map((exportedDeclarationsWithKey) => {
-      const [, exportedDeclarations] = exportedDeclarationsWithKey;
+      const [exportedDeclarationKey, exportedDeclarations] = exportedDeclarationsWithKey;
       const [exportedDeclaration] = exportedDeclarations;
-      return {
-        identifier: getExportedName(exportedDeclaration),
+
+      const identifier = getExportedName(exportedDeclaration);
+      if (
+        exportedDeclaration.getKind() === tsm.SyntaxKind.ModuleDeclaration &&
+        fastGlob.isDynamicPattern(identifier)
+      ) {
+        const identifierWithNode: IIdentifierWithNode = {
+          identifier: exportedDeclarationKey,
+          node: exportedDeclaration,
+          isIsolatedModules: getIsIsolatedModules(...exportedDeclarations),
+          moduleDeclaration: identifier,
+        };
+
+        return identifierWithNode;
+      }
+
+      const identifierWithNode: IIdentifierWithNode = {
+        identifier,
         node: exportedDeclaration,
         isIsolatedModules: getIsIsolatedModules(...exportedDeclarations),
       };
+
+      return identifierWithNode;
     });
 
   const relativeFilePath = path.relative(getDirnameSync(option.project), filePath);

@@ -344,5 +344,5 @@ test('c006-getExportInfos-module-wildcard', async () => {
   const expectation = await import(path.join(__dirname, 'expects', expectFileName));
   const moduleDeclarationExcludedResult = getTestValue(result);
 
-  expect(moduleDeclarationExcludedResult).toEqual(expectation.default);
+  expect(moduleDeclarationExcludedResult).toMatchObject(expectation.default);
 });
