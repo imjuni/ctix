@@ -17,13 +17,28 @@ export default function getCtiIgnorePattern(
     const detailIgnoreds = ig.data.cti.withValue
       .map((withValue) => ({
         ignored: withValue.ignore.ignores(refinedFilePath),
-        pattern: withValue.pattern,
+        ...withValue,
       }))
       .filter((ignored) => ignored.ignored);
 
     // detailIgnoreds가 1개 이상이라면 사실 ignore 파일 설계가 잘못된 것이라서 warning을 해주는게 필요하다
-    return first(detailIgnoreds)?.pattern;
+    const ignored = first(detailIgnoreds);
+
+    return {
+      pattern: ignored.pattern,
+      matcher: (statement: string) => {
+        if (ignored.type === 'wildcard' && ignored.pattern === '*') {
+          return true;
+        }
+
+        if (ignored.type === 'wildcard') {
+          return ignored.pattern === statement;
+        }
+
+        return ignored.patternMatcher.ignores(statement);
+      },
+    };
   }
 
-  return undefined;
+  return { pattern: undefined, matcher: () => false };
 }

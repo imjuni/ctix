@@ -1,0 +1,98 @@
+[
+  {
+    "isEmpty": false,
+    "resolvedFilePath": "/home/imjuni/github/ctix/example/type06/case001.ts",
+    "resolvedDirPath": "/home/imjuni/github/ctix/example/type06",
+    "relativeFilePath": "case001.ts",
+    "depth": 0,
+    "starExported": false,
+    "namedExports": [
+      {
+        "identifier": "flaky",
+        "isIsolatedModules": false
+      },
+      {
+        "identifier": "childlike",
+        "isIsolatedModules": false
+      }
+    ]
+  },
+  {
+    "isEmpty": false,
+    "resolvedFilePath": "/home/imjuni/github/ctix/example/type06/fast-maker/ChildlikeCls.ts",
+    "resolvedDirPath": "/home/imjuni/github/ctix/example/type06/fast-maker",
+    "relativeFilePath": "fast-maker/ChildlikeCls.ts",
+    "depth": 1,
+    "starExported": true,
+    "namedExports": [
+      {
+        "identifier": "ChildlikeCls",
+        "isIsolatedModules": false
+      },
+      {
+        "identifier": "name",
+        "isIsolatedModules": false
+      },
+      {
+        "identifier": "greeting",
+        "isIsolatedModules": false
+      }
+    ]
+  },
+  {
+    "isEmpty": false,
+    "resolvedFilePath": "/home/imjuni/github/ctix/example/type06/fast-maker/FlakyCls.ts",
+    "resolvedDirPath": "/home/imjuni/github/ctix/example/type06/fast-maker",
+    "relativeFilePath": "fast-maker/FlakyCls.ts",
+    "depth": 1,
+    "starExported": true,
+    "namedExports": [
+      {
+        "identifier": "FlakyCls",
+        "isIsolatedModules": false
+      }
+    ]
+  },
+  {
+    "isEmpty": false,
+    "resolvedFilePath": "/home/imjuni/github/ctix/example/type06/fast-maker/WhisperingCls.ts",
+    "resolvedDirPath": "/home/imjuni/github/ctix/example/type06/fast-maker",
+    "relativeFilePath": "fast-maker/WhisperingCls.ts",
+    "depth": 1,
+    "starExported": true,
+    "namedExports": [
+      {
+        "identifier": "WhisperingCls",
+        "isIsolatedModules": false
+      }
+    ]
+  },
+  {
+    "isEmpty": false,
+    "resolvedFilePath": "/home/imjuni/github/ctix/example/type06/fast-maker/carpenter/DiscussionCls.ts",
+    "resolvedDirPath": "/home/imjuni/github/ctix/example/type06/fast-maker/carpenter",
+    "relativeFilePath": "fast-maker/carpenter/DiscussionCls.ts",
+    "depth": 2,
+    "starExported": true,
+    "namedExports": [
+      {
+        "identifier": "DiscussionCls",
+        "isIsolatedModules": false
+      }
+    ]
+  },
+  {
+    "isEmpty": false,
+    "resolvedFilePath": "/home/imjuni/github/ctix/example/type06/fast-maker/carpenter/MakeshiftCls.ts",
+    "resolvedDirPath": "/home/imjuni/github/ctix/example/type06/fast-maker/carpenter",
+    "relativeFilePath": "fast-maker/carpenter/MakeshiftCls.ts",
+    "depth": 2,
+    "starExported": true,
+    "namedExports": [
+      {
+        "identifier": "MakeshiftCls",
+        "isIsolatedModules": false
+      }
+    ]
+  }
+]

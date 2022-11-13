@@ -12,7 +12,7 @@ module.exports = {
     'plugin:import/errors',
     'plugin:import/warnings',
   ],
-  ignorePatterns: ['__test__/*', '__tests__/*'],
+  ignorePatterns: ['__test__/*', '__tests__/*', 'dist/*'],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     project: './tsconfig.eslint.json',

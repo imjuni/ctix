@@ -7,12 +7,27 @@ import { parse } from 'jsonc-parser';
 import { exists } from 'my-node-fp';
 import path from 'path';
 
-type TWithValue = Array<{ filePath: string; ignore: Ignore; pattern: string | string[] }>;
+interface ICtiIgnoreWithWildcardValue {
+  type: 'wildcard';
+  filePath: string;
+  ignore: Ignore;
+  pattern: string;
+}
+
+interface ICtiIgnoreWithPatternValue {
+  type: 'pattern';
+  filePath: string;
+  ignore: Ignore;
+  pattern: string[];
+  patternMatcher: Ignore;
+}
+
+type TCtiIgnoreWithValue = ICtiIgnoreWithWildcardValue | ICtiIgnoreWithPatternValue;
 
 interface IGetCtiignoreFilesReturn {
   origin: IGetIgnoredConfigContents;
   ignore: Ignore;
-  withValue: TWithValue;
+  withValue: TCtiIgnoreWithValue[];
 }
 
 export default async function getCtiignoreFiles(
@@ -46,7 +61,27 @@ export default async function getCtiignoreFiles(
           .map((filePathKey) => getRefineIgnorePath(filePathKey)),
       );
 
-      return { ignore: subIgnore, filePath: ignoreFilePathKey, pattern };
+      if (typeof pattern === 'string') {
+        const ignoreWithWildcardValue: ICtiIgnoreWithWildcardValue = {
+          type: 'wildcard',
+          ignore: subIgnore,
+          filePath: ignoreFilePathKey,
+          pattern,
+        };
+
+        return ignoreWithWildcardValue;
+      }
+
+      const patternMatcher = ignore().add(pattern);
+      const ignoreWithPatternValue: ICtiIgnoreWithPatternValue = {
+        type: 'pattern',
+        ignore: subIgnore,
+        filePath: ignoreFilePathKey,
+        pattern,
+        patternMatcher,
+      };
+
+      return ignoreWithPatternValue;
     });
 
     return ig;

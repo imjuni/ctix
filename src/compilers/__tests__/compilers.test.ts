@@ -134,10 +134,10 @@ test('c006-getExportedName', async () => {
           (exportedDeclaration): exportedDeclaration is tsm.ExportedDeclarations[] =>
             exportedDeclaration !== undefined && exportedDeclaration !== null,
         )
-        .flatMap((flatten) => flatten)
+        .flat()
         .map((exportedDeclaration) => getExportedName(exportedDeclaration));
     })
-    .flatMap((flatten) => flatten);
+    .flat();
 
   const expectation = [
     'ChildlikeCls',
@@ -345,4 +345,35 @@ test('c006-getExportInfos-module-wildcard', async () => {
   const moduleDeclarationExcludedResult = getTestValue(result);
 
   expect(moduleDeclarationExcludedResult).toMatchObject(expectation.default);
+});
+
+test('c007-getExportInfos-partial-widcard-ignore', async () => {
+  const expectFileName =
+    expect.getState().currentTestName?.replace(/^([cC][0-9]+)(-.+)/, 'expect$2.ts') ?? '';
+
+  const projectPath = env.exampleType06Path;
+  const project = share.project06;
+
+  const ignoreFilePath = posixJoin(projectPath, '.ctiignore_partial_glob');
+  const ignoreFiles = await getIgnoreConfigFiles(projectPath, ignoreFilePath);
+  const ignoreContents = await getIgnoreConfigContents({
+    cwd: projectPath,
+    ...ignoreFiles,
+  });
+
+  const option: TCreateOptionWithDirInfo = {
+    ...env.createOptionWithDirInfo,
+    project: projectPath,
+    skipEmptyDir: false,
+    keepFileExt: false,
+    topDirDepth: 0,
+    startAt: projectPath,
+    topDirs: [projectPath],
+  };
+
+  const result = await getExportInfos(project, option, ignoreContents);
+  const expectation = await import(path.join(__dirname, 'expects', expectFileName));
+  const terminateCircularResult = getTestValue(result);
+
+  expect(terminateCircularResult).toEqual(expectation.default);
 });
