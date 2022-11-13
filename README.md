@@ -222,6 +222,16 @@ Ignore file 3 way belows:
 
 json key indicate ignore file path. You can use glob pattern like `.gitignore`. If set `'*'` character at value that is totally ignore file or glob pattern. If set string array that is ignore type name array.
 
+### Partial Ignore glob pattern (higher v1.6.x)
+
+You can use glob pattern in partial ignore like that. Partial ignore follow [.gitignore spec 2.22.1](http://git-scm.com/docs/gitignore).
+
+```jsonc
+{
+  "case00?.ts": ["*Case00*"]
+}
+```
+
 ### ignore testcase
 
 testcase directory ignore using glob pattern.

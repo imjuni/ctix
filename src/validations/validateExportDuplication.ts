@@ -78,18 +78,16 @@ export default function validateExportDuplication(exportInfos: IExportInfo[]) {
   const reasons: IReason[] = Object.entries(duplicateRecord)
     .map((exportPair) => {
       const [identifier, duplicateExportInfos] = exportPair;
-      return duplicateExportInfos
-        .map((exportInfo) => createReason(exportInfo, identifier))
-        .flatMap((nonFlatted) => nonFlatted);
+      return duplicateExportInfos.map((exportInfo) => createReason(exportInfo, identifier)).flat();
     })
-    .flatMap((nonFlatted) => nonFlatted);
+    .flat();
 
   const filePaths = settify(
     Object.values(duplicateRecord)
       .map((duplicateRecordElement) => {
         return duplicateRecordElement.map((element) => element.resolvedFilePath);
       })
-      .flatMap((nonFlatted) => nonFlatted)
+      .flat()
       .filter((filePath): filePath is string => filePath != null && filePath !== ''),
   );
 

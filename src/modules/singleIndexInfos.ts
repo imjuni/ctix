@@ -35,13 +35,13 @@ export default async function singleIndexInfos(
 
         const statements = depthPair.exportInfos
           .map((exportInfo) => singleIndexInfo(exportInfo, option, project))
-          .flatMap((nonFlatted) => nonFlatted);
+          .flat();
 
         progress.increment();
 
         return statements;
       })
-      .flatMap((nonFlatted) => nonFlatted)
+      .flat()
       .reduce<Record<string, ICreateIndexInfos>>((aggregation, indexInfo) => {
         if (aggregation[indexInfo.resolvedDirPath] != null) {
           return {
