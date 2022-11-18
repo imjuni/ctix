@@ -3,7 +3,7 @@ import IExportInfo from '@compilers/interfaces/IExportInfo';
 import { TCreateOrSingleOption } from '@configs/interfaces/IOption';
 import getIgnoreConfigContents from '@ignores/getIgnoreConfigContents';
 import isIgnored from '@ignores/isIgnored';
-import { isDescendant } from 'my-node-fp';
+import { getDirnameSync, isDescendant } from 'my-node-fp';
 import path from 'path';
 import * as tsm from 'ts-morph';
 import { AsyncReturnType } from 'type-fest';
@@ -18,9 +18,21 @@ export default async function getExportInfos(
     .filter((sourceFile) =>
       isDescendant(option.startAt, sourceFile.getFilePath().toString(), path.posix.sep),
     )
-    .filter(
-      (sourceFile) => path.basename(sourceFile.getFilePath().toString()) !== option.exportFilename,
-    )
+    .filter((sourceFile) => {
+      if (option.mode === 'single' && (option.excludeOnlyOutput ?? false) === true) {
+        const dirname = getDirnameSync(sourceFile.getFilePath().toString());
+        const resolvedOutput = path.resolve(option.output);
+
+        if (dirname === resolvedOutput) {
+          const basename = path.basename(sourceFile.getFilePath().toString());
+          return basename !== option.exportFilename;
+        }
+
+        return true;
+      }
+
+      return path.basename(sourceFile.getFilePath().toString()) !== option.exportFilename;
+    })
     .filter((sourceFile) => isIgnored(ignores, sourceFile.getFilePath().toString()) === false);
 
   const exportInfos = (

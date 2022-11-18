@@ -65,10 +65,22 @@ export default async function getExportInfo(
       const [exportedDeclaration] = exportedDeclarations;
 
       const identifier = getExportedName(exportedDeclaration);
+
       if (
         exportedDeclaration.getKind() === tsm.SyntaxKind.ModuleDeclaration &&
         fastGlob.isDynamicPattern(identifier)
       ) {
+        const identifierWithNode: IIdentifierWithNode = {
+          identifier: exportedDeclarationKey,
+          node: exportedDeclaration,
+          isIsolatedModules: getIsIsolatedModules(...exportedDeclarations),
+          moduleDeclaration: identifier,
+        };
+
+        return identifierWithNode;
+      }
+
+      if (exportedDeclaration.getKind() === tsm.SyntaxKind.SourceFile) {
         const identifierWithNode: IIdentifierWithNode = {
           identifier: exportedDeclarationKey,
           node: exportedDeclaration,

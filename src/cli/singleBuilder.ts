@@ -21,6 +21,11 @@ export default function singleBuilder<
       describe: 'output directory',
       type: 'string',
     })
+    .option('excludeOnlyOutput', {
+      describe: 'index.ts file exclude only in output directory',
+      type: 'boolean',
+      default: false,
+    })
     .demandOption(['project', 'exportFilename', 'output']);
 
   return args;
