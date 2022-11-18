@@ -19,6 +19,8 @@ const share: {
   project03: tsm.Project;
   projectPath04: string;
   project04: tsm.Project;
+  projectPath09: string;
+  project09: tsm.Project;
 } = {} as any;
 
 beforeAll(() => {
@@ -37,6 +39,12 @@ beforeAll(() => {
   share.projectPath04 = posixJoin(env.exampleType04Path, 'tsconfig.json');
   share.project04 = new tsm.Project({
     tsConfigFilePath: share.projectPath04,
+    ...tsMorphProjectOption,
+  });
+
+  share.projectPath09 = posixJoin(env.exampleType09Path, 'tsconfig.json');
+  share.project09 = new tsm.Project({
+    tsConfigFilePath: share.projectPath09,
     ...tsMorphProjectOption,
   });
 });
@@ -107,6 +115,53 @@ test('c002-singleIndexInfos-type04', async () => {
 
   const ignoreFilePath = posixJoin(projectPath, '.ctiignore_another_name');
   const ignoreFiles = await getIgnoreConfigFiles(projectPath, ignoreFilePath);
+  const ignoreContents = await getIgnoreConfigContents({
+    cwd: projectPath,
+    ...ignoreFiles,
+  });
+
+  const exportInfos = await getExportInfos(project, option, ignoreContents);
+  const exportDuplicationValidateResult = validateExportDuplication(exportInfos);
+  const validateResult = validateFileNameDuplication(
+    exportInfos.filter(
+      (exportInfo) =>
+        exportDuplicationValidateResult.filePaths.includes(exportInfo.resolvedFilePath) === false,
+    ),
+    option,
+  );
+  const validExportInfos = exportInfos.filter(
+    (exportInfo) =>
+      validateResult.filePaths.includes(exportInfo.resolvedFilePath) === false &&
+      exportDuplicationValidateResult.filePaths.includes(exportInfo.resolvedFilePath) === false,
+  );
+
+  const result = await singleIndexInfos(validExportInfos, ignoreContents, option, project);
+  const terminateCircularResult = getTestValue(result);
+
+  const expectation = await import(path.join(__dirname, 'expects', expectFileName));
+
+  expect(terminateCircularResult).toEqual(expectation.default);
+});
+
+test('c004-singleIndexInfos-type09', async () => {
+  const expectFileName =
+    expect.getState().currentTestName?.replace(/^([cC][0-9]+)(-.+)/, 'expect$2.ts') ?? '';
+
+  const projectPath = env.exampleType09Path;
+  const project = share.project09;
+
+  // option modify for expectation
+  const option: TSingleOptionWithDirInfo = {
+    ...env.singleOptionWithDirInfo,
+    keepFileExt: false,
+    project: projectPath,
+    output: projectPath,
+    startAt: projectPath,
+    excludeOnlyOutput: true,
+    topDirs: [projectPath],
+  };
+
+  const ignoreFiles = await getIgnoreConfigFiles(projectPath, '.ctiignore');
   const ignoreContents = await getIgnoreConfigContents({
     cwd: projectPath,
     ...ignoreFiles,
