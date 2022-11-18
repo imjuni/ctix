@@ -1,4 +1,5 @@
 import getRefinedFilename from '@tools/getRefinedFilename';
+import path from 'path';
 import * as tsm from 'ts-morph';
 
 export default function getExportedName(exportedDeclarationNode: tsm.ExportedDeclarations): string {
@@ -138,6 +139,20 @@ export default function getExportedName(exportedDeclarationNode: tsm.ExportedDec
       return basename;
     }
 
+    return name;
+  }
+
+  // SourceFile(like Vue.js components)
+  // eg.
+  //
+  // ```ts
+  // /// <reference path="../types/vue.d.ts" />
+  // import Foo from './Foo.vue';
+  // export { Foo };
+  // ```
+  if (exportedDeclarationNode.asKind(tsm.SyntaxKind.SourceFile) != null) {
+    const newExpression = exportedDeclarationNode.asKindOrThrow(tsm.SyntaxKind.SourceFile);
+    const name = path.basename(newExpression.getFilePath().toString());
     return name;
   }
 

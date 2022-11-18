@@ -4,7 +4,7 @@
   "description": "Automatic create index.ts file",
   "scripts": {
     "prepublishOnly": "node prepublish.js",
-    "test": "cross-env NODE_ENV=develop DEBUG=ctix:* jest --runInBand",
+    "test": "cross-env NODE_ENV=develop DEBUG=ctix:* jest --coverage --runInBand",
     "test:update": "cross-env NODE_ENV=develop DEBUG=ctix:* jest --runInBand --coverage --updateSnapshot",
     "test:debug": "node --nolazy --inspect ./node_modules/jest/bin/jest --runInBand",
     "ctix": "cross-env TS_NODE_PROJECT=tsconfig.json node -r ts-node/register -r tsconfig-paths/register ./src/cli.ts single -p tsconfig.json -o . -w -g ./.configs/.ctiignore",

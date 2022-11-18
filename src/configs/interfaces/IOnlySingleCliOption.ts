@@ -16,4 +16,12 @@ export default interface IOnlySingleCliOption {
    */
   r?: boolean;
   useRootDir?: boolean;
+
+  /**
+   * index.ts file exclude only in output directory
+   *
+   * @mode single
+   * @default false
+   */
+  excludeOnlyOutput?: boolean;
 }

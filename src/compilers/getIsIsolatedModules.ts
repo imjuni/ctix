@@ -65,6 +65,18 @@ export default function getIsIsolatedModules(
         return true;
       }
 
+      // SourceFile(like Vue.js components)
+      // eg.
+      //
+      // ```ts
+      // /// <reference path="../types/vue.d.ts" />
+      // import Foo from './Foo.vue';
+      // export { Foo };
+      // ```
+      if (exportedDeclarationNode.getKind() === tsm.SyntaxKind.SourceFile) {
+        return false;
+      }
+
       throw new Error(
         `Cannot support type: (${exportedDeclarationNode.getKind()}) ${exportedDeclarationNode.getText()}`,
       );
