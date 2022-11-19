@@ -150,6 +150,43 @@ export * from './pages/User';
 export * from './App';
 ```
 
+## Use ctix with Non TypeScript files
+
+### Fonts
+
+webpack, rollup.js bundling fonts like [that](https://github.com/imjuni/ctix/tree/master/example/type08). You can create `.d.ts` file and include it.
+
+```ts
+// @types/DeclareTtfModule.d.ts
+declare module '*.ttf';
+
+// fonts/fonts.ts
+/// <reference path="../@types/DeclareTtfModule.d.ts" />
+import Friend from 'Friend.ttf';
+import AlsoFriend from './fonts/AlsoFriend.ttf';
+
+export { Friend, AlsoFriend };
+```
+
+### Vue.js
+
+If you use vue.js framework, you can use it as follows.
+
+```ts
+// @types/vue.d.ts
+declare module '*.vue' {
+  import Vue from 'vue';
+  export default Vue;
+}
+
+// components/vue-components.ts
+/// <reference path="../@types/vue.d.ts" />
+import Foo from 'Foo.vue';
+import Bar from './Bar.vue';
+
+export { Foo, Bar };
+```
+
 ## Pros & Cons
 
 ### Pros
