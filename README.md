@@ -33,121 +33,43 @@ An application project has a clear [entry point](https://webpack.js.org/concepts
 
 ## How to works?
 
-ctix use TypeScript Compiler API and directory structure. Export something from TypeScript source file after run ctix to create `index.ts` file.
+ctix use TypeScript Compiler API and directory structure. Export something from TypeScript source file after run ctix to create `index.ts` file. Detail working see [here](https://imjuni.github.io/ctix/#how-to-works)
 
-### Create mode: As-Is tree structure
+## Use ctix with Non TypeScript files
 
-```text
-├─ src/
-│  ├─ component/
-│  │  ├─ Nav.tsx
-│  │  ├─ Button.tsx
-│  │  ├─ Input.tsx
-│  ├─ pages/
-│  │  ├─ Hero.tsx
-│  │  ├─ User.tsx
-├─ App.tsx
-```
+### Fonts
 
-### Create mode: To-Be tree structure
-
-After `ctix create -p ./tsconfig.json` command.
-
-```text
-# To-Be
-├─ src/
-│  ├─ component/
-│  │  ├─ Nav.tsx
-│  │  ├─ Button.tsx
-│  │  ├─ Input.tsx
-│  │  ├─ index.ts   # created
-│  ├─ pages/
-│  │  ├─ Hero.tsx
-│  │  ├─ User.tsx
-│  │  ├─ index.ts   # created
-│  ├─ index.ts      # created
-├─ App.tsx
-├─ index.ts         # created
-```
-
-Each file is as belows:
-
-#### Create mode: `src/component/index.ts`
+webpack, rollup.js bundling fonts like [that](https://github.com/imjuni/ctix/tree/master/example/type08). You can create `.d.ts` file and include it.
 
 ```ts
-// created from 'ctix'
-export * from './Nav';
-export * from './Button';
-export * from './Input';
+// @types/DeclareTtfModule.d.ts
+declare module '*.ttf';
+
+// fonts/fonts.ts
+/// <reference path="../@types/DeclareTtfModule.d.ts" />
+import Friend from 'Friend.ttf';
+import AlsoFriend from './fonts/AlsoFriend.ttf';
+
+export { Friend, AlsoFriend };
 ```
 
-#### Create mode: `src/pages/index.ts`
+### Vue.js
+
+If you use vue.js framework, you can use it as follows.
 
 ```ts
-// created from 'ctix'
-export * from './Hero';
-export * from './User';
-```
+// @types/vue.d.ts
+declare module '*.vue' {
+  import Vue from 'vue';
+  export default Vue;
+}
 
-#### Create mode: `src/index.ts`
+// components/vue-components.ts
+/// <reference path="../@types/vue.d.ts" />
+import Foo from 'Foo.vue';
+import Bar from './Bar.vue';
 
-```ts
-// created from 'ctix'
-export * from './component';
-export * from './pages';
-```
-
-#### Create mode: `index.ts`
-
-```ts
-// created from 'ctix'
-export * from './App';
-export * from './src';
-```
-
-### Single mode: As-Is tree structure
-
-```text
-├─ src/
-│  ├─ component/
-│  │  ├─ Nav.tsx
-│  │  ├─ Button.tsx
-│  │  ├─ Input.tsx
-│  ├─ pages/
-│  │  ├─ Hero.tsx
-│  │  ├─ User.tsx
-├─ App.tsx
-```
-
-### Single mode: To-Be tree structure
-
-After `ctix single -p ./tsconfig.json` command. single mode create one `index.ts` file.
-
-```text
-├─ src/
-│  ├─ component/
-│  │  ├─ Nav.tsx
-│  │  ├─ Button.tsx
-│  │  ├─ Input.tsx
-│  ├─ pages/
-│  │  ├─ Hero.tsx
-│  │  ├─ User.tsx
-├─ App.tsx
-├─ index.ts         # created
-```
-
-Each file is as belows:
-
-#### Single mode: `index.ts`
-
-```text
-// created from 'ctix'
-export * from './component/Nav';
-export * from './component/Button';
-export * from './component/Input';
-export * from './pages/Hero';
-export * from './pages/User';
-export * from './App';
+export { Foo, Bar };
 ```
 
 ## Pros & Cons
