@@ -1,30 +1,14 @@
 import IReason from '@cli/interfaces/IReason';
 import { TCreateOrSingleOption } from '@configs/interfaces/IOption';
 import ICreateIndexInfos from '@tools/interface/ICreateIndexInfos';
+import getDirective from '@writes/getDirective';
+import getFirstLineComment from '@writes/getFirstLineComment';
 import prettierApply from '@writes/prettierApply';
 import chalk from 'chalk';
 import dayjs from 'dayjs';
 import fs from 'fs';
 import { exists } from 'my-node-fp';
 import path from 'path';
-
-function getFirstLineComment(option: TCreateOrSingleOption): string {
-  const today = dayjs();
-
-  if (option.useComment && option.useTimestamp) {
-    return `// created from ctix ${today.format('YYYY-MM-DD HH:mm:ss')}${option.eol}${option.eol}`;
-  }
-
-  if (option.useComment) {
-    return `// created from ctix${option.eol}${option.eol}`;
-  }
-
-  if (option.useTimestamp) {
-    return `// ${today.format('YYYY-MM-DD HH:mm:ss')}${option.eol}${option.eol}`;
-  }
-
-  return '';
-}
 
 export default async function indexFileWrite(
   indexInfos: ICreateIndexInfos[],
@@ -34,10 +18,13 @@ export default async function indexFileWrite(
     indexInfos.map(async (indexInfo) => {
       const indexFilePath = path.join(indexInfo.resolvedDirPath, option.exportFilename);
       const indexFileContent = indexInfo.exportStatements.join(option.eol);
-      const firstLine = getFirstLineComment(option);
+      const firstLine = [
+        getDirective(option, option.eol),
+        getFirstLineComment(option, option.eol, dayjs()),
+      ].join('');
       const prettierApplied = await prettierApply(
         option.project,
-        `${firstLine}${indexFileContent}${option.eol}`,
+        `${indexFileContent}${option.eol}`,
       );
 
       if ((option.overwrite ?? false) === true) {

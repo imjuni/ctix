@@ -48,6 +48,11 @@ export default interface ICommonCliOption {
   exportFilename: string;
 
   /**
+   * Add directive on first line of file like 'use strict' or 'use client'
+   */
+  useDirective?: string;
+
+  /**
    * Stream of cli spinner, you can pass stdout or stderr
    * @mode all
    * @default stdout
