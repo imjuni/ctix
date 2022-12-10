@@ -32,6 +32,12 @@ export default function builder<
         'start working from startAt directory. If you do not pass startAt use project directory.',
       type: 'string',
     })
+    .option('useDirective', {
+      alias: 'd',
+      describe: "add directive on first line like 'use strict' or 'use client'",
+      type: 'string',
+      default: undefined,
+    })
     .option('spinnerStream', {
       describe: 'Stream of cli spinner, you can pass stdout or stderr',
       type: 'string',
