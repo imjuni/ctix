@@ -206,7 +206,10 @@ test('c007-getIsIsolatedModules', async () => {
   );
 });
 
-test('c002-getExportInfo', async () => {
+test('c002-getExportInfo-plain-class', async () => {
+  const expectFileName =
+    expect.getState().currentTestName?.replace(/^([cC][0-9]+)(-.+)/, 'expect$2.ts') ?? '';
+
   // project://example/type04/fast-maker/ChildlikeCls.ts
   const projectPath = env.exampleType04Path;
   const project = share.project04;
@@ -226,16 +229,21 @@ test('c002-getExportInfo', async () => {
 
   const sourceFile = project.getSourceFileOrThrow(sourceFilePath);
   const exportInfo = await getExportInfo(sourceFile, option, ignoreContents);
+  const expectation: IExportInfo = (await import(path.join(__dirname, 'expects', expectFileName)))
+    .default;
 
-  expect(getTestValue(exportInfo)).toMatchSnapshot();
+  expect(getTestValue(exportInfo)).toMatchObject(expectation);
 });
 
-test('c003-getExportInfo', async () => {
+test('c003-getExportInfo-anonymous-arrow-with-export', async () => {
+  const expectFileName =
+    expect.getState().currentTestName?.replace(/^([cC][0-9]+)(-.+)/, 'expect$2.ts') ?? '';
+
   const projectPath = env.exampleType03Path;
   const project = share.project03;
 
-  // project://example/type04/fast-maker/ChildlikeCls.ts
-  // example\type03\popcorn\lawyer\appliance\bomb.ts
+  // project://example/type03/popcorn/lawyer/appliance/bomb.ts
+  // example/type03/popcorn/lawyer/appliance/bomb.ts
   const sourceFilePath = posixJoin(projectPath, 'popcorn', 'lawyer', 'appliance', 'bomb.ts');
 
   const option: TCreateOptionWithDirInfo = {
@@ -254,7 +262,10 @@ test('c003-getExportInfo', async () => {
   const sourceFile = project.getSourceFileOrThrow(sourceFilePath);
   const exportInfo = await getExportInfo(sourceFile, option, ignoreContents);
 
-  expect(getTestValue(exportInfo)).toMatchSnapshot();
+  const expectation: IExportInfo = (await import(path.join(__dirname, 'expects', expectFileName)))
+    .default;
+
+  expect(getTestValue(exportInfo)).toMatchObject(expectation);
 });
 
 test('c004-getExportInfos-not-ignore', async () => {

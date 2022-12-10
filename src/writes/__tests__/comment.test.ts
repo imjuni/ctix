@@ -9,7 +9,7 @@ test('getFirstLineComment - comment', async () => {
       useComment: true,
     },
     '\n',
-    dayjs('2022-11-11T11:22:33.000+09:00'),
+    dayjs('2022-11-11T11:22:33.000Z'),
   );
 
   expect(comment).toEqual('// created from ctix\n\n');
@@ -21,7 +21,7 @@ test('getFirstLineComment - timestamp', async () => {
       useTimestamp: true,
     },
     '\n',
-    dayjs('2022-11-11T11:22:33.000+09:00'),
+    dayjs('2022-11-11T11:22:33.000Z'),
   );
 
   expect(comment).toEqual('// 2022-11-11 11:22:33\n\n');
@@ -34,7 +34,7 @@ test('getFirstLineComment - both', async () => {
       useTimestamp: true,
     },
     '\n',
-    dayjs('2022-11-11T11:22:33.000+09:00'),
+    dayjs('2022-11-11T11:22:33.000Z'),
   );
 
   expect(comment).toEqual('// created from ctix 2022-11-11 11:22:33\n\n');

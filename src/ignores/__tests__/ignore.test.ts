@@ -1,7 +1,8 @@
 import getIgnoreConfigContents from '@ignores/getIgnoreConfigContents';
 import getIgnoreConfigFiles from '@ignores/getIgnoreConfigFiles';
 import * as env from '@testenv/env';
-import { posixJoin } from '@tools/misc';
+import { getTestValue, posixJoin } from '@tools/misc';
+import path from 'path';
 
 test('getIgnoreFiles', async () => {
   const projectPath = env.exampleType04Path;
@@ -24,6 +25,7 @@ test('case001.getIgnoreConfigContents', async () => {
 
   const ignoreFiles = await getIgnoreConfigFiles(projectPath, ignoreFilePath);
   const result = await getIgnoreConfigContents({ cwd: projectPath, ...ignoreFiles });
+  const expectation = await import(path.join(__dirname, 'expects', 'case001.ts'));
 
-  expect(result).toMatchSnapshot();
+  expect(getTestValue(result)).toMatchObject(expectation.default);
 });
