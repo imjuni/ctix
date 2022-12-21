@@ -2,7 +2,7 @@ import { TCreateOrSingleOption } from '@configs/interfaces/IOption';
 import appendDotDirPrefix from '@tools/appendDotDirPrefix';
 import extensions from '@tools/extensions';
 import getExtname from '@tools/getExtname';
-import { replaceSepToPosix } from 'my-node-fp';
+import { isDirectorySync, replaceSepToPosix } from 'my-node-fp';
 import path from 'path';
 
 function isKeepExt({
@@ -29,7 +29,8 @@ function isKeepExt({
 
 function getRelativePath(filePath: string, option: TCreateOrSingleOption, relativePath?: string) {
   const declareExtensions = extensions.filter((ext) => ext.startsWith('.d'));
-  const extname = getExtname(filePath);
+  const isDirectory = isDirectorySync(filePath);
+  const extname = isDirectory ? '' : getExtname(filePath);
   const basename = path.basename(filePath, extname);
   const isIndex = basename.endsWith('index');
 
