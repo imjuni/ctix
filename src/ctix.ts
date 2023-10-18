@@ -1,28 +1,28 @@
-import IReason from '@cli/interfaces/IReason';
-import progress from '@cli/progress';
-import reasoner from '@cli/reasoner';
-import spinner from '@cli/spinner';
-import getExportInfos from '@compilers/getExportInfos';
-import getTypeScriptProject from '@compilers/getTypeScriptProject';
-import tsMorphProjectOption from '@compilers/tsMorphProjectOption';
-import initialConfigLiteral from '@configs/initialConfigLiteral';
-import {
+import type { IReason } from '#/cli/interfaces/IReason';
+import { progress } from '#/cli/progress';
+import { reasoner } from '#/cli/reasoner';
+import { spinner } from '#/cli/spinner';
+import { getExportInfos } from '#/compilers/getExportInfos';
+import { getTypeScriptProject } from '#/compilers/getTypeScriptProject';
+import { tsMorphProjectOption } from '#/compilers/tsMorphProjectOption';
+import { initialConfigLiteral } from '#/configs/initialConfigLiteral';
+import type {
   TCreateOptionWithDirInfo,
   TRemoveOptionWithDirInfo,
   TSingleOptionWithDirInfo,
   TTInitOptionWithDirInfo,
-} from '@configs/interfaces/IOption';
-import getIgnoreConfigContents from '@ignores/getIgnoreConfigContents';
-import getIgnoreConfigFiles from '@ignores/getIgnoreConfigFiles';
-import createIndexInfos from '@modules/createIndexInfos';
-import getRemoveFiles from '@modules/getRemoveFiles';
-import singleIndexInfos from '@modules/singleIndexInfos';
-import appendDotDirPrefix from '@tools/appendDotDirPrefix';
-import validateExportDuplication from '@validations/validateExportDuplication';
-import validateFileNameDuplication from '@validations/validateFileNameDuplication';
-import indexFileWrite from '@writes/indexFileWrite';
+} from '#/configs/interfaces/IOption';
+import { getIgnoreConfigContents } from '#/ignores/getIgnoreConfigContents';
+import { getIgnoreConfigFiles } from '#/ignores/getIgnoreConfigFiles';
+import { createIndexInfos } from '#/modules/createIndexInfos';
+import { getRemoveFiles } from '#/modules/getRemoveFiles';
+import { singleIndexInfos } from '#/modules/singleIndexInfos';
+import { appendDotDirPrefix } from '#/tools/appendDotDirPrefix';
+import { validateExportDuplication } from '#/validations/validateExportDuplication';
+import { validateFileNameDuplication } from '#/validations/validateFileNameDuplication';
+import { indexFileWrite } from '#/writes/indexFileWrite';
 import fs from 'fs';
-import { applyEdits, FormattingOptions, ModificationOptions, modify } from 'jsonc-parser';
+import { applyEdits, modify, type FormattingOptions, type ModificationOptions } from 'jsonc-parser';
 import { exists, getDirname, replaceSepToPosix } from 'my-node-fp';
 import path from 'path';
 
@@ -87,7 +87,10 @@ export async function createWritor(option: TCreateOptionWithDirInfo, isMessageDi
 
     spinner.update(`ctix 'create' mode complete!`);
 
-    reasoner.start([...exportDuplicationValidateResult.reasons, ...writeReasons]);
+    reasoner.start([
+      ...exportDuplicationValidateResult.reasons,
+      ...writeReasons,
+    ] satisfies IReason[]);
   } catch (catched) {
     const err =
       catched instanceof Error ? catched : new Error('Unknown error raised from createWritor');
@@ -170,7 +173,7 @@ export async function removeIndexFile(
     reasoner.isEnable = isMessageDisplay ?? false;
 
     spinner.start("ctix start 'remove' mode");
-    reasoner.sleep(500);
+    await reasoner.sleep(500);
 
     const project = getTypeScriptProject({
       tsConfigFilePath: option.resolvedProjectFilePath,

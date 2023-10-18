@@ -1,23 +1,23 @@
 import path from 'path';
-import ts from 'typescript';
+import * as tsm from 'ts-morph';
 
 /**
  * tsconfig.json file find in current working director or cli execute path
  *
  * @param project - project directory
  */
-export default function getTypeScriptConfig(project: string): ts.ParsedCommandLine {
+export function getTypeScriptConfig(project: string): tsm.ts.ParsedCommandLine {
   const resolvedProjectPath = path.resolve(project);
-  const parseConfigHost: ts.ParseConfigHost = {
-    fileExists: ts.sys.fileExists,
-    readFile: ts.sys.readFile,
-    readDirectory: ts.sys.readDirectory,
+  const parseConfigHost: tsm.ts.ParseConfigHost = {
+    fileExists: tsm.ts.sys.fileExists.bind(tsm.ts),
+    readFile: tsm.ts.sys.readFile.bind(tsm.ts),
+    readDirectory: tsm.ts.sys.readDirectory.bind(tsm.ts),
     useCaseSensitiveFileNames: true,
   };
 
-  const configFile = ts.readConfigFile(resolvedProjectPath, ts.sys.readFile);
+  const configFile = tsm.ts.readConfigFile(resolvedProjectPath, tsm.ts.sys.readFile.bind(tsm.ts));
 
-  const tsconfig = ts.parseJsonConfigFileContent(
+  const tsconfig = tsm.ts.parseJsonConfigFileContent(
     configFile.config,
     parseConfigHost,
     path.dirname(resolvedProjectPath),

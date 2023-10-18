@@ -2,7 +2,7 @@ import { first } from 'my-easy-fp';
 import { replaceSepToPosix } from 'my-node-fp';
 import path from 'path';
 
-export default function getRelativeDepth(basePaths: string | string[], dirPath: string) {
+export function getRelativeDepth(basePaths: string | string[], dirPath: string) {
   const basePath = typeof basePaths === 'string' ? basePaths : first(basePaths);
 
   if (basePath == null) {

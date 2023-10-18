@@ -1,12 +1,12 @@
-import {
+import type {
   TCreateOption,
   TInitOption,
   TRemoveOption,
   TSingleOption,
-} from '@configs/interfaces/IOption';
-import { Argv } from 'yargs';
+} from '#/configs/interfaces/IOption';
+import type { Argv } from 'yargs';
 
-export default function removeBuilder<
+export function removeBuilder<
   T extends TRemoveOption | TCreateOption | TInitOption | TSingleOption,
 >(args: Argv<T>) {
   args

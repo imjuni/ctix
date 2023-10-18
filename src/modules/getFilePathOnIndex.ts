@@ -1,7 +1,7 @@
-import { TCreateOrSingleOption } from '@configs/interfaces/IOption';
-import appendDotDirPrefix from '@tools/appendDotDirPrefix';
-import extensions from '@tools/extensions';
-import getExtname from '@tools/getExtname';
+import type { TCreateOrSingleOption } from '#/configs/interfaces/IOption';
+import { appendDotDirPrefix } from '#/tools/appendDotDirPrefix';
+import { extensions } from '#/tools/extensions';
+import { getExtname } from '#/tools/getExtname';
 import { isDirectorySync, replaceSepToPosix } from 'my-node-fp';
 import path from 'path';
 
@@ -87,7 +87,7 @@ function getRelativePath(filePath: string, option: TCreateOrSingleOption, relati
   return basenameWithDot;
 }
 
-export default function getFilePathOnIndex(
+export function getFilePathOnIndex(
   filePath: string,
   option: TCreateOrSingleOption,
   relativePath?: string,

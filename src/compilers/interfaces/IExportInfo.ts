@@ -1,6 +1,6 @@
-import IIdentifierWithNode from '@compilers/interfaces/IIdentifierWithNode';
+import type { IIdentifierWithNode } from '#/compilers/interfaces/IIdentifierWithNode';
 
-export default interface IExportInfo {
+export interface IExportInfo {
   isEmpty: boolean;
   resolvedFilePath: string;
   resolvedDirPath: string;

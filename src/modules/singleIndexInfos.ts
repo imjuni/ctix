@@ -1,16 +1,16 @@
-import progress from '@cli/progress';
-import IExportInfo from '@compilers/interfaces/IExportInfo';
-import { TSingleOptionWithDirInfo } from '@configs/interfaces/IOption';
-import getIgnoreConfigContents from '@ignores/getIgnoreConfigContents';
-import getDirPaths from '@modules/getDirPaths';
-import mergeCreateIndexInfo from '@modules/mergeCreateIndexInfo';
-import singleIndexInfo from '@modules/singleIndexInfo';
-import ICreateIndexInfos from '@tools/interface/ICreateIndexInfos';
+import { progress } from '#/cli/progress';
+import type { IExportInfo } from '#/compilers/interfaces/IExportInfo';
+import type { TSingleOptionWithDirInfo } from '#/configs/interfaces/IOption';
+import type { getIgnoreConfigContents } from '#/ignores/getIgnoreConfigContents';
+import { getDirPaths } from '#/modules/getDirPaths';
+import { mergeCreateIndexInfo } from '#/modules/mergeCreateIndexInfo';
+import { singleIndexInfo } from '#/modules/singleIndexInfo';
+import type { ICreateIndexInfos } from '#/tools/interface/ICreateIndexInfos';
 import { settify } from 'my-easy-fp';
-import * as tsm from 'ts-morph';
-import { AsyncReturnType } from 'type-fest';
+import type * as tsm from 'ts-morph';
+import type { AsyncReturnType } from 'type-fest';
 
-export default async function singleIndexInfos(
+export async function singleIndexInfos(
   exportInfos: IExportInfo[],
   ignores: AsyncReturnType<typeof getIgnoreConfigContents>,
   option: TSingleOptionWithDirInfo,

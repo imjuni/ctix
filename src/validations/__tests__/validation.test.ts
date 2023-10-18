@@ -1,13 +1,13 @@
-import getExportInfos from '@compilers/getExportInfos';
-import tsMorphProjectOption from '@compilers/tsMorphProjectOption';
-import defaultIgnoreFileName from '@configs/defaultIgnoreFileName';
-import { TCreateOptionWithDirInfo } from '@configs/interfaces/IOption';
-import getIgnoreConfigContents from '@ignores/getIgnoreConfigContents';
-import getIgnoreConfigFiles from '@ignores/getIgnoreConfigFiles';
-import * as env from '@testenv/env';
-import { getTestValue, posixJoin } from '@tools/misc';
-import validateExportDuplication from '@validations/validateExportDuplication';
-import validateFileNameDuplication from '@validations/validateFileNameDuplication';
+import { getExportInfos } from '#/compilers/getExportInfos';
+import { tsMorphProjectOption } from '#/compilers/tsMorphProjectOption';
+import { defaultIgnoreFileName } from '#/configs/defaultIgnoreFileName';
+import type { TCreateOptionWithDirInfo } from '#/configs/interfaces/IOption';
+import { getIgnoreConfigContents } from '#/ignores/getIgnoreConfigContents';
+import { getIgnoreConfigFiles } from '#/ignores/getIgnoreConfigFiles';
+import * as env from '#/testenv/env';
+import { getTestValue, posixJoin } from '#/tools/misc';
+import { validateExportDuplication } from '#/validations/validateExportDuplication';
+import { validateFileNameDuplication } from '#/validations/validateFileNameDuplication';
 import path from 'path';
 import * as tsm from 'ts-morph';
 

@@ -1,4 +1,4 @@
-import * as env from '@testenv/env';
+import * as env from '#/testenv/env';
 
 export default [
   {

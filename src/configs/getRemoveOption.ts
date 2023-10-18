@@ -1,10 +1,10 @@
-import getStartAtDir from '@configs/getStartAtDir';
-import { TRemoveOption } from '@configs/interfaces/IOption';
+import { getStartAtDir } from '#/configs/getStartAtDir';
+import type { TRemoveOption } from '#/configs/interfaces/IOption';
 import { getDirnameSync, replaceSepToPosix } from 'my-node-fp';
 import path from 'path';
-import { ArgumentsCamelCase } from 'yargs';
+import type { ArgumentsCamelCase } from 'yargs';
 
-export default function getRemoveOption(argv: ArgumentsCamelCase<TRemoveOption>): TRemoveOption {
+export function getRemoveOption(argv: ArgumentsCamelCase<TRemoveOption>): TRemoveOption {
   const projectDirPath = replaceSepToPosix(path.resolve(getDirnameSync(argv.p ?? argv.project)));
   const startAt = getStartAtDir(argv.a ?? argv.startAt, projectDirPath);
 

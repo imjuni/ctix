@@ -1,9 +1,7 @@
 import path from 'path';
-import ts from 'typescript';
+import type * as tsm from 'ts-morph';
 
-export default function getTsconfigRootDir(
-  compilerOptions: ts.CompilerOptions,
-): string | undefined {
+export function getTsconfigRootDir(compilerOptions: tsm.ts.CompilerOptions): string | undefined {
   // If set rootDir, use it
   if (compilerOptions.rootDir !== undefined && compilerOptions.rootDir !== null) {
     const rootDir = path.resolve(compilerOptions.rootDir);

@@ -1,9 +1,9 @@
-import ICommonCliOption from '@configs/interfaces/ICommonCliOption';
-import ICreateSingleCommonCliOption from '@configs/interfaces/ICreateSingleCommonCliOption';
-import IDirectoryInfo from '@configs/interfaces/IDirectoryInfo';
-import IOnlyCreateCliOption from '@configs/interfaces/IOnlyCreateCliOption';
-import IOnlyRemoveCliOption from '@configs/interfaces/IOnlyRemoveCliOption';
-import IOnlySingleCliOption from '@configs/interfaces/IOnlySingleCliOption';
+import type { ICommonCliOption } from '#/configs/interfaces/ICommonCliOption';
+import type { ICreateSingleCommonCliOption } from '#/configs/interfaces/ICreateSingleCommonCliOption';
+import type { IDirectoryInfo } from '#/configs/interfaces/IDirectoryInfo';
+import type { IOnlyCreateCliOption } from '#/configs/interfaces/IOnlyCreateCliOption';
+import type { IOnlyRemoveCliOption } from '#/configs/interfaces/IOnlyRemoveCliOption';
+import type { IOnlySingleCliOption } from '#/configs/interfaces/IOnlySingleCliOption';
 
 export type TCreateOption = ICommonCliOption & ICreateSingleCommonCliOption & IOnlyCreateCliOption;
 export type TCreateOptionWithDirInfo = TCreateOption & IDirectoryInfo;

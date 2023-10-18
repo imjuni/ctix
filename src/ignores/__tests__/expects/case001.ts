@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
-import * as env from '@testenv/env';
-import { posixJoin } from '@tools/misc';
+import * as env from '#/testenv/env';
+import { posixJoin } from '#/tools/misc';
 
 export default {
   git: {

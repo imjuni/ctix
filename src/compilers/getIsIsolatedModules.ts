@@ -1,6 +1,6 @@
 import * as tsm from 'ts-morph';
 
-export default function getIsIsolatedModules(
+export function getIsIsolatedModules(
   ...exportedDeclarationNodes: tsm.ExportedDeclarations[]
 ): boolean {
   return exportedDeclarationNodes

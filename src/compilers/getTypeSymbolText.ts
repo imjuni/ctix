@@ -1,6 +1,6 @@
-import * as tsm from 'ts-morph';
+import type * as tsm from 'ts-morph';
 
-export default function getTypeSymbolText(
+export function getTypeSymbolText(
   typeNode: tsm.Type,
   declarationNodeCallback?: (declarationNode: tsm.Node) => string,
 ): string {

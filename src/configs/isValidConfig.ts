@@ -1,9 +1,9 @@
-import { TInitOption } from '@configs/interfaces/IOption';
+import type { TInitOption } from '#/configs/interfaces/IOption';
 import { existsSync } from 'my-node-fp';
 import path from 'path';
-import yargs from 'yargs';
+import type yargs from 'yargs';
 
-export default function isValidConfig(argv: yargs.Arguments<TInitOption>) {
+export function isValidConfig(argv: yargs.Arguments<TInitOption>) {
   // check project file exits
   const { project } = argv;
   if (existsSync(path.resolve(project)) === false) {

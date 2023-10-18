@@ -1,11 +1,11 @@
-import IExportInfo from '@compilers/interfaces/IExportInfo';
-import { TSingleOptionWithDirInfo } from '@configs/interfaces/IOption';
-import getFilePathOnIndex from '@modules/getFilePathOnIndex';
-import ICreateIndexInfo from '@tools/interface/ICreateIndexInfo';
-import getOutputDir from '@writes/getOutputDir';
-import * as tsm from 'ts-morph';
+import type { IExportInfo } from '#/compilers/interfaces/IExportInfo';
+import type { TSingleOptionWithDirInfo } from '#/configs/interfaces/IOption';
+import { getFilePathOnIndex } from '#/modules/getFilePathOnIndex';
+import type { ICreateIndexInfo } from '#/tools/interface/ICreateIndexInfo';
+import { getOutputDir } from '#/writes/getOutputDir';
+import type * as tsm from 'ts-morph';
 
-export default function singleIndexInfo(
+export function singleIndexInfo(
   exportInfo: IExportInfo,
   option: TSingleOptionWithDirInfo,
   project: tsm.Project,

@@ -13,7 +13,7 @@ export interface IGetIgnoreConfigFiles {
  * @param cwd current working directory
  * @returns return value is eithered. string array or error class.
  */
-export default async function getIgnoreConfigFiles(
+export async function getIgnoreConfigFiles(
   cwd: string,
   ignoreFilePath: string,
 ): Promise<IGetIgnoreConfigFiles> {

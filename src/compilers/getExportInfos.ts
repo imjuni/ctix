@@ -1,14 +1,14 @@
-import getExportInfo from '@compilers/getExportInfo';
-import IExportInfo from '@compilers/interfaces/IExportInfo';
-import { TCreateOrSingleOption } from '@configs/interfaces/IOption';
-import getIgnoreConfigContents from '@ignores/getIgnoreConfigContents';
-import isIgnored from '@ignores/isIgnored';
+import { getExportInfo } from '#/compilers/getExportInfo';
+import type { IExportInfo } from '#/compilers/interfaces/IExportInfo';
+import type { TCreateOrSingleOption } from '#/configs/interfaces/IOption';
+import type { getIgnoreConfigContents } from '#/ignores/getIgnoreConfigContents';
+import { isIgnored } from '#/ignores/isIgnored';
 import { getDirnameSync, isDescendant } from 'my-node-fp';
 import path from 'path';
-import * as tsm from 'ts-morph';
-import { AsyncReturnType } from 'type-fest';
+import type * as tsm from 'ts-morph';
+import type { AsyncReturnType } from 'type-fest';
 
-export default async function getExportInfos(
+export async function getExportInfos(
   project: tsm.Project,
   option: TCreateOrSingleOption,
   ignores: AsyncReturnType<typeof getIgnoreConfigContents>,

@@ -1,6 +1,6 @@
-import TStreamType from '@configs/interfaces/TStreamType';
+import type { TStreamType } from '#/configs/interfaces/TStreamType';
 
-export default interface ICommonCliOption {
+export interface ICommonCliOption {
   /**
    * configuration file(.ctirc) path
    */

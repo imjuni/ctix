@@ -1,14 +1,14 @@
-import getTypeScriptConfig from '@compilers/getTypeScriptConfig';
-import defaultIgnoreFileName from '@configs/defaultIgnoreFileName';
-import getSourceFileEol from '@configs/getSourceFileEol';
-import IDirectoryInfo from '@configs/interfaces/IDirectoryInfo';
-import {
+import { getTypeScriptConfig } from '#/compilers/getTypeScriptConfig';
+import { defaultIgnoreFileName } from '#/configs/defaultIgnoreFileName';
+import { getSourceFileEol } from '#/configs/getSourceFileEol';
+import type { IDirectoryInfo } from '#/configs/interfaces/IDirectoryInfo';
+import type {
   TCreateOption,
   TInitOption,
   TRemoveOption,
   TSingleOption,
-} from '@configs/interfaces/IOption';
-import getDepth from '@tools/getDepth';
+} from '#/configs/interfaces/IOption';
+import { getDepth } from '#/tools/getDepth';
 import findUp from 'find-up';
 import { settify } from 'my-easy-fp';
 import { existsSync, getDirnameSync, replaceSepToPosix } from 'my-node-fp';
@@ -39,7 +39,7 @@ function getCustomIgnoreFile(option: TCreateOption | TSingleOption) {
   return defaultIgnoreFileName;
 }
 
-export default function attachDiretoryInfo<
+export function attachDiretoryInfo<
   T extends TCreateOption | TSingleOption | TRemoveOption | TInitOption,
 >(option: T): T & IDirectoryInfo {
   const project = replaceSepToPosix(path.resolve(option.project));

@@ -1,3 +1,1 @@
-const defaultIgnoreFileName = '.ctiignore';
-
-export default defaultIgnoreFileName;
+export const defaultIgnoreFileName = '.ctiignore';

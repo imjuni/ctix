@@ -1,6 +1,6 @@
-import * as tsm from 'ts-morph';
+import type * as tsm from 'ts-morph';
 
-export default interface IIdentifierWithNode {
+export interface IIdentifierWithNode {
   identifier: string;
   node: tsm.Node;
   isIsolatedModules: boolean;

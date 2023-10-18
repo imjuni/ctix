@@ -1,15 +1,12 @@
-import { TRemoveOptionWithDirInfo } from '@configs/interfaces/IOption';
-import { posixJoin } from '@tools/misc';
+import type { TRemoveOptionWithDirInfo } from '#/configs/interfaces/IOption';
+import { posixJoin } from '#/tools/misc';
 import fastGlob from 'fast-glob';
 import { settify } from 'my-easy-fp';
 import { getDirname, isDescendant, replaceSepToPosix } from 'my-node-fp';
 import path from 'path';
-import * as tsm from 'ts-morph';
+import type * as tsm from 'ts-morph';
 
-export default async function getRemoveFiles(
-  project: tsm.Project,
-  option: TRemoveOptionWithDirInfo,
-) {
+export async function getRemoveFiles(project: tsm.Project, option: TRemoveOptionWithDirInfo) {
   const filePaths = project
     .getSourceFiles()
     .filter((sourceFile) =>

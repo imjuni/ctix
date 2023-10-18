@@ -1,7 +1,7 @@
-import getIgnoreConfigContents from '@ignores/getIgnoreConfigContents';
-import getIgnoreConfigFiles from '@ignores/getIgnoreConfigFiles';
-import * as env from '@testenv/env';
-import { getTestValue, posixJoin } from '@tools/misc';
+import { getIgnoreConfigContents } from '#/ignores/getIgnoreConfigContents';
+import { getIgnoreConfigFiles } from '#/ignores/getIgnoreConfigFiles';
+import * as env from '#/testenv/env';
+import { getTestValue, posixJoin } from '#/tools/misc';
 import path from 'path';
 
 test('getIgnoreFiles', async () => {

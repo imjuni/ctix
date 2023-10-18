@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
-import IReason from '@cli/interfaces/IReason';
-import TStreamType from '@configs/interfaces/TStreamType';
+import type { IReason } from '#/cli/interfaces/IReason';
+import type { TStreamType } from '#/configs/interfaces/TStreamType';
 import chalk from 'chalk';
 import { sleep as sleepMs } from 'my-easy-fp';
 import * as path from 'path';
@@ -94,6 +94,4 @@ class CtixReasoner {
   }
 }
 
-const reasoner = new CtixReasoner();
-
-export default reasoner;
+export const reasoner = new CtixReasoner();

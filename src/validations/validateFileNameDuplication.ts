@@ -1,11 +1,11 @@
-import IReason from '@cli/interfaces/IReason';
-import IExportInfo from '@compilers/interfaces/IExportInfo';
-import { TCreateOrSingleOption } from '@configs/interfaces/IOption';
-import getExtname from '@tools/getExtname';
+import type { IReason } from '#/cli/interfaces/IReason';
+import type { IExportInfo } from '#/compilers/interfaces/IExportInfo';
+import type { TCreateOrSingleOption } from '#/configs/interfaces/IOption';
+import { getExtname } from '#/tools/getExtname';
 import chalk from 'chalk';
 import path from 'path';
 
-export default function validateFileNameDuplication(
+export function validateFileNameDuplication(
   exportInfos: IExportInfo[],
   option: TCreateOrSingleOption,
 ) {

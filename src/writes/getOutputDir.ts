@@ -1,7 +1,7 @@
-import { TSingleOptionWithDirInfo } from '@configs/interfaces/IOption';
+import type { TSingleOptionWithDirInfo } from '#/configs/interfaces/IOption';
 import { getDirnameSync, replaceSepToPosix } from 'my-node-fp';
 import path from 'path';
-import * as tsm from 'ts-morph';
+import type * as tsm from 'ts-morph';
 
 function getTsconfigRootDir(compilerOptions: tsm.CompilerOptions): string | undefined {
   // If set rootDir, use it
@@ -20,10 +20,7 @@ function getTsconfigRootDir(compilerOptions: tsm.CompilerOptions): string | unde
   return undefined;
 }
 
-export default function getOutputDir(
-  project: tsm.Project,
-  option: TSingleOptionWithDirInfo,
-): string {
+export function getOutputDir(project: tsm.Project, option: TSingleOptionWithDirInfo): string {
   if ((option.useRootDir ?? false) === false) {
     return replaceSepToPosix(path.resolve(getDirnameSync(option.output)));
   }

@@ -1,11 +1,12 @@
-import { posixJoin } from '@tools/misc';
+import { getRefineIgnorePath } from '#/ignores/getRefineIgnorePath';
+import { posixJoin } from '#/tools/misc';
 import fs from 'fs';
-import ignore, { Ignore } from 'ignore';
+import ignore, { type Ignore } from 'ignore';
 import { exists, getDirname } from 'my-node-fp';
-import gitignore, { parse as parseGitignore } from 'parse-gitignore';
-import getRefineIgnorePath from './getRefineIgnorePath';
+import type gitignore from 'parse-gitignore';
+import { parse as parseGitignore } from 'parse-gitignore';
 
-export default async function getGitignoreFiles(
+export async function getGitignoreFiles(
   filePath: string,
 ): Promise<{ patterns: string[]; state?: gitignore.State; ignore: Ignore }> {
   try {

@@ -1,9 +1,7 @@
-import * as tsm from 'ts-morph';
+import type * as tsm from 'ts-morph';
 
-const tsMorphProjectOption: Readonly<tsm.ProjectOptions> = {
+export const tsMorphProjectOption: Readonly<tsm.ProjectOptions> = {
   skipAddingFilesFromTsConfig: false,
   skipFileDependencyResolution: true,
   skipLoadingLibFiles: true,
 };
-
-export default tsMorphProjectOption;

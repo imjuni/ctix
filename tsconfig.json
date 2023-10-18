@@ -42,16 +42,7 @@
     "baseUrl": "." /* Base directory to resolve non-absolute module names. */,
     "rootDir": ".",
     "paths": {
-      "@tools/*": ["src/tools/*"],
-      "@compilers/*": ["src/compilers/*"],
-      "@modules/*": ["src/modules/*"],
-      "@validations/*": ["src/validations/*"],
-      "@interfaces/*": ["src/interfaces/*"],
-      "@cli/*": ["src/cli/*"],
-      "@configs/*": ["src/configs/*"],
-      "@testenv/*": ["src/testenv/*"],
-      "@ignores/*": ["src/ignores/*"],
-      "@writes/*": ["src/writes/*"]
+      "#/*": ["src/*"]
     },
     "esModuleInterop": true /* Enables emit interoperability between CommonJS and ES Modules via creation of namespace objects for all imports. Implies 'allowSyntheticDefaultImports'. */,
 
@@ -60,5 +51,6 @@
     "emitDecoratorMetadata": true /* Enables experimental support for emitting type metadata for decorators. */,
     "pretty": true
   },
+  "include": ["src/**/*.ts"],
   "exclude": ["example/**", "dist/**", "**/erdia_eg", "**/.configs/**", "**/docs/**/*"]
 }

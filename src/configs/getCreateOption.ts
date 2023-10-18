@@ -1,11 +1,11 @@
-import defaultIgnoreFileName from '@configs/defaultIgnoreFileName';
-import getStartAtDir from '@configs/getStartAtDir';
-import { TCreateOption } from '@configs/interfaces/IOption';
+import { defaultIgnoreFileName } from '#/configs/defaultIgnoreFileName';
+import { getStartAtDir } from '#/configs/getStartAtDir';
+import type { TCreateOption } from '#/configs/interfaces/IOption';
 import { getDirnameSync, replaceSepToPosix } from 'my-node-fp';
 import path from 'path';
-import { ArgumentsCamelCase } from 'yargs';
+import type { ArgumentsCamelCase } from 'yargs';
 
-export default function getCreateOption(argv: ArgumentsCamelCase<TCreateOption>): TCreateOption {
+export function getCreateOption(argv: ArgumentsCamelCase<TCreateOption>): TCreateOption {
   const projectDirPath = replaceSepToPosix(path.resolve(getDirnameSync(argv.p ?? argv.project)));
   const startAt = getStartAtDir(argv.a ?? argv.startAt, projectDirPath);
 

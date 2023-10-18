@@ -1,9 +1,9 @@
-import getIgnoreConfigContents from '@ignores/getIgnoreConfigContents';
-import getRefineIgnorePath from '@ignores/getRefineIgnorePath';
+import type { getIgnoreConfigContents } from '#/ignores/getIgnoreConfigContents';
+import { getRefineIgnorePath } from '#/ignores/getRefineIgnorePath';
 import { first } from 'my-easy-fp';
-import { AsyncReturnType } from 'type-fest';
+import type { AsyncReturnType } from 'type-fest';
 
-export default function getCtiIgnorePattern(
+export function getCtiIgnorePattern(
   ig: AsyncReturnType<typeof getIgnoreConfigContents>,
   filePath: string,
 ) {

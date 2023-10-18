@@ -1,17 +1,17 @@
-import IExportInfo from '@compilers/interfaces/IExportInfo';
-import { TCreateOrSingleOption } from '@configs/interfaces/IOption';
-import defaultIgnore from '@ignores/defaultIgnore';
-import getIgnoreConfigContents from '@ignores/getIgnoreConfigContents';
-import isIgnored from '@ignores/isIgnored';
-import getRelativeDepth from '@tools/getRelativeDepth';
-import IDescendantExportInfo from '@tools/interface/IDescendantExportInfo';
-import { posixJoin } from '@tools/misc';
+import type { IExportInfo } from '#/compilers/interfaces/IExportInfo';
+import type { TCreateOrSingleOption } from '#/configs/interfaces/IOption';
+import { defaultIgnore } from '#/ignores/defaultIgnore';
+import type { getIgnoreConfigContents } from '#/ignores/getIgnoreConfigContents';
+import { isIgnored } from '#/ignores/isIgnored';
+import { getRelativeDepth } from '#/tools/getRelativeDepth';
+import type { IDescendantExportInfo } from '#/tools/interface/IDescendantExportInfo';
+import { posixJoin } from '#/tools/misc';
 import fastGlob from 'fast-glob';
 import fs from 'fs';
 import { getDirname, isEmptyDir, replaceSepToPosix } from 'my-node-fp';
-import { AsyncReturnType } from 'type-fest';
+import type { AsyncReturnType } from 'type-fest';
 
-export default async function getDescendantExportInfo(
+export async function getDescendantExportInfo(
   parentFilePath: string,
   option: TCreateOrSingleOption,
   exportInfos: IExportInfo[],
@@ -36,7 +36,7 @@ export default async function getDescendantExportInfo(
       const includeExportInfos = exportInfos
         .filter((exportInfo) => exportInfo.resolvedDirPath === globDirPath)
         .filter((exportInfo) => {
-          const ignoreInFile = ignores[exportInfo.resolvedFilePath];
+          const ignoreInFile = isIgnored(ignores, exportInfo.resolvedFilePath);
           const namedExportIdentifiers = exportInfo.namedExports.map(
             (namedExport) => namedExport.identifier,
           );
@@ -53,12 +53,12 @@ export default async function getDescendantExportInfo(
             return false;
           }
 
-          if (
-            exportInfo.defaultExport?.identifier != null &&
-            ignoreInFile !== exportInfo.defaultExport?.identifier
-          ) {
-            return true;
-          }
+          // if (
+          //   exportInfo.defaultExport?.identifier != null &&
+          //   ignoreInFile !== exportInfo.defaultExport?.identifier
+          // ) {
+          //   return true;
+          // }
 
           if (namedExportIdentifiers.length > 0) {
             return true;

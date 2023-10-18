@@ -1,4 +1,4 @@
-import TStreamType from '@configs/interfaces/TStreamType';
+import type { TStreamType } from '#/configs/interfaces/TStreamType';
 import chalk from 'chalk';
 import { SingleBar } from 'cli-progress';
 
@@ -85,6 +85,4 @@ class CtixProgress {
   }
 }
 
-const progress = new CtixProgress();
-
-export default progress;
+export const progress = new CtixProgress();

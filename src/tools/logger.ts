@@ -1,5 +1,5 @@
 import chalk from 'chalk';
-import pino, { Logger } from 'pino';
+import pino, { type Logger } from 'pino';
 import pretty from 'pino-pretty';
 
 let log:
@@ -17,7 +17,7 @@ let log:
     }>
   | undefined;
 
-export default function logger() {
+export function logger() {
   if (log === undefined) {
     const stream = pretty({
       translateTime: 'yy-mm-dd HH:MM:ss',

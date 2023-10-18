@@ -1,9 +1,9 @@
-import getCtiignoreFiles from '@ignores/getCtiignoreFiles';
-import getGitignoreFiles from '@ignores/getGitignoreFiles';
-import type { IGetIgnoreConfigFiles } from '@ignores/getIgnoreConfigFiles';
-import getNpmignoreFiles from '@ignores/getNpmignoreFiles';
-import { Ignore } from 'ignore';
-import { AsyncReturnType } from 'type-fest';
+import { getCtiignoreFiles } from '#/ignores/getCtiignoreFiles';
+import { getGitignoreFiles } from '#/ignores/getGitignoreFiles';
+import type { IGetIgnoreConfigFiles } from '#/ignores/getIgnoreConfigFiles';
+import { getNpmignoreFiles } from '#/ignores/getNpmignoreFiles';
+import type { Ignore } from 'ignore';
+import type { AsyncReturnType } from 'type-fest';
 
 interface IGetIgnoreConfigContentsReturn {
   git: Ignore;
@@ -17,7 +17,7 @@ interface IGetIgnoreConfigContentsReturn {
   };
 }
 
-export default async function getIgnoreConfigContents({
+export async function getIgnoreConfigContents({
   git,
   npm,
   cti,

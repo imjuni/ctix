@@ -1,16 +1,16 @@
-import progress from '@cli/progress';
-import IExportInfo from '@compilers/interfaces/IExportInfo';
-import { TCreateOrSingleOption } from '@configs/interfaces/IOption';
-import getIgnoreConfigContents from '@ignores/getIgnoreConfigContents';
-import createDescendantIndex from '@modules/createDescendantIndex';
-import createIndexInfo from '@modules/createIndexInfo';
-import getDirPaths from '@modules/getDirPaths';
-import mergeCreateIndexInfo from '@modules/mergeCreateIndexInfo';
-import ICreateIndexInfos from '@tools/interface/ICreateIndexInfos';
+import { progress } from '#/cli/progress';
+import type { IExportInfo } from '#/compilers/interfaces/IExportInfo';
+import type { TCreateOrSingleOption } from '#/configs/interfaces/IOption';
+import type { getIgnoreConfigContents } from '#/ignores/getIgnoreConfigContents';
+import { createDescendantIndex } from '#/modules/createDescendantIndex';
+import { createIndexInfo } from '#/modules/createIndexInfo';
+import { getDirPaths } from '#/modules/getDirPaths';
+import { mergeCreateIndexInfo } from '#/modules/mergeCreateIndexInfo';
+import type { ICreateIndexInfos } from '#/tools/interface/ICreateIndexInfos';
 import { settify } from 'my-easy-fp';
-import { AsyncReturnType } from 'type-fest';
+import type { AsyncReturnType } from 'type-fest';
 
-export default async function createIndexInfos(
+export async function createIndexInfos(
   exportInfos: IExportInfo[],
   ignores: AsyncReturnType<typeof getIgnoreConfigContents>,
   option: TCreateOrSingleOption,
