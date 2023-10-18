@@ -1,6 +1,6 @@
-import { TCreateOrSingleOption } from '@configs/interfaces/IOption';
+import type { TCreateOrSingleOption } from '#/configs/interfaces/IOption';
 
-export default function getDirective(
+export function getDirective(
   option: Pick<TCreateOrSingleOption, 'useDirective'>,
   eol: string,
 ): string {

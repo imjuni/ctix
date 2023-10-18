@@ -1,4 +1,4 @@
-export default interface IDirectoryInfo {
+export interface IDirectoryInfo {
   /** sourceFile newline character */
   eol: string;
 

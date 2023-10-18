@@ -1,7 +1,7 @@
-import { TCreateOrSingleOption } from '@configs/interfaces/IOption';
+import type { TCreateOrSingleOption } from '#/configs/interfaces/IOption';
 import dayjs from 'dayjs';
 
-export default function getFirstLineComment(
+export function getFirstLineComment(
   option: Pick<TCreateOrSingleOption, 'useComment' | 'useTimestamp'>,
   eol: string,
   todayArgs?: dayjs.Dayjs,

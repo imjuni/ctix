@@ -1,4 +1,4 @@
-export default interface IOnlyRemoveCliOption {
+export interface IOnlyRemoveCliOption {
   mode: 'remove';
 
   /**

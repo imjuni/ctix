@@ -1,16 +1,16 @@
-import IReason from '@cli/interfaces/IReason';
-import { TCreateOrSingleOption } from '@configs/interfaces/IOption';
-import ICreateIndexInfos from '@tools/interface/ICreateIndexInfos';
-import getDirective from '@writes/getDirective';
-import getFirstLineComment from '@writes/getFirstLineComment';
-import prettierApply from '@writes/prettierApply';
+import type { IReason } from '#/cli/interfaces/IReason';
+import type { TCreateOrSingleOption } from '#/configs/interfaces/IOption';
+import type { ICreateIndexInfos } from '#/tools/interface/ICreateIndexInfos';
+import { getDirective } from '#/writes/getDirective';
+import { getFirstLineComment } from '#/writes/getFirstLineComment';
+import { prettierApply } from '#/writes/prettierApply';
 import chalk from 'chalk';
 import dayjs from 'dayjs';
 import fs from 'fs';
 import { exists } from 'my-node-fp';
 import path from 'path';
 
-export default async function indexFileWrite(
+export async function indexFileWrite(
   indexInfos: ICreateIndexInfos[],
   option: TCreateOrSingleOption,
 ) {

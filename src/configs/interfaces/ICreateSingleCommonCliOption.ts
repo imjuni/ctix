@@ -1,4 +1,4 @@
-export default interface ICreateSingleCommonCliOption {
+export interface ICreateSingleCommonCliOption {
   /**
    * add ctix comment at first line of creted index.ts file, that remark created from ctix
    * @mode create, single

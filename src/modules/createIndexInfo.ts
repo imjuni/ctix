@@ -1,10 +1,10 @@
-import IExportInfo from '@compilers/interfaces/IExportInfo';
-import { TCreateOrSingleOption } from '@configs/interfaces/IOption';
-import getFilePathOnIndex from '@modules/getFilePathOnIndex';
-import ICreateIndexInfo from '@tools/interface/ICreateIndexInfo';
+import type { IExportInfo } from '#/compilers/interfaces/IExportInfo';
+import type { TCreateOrSingleOption } from '#/configs/interfaces/IOption';
+import { getFilePathOnIndex } from '#/modules/getFilePathOnIndex';
+import type { ICreateIndexInfo } from '#/tools/interface/ICreateIndexInfo';
 import { getDirnameSync } from 'my-node-fp';
 
-export default function createIndexInfo(
+export function createIndexInfo(
   exportInfo: IExportInfo,
   option: TCreateOrSingleOption,
 ): ICreateIndexInfo[] {

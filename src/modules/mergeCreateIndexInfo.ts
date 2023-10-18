@@ -1,8 +1,8 @@
-import ICreateIndexInfo from '@tools/interface/ICreateIndexInfo';
-import ICreateIndexInfos from '@tools/interface/ICreateIndexInfos';
+import type { ICreateIndexInfo } from '#/tools/interface/ICreateIndexInfo';
+import type { ICreateIndexInfos } from '#/tools/interface/ICreateIndexInfos';
 import { settify } from 'my-easy-fp';
 
-export default function mergeCreateIndexInfo(
+export function mergeCreateIndexInfo(
   origin: ICreateIndexInfos,
   target: ICreateIndexInfos | ICreateIndexInfo,
 ) {

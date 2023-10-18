@@ -1,8 +1,8 @@
-import getRefineIgnorePath from '@ignores/getRefineIgnorePath';
-import IGetIgnoredConfigContents from '@ignores/interfaces/IGetIgnoredConfigContents';
-import { posixJoin } from '@tools/misc';
+import { getRefineIgnorePath } from '#/ignores/getRefineIgnorePath';
+import type { IGetIgnoredConfigContents } from '#/ignores/interfaces/IGetIgnoredConfigContents';
+import { posixJoin } from '#/tools/misc';
 import fs from 'fs';
-import ignore, { Ignore } from 'ignore';
+import ignore, { type Ignore } from 'ignore';
 import { parse } from 'jsonc-parser';
 import { exists } from 'my-node-fp';
 import path from 'path';
@@ -30,7 +30,7 @@ interface IGetCtiignoreFilesReturn {
   withValue: TCtiIgnoreWithValue[];
 }
 
-export default async function getCtiignoreFiles(
+export async function getCtiignoreFiles(
   cwd: string,
   filePath: string,
 ): Promise<IGetCtiignoreFilesReturn> {
@@ -40,7 +40,9 @@ export default async function getCtiignoreFiles(
     }
 
     const fileBuf = await fs.promises.readFile(filePath);
-    const ignoreFiles: IGetIgnoredConfigContents = parse(fileBuf.toString());
+    const ignoreFiles: IGetIgnoredConfigContents = parse(
+      fileBuf.toString(),
+    ) as IGetIgnoredConfigContents;
     const ig: IGetCtiignoreFilesReturn = { origin: ignoreFiles, ignore: ignore(), withValue: [] };
 
     ig.ignore.add(

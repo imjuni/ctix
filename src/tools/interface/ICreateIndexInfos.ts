@@ -1,4 +1,4 @@
-export default interface ICreateIndexInfos {
+export interface ICreateIndexInfos {
   /**
    * depth of the resolvedDirPath
    */

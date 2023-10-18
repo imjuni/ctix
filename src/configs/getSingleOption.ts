@@ -1,11 +1,11 @@
-import defaultIgnoreFileName from '@configs/defaultIgnoreFileName';
-import getStartAtDir from '@configs/getStartAtDir';
-import { TSingleOption } from '@configs/interfaces/IOption';
+import { defaultIgnoreFileName } from '#/configs/defaultIgnoreFileName';
+import { getStartAtDir } from '#/configs/getStartAtDir';
+import type { TSingleOption } from '#/configs/interfaces/IOption';
 import { getDirnameSync, replaceSepToPosix } from 'my-node-fp';
 import path from 'path';
-import { ArgumentsCamelCase } from 'yargs';
+import type { ArgumentsCamelCase } from 'yargs';
 
-export default function getSingleOption(argv: ArgumentsCamelCase<TSingleOption>): TSingleOption {
+export function getSingleOption(argv: ArgumentsCamelCase<TSingleOption>): TSingleOption {
   const projectDirPath = replaceSepToPosix(path.resolve(getDirnameSync(argv.p ?? argv.project)));
   const startAt = getStartAtDir(argv.a ?? argv.startAt, projectDirPath);
 

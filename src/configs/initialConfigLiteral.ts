@@ -1,4 +1,4 @@
-const initialConfigLiteral = `{
+export const initialConfigLiteral = `{
   // common configuration
   // tsconfig.json path: you must pass path with filename, like this "./tsconfig.json"
   "project": "",
@@ -40,5 +40,3 @@ const initialConfigLiteral = `{
   // remove with backup file
   "includeBackup": true
 }`;
-
-export default initialConfigLiteral;

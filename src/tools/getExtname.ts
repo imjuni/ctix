@@ -1,7 +1,7 @@
-import extensions from '@tools/extensions';
+import { extensions } from '#/tools/extensions';
 import path from 'path';
 
-export default function getExtname(filePath: string): string {
+export function getExtname(filePath: string): string {
   if (extensions.every((extension) => filePath.endsWith(extension) === false)) {
     return path.extname(filePath);
   }

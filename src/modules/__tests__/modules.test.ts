@@ -1,18 +1,21 @@
-import getExportInfos from '@compilers/getExportInfos';
-import tsMorphProjectOption from '@compilers/tsMorphProjectOption';
-import defaultIgnoreFileName from '@configs/defaultIgnoreFileName';
-import { TCreateOptionWithDirInfo, TSingleOptionWithDirInfo } from '@configs/interfaces/IOption';
-import getIgnoreConfigContents from '@ignores/getIgnoreConfigContents';
-import getIgnoreConfigFiles from '@ignores/getIgnoreConfigFiles';
-import getDescendantExportInfo from '@modules/getDescendantExportInfo';
-import getDirPaths from '@modules/getDirPaths';
-import getFilePathOnIndex from '@modules/getFilePathOnIndex';
-import mergeCreateIndexInfo from '@modules/mergeCreateIndexInfo';
-import * as env from '@testenv/env';
-import logger from '@tools/logger';
-import { getTestValue, posixJoin } from '@tools/misc';
-import validateExportDuplication from '@validations/validateExportDuplication';
-import validateFileNameDuplication from '@validations/validateFileNameDuplication';
+import { getExportInfos } from '#/compilers/getExportInfos';
+import { tsMorphProjectOption } from '#/compilers/tsMorphProjectOption';
+import { defaultIgnoreFileName } from '#/configs/defaultIgnoreFileName';
+import type {
+  TCreateOptionWithDirInfo,
+  TSingleOptionWithDirInfo,
+} from '#/configs/interfaces/IOption';
+import { getIgnoreConfigContents } from '#/ignores/getIgnoreConfigContents';
+import { getIgnoreConfigFiles } from '#/ignores/getIgnoreConfigFiles';
+import { getDescendantExportInfo } from '#/modules/getDescendantExportInfo';
+import { getDirPaths } from '#/modules/getDirPaths';
+import { getFilePathOnIndex } from '#/modules/getFilePathOnIndex';
+import { mergeCreateIndexInfo } from '#/modules/mergeCreateIndexInfo';
+import * as env from '#/testenv/env';
+import { logger } from '#/tools/logger';
+import { getTestValue, posixJoin } from '#/tools/misc';
+import { validateExportDuplication } from '#/validations/validateExportDuplication';
+import { validateFileNameDuplication } from '#/validations/validateFileNameDuplication';
 import { replaceSepToPosix } from 'my-node-fp';
 import path from 'path';
 import * as tsm from 'ts-morph';

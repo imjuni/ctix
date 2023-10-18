@@ -23,6 +23,7 @@
     "prepub:prod": "npm run clean && npm run rollup:prod",
     "pub:prod": "cross-env RELEASE_MODE=true npm publish",
     "lint": "eslint --cache .",
+    "prettier": "prettier --write src/**/*.ts",
     "dd": "deps-diff md -d prod -d dev --title-list-type '*' --deps-list-type '*' --content-list-type '*'"
   },
   "repository": {
@@ -70,6 +71,7 @@
     "eslint": "^8.52.0",
     "eslint-config-airbnb-typescript": "^17.1.0",
     "eslint-config-prettier": "^9.0.0",
+    "eslint-import-resolver-typescript": "^3.6.1",
     "eslint-plugin-import": "^2.29.0",
     "eslint-plugin-jsdoc": "^46.8.2",
     "eslint-plugin-prefer-arrow": "^1.2.3",

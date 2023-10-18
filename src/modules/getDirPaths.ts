@@ -1,14 +1,14 @@
-import IExportInfo from '@compilers/interfaces/IExportInfo';
-import { TCreateOrSingleOption } from '@configs/interfaces/IOption';
-import defaultIgnore from '@ignores/defaultIgnore';
-import getIgnoreConfigContents from '@ignores/getIgnoreConfigContents';
-import isIgnored from '@ignores/isIgnored';
-import getRelativeDepth from '@tools/getRelativeDepth';
-import { posixJoin } from '@tools/misc';
+import type { IExportInfo } from '#/compilers/interfaces/IExportInfo';
+import type { TCreateOrSingleOption } from '#/configs/interfaces/IOption';
+import { defaultIgnore } from '#/ignores/defaultIgnore';
+import type { getIgnoreConfigContents } from '#/ignores/getIgnoreConfigContents';
+import { isIgnored } from '#/ignores/isIgnored';
+import { getRelativeDepth } from '#/tools/getRelativeDepth';
+import { posixJoin } from '#/tools/misc';
 import fastGlob from 'fast-glob';
 import { startSepRemove } from 'my-node-fp';
 import path from 'path';
-import { AsyncReturnType } from 'type-fest';
+import type { AsyncReturnType } from 'type-fest';
 
 /**
  *
@@ -17,7 +17,7 @@ import { AsyncReturnType } from 'type-fest';
  * @param option
  * @returns
  */
-export default async function getDirPaths(
+export async function getDirPaths(
   exportInfos: IExportInfo[],
   ignores: AsyncReturnType<typeof getIgnoreConfigContents>,
   option: TCreateOrSingleOption,

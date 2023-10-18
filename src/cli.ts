@@ -1,28 +1,31 @@
+/* eslint-disable @typescript-eslint/no-floating-promises */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 
-import builder from '@cli/builder';
-import createBuilder from '@cli/createBuilder';
-import createSingleBuilder from '@cli/createSingleBuilder';
-import initBuilder from '@cli/initBuilder';
-import removeBuilder from '@cli/removeBuilder';
-import singleBuilder from '@cli/singleBuilder';
-import attachDiretoryInfo from '@configs/attachDiretoryInfo';
-import getCreateOption from '@configs/getCreateOption';
-import getInitOption from '@configs/getInitOption';
-import getRemoveOption from '@configs/getRemoveOption';
-import getSingleOption from '@configs/getSingleOption';
-import {
+import { builder } from '#/cli/builder';
+import { createBuilder } from '#/cli/createBuilder';
+import { createSingleBuilder } from '#/cli/createSingleBuilder';
+import { initBuilder } from '#/cli/initBuilder';
+import { removeBuilder } from '#/cli/removeBuilder';
+import { singleBuilder } from '#/cli/singleBuilder';
+import { attachDiretoryInfo } from '#/configs/attachDiretoryInfo';
+import { getCreateOption } from '#/configs/getCreateOption';
+import { getInitOption } from '#/configs/getInitOption';
+import { getRemoveOption } from '#/configs/getRemoveOption';
+import { getSingleOption } from '#/configs/getSingleOption';
+import type {
   TCreateOption,
   TInitOption,
   TRemoveOption,
   TSingleOption,
-} from '@configs/interfaces/IOption';
-import isValidConfig from '@configs/isValidConfig';
-import preLoadConfig from '@configs/preLoadConfig';
-import logger from '@tools/logger';
+} from '#/configs/interfaces/IOption';
+import { isValidConfig } from '#/configs/isValidConfig';
+import { preLoadConfig } from '#/configs/preLoadConfig';
+import { logger } from '#/tools/logger';
 import { isError } from 'my-easy-fp';
 import sourceMapSupport from 'source-map-support';
-import yargsAnyType, { Argv } from 'yargs';
+import yargsAnyType, { type Argv } from 'yargs';
 import { createInitFile, createWritor, removeIndexFile, singleWritor } from './ctix';
 
 sourceMapSupport.install();
@@ -104,6 +107,7 @@ yargs(process.argv.slice(2))
     aliases: ['i'],
     describe: 'create .ctirc configuration',
     builder: (argv) => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
       return initBuilder(argv) as any;
     },
     handler: async (argv) => {

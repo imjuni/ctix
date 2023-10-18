@@ -1,6 +1,6 @@
-import initialConfigLiteral from '@configs/initialConfigLiteral';
-import logger from '@tools/logger';
-import { applyEdits, FormattingOptions, ModificationOptions, modify } from 'jsonc-parser';
+import { initialConfigLiteral } from '#/configs/initialConfigLiteral';
+import { logger } from '#/tools/logger';
+import { applyEdits, modify, type FormattingOptions, type ModificationOptions } from 'jsonc-parser';
 
 const log = logger();
 const share: { formattingOptions: FormattingOptions; options: ModificationOptions } = {} as any;

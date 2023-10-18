@@ -1,10 +1,11 @@
-import { posixJoin } from '@tools/misc';
+import { posixJoin } from '#/tools/misc';
 import fs from 'fs';
 import { exists, getDirname } from 'my-node-fp';
-import gitignore, { parse as parseGitignore } from 'parse-gitignore';
+import type gitignore from 'parse-gitignore';
+import { parse as parseGitignore } from 'parse-gitignore';
 import path from 'path';
 
-export default async function getNpmignoreFiles(
+export async function getNpmignoreFiles(
   filePath: string,
 ): Promise<{ patterns: string[]; origin: string[]; state?: gitignore.State }> {
   try {

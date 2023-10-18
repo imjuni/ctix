@@ -1,4 +1,4 @@
-export default interface IOnlyCreateCliOption {
+export interface IOnlyCreateCliOption {
   mode: 'create';
 
   /**

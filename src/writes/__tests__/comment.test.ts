@@ -1,5 +1,5 @@
-import getDirective from '@writes/getDirective';
-import getFirstLineComment from '@writes/getFirstLineComment';
+import { getDirective } from '#/writes/getDirective';
+import { getFirstLineComment } from '#/writes/getFirstLineComment';
 import dayjs from 'dayjs';
 import 'jest';
 

@@ -1,6 +1,6 @@
 import path from 'path';
 
-export default function appendDotDirPrefix(filePath: string, sep?: string): string {
+export function appendDotDirPrefix(filePath: string, sep?: string): string {
   const pathSep = sep ?? path.sep;
 
   if (filePath.startsWith('.')) {

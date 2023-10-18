@@ -1,9 +1,9 @@
-import getIgnoreConfigContents from '@ignores/getIgnoreConfigContents';
-import getRefineIgnorePath from '@ignores/getRefineIgnorePath';
+import type { getIgnoreConfigContents } from '#/ignores/getIgnoreConfigContents';
+import { getRefineIgnorePath } from '#/ignores/getRefineIgnorePath';
 import { minimatch } from 'minimatch';
-import { AsyncReturnType } from 'type-fest';
+import type { AsyncReturnType } from 'type-fest';
 
-export default function isIgnored(
+export function isIgnored(
   ignores: AsyncReturnType<typeof getIgnoreConfigContents>,
   filePath: string,
 ) {

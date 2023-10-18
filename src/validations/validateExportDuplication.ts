@@ -1,6 +1,6 @@
-import IReason from '@cli/interfaces/IReason';
-import IExportInfo from '@compilers/interfaces/IExportInfo';
-import IIdentifierWithNode from '@compilers/interfaces/IIdentifierWithNode';
+import type { IReason } from '#/cli/interfaces/IReason';
+import type { IExportInfo } from '#/compilers/interfaces/IExportInfo';
+import type { IIdentifierWithNode } from '#/compilers/interfaces/IIdentifierWithNode';
 import chalk from 'chalk';
 import { settify } from 'my-easy-fp';
 
@@ -48,7 +48,7 @@ function createReason(exportInfo: IExportInfo, identifier: string) {
  * @param exportInfos export statements from every typescript source file
  * @returns
  */
-export default function validateExportDuplication(exportInfos: IExportInfo[]) {
+export function validateExportDuplication(exportInfos: IExportInfo[]) {
   const exportInfoRecord = exportInfos.reduce<Record<string, IExportInfo[]>>(
     (aggregation, exportInfo) => {
       const next = { ...aggregation };

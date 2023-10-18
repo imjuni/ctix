@@ -1,17 +1,17 @@
-import getExportedName from '@compilers/getExportedName';
-import getIsIsolatedModules from '@compilers/getIsIsolatedModules';
-import IExportInfo from '@compilers/interfaces/IExportInfo';
-import IIdentifierWithNode from '@compilers/interfaces/IIdentifierWithNode';
-import { TCreateOrSingleOption } from '@configs/interfaces/IOption';
-import getCtiIgnorePattern from '@ignores/getCtiIgnorePattern';
-import getIgnoreConfigContents from '@ignores/getIgnoreConfigContents';
-import getRelativeDepth from '@tools/getRelativeDepth';
+import { getExportedName } from '#/compilers/getExportedName';
+import { getIsIsolatedModules } from '#/compilers/getIsIsolatedModules';
+import type { IExportInfo } from '#/compilers/interfaces/IExportInfo';
+import type { IIdentifierWithNode } from '#/compilers/interfaces/IIdentifierWithNode';
+import type { TCreateOrSingleOption } from '#/configs/interfaces/IOption';
+import { getCtiIgnorePattern } from '#/ignores/getCtiIgnorePattern';
+import type { getIgnoreConfigContents } from '#/ignores/getIgnoreConfigContents';
+import { getRelativeDepth } from '#/tools/getRelativeDepth';
 import fastGlob from 'fast-glob';
 import { first, invert } from 'my-easy-fp';
 import { getDirname, getDirnameSync, replaceSepToPosix } from 'my-node-fp';
 import path from 'path';
 import * as tsm from 'ts-morph';
-import { AsyncReturnType } from 'type-fest';
+import type { AsyncReturnType } from 'type-fest';
 
 function getFirstExportName(exportedDeclarations: tsm.ExportedDeclarations[]): string {
   const [exportedDeclaration] = exportedDeclarations;
@@ -31,7 +31,7 @@ function isStarExport(ignoreInFile?: string | string[]) {
   return ignoreInFile == null;
 }
 
-export default async function getExportInfo(
+export async function getExportInfo(
   sourceFile: tsm.SourceFile,
   option: TCreateOrSingleOption,
   ignores: AsyncReturnType<typeof getIgnoreConfigContents>,

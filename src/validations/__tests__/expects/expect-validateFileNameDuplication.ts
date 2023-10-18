@@ -1,5 +1,5 @@
-import * as env from '@testenv/env';
-import { posixJoin } from '@tools/misc';
+import * as env from '#/testenv/env';
+import { posixJoin } from '#/tools/misc';
 import chalk from 'chalk';
 import { replaceSepToPosix } from 'my-node-fp';
 

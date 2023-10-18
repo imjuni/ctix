@@ -1,3 +1,1 @@
-type TStreamType = Extract<keyof typeof process, 'stdout' | 'stderr'>;
-
-export default TStreamType;
+export type TStreamType = Extract<keyof typeof process, 'stdout' | 'stderr'>;

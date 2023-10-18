@@ -1,8 +1,8 @@
 import { parse as json5parse } from 'json5';
 import { parse as jsoncParse } from 'jsonc-parser';
-import { fail, isPass, pass, PassFailEither } from 'my-only-either';
+import { fail, isPass, pass, type PassFailEither } from 'my-only-either';
 
-export default function jsonLoader(data: string) {
+export function jsonLoader(data: string) {
   const jsoncParsed = ((): PassFailEither<Error, any> => {
     try {
       const parsed = jsoncParse(data);

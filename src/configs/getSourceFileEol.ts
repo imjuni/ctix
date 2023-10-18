@@ -19,7 +19,7 @@ export function getEOL(text: string) {
   return numOfNl > numOfCr ? '\n' : '\r\n';
 }
 
-export default function getSourceFileEol(sourceFiles: string[]): string {
+export function getSourceFileEol(sourceFiles: string[]): string {
   const eols = sourceFiles
     .map((srouceFile) => {
       try {

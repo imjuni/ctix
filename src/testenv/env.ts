@@ -1,9 +1,9 @@
-import attachDiretoryInfo from '@configs/attachDiretoryInfo';
-import defaultIgnoreFileName from '@configs/defaultIgnoreFileName';
-import ICommonCliOption from '@configs/interfaces/ICommonCliOption';
-import ICreateSingleCommonCliOption from '@configs/interfaces/ICreateSingleCommonCliOption';
-import { TCreateOption, TRemoveOption, TSingleOption } from '@configs/interfaces/IOption';
-import { posixJoin } from '@tools/misc';
+import { attachDiretoryInfo } from '#/configs/attachDiretoryInfo';
+import { defaultIgnoreFileName } from '#/configs/defaultIgnoreFileName';
+import type { ICommonCliOption } from '#/configs/interfaces/ICommonCliOption';
+import type { ICreateSingleCommonCliOption } from '#/configs/interfaces/ICreateSingleCommonCliOption';
+import type { TCreateOption, TRemoveOption, TSingleOption } from '#/configs/interfaces/IOption';
+import { posixJoin } from '#/tools/misc';
 import { getDirnameSync, replaceSepToPosix } from 'my-node-fp';
 import path from 'path';
 

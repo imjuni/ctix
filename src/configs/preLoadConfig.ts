@@ -1,5 +1,5 @@
-import jsonLoader from '@configs/jsonLoader';
-import logger from '@tools/logger';
+import { jsonLoader } from '#/configs/jsonLoader';
+import { logger } from '#/tools/logger';
 import findUp from 'find-up';
 import fs from 'fs';
 import minimist from 'minimist';
@@ -20,7 +20,7 @@ function getConfigFilePath(argv: minimist.ParsedArgs, projectPath?: string) {
   );
 }
 
-export default function preLoadConfig() {
+export function preLoadConfig() {
   try {
     const argv = minimist(process.argv.slice(2));
 

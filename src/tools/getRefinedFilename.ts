@@ -1,7 +1,7 @@
 import { camelCase } from 'change-case';
 import path from 'path';
 
-export default function getRefinedFilename(filename: string): string {
+export function getRefinedFilename(filename: string): string {
   const basename = path.basename(filename, path.extname(filename));
 
   if (/^([A-Z])(.+)/.test(basename)) {

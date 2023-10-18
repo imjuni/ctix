@@ -1,4 +1,4 @@
-import TStreamType from '@configs/interfaces/TStreamType';
+import type { TStreamType } from '#/configs/interfaces/TStreamType';
 import ora from 'ora';
 
 class CtixSpinner {
@@ -56,6 +56,4 @@ class CtixSpinner {
   }
 }
 
-const spinner = new CtixSpinner();
-
-export default spinner;
+export const spinner = new CtixSpinner();

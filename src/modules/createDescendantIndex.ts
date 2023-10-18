@@ -1,14 +1,14 @@
-import IExportInfo from '@compilers/interfaces/IExportInfo';
-import { TCreateOrSingleOption } from '@configs/interfaces/IOption';
-import getIgnoreConfigContents from '@ignores/getIgnoreConfigContents';
-import getDescendantExportInfo from '@modules/getDescendantExportInfo';
-import getFilePathOnIndex from '@modules/getFilePathOnIndex';
-import getRelativeDepth from '@tools/getRelativeDepth';
-import ICreateIndexInfo from '@tools/interface/ICreateIndexInfo';
-import IDescendantExportInfo from '@tools/interface/IDescendantExportInfo';
+import type { IExportInfo } from '#/compilers/interfaces/IExportInfo';
+import type { TCreateOrSingleOption } from '#/configs/interfaces/IOption';
+import type { getIgnoreConfigContents } from '#/ignores/getIgnoreConfigContents';
+import { getDescendantExportInfo } from '#/modules/getDescendantExportInfo';
+import { getFilePathOnIndex } from '#/modules/getFilePathOnIndex';
+import { getRelativeDepth } from '#/tools/getRelativeDepth';
+import type { ICreateIndexInfo } from '#/tools/interface/ICreateIndexInfo';
+import type { IDescendantExportInfo } from '#/tools/interface/IDescendantExportInfo';
 import { isDescendant, replaceSepToPosix } from 'my-node-fp';
 import path from 'path';
-import { AsyncReturnType } from 'type-fest';
+import type { AsyncReturnType } from 'type-fest';
 
 /*
 
@@ -39,7 +39,7 @@ a/b/c/f/g/case04.ts
  * @param option ctix option
  * @returns descendant directory index info
  */
-export default async function createDescendantIndex(
+export async function createDescendantIndex(
   dirPath: string,
   exportInfos: IExportInfo[],
   ignores: AsyncReturnType<typeof getIgnoreConfigContents>,

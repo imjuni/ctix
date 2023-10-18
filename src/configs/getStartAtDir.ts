@@ -3,7 +3,7 @@ import isRelative from 'is-relative';
 import { replaceSepToPosix } from 'my-node-fp';
 import path from 'path';
 
-export default function getStartAtDir(startAtArgs: string | undefined, projectDirPath: string) {
+export function getStartAtDir(startAtArgs: string | undefined, projectDirPath: string) {
   if (startAtArgs == null) {
     return replaceSepToPosix(projectDirPath);
   }

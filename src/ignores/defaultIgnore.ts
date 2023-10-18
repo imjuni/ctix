@@ -1,3 +1,1 @@
-const defaultIgnore = ['**/node_modules', '**/flow-typed', '**/coverage', '**/.git'];
-
-export default defaultIgnore;
+export const defaultIgnore = ['**/node_modules', '**/flow-typed', '**/coverage', '**/.git'];

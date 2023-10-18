@@ -1,4 +1,4 @@
-import getRefineIgnorePath from '@ignores/getRefineIgnorePath';
+import { getRefineIgnorePath } from '#/ignores/getRefineIgnorePath';
 import os from 'os';
 
 test('drive.char.test', () => {

@@ -1,13 +1,16 @@
 import prettier from 'prettier';
 
-export default async function prettierApply(project: string, contents: string) {
+export async function prettierApply(
+  project: string,
+  contents: string,
+): Promise<{ apply: boolean; contents: string }> {
   try {
     const option = await prettier.resolveConfig(project, {
       editorconfig: true,
     });
 
     if (option != null && option.parser === 'typescript') {
-      const prettiered = prettier.format(contents, option);
+      const prettiered = await prettier.format(contents, option);
       return { apply: true, contents: prettiered };
     }
 

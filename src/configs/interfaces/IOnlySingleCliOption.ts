@@ -1,4 +1,4 @@
-export default interface IOnlySingleCliOption {
+export interface IOnlySingleCliOption {
   mode: 'single';
 
   /**

@@ -1,10 +1,10 @@
-import getStartAtDir from '@configs/getStartAtDir';
-import { TInitOption } from '@configs/interfaces/IOption';
+import { getStartAtDir } from '#/configs/getStartAtDir';
+import type { TInitOption } from '#/configs/interfaces/IOption';
 import { getDirnameSync, replaceSepToPosix } from 'my-node-fp';
 import path from 'path';
-import { ArgumentsCamelCase } from 'yargs';
+import type { ArgumentsCamelCase } from 'yargs';
 
-export default function getInitOption(argv: ArgumentsCamelCase<TInitOption>): TInitOption {
+export function getInitOption(argv: ArgumentsCamelCase<TInitOption>): TInitOption {
   const projectDirPath = replaceSepToPosix(path.resolve(getDirnameSync(argv.p ?? argv.project)));
   const startAt = getStartAtDir(argv.a ?? argv.startAt, projectDirPath);
 

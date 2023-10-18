@@ -1,6 +1,6 @@
-import IExportInfo from '@compilers/interfaces/IExportInfo';
+import type { IExportInfo } from '#/compilers/interfaces/IExportInfo';
 
-export default interface IDescendantExportInfo {
+export interface IDescendantExportInfo {
   dirPath: string;
   depth: number;
   isTerminal: boolean;

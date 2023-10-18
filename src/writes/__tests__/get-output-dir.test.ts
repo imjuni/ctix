@@ -1,8 +1,8 @@
-import tsMorphProjectOption from '@compilers/tsMorphProjectOption';
-import { TSingleOptionWithDirInfo } from '@configs/interfaces/IOption';
-import * as env from '@testenv/env';
-import { posixJoin } from '@tools/misc';
-import getOutputDir from '@writes/getOutputDir';
+import { tsMorphProjectOption } from '#/compilers/tsMorphProjectOption';
+import type { TSingleOptionWithDirInfo } from '#/configs/interfaces/IOption';
+import * as env from '#/testenv/env';
+import { posixJoin } from '#/tools/misc';
+import { getOutputDir } from '#/writes/getOutputDir';
 import 'jest';
 import path from 'path';
 import * as tsm from 'ts-morph';

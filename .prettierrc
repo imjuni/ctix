@@ -4,6 +4,7 @@
   "printWidth": 100,
   "arrowParens": "always",
   "parser": "typescript",
+  "plugins": ["prettier-plugin-organize-imports"],
   "endOfLine": "lf",
   "overrides": [
     {
