@@ -77,6 +77,11 @@ export default function getIsIsolatedModules(
         return false;
       }
 
+      // Identifier
+      if (exportedDeclarationNode.getKind() === tsm.SyntaxKind.Identifier) {
+        return true;
+      }
+
       throw new Error(
         `Cannot support type: (${exportedDeclarationNode.getKind()}) ${exportedDeclarationNode.getText()}`,
       );
