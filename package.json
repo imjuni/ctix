@@ -30,7 +30,7 @@
     "url": "git+https://github.com/imjuni/ctix.git"
   },
   "engines": {
-    "node": ">=14"
+    "node": ">=18"
   },
   "keywords": [],
   "author": "ByungJoon Lee",
