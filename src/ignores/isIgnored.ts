@@ -1,6 +1,6 @@
 import getIgnoreConfigContents from '@ignores/getIgnoreConfigContents';
 import getRefineIgnorePath from '@ignores/getRefineIgnorePath';
-import minimatch from 'minimatch';
+import { minimatch } from 'minimatch';
 import { AsyncReturnType } from 'type-fest';
 
 export default function isIgnored(
