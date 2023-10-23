@@ -65,6 +65,11 @@ export default function getIsIsolatedModules(
         return true;
       }
 
+      // Identifier
+      if (exportedDeclarationNode.asKind(tsm.SyntaxKind.Identifier) != null) {
+        return false;
+      }
+
       // SourceFile(like Vue.js components)
       // eg.
       //
@@ -75,11 +80,6 @@ export default function getIsIsolatedModules(
       // ```
       if (exportedDeclarationNode.getKind() === tsm.SyntaxKind.SourceFile) {
         return false;
-      }
-
-      // Identifier
-      if (exportedDeclarationNode.getKind() === tsm.SyntaxKind.Identifier) {
-        return true;
       }
 
       throw new Error(
