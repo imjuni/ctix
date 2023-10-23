@@ -1,0 +1,88 @@
+import { ExcludeContainer } from '#/modules/ignore/ExcludeContainer';
+import { describe, expect, it } from '@jest/globals';
+import path from 'node:path';
+
+describe('ExcludeContainer', () => {
+  it('getter', () => {
+    const container = new ExcludeContainer({
+      config: { exclude: ['src/cli/**/*.ts', 'src/compilers/**/*.ts'] },
+      inlineIgnoreds: [],
+    });
+
+    expect(container.globs).toBeDefined();
+  });
+
+  it('isExclude - no glob files', () => {
+    const container = new ExcludeContainer({
+      config: { exclude: [] },
+      inlineIgnoreds: [],
+    });
+
+    const r01 = container.isExclude('src/files/IncludeContainer.ts');
+    expect(r01).toBeFalsy();
+  });
+
+  it('isExclude', () => {
+    const container = new ExcludeContainer({
+      config: { exclude: ['src/cli/**/*.ts', 'src/compilers/**/*.ts'] },
+      inlineIgnoreds: [
+        {
+          commentCode: 'inline ignore test',
+          pos: 1,
+          line: 1,
+          filePath: 'example/type03/ComparisonCls.tsx',
+        },
+        {
+          commentCode: 'inline ignore test',
+          pos: 1,
+          line: 1,
+          filePath: path.resolve('example/type03/HandsomelyCls.tsx'),
+        },
+      ],
+    });
+
+    const r01 = container.isExclude('src/files/IncludeContainer.ts');
+    const r02 = container.isExclude('src/cli/builders/setCommandBundleOptions.ts');
+    const r03 = container.isExclude(path.join(process.cwd(), 'src/files/IncludeContainer.ts'));
+    const r04 = container.isExclude(
+      path.join(process.cwd(), 'src/cli/builders/setCommandBundleOptions.ts'),
+    );
+    const r05 = container.isExclude('example/type03/ComparisonCls.tsx');
+
+    expect(r01).toBeFalsy();
+    expect(r02).toBeTruthy();
+    expect(r03).toBeFalsy();
+    expect(r04).toBeTruthy();
+    expect(r05).toBeTruthy();
+  });
+
+  it('isExclude', () => {
+    const container = new ExcludeContainer({
+      config: {
+        exclude: [
+          'src/cli/**/*.ts',
+          'src/compilers/**/*.ts',
+          'examples/**/*.ts',
+          '!src/compilers/getTypeScriptProject.ts',
+        ],
+      },
+      inlineIgnoreds: [],
+    });
+
+    const r01 = container.isExclude('src/files/IncludeContainer.ts');
+    const r02 = container.isExclude('src/cli/builders/setCommandBundleOptions.ts');
+    const r03 = container.isExclude(path.join(process.cwd(), 'src/files/IncludeContainer.ts'));
+    const r04 = container.isExclude(
+      path.join(process.cwd(), 'src/cli/builders/setCommandBundleOptions.ts'),
+    );
+    const r05 = container.isExclude(
+      path.join(process.cwd(), 'src/cli/compilers/getTypeScriptProject.ts'),
+    );
+
+    expect(r01).toBeFalsy();
+    expect(r02).toBeTruthy();
+    expect(r03).toBeFalsy();
+    expect(r04).toBeTruthy();
+    expect(r05).toBeFalsy();
+  });
+});

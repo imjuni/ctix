@@ -1,10 +1,10 @@
 {
   "name": "ctix",
-  "version": "1.8.3",
+  "version": "2.0.0-beta.01",
   "description": "Automatic create index.ts file",
   "scripts": {
     "prepublishOnly": "node prepublish.js",
-    "test": "cross-env NODE_ENV=develop DEBUG=ctix:* jest --coverage --runInBand",
+    "test": "cross-env NODE_ENV=develop DEBUG=ctix:* jest --coverage",
     "test:update": "cross-env NODE_ENV=develop DEBUG=ctix:* jest --runInBand --coverage --updateSnapshot",
     "test:debug": "node --nolazy --inspect ./node_modules/jest/bin/jest --runInBand",
     "ctix": "cross-env TS_NODE_PROJECT=tsconfig.json node -r ts-node/register -r tsconfig-paths/register ./src/cli.ts single -p tsconfig.json -o . -w -g ./.configs/.ctiignore",
@@ -44,20 +44,22 @@
   "types": "dist/esm/ctix.d.ts",
   "module": "dist/esm/ctix.js",
   "files": [
-    "dist"
+    "dist",
+    "templates"
   ],
   "bin": {
     "ctix": "./dist/cli.js"
   },
   "devDependencies": {
+    "@jest/globals": "^29.7.0",
     "@jest/test-sequencer": "^29.7.0",
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-terser": "^0.4.4",
     "@tsconfig/node18": "^18.2.2",
     "@types/cli-progress": "^3.11.4",
     "@types/debug": "^4.1.10",
+    "@types/inquirer": "^9.0.6",
     "@types/is-relative": "^1.0.1",
-    "@types/jest": "^29.5.6",
     "@types/json5": "^2.2.0",
     "@types/minimatch": "^5.1.2",
     "@types/minimist": "^1.2.4",
@@ -77,6 +79,7 @@
     "eslint-plugin-prefer-arrow": "^1.2.3",
     "eslint-plugin-prettier": "^5.0.1",
     "jest": "^29.7.0",
+    "jison-gho": "^0.6.1-216",
     "prettier-eslint": "^16.1.1",
     "prettier-plugin-organize-imports": "^3.2.3",
     "read-pkg": "^5.2.0",
@@ -92,14 +95,22 @@
     "chalk": "^4.1.2",
     "change-case": "^4.1.2",
     "cli-progress": "^3.12.0",
+    "consola": "^3.2.3",
     "dayjs": "^1.11.10",
+    "eta": "^3.1.1",
     "fast-glob": "^3.3.1",
     "fast-safe-stringify": "^2.1.1",
+    "filenamify": "^4.3.0",
     "find-up": "^5.0.0",
+    "fuse.js": "^7.0.0",
+    "glob": "^10.3.10",
     "ignore": "^5.2.4",
+    "inquirer": "^8.2.5",
+    "inquirer-ts-checkbox-plus-prompt": "^1.0.1",
     "is-relative": "^1.0.0",
     "json5": "^2.2.3",
     "jsonc-parser": "^3.2.0",
+    "mathjs": "^12.0.0",
     "minimatch": "^9.0.3",
     "minimist": "^1.2.8",
     "my-easy-fp": "^0.21.0",
@@ -112,9 +123,11 @@
     "prettier": "^3.0.3",
     "source-map-support": "^0.5.21",
     "ts-morph": "^20.0.0",
+    "ts-pattern": "^5.0.5",
     "tslib": "^2.6.2",
     "type-fest": "^4.5.0",
     "typescript": "^5.2.2",
+    "yaml": "^2.3.3",
     "yargs": "^17.7.2"
   }
 }

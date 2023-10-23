@@ -1,7 +1,3 @@
-export function ComparisonCls({ name, age }: { name: string; age: number }) {
-  return (
-    <div>
-      {name} / {age}
-    </div>
-  );
+export class ComparisonCls {
+  private name: string = 'ComparisonCls';
 }

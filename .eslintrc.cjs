@@ -98,7 +98,36 @@ module.exports = {
     'import/prefer-default-export': ['off'],
     'import/no-default-export': ['error'],
   },
-  overrides: [],
+  overrides: [
+    {
+      files: ['**/CE_*.ts'],
+      rules: {
+        '@typescript-eslint/no-redeclare': ['off'],
+        '@typescript-eslint/naming-convention': ['off'],
+      },
+    },
+    {
+      files: [
+        'src/configs/transforms/transformCreateMode.ts',
+        'src/configs/transforms/transformBundleMode.ts',
+      ],
+      rules: {
+        'no-param-reassign': ['off'],
+      },
+    },
+    {
+      files: ['**/__tests__/*.ts'],
+      rules: {
+        '@typescript-eslint/no-non-null-assertion': ['off'],
+        '@typescript-eslint/no-unsafe-argument': ['off'],
+        '@typescript-eslint/no-explicit-any': ['off'],
+        '@typescript-eslint/no-unsafe-assignment': ['off'],
+        '@typescript-eslint/no-use-before-define': ['off'],
+        'import/first': ['off'],
+        'no-console': ['off'],
+      },
+    },
+  ],
   settings: {
     'import/resolver': {
       typescript: {

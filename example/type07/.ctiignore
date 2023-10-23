@@ -1,5 +1,3 @@
 {
-  "**/*.ts": [
-      "Ignore"
-  ]
+  "case003.ts": ["childlikeCase003", "funcCase003"]
 }
