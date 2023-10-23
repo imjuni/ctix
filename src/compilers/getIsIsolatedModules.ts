@@ -66,6 +66,13 @@ export default function getIsIsolatedModules(
       }
 
       // Identifier
+      // eg.
+      //
+      // ```ts
+      // export const MyComponent = () => {};
+      // MyComponent.getInitialProps = () => {};
+      // ```
+      // NewExpression don't have name and only working non-named-export
       if (exportedDeclarationNode.asKind(tsm.SyntaxKind.Identifier) != null) {
         return false;
       }
