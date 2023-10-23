@@ -30,6 +30,8 @@ const share: {
   project07: tsm.Project;
   projectPath08: string;
   project08: tsm.Project;
+  projectPath10: string;
+  project10: tsm.Project;
 } = {} as any;
 
 beforeAll(() => {
@@ -74,6 +76,12 @@ beforeAll(() => {
   share.projectPath08 = posixJoin(env.exampleType08Path, 'tsconfig.json');
   share.project08 = new tsm.Project({
     tsConfigFilePath: share.projectPath08,
+    ...tsMorphProjectOption,
+  });
+
+  share.projectPath10 = posixJoin(env.exampleType10Path, 'tsconfig.json');
+  share.project10 = new tsm.Project({
+    tsConfigFilePath: share.projectPath10,
     ...tsMorphProjectOption,
   });
 });
@@ -180,6 +188,45 @@ test('c007-getIsIsolatedModules', async () => {
   const ignoreContents = await getIgnoreConfigContents({ cwd: projectPath, ...ignoreFiles });
 
   const sourceFilePaths = [posixJoin(projectPath, 'Foo.ts'), posixJoin(projectPath, 'Bar.ts')];
+  const option: TCreateOptionWithDirInfo = {
+    ...env.createOptionWithDirInfo,
+    project: projectPath,
+    topDirDepth: 0,
+    startAt: projectPath,
+    topDirs: [projectPath],
+  };
+
+  const results = (
+    await Promise.all(
+      sourceFilePaths.map(async (sourceFilePath) => {
+        const sourceFile = project.getSourceFileOrThrow(sourceFilePath);
+        const exportInfo = await getExportInfo(sourceFile, option, ignoreContents);
+        return getTestValue(exportInfo) as IExportInfo;
+      }),
+    )
+  ).sort((l, r) => l.resolvedFilePath.localeCompare(r.resolvedFilePath));
+
+  const expectation: IExportInfo[] = (await import(path.join(__dirname, 'expects', expectFileName)))
+    .default;
+
+  expect(results).toEqual(
+    expectation.sort((l, r) => l.resolvedFilePath.localeCompare(r.resolvedFilePath)),
+  );
+});
+
+test('c008-getIsIsolatedModules-function-component', async () => {
+  // project://example/type10/components/index.ts
+  const expectFileName =
+    expect.getState().currentTestName?.replace(/^([cC][0-9]+)(-.+)/, 'expect$2.ts') ?? '';
+
+  const projectPath = env.exampleType10Path;
+  const project = share.project10;
+
+  const ignoreFilePath = posixJoin(projectPath, defaultIgnoreFileName);
+  const ignoreFiles = await getIgnoreConfigFiles(projectPath, ignoreFilePath);
+  const ignoreContents = await getIgnoreConfigContents({ cwd: projectPath, ...ignoreFiles });
+
+  const sourceFilePaths = [posixJoin(projectPath, 'components', 'index.ts')];
   const option: TCreateOptionWithDirInfo = {
     ...env.createOptionWithDirInfo,
     project: projectPath,
