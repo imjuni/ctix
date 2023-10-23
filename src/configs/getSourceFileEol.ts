@@ -19,18 +19,20 @@ export function getEOL(text: string) {
   return numOfNl > numOfCr ? '\n' : '\r\n';
 }
 
-export function getSourceFileEol(sourceFiles: string[]): string {
-  const eols = sourceFiles
-    .map((srouceFile) => {
-      try {
-        const buf = fs.readFileSync(srouceFile);
-        const eol = getEOL(buf.toString());
-        return eol;
-      } catch {
-        return undefined;
-      }
-    })
-    .filter((eol): eol is string => eol != null);
+export async function getSourceFileEol(sourceFiles: string[]): Promise<string> {
+  const eols = (
+    await Promise.all(
+      sourceFiles.map(async (srouceFile) => {
+        try {
+          const buf = await fs.promises.readFile(srouceFile);
+          const eol = getEOL(buf.toString());
+          return eol;
+        } catch {
+          return undefined;
+        }
+      }),
+    )
+  ).filter((eol): eol is string => eol != null);
 
   const eolRecord = eols.reduce<Record<string, number>>((aggregated, eol) => {
     return { ...aggregated, [eol]: (aggregated[eol] ?? 0) + 1 };

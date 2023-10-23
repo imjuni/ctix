@@ -1,9 +1,0 @@
-{
-  "juvenile/**": "*",
-  "wellmade/FlakyCls.ts": "*",
-  "wellmade/WhisperingCls.ts": "*",
-  "wellmade/ChildlikeCls.ts": [
-    "transfer",
-    "stomach"
-  ]
-}

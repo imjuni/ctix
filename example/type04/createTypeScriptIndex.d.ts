@@ -11,7 +11,6 @@ export interface ICreateTsIndexOption {
   targetExts?: string[];
   globOptions?: fastGlob.IOptions;
 }
-
 export declare function indexWriter(
   directory: string,
   directories: string[],

@@ -32,9 +32,7 @@
   },
   "editor.formatOnSave": true,
   "formattingToggle.affects": ["editor.formatOnSave"],
-  "jest.autoRun": {
-    "watch": false
-    // "onStartup": ["all-tests"],
-    // "onSave": "test-src-file"
-  }
+  "javascript.preferences.importModuleSpecifier": "non-relative",
+  "jest.autoRevealOutput": "on-run",
+  "jest.autoRun": "off"
 }

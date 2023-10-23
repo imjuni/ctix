@@ -1,4 +1,4 @@
-export const ReactComponent = () => {
-}
+/// <reference path="../types/vue.d.ts" />
+import Foo from './Foo.vue';
 
-ReactComponent.A = 1
+export { Foo };

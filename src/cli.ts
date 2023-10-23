@@ -1,131 +1,110 @@
-/* eslint-disable @typescript-eslint/no-floating-promises */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-expressions */
-
-import { builder } from '#/cli/builder';
-import { createBuilder } from '#/cli/createBuilder';
-import { createSingleBuilder } from '#/cli/createSingleBuilder';
-import { initBuilder } from '#/cli/initBuilder';
-import { removeBuilder } from '#/cli/removeBuilder';
-import { singleBuilder } from '#/cli/singleBuilder';
-import { attachDiretoryInfo } from '#/configs/attachDiretoryInfo';
-import { getCreateOption } from '#/configs/getCreateOption';
-import { getInitOption } from '#/configs/getInitOption';
-import { getRemoveOption } from '#/configs/getRemoveOption';
-import { getSingleOption } from '#/configs/getSingleOption';
-import type {
-  TCreateOption,
-  TInitOption,
-  TRemoveOption,
-  TSingleOption,
-} from '#/configs/interfaces/IOption';
-import { isValidConfig } from '#/configs/isValidConfig';
-import { preLoadConfig } from '#/configs/preLoadConfig';
-import { logger } from '#/tools/logger';
+import { setCommandBundleOptions } from '#/cli/builders/setCommandBundleOptions';
+import { setCommandCreateOptions } from '#/cli/builders/setCommandCreateOptions';
+import { setCommandRemoveOptions } from '#/cli/builders/setCommandRemoveOptions';
+import { setCommonGenerateOptions } from '#/cli/builders/setCommonGenerateOptions';
+import { setProjectOptions } from '#/cli/builders/setProjectOptions';
+import { buildCommand } from '#/cli/commands/buildCommand';
+import { initCommand } from '#/cli/commands/initCommand';
+import { removeCommand } from '#/cli/commands/removeCommand';
+import { CE_CTIX_COMMAND } from '#/configs/const-enum/CE_CTIX_COMMAND';
+import type { ICommandBundleOptions } from '#/configs/interfaces/ICommandBundleOptions';
+import type { ICommandCreateOptions } from '#/configs/interfaces/ICommandCreateOptions';
+import type { ICommandRemoveOptions } from '#/configs/interfaces/ICommandRemoveOptions';
+import type { ICommonGenerateOptions } from '#/configs/interfaces/ICommonGenerateOptions';
+import type { IProjectOptions } from '#/configs/interfaces/IProjectOptions';
+import type { TCommandBuildArgvOptions } from '#/configs/interfaces/TCommandBuildArgvOptions';
+import type { TCommandRemoveOptions } from '#/configs/interfaces/TCommandRemoveOptions';
+import { loadConfig } from '#/configs/loadConfig';
+import consola from 'consola';
 import { isError } from 'my-easy-fp';
 import sourceMapSupport from 'source-map-support';
-import yargsAnyType, { type Argv } from 'yargs';
-import { createInitFile, createWritor, removeIndexFile, singleWritor } from './ctix';
+import yargs, { type Argv, type CommandModule } from 'yargs';
+import { hideBin } from 'yargs/helpers';
 
 sourceMapSupport.install();
 
-const log = logger();
+const buildCommandModule: CommandModule<TCommandBuildArgvOptions, TCommandBuildArgvOptions> = {
+  command: CE_CTIX_COMMAND.BUILD_COMMAND,
+  aliases: [CE_CTIX_COMMAND.BUILD_COMMAND_ALIAS],
+  describe: 'build index.ts file that aggregate on bundle file',
+  builder: (argv) => {
+    const projectArgv = setProjectOptions<Argv<ICommonGenerateOptions>>(
+      argv as Argv<IProjectOptions>,
+    );
 
-// Yargs default type using object type(= {}). But object type cause error that
-// fast-maker cli option interface type. So we make concrete type yargs instance
-// make using by any type.
-const yargs: Argv<TRemoveOption | TCreateOption | TInitOption | TSingleOption> =
-  yargsAnyType as any;
+    const generateArgv = setCommonGenerateOptions<Argv<ICommandBundleOptions>>(projectArgv);
+    const bundleArgv = setCommandBundleOptions<Argv<ICommandCreateOptions>>(generateArgv);
+    const createArgv = setCommandCreateOptions<Argv<TCommandBuildArgvOptions>>(bundleArgv);
 
-yargs(process.argv.slice(2))
-  .command<TCreateOption>({
-    command: 'create',
-    aliases: ['c'],
-    describe: 'create index.ts file that each file per directory',
-    builder: (argv) => {
-      return createBuilder(createSingleBuilder(builder(argv))) as any;
-    },
-    handler: async (argv) => {
-      try {
-        const withDefaultOption = getCreateOption(argv);
-        const withDirectoryInfo = attachDiretoryInfo(withDefaultOption);
+    return createArgv;
+  },
+  handler: async (argv) => {
+    try {
+      await buildCommand(argv);
+    } catch (catched) {
+      const err = isError(catched, new Error('unknown error raised from bundle command'));
+      consola.error(err);
+    }
+  },
+};
 
-        await createWritor(withDirectoryInfo, true);
-      } catch (catched) {
-        const err = isError(catched) ?? new Error('unknown error raised');
+const removeCommandModule: CommandModule<
+  TCommandRemoveOptions & TCommandBuildArgvOptions,
+  TCommandRemoveOptions & TCommandBuildArgvOptions
+> = {
+  command: CE_CTIX_COMMAND.REMOVE_COMMAND,
+  aliases: [CE_CTIX_COMMAND.REMOVE_COMMAND_ALIAS],
+  describe: 'remove index.ts file',
+  builder: (argv) => {
+    const commonArgv = setProjectOptions<Argv<ICommandRemoveOptions>>(
+      argv as unknown as Argv<IProjectOptions>,
+    );
+    const removeArgv =
+      setCommandRemoveOptions<Argv<TCommandRemoveOptions & TCommandBuildArgvOptions>>(commonArgv);
 
-        log.error(err.message);
-        log.error(err.stack);
-      }
-    },
-  })
-  .command<TSingleOption>({
-    command: 'single',
-    aliases: ['s'],
-    describe: 'create index.ts file that aggregate on single file',
-    builder: (argv) => {
-      return singleBuilder(createSingleBuilder(builder(argv))) as any;
-    },
-    handler: async (argv) => {
-      try {
-        const withDefaultOption = getSingleOption(argv);
-        const withDirectoryInfo = attachDiretoryInfo(withDefaultOption);
+    return removeArgv;
+  },
+  handler: async (argv) => {
+    try {
+      await removeCommand(argv);
+    } catch (catched) {
+      const err = isError(catched, new Error('unknown error raised from remove command'));
+      consola.error(err);
+    }
+  },
+};
 
-        await singleWritor(withDirectoryInfo, true);
-      } catch (catched) {
-        const err = isError(catched) ?? new Error('unknown error raised');
+const initCommandModule: CommandModule<undefined, undefined> = {
+  command: CE_CTIX_COMMAND.INIT_COMMAND,
+  aliases: [CE_CTIX_COMMAND.INIT_COMMAND_ALIAS],
+  describe: 'create .ctirc configuration',
+  handler: async (argv) => {
+    try {
+      await initCommand(argv);
+    } catch (catched) {
+      const err = isError(catched, new Error('unknown error raised from init command'));
+      consola.error(err);
+    }
+  },
+};
 
-        log.error(err.message);
-        log.error(err.stack);
-      }
-    },
-  })
-  .command<TRemoveOption>({
-    command: 'remove',
-    aliases: ['r'],
-    describe: 'remove index.ts file',
-    builder: (argv) => {
-      return removeBuilder(builder(argv)) as any;
-    },
-    handler: async (argv) => {
-      try {
-        const withDefaultOption = getRemoveOption(argv);
-        const withDirectoryInfo = attachDiretoryInfo(withDefaultOption);
+const handler = async () => {
+  const parser = yargs(hideBin(process.argv));
 
-        await removeIndexFile(withDirectoryInfo, true);
-      } catch (catched) {
-        const err = isError(catched) ?? new Error('unknown error raised');
+  parser
+    .command(buildCommandModule as CommandModule<object, TCommandBuildArgvOptions>)
+    .command(removeCommandModule as CommandModule<object, TCommandRemoveOptions>)
+    .command(initCommandModule as CommandModule<object, object>)
+    .demandCommand()
+    .recommendCommands()
+    .config(await loadConfig())
+    .help();
 
-        log.error(err.message);
-        log.error(err.stack);
-      }
-    },
-  })
-  .command<TInitOption>({
-    command: 'init',
-    aliases: ['i'],
-    describe: 'create .ctirc configuration',
-    builder: (argv) => {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-      return initBuilder(argv) as any;
-    },
-    handler: async (argv) => {
-      try {
-        const withDefaultOption = getInitOption(argv);
-        const withDirectoryInfo = attachDiretoryInfo(withDefaultOption);
+  await parser.argv;
+};
 
-        await createInitFile(withDirectoryInfo, true);
-      } catch (catched) {
-        const err = isError(catched) ?? new Error('unknown error raised');
-
-        log.error(err.message);
-        log.error(err.stack);
-      }
-    },
-  })
-  .check(isValidConfig)
-  .demandCommand()
-  .recommendCommands()
-  .config(preLoadConfig())
-  .help('help').argv;
+handler().catch((caught) => {
+  const err = isError(caught, new Error('unknown error raised'));
+  consola.error(err);
+  process.exit(1);
+});
