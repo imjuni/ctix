@@ -16,7 +16,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [14.x, 16.x, 18.x]
+        node-version: [18.x, 20.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
@@ -30,7 +30,7 @@ jobs:
     - run: npm run build
     - run: npm run clean
     - run: npm test
-    - run: npm run rollup:prod
+    - run: npm run bundle
     - run: npm run clean
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3

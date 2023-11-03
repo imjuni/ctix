@@ -1,5 +1,11 @@
 {
   "extends": "./tsconfig.json",
+  "compilerOptions": {
+    /* Basic Options */
+    "declaration": true /* Generates corresponding '.d.ts' file. */,
+    "declarationMap": true /* Generates corresponding '.d.ts' file. */,
+    "sourceMap": true /* Generates corresponding '.map' file. */
+  },
   "exclude": [
     "**/node_modules/**",
     "**/example/**",

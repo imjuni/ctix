@@ -283,7 +283,7 @@ export async function creating(_buildOptions: TCommandBuildOptions, createOption
 
   const fileExistReason = await checkOutputFile(outputMap);
 
-  if (!createOption.overwrite && createOption.noBackup && fileExistReason.length > 0) {
+  if (!createOption.overwrite && !createOption.backup && fileExistReason.length > 0) {
     Spinner.it.fail("ctix 'create' mode incomplete ...");
     Reasoner.it.start([...fileExistReason, ...symbolTable.getDuplicateReason()]);
     return;
