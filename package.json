@@ -15,7 +15,7 @@
     "dts": "tsc --project tsconfig.prod.json --declaration --emitDeclarationOnly --declarationDir dist/types/origin",
     "dts-gen": "rollup --config ./.configs/rollup.mjs",
     "dts-clean": "rimraf dist/types/origin",
-    "esbuild-lib": "run-p ctix dts && concurrently \"FORMAT=cjs node .configs/esbuild.mjs\" \"FORMAT=esm node .configs/esbuild.mjs\" && npm run dts-gen",
+    "esbuild-lib": "run-s ctix dts && concurrently \"FORMAT=cjs node .configs/esbuild.mjs\" \"FORMAT=esm node .configs/esbuild.mjs\" && npm run dts-gen",
     "esbuild-cli": "FORMAT=cjs node .configs/esbuild.cli.mjs",
     "bundle-pack": "run-p esbuild-cli esbuild-lib",
     "bundle": "run-p clean bundle-pack && run-p dts-clean ctix-clean",
