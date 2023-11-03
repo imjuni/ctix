@@ -1,0 +1,24 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+if [ -d "$HOME/.nvs" ] ; then
+  [[ -f "$HOME/.nvs/nvs.sh" ]] && . "$HOME/.nvs/nvs.sh"
+fi
+
+green='\033[0;32m'
+yellow='\033[0;33m'
+no_color='\033[0m'
+
+echo -e "\n ${yellow}* code prettier start.${no_color}"
+npm run prettier
+echo -e "\n ${yellow}* code prettier end.${no_color}"
+
+echo -e "\n ${yellow}* code lint start.${no_color}"
+npm run lint-staged
+echo -e "\n ${yellow}* code lint end.${no_color}"
+
+echo -e "\n ${yellow}* code build start.${no_color}"
+npm run build
+echo -e "\n ${yellow}* code build end.${no_color}"
+
+echo -e "\n ${green}* pre-commit hook was SUCCESSFUL${no_color} \n"

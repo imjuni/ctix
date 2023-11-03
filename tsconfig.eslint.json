@@ -3,10 +3,12 @@
   "compilerOptions": {
     "allowJs": true
   },
+  "include": ["src/**/*.ts", "prepublish.js"],
   "exclude": [
-    "**/node_modules/**",
-    "**/dist/**/*",
-    "**/.configs/**",
-    "**/docs/**"
+    "node_modules/**",
+    "dist/**/*",
+    ".configs/**",
+    "example/**",
+    "docs/**"
   ]
 }

@@ -31,13 +31,13 @@ export async function indexWrites(
           `${rendered}${extendOptions.eol}`,
         );
 
-        if (option.noBackup) {
-          await writeFile(file.filePath, `${prettified.contents.trim()}${extendOptions.eol}`);
-        } else {
+        if (option.backup) {
           if (await exists(file.filePath)) {
             await writeFile(`${file.filePath}.bak`, await readFile(file.filePath));
           }
 
+          await writeFile(file.filePath, `${prettified.contents.trim()}${extendOptions.eol}`);
+        } else {
           await writeFile(file.filePath, `${prettified.contents.trim()}${extendOptions.eol}`);
         }
       }),

@@ -30,7 +30,7 @@ export async function transformCreateMode(
     directive: argv.directive ?? option.directive ?? '',
     fileExt: argv.fileExt ?? option.fileExt ?? CE_EXTENSION_PROCESSING.NOT_EXTENSION,
     overwrite: argv.overwrite ?? option.overwrite ?? false,
-    noBackup: argv.noBackup ?? option.noBackup ?? false,
+    backup: argv.backup ?? option.backup ?? true,
     generationStyle: argv.generationStyle ?? option.generationStyle ?? CE_GENERATION_STYLE.AUTO,
     include: option.include,
     exclude: option.exclude,

@@ -80,7 +80,7 @@ export interface ICommonGenerateOptions {
    * @mode create, bundle
    * @defulat true
    * */
-  noBackup: boolean;
+  backup: boolean;
 
   /**
    * When generating the `index.ts` file, decide how you want to generate it

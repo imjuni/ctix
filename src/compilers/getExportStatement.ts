@@ -3,7 +3,6 @@ import { getSummaryStatement } from '#/compilers/getSummaryStatement';
 import type { IExportStatement } from '#/compilers/interfaces/IExportStatement';
 import type { ICommonGenerateOptions } from '#/configs/interfaces/ICommonGenerateOptions';
 import type { IExtendOptions } from '#/configs/interfaces/IExtendOptions';
-import FastGlob from 'fast-glob';
 import { getDirname, replaceSepToPosix, startSepRemove } from 'my-node-fp';
 import path from 'node:path';
 import * as tsm from 'ts-morph';
@@ -50,11 +49,7 @@ export async function getExportStatement(
       // 모듈일 때 왜 패턴을 하는지 잘 모르겠다
       // declare module "react" {} 같은 것을 할 때 패턴이 발견될 리가 없는데...
       // example08번 때문이네...
-      if (
-        exportedDeclaration.getKind() === tsm.SyntaxKind.ModuleDeclaration &&
-        kind.name != null &&
-        FastGlob.isDynamicPattern(kind.name)
-      ) {
+      if (exportedDeclaration.getKind() === tsm.SyntaxKind.ModuleDeclaration && kind.name != null) {
         return getSummaryStatement({
           path: { filename, dirPath, relativePath },
           identifier: exportedDeclarationKey,

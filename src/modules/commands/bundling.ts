@@ -146,7 +146,7 @@ export async function bundling(_buildOptions: TCommandBuildOptions, bundleOption
   outputMap.set(output, rendered.join('\n'));
   const fileExistReason = await checkOutputFile(outputMap);
 
-  if (!bundleOption.overwrite && bundleOption.noBackup && fileExistReason.length > 0) {
+  if (!bundleOption.overwrite && !bundleOption.backup && fileExistReason.length > 0) {
     Spinner.it.fail("ctix 'bundle' mode incomplete ...");
     Reasoner.it.start([...fileExistReason, ...symbolTable.getDuplicateReason()]);
     return;

@@ -52,8 +52,8 @@ export function setCommonGenerateOptions<T = Argv<ICommonGenerateOptions>>(
       describe: 'overwrite each index.ts file',
       type: 'boolean',
     })
-    .option('no-backup', {
-      describe: 'not create backup file even if set overwrite option enable',
+    .option('backup', {
+      describe: 'create backup file even if set overwrite option enable',
       type: 'boolean',
     })
     .option('generation-style', {
