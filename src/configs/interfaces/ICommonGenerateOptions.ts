@@ -69,13 +69,15 @@ export interface ICommonGenerateOptions {
 
   /**
    * overwrite each index.ts file
+   *
    * @mode create, bundle
    * @default false
    */
   overwrite: boolean;
 
   /**
-   * don't create backup file even if set overwrite option enable
+   * Create a backup file if the `index.ts` file already exists.
+   * This option only works if the `overwrite` option is enabled.
    *
    * @mode create, bundle
    * @defulat true

@@ -28,23 +28,51 @@ async function removeCommandCode(
 
   if (argv.forceYes) {
     Spinner.it.succeed('enable force-yes, file removing without question');
+    Spinner.it.stop();
 
-    await unlinks(filePaths, (filePath) => {
-      Spinner.it.succeed(
-        `${chalk.redBright('removed:')} ${path.relative(process.cwd(), filePath)}`,
-      );
+    ProgressBar.it.start(filePaths.length);
+
+    await unlinks(filePaths, () => {
+      ProgressBar.it.increment();
     });
+
+    ProgressBar.it.stop();
+
+    await filePaths.reduce(async (prevHandle: Promise<void>, filePath: string) => {
+      const handle = async () => {
+        Spinner.it.succeed(
+          `${chalk.redBright('removed:')} ${path.relative(process.cwd(), filePath)}`,
+        );
+      };
+
+      await prevHandle;
+      return handle();
+    }, Promise.resolve());
 
     return;
   }
 
   Spinner.it.stop();
+  ProgressBar.it.start(filePaths.length);
 
   const indexFiles = await askRemoveFiles(filePaths);
 
-  await unlinks(indexFiles, (filePath) => {
-    Spinner.it.succeed(`${chalk.redBright('removed:')} ${path.relative(process.cwd(), filePath)}`);
+  await unlinks(indexFiles, () => {
+    ProgressBar.it.increment();
   });
+
+  ProgressBar.it.stop();
+
+  await filePaths.reduce(async (prevHandle: Promise<void>, filePath: string) => {
+    const handle = async () => {
+      Spinner.it.succeed(
+        `${chalk.redBright('removed:')} ${path.relative(process.cwd(), filePath)}`,
+      );
+    };
+
+    await prevHandle;
+    return handle();
+  }, Promise.resolve());
 }
 
 export async function removeCommand(

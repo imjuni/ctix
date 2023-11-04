@@ -10,16 +10,28 @@ import { transformCreateMode } from '#/configs/transforms/transformCreateMode';
 import { prettifing } from '#/modules/writes/prettifing';
 import { CE_TEMPLATE_NAME } from '#/templates/const-enum/CE_TEMPLATE_NAME';
 import { TemplateContainer } from '#/templates/modules/TemplateContainer';
+import chalk from 'chalk';
 import consola from 'consola';
 import { writeFile } from 'node:fs/promises';
+import path from 'node:path';
 import type yargs from 'yargs';
 
 async function initCommandCode(_argv: yargs.ArgumentsCamelCase) {
   await TemplateContainer.bootstrap();
   const answer = await askInitOptions();
 
+  if (!answer.overwirte) {
+    const optionFilePath = path.join(answer.cwd, CE_CTIX_DEFAULT_VALUE.CONFIG_FILENAME);
+    Spinner.it.fail(`${chalk.yellow(optionFilePath)} already exists`);
+    return;
+  }
+
+  Spinner.it.start(`Start ${chalk.yellow('.ctirc')} file creation ...`);
+
   const nestedOptions = await Promise.all(
     answer.tsconfig.map(async (tsconfigPath) => {
+      Spinner.it.update(`Start option creation for: ${chalk.yellow(tsconfigPath)}`);
+
       const tsconfig = getTypeScriptConfig(tsconfigPath);
       const { include, exclude } = getFileScope(tsconfig.raw);
 
@@ -45,6 +57,8 @@ async function initCommandCode(_argv: yargs.ArgumentsCamelCase) {
         },
       );
 
+      Spinner.it.succeed(`${chalk.yellow(tsconfigPath)} option creation completed!`);
+
       return {
         ...created,
         ...bundled,
@@ -56,6 +70,8 @@ async function initCommandCode(_argv: yargs.ArgumentsCamelCase) {
       };
     }),
   );
+
+  Spinner.it.start(`Start ${chalk.yellow('.ctirc')} file write ...`);
 
   const renderedNestedOptions = await Promise.all(
     nestedOptions.map(async (option) => {
@@ -89,6 +105,8 @@ async function initCommandCode(_argv: yargs.ArgumentsCamelCase) {
   });
 
   await writeFile('.ctirc', prettified.contents);
+
+  Spinner.it.succeed(`${chalk.yellow('.ctirc')} file writing completed!`);
 }
 
 export async function initCommand(argv: yargs.ArgumentsCamelCase) {
