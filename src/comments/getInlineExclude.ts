@@ -1,11 +1,11 @@
-import { getIgnoreNamespace } from '#/comments/getIgnoreNamespace';
-import type { IInlineIgnoreInfo } from '#/comments/interfaces/IInlineIgnoreInfo';
+import { getExcludeNamespace } from '#/comments/getExcludeNamespace';
+import type { IInlineExcludeInfo } from '#/comments/interfaces/IInlineExcludeInfo';
 import type { IExtendOptions } from '#/configs/interfaces/IExtendOptions';
 
-export function getInlineIgnore(
+export function getInlineExclude(
   comment: string,
   options: { eol: IExtendOptions['eol']; keyword: string },
-): IInlineIgnoreInfo | undefined {
+): IInlineExcludeInfo | undefined {
   const lines = comment.split(options.eol).map((line) => line.trim());
   const reg = new RegExp(`(${options.keyword})(\\s.*|)$`);
 
@@ -14,7 +14,7 @@ export function getInlineIgnore(
       const matched = reg.exec(line);
 
       if (matched != null) {
-        const namespaces = getIgnoreNamespace(matched.at(2)?.trim());
+        const namespaces = getExcludeNamespace(matched.at(2)?.trim());
 
         return {
           commentCode: line,
@@ -22,7 +22,7 @@ export function getInlineIgnore(
           line: index,
           finded: true,
           namespaces,
-        } satisfies IInlineIgnoreInfo & { finded: boolean };
+        } satisfies IInlineExcludeInfo & { finded: boolean };
       }
 
       return {
@@ -31,7 +31,7 @@ export function getInlineIgnore(
         line: index,
         finded: false,
         namespaces: undefined,
-      } satisfies IInlineIgnoreInfo & { finded: boolean };
+      } satisfies IInlineExcludeInfo & { finded: boolean };
     })
     .filter((line) => line.finded);
 

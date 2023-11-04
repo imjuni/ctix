@@ -1,6 +1,6 @@
 import { getGlobFiles } from '#/modules/file/getGlobFiles';
-import { IncludeContainer } from '#/modules/ignore/IncludeContainer';
-import { defaultIgnore } from '#/modules/ignore/defaultIgnore';
+import { IncludeContainer } from '#/modules/scope/IncludeContainer';
+import { defaultExclude } from '#/modules/scope/defaultExclude';
 import { describe, expect, it } from '@jest/globals';
 import { Glob } from 'glob';
 import path from 'node:path';
@@ -73,7 +73,7 @@ describe('IncludeContainer', () => {
   it('files - string path', () => {
     const expactation = getGlobFiles(
       new Glob('example/type03/**/*.ts', {
-        ignore: defaultIgnore,
+        ignore: defaultExclude,
         cwd: process.cwd(),
       }),
     );

@@ -4,7 +4,7 @@ import { getDirname } from 'my-node-fp';
 import path from 'path';
 import type * as tsm from 'ts-morph';
 
-export async function getOutputIgnoredFiles(params: {
+export async function getOutputExcludedFiles(params: {
   project: tsm.Project;
   extendOptions: Pick<IExtendOptions, 'eol'>;
   exportFilename: string;

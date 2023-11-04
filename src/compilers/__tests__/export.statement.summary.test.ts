@@ -62,7 +62,7 @@ export default class Hero {
       isPureType: false,
       isAnonymous: false,
       isDefault: true,
-      isIgnored: false,
+      isExcluded: false,
       comments: [],
     } satisfies IExportStatement);
   });
@@ -113,7 +113,7 @@ export default class Hero {
       isPureType: false,
       isAnonymous: false,
       isDefault: false,
-      isIgnored: false,
+      isExcluded: false,
       comments: [],
     } satisfies IExportStatement);
   });
@@ -158,12 +158,12 @@ export default () => 'invalid use case';
       isPureType: false,
       isAnonymous: true,
       isDefault: false,
-      isIgnored: false,
+      isExcluded: false,
       comments: [],
     } satisfies IExportStatement);
   });
 
-  it('identifier, with inline ignore comment', () => {
+  it('identifier, with inline exclude comment', () => {
     const uuid = randomUUID();
     const filename = `${uuid}.ts`;
     const source = `
@@ -183,7 +183,7 @@ export class DCHero {
   }
 }
 
-/** @ctix-ignore-next */
+/** @ctix-exclude-next */
 export class UnknownHero {
   #name: string;
 
@@ -226,10 +226,10 @@ export class UnknownHero {
       isPureType: false,
       isAnonymous: false,
       isDefault: false,
-      isIgnored: true,
+      isExcluded: true,
       comments: [
         {
-          commentCode: '/** @ctix-ignore-next */',
+          commentCode: '/** @ctix-exclude-next */',
           line: 0,
           namespaces: undefined,
           pos: 4,

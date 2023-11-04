@@ -1,4 +1,4 @@
-import { getInlineIgnoredFiles } from '#/comments/getInlineIgnoredFiles';
+import { getInlineExcludedFiles } from '#/comments/getInlineExcludedFiles';
 import { describe, expect, it } from '@jest/globals';
 import { randomUUID } from 'node:crypto';
 import path from 'node:path';
@@ -12,18 +12,18 @@ const context = {
   }),
 };
 
-describe('getInlineIgnoredFiles', () => {
-  it('multiline comment with file, statement ignore', () => {
+describe('getInlineExcludedFiles', () => {
+  it('multiline comment with file, statement exclude', () => {
     const uuid = randomUUID();
     const filename01 = `${uuid}_01.ts`;
     const source01 = `
 /**
- * @ctix-ignore
+ * @ctix-exclude
  */
 import path from 'node:path';
 
 /**
- * @ctix-ignore-next
+ * @ctix-exclude-next
  */
 export default class Hero {
   #name: string;
@@ -50,15 +50,15 @@ export class SuperHero {
     context.project.createSourceFile(filename01, source01.trim());
     context.project.createSourceFile(filename02, source02.trim());
 
-    const ignored = getInlineIgnoredFiles({
+    const excluded = getInlineExcludedFiles({
       project: context.project,
       extendOptions: { eol: '\n' },
       filePaths: [filename01, filename02],
     });
 
-    expect(ignored).toMatchObject([
+    expect(excluded).toMatchObject([
       {
-        commentCode: '* @ctix-ignore',
+        commentCode: '* @ctix-exclude',
         pos: 2,
         line: 1,
         finded: true,
@@ -68,7 +68,7 @@ export class SuperHero {
     ]);
   });
 
-  it('multiline comment with file, statement ignore', () => {
+  it('multiline comment with file, statement exclude', () => {
     const uuid = randomUUID();
     const filename01 = `${uuid}_01.ts`;
     const source01 = `
@@ -88,7 +88,7 @@ export default class Hero {
     const source02 = `
 import path from 'node:path';
 
-/** @ctix-ignore-next */
+/** @ctix-exclude-next */
 export class MarvelHero {
   #name: string;
 
@@ -109,17 +109,17 @@ export class DCHero {
     context.project.createSourceFile(filename01, source01.trim());
     context.project.createSourceFile(filename02, source02.trim());
 
-    const ignored = getInlineIgnoredFiles({
+    const excluded = getInlineExcludedFiles({
       project: context.project,
       extendOptions: { eol: '\n' },
       filePaths: [filename01, filename02],
     });
 
-    console.log(ignored);
+    console.log(excluded);
 
-    // expect(ignored).toMatchObject([
+    // expect(excluded).toMatchObject([
     //   {
-    //     commentCode: '* @ctix-ignore',
+    //     commentCode: '* @ctix-exclude',
     //     pos: 2,
     //     line: 1,
     //     finded: true,

@@ -52,7 +52,7 @@ export default () => {};
         isAnonymous: true,
         isPureType: false,
         isDefault: true,
-        isIgnored: false,
+        isExcluded: false,
         comments: [],
       } satisfies IExportStatement,
     ]);
@@ -95,7 +95,7 @@ export const toLocaleString = (date: Date | number) => new Date(date).toLocaleSt
         isAnonymous: false,
         isPureType: false,
         isDefault: false,
-        isIgnored: false,
+        isExcluded: false,
         comments: [],
       } satisfies IExportStatement,
     ]);
@@ -138,7 +138,7 @@ export default function () {};
         isAnonymous: true,
         isPureType: false,
         isDefault: true,
-        isIgnored: false,
+        isExcluded: false,
         comments: [],
       } satisfies IExportStatement,
     ]);

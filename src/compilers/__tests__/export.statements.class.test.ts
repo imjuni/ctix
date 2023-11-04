@@ -63,7 +63,7 @@ export class Ability {
         isAnonymous: false,
         isPureType: false,
         isDefault: false,
-        isIgnored: false,
+        isExcluded: false,
         comments: [],
       } satisfies IExportStatement,
       {
@@ -81,7 +81,7 @@ export class Ability {
         isAnonymous: false,
         isPureType: false,
         isDefault: false,
-        isIgnored: false,
+        isExcluded: false,
         comments: [],
       } satisfies IExportStatement,
     ]);
@@ -151,7 +151,7 @@ export class Organization {
         identifier: { name: 'default', alias: 'Hero' },
         isAnonymous: false,
         isPureType: false,
-        isIgnored: false,
+        isExcluded: false,
         comments: [],
         isDefault: true,
       } satisfies IExportStatement,
@@ -170,7 +170,7 @@ export class Organization {
         isAnonymous: false,
         isPureType: false,
         isDefault: false,
-        isIgnored: false,
+        isExcluded: false,
         comments: [],
       } satisfies IExportStatement,
       {
@@ -188,7 +188,7 @@ export class Organization {
         isAnonymous: false,
         isPureType: false,
         isDefault: false,
-        isIgnored: false,
+        isExcluded: false,
         comments: [],
       } satisfies IExportStatement,
     ]);
@@ -239,7 +239,7 @@ export default new Hero('ironman');
         isAnonymous: true,
         isPureType: false,
         isDefault: true,
-        isIgnored: false,
+        isExcluded: false,
         comments: [],
       } satisfies IExportStatement,
     ]);

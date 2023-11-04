@@ -1,6 +1,6 @@
-import { CE_INLINE_IGNORE_KEYWORD } from '#/comments/const-enum/CE_INLINE_IGNORE_KEYWORD';
-import { getIgnoreNamespace } from '#/comments/getIgnoreNamespace';
-import { getInlineIgnore } from '#/comments/getInlineIgnore';
+import { CE_INLINE_EXCLUDE_KEYWORD } from '#/comments/const-enum/CE_INLINE_EXCLUDE_KEYWORD';
+import { getExcludeNamespace } from '#/comments/getExcludeNamespace';
+import { getInlineExclude } from '#/comments/getInlineExclude';
 import { getSourceCodeComment } from '#/comments/getSourceCodeComment';
 import { describe, expect, it } from '@jest/globals';
 import { randomUUID } from 'node:crypto';
@@ -21,12 +21,12 @@ describe('getSourceCodeComment', () => {
     const filename = `${uuid}.ts`;
     const source = `
 /**
- * @ctix-ignore
+ * @ctix-exclude
  */
 import path from 'node:path';
 
 /**
- * @ctix-ignore-next
+ * @ctix-exclude-next
  */
 export default class Hero {
   #name: string;
@@ -41,8 +41,8 @@ export default class Hero {
     const comments = getSourceCodeComment(sourceFile);
 
     expect(comments.map((comment) => comment.getText())).toEqual([
-      '/**\n * @ctix-ignore\n */',
-      '/**\n * @ctix-ignore-next\n */',
+      '/**\n * @ctix-exclude\n */',
+      '/**\n * @ctix-exclude-next\n */',
     ]);
   });
 
@@ -51,12 +51,12 @@ export default class Hero {
     const filename = `${uuid}.ts`;
     const source = `
 /*
- * @ctix-ignore
+ * @ctix-exclude
  */
 import path from 'node:path';
 
 /*
- * @ctix-ignore-next
+ * @ctix-exclude-next
  */
 export default class Hero {
   #name: string;
@@ -71,8 +71,8 @@ export default class Hero {
     const comments = getSourceCodeComment(sourceFile);
 
     expect(comments.map((comment) => comment.getText())).toEqual([
-      '/*\n * @ctix-ignore\n */',
-      '/*\n * @ctix-ignore-next\n */',
+      '/*\n * @ctix-exclude\n */',
+      '/*\n * @ctix-exclude-next\n */',
     ]);
   });
 
@@ -80,10 +80,10 @@ export default class Hero {
     const uuid = randomUUID();
     const filename = `${uuid}.ts`;
     const source = `
-// @ctix-ignore
+// @ctix-exclude
 import path from 'node:path';
 
-// @ctix-ignore-next
+// @ctix-exclude-next
 export default class Hero {
   #name: string;
 
@@ -97,8 +97,8 @@ export default class Hero {
     const comments = getSourceCodeComment(sourceFile);
 
     expect(comments.map((comment) => comment.getText())).toEqual([
-      '// @ctix-ignore',
-      '// @ctix-ignore-next',
+      '// @ctix-exclude',
+      '// @ctix-exclude-next',
     ]);
   });
 
@@ -106,10 +106,10 @@ export default class Hero {
     const uuid = randomUUID();
     const filename = `${uuid}.ts`;
     const source = `
-/// @ctix-ignore
+/// @ctix-exclude
 import path from 'node:path';
 
-/// @ctix-ignore-next
+/// @ctix-exclude-next
 export default class Hero {
   #name: string;
 
@@ -123,23 +123,23 @@ export default class Hero {
     const comments = getSourceCodeComment(sourceFile);
 
     expect(comments.map((comment) => comment.getText())).toEqual([
-      '/// @ctix-ignore',
-      '/// @ctix-ignore-next',
+      '/// @ctix-exclude',
+      '/// @ctix-exclude-next',
     ]);
   });
 });
 
-describe('getInlineIgnore', () => {
+describe('getInlineExclude', () => {
   it('document comment string, no namespace', () => {
-    const comment = '/**\n * @ctix-ignore\n */';
+    const comment = '/**\n * @ctix-exclude\n */';
 
-    const r01 = getInlineIgnore(comment, {
+    const r01 = getInlineExclude(comment, {
       eol: '\n',
-      keyword: CE_INLINE_IGNORE_KEYWORD.FILE_IGNORE_KEYWORD,
+      keyword: CE_INLINE_EXCLUDE_KEYWORD.FILE_EXCLUDE_KEYWORD,
     });
 
     expect(r01).toMatchObject({
-      commentCode: '* @ctix-ignore',
+      commentCode: '* @ctix-exclude',
       pos: 2,
       line: 1,
       finded: true,
@@ -148,15 +148,15 @@ describe('getInlineIgnore', () => {
   });
 
   it('multiline comment string, no namespace', () => {
-    const comment = '/*\n\n * @ctix-ignore\n */';
+    const comment = '/*\n\n * @ctix-exclude\n */';
 
-    const r01 = getInlineIgnore(comment, {
+    const r01 = getInlineExclude(comment, {
       eol: '\n',
-      keyword: CE_INLINE_IGNORE_KEYWORD.FILE_IGNORE_KEYWORD,
+      keyword: CE_INLINE_EXCLUDE_KEYWORD.FILE_EXCLUDE_KEYWORD,
     });
 
     expect(r01).toMatchObject({
-      commentCode: '* @ctix-ignore',
+      commentCode: '* @ctix-exclude',
       pos: 2,
       line: 2,
       finded: true,
@@ -170,16 +170,16 @@ describe('getInlineIgnore', () => {
       `\n * @augments PostEffect\n * @param {GraphicsDevice} graphicsDevice - The graphics device of the application.`,
       `\n * @property {Texture} blendMap The texture with which to blend the input render target with.`,
       `\n * @property {number} mixRatio The amount of blending between the input and the blendMap. Ranges from 0 to 1.`,
-      `\n *\n * @ctix-ignore\n */`,
+      `\n *\n * @ctix-exclude\n */`,
     ].join('');
 
-    const r01 = getInlineIgnore(comment, {
+    const r01 = getInlineExclude(comment, {
       eol: '\n',
-      keyword: CE_INLINE_IGNORE_KEYWORD.FILE_IGNORE_KEYWORD,
+      keyword: CE_INLINE_EXCLUDE_KEYWORD.FILE_EXCLUDE_KEYWORD,
     });
 
     expect(r01).toMatchObject({
-      commentCode: '* @ctix-ignore',
+      commentCode: '* @ctix-exclude',
       pos: 2,
       line: 10,
       finded: true,
@@ -189,19 +189,19 @@ describe('getInlineIgnore', () => {
 
   it('multiline document comment string, no namespace, first line', () => {
     const comment = [
-      `/**\n * @ctix-ignore\n * @class\n * @name BlendEffect\n * @classdesc Blends the input render target with another texture.\n * @description Creates new instance of the post effect.`,
+      `/**\n * @ctix-exclude\n * @class\n * @name BlendEffect\n * @classdesc Blends the input render target with another texture.\n * @description Creates new instance of the post effect.`,
       `\n * @augments PostEffect\n * @param {GraphicsDevice} graphicsDevice - The graphics device of the application.`,
       `\n * @property {Texture} blendMap The texture with which to blend the input render target with.`,
       `\n * @property {number} mixRatio The amount of blending between the input and the blendMap. Ranges from 0 to 1.`,
     ].join('');
 
-    const r01 = getInlineIgnore(comment, {
+    const r01 = getInlineExclude(comment, {
       eol: '\n',
-      keyword: CE_INLINE_IGNORE_KEYWORD.FILE_IGNORE_KEYWORD,
+      keyword: CE_INLINE_EXCLUDE_KEYWORD.FILE_EXCLUDE_KEYWORD,
     });
 
     expect(r01).toMatchObject({
-      commentCode: '* @ctix-ignore',
+      commentCode: '* @ctix-exclude',
       pos: 2,
       line: 1,
       finded: true,
@@ -215,16 +215,16 @@ describe('getInlineIgnore', () => {
       `\n * @augments PostEffect\n * @param {GraphicsDevice} graphicsDevice - The graphics device of the application.`,
       `\n * @property {Texture} blendMap The texture with which to blend the input render target with.`,
       `\n * @property {number} mixRatio The amount of blending between the input and the blendMap. Ranges from 0 to 1.`,
-      `\n *\n * @ctix-ignore i-am-ironman\n */`,
+      `\n *\n * @ctix-exclude i-am-ironman\n */`,
     ].join('');
 
-    const r01 = getInlineIgnore(comment, {
+    const r01 = getInlineExclude(comment, {
       eol: '\n',
-      keyword: CE_INLINE_IGNORE_KEYWORD.FILE_IGNORE_KEYWORD,
+      keyword: CE_INLINE_EXCLUDE_KEYWORD.FILE_EXCLUDE_KEYWORD,
     });
 
     expect(r01).toMatchObject({
-      commentCode: '* @ctix-ignore i-am-ironman',
+      commentCode: '* @ctix-exclude i-am-ironman',
       pos: 2,
       line: 10,
       finded: true,
@@ -238,16 +238,16 @@ describe('getInlineIgnore', () => {
       `\n * @augments PostEffect\n * @param {GraphicsDevice} graphicsDevice - The graphics device of the application.`,
       `\n * @property {Texture} blendMap The texture with which to blend the input render target with.`,
       `\n * @property {number} mixRatio The amount of blending between the input and the blendMap. Ranges from 0 to 1.`,
-      `\n *\n * @ctix-ignore i-am-ironman, i-am-marvel\n */`,
+      `\n *\n * @ctix-exclude i-am-ironman, i-am-marvel\n */`,
     ].join('');
 
-    const r01 = getInlineIgnore(comment, {
+    const r01 = getInlineExclude(comment, {
       eol: '\n',
-      keyword: CE_INLINE_IGNORE_KEYWORD.FILE_IGNORE_KEYWORD,
+      keyword: CE_INLINE_EXCLUDE_KEYWORD.FILE_EXCLUDE_KEYWORD,
     });
 
     expect(r01).toMatchObject({
-      commentCode: '* @ctix-ignore i-am-ironman, i-am-marvel',
+      commentCode: '* @ctix-exclude i-am-ironman, i-am-marvel',
       pos: 2,
       line: 10,
       finded: true,
@@ -256,15 +256,15 @@ describe('getInlineIgnore', () => {
   });
 
   it('multiline statement comment string, no namespace', () => {
-    const comment = '/** @ctix-ignore-next */';
+    const comment = '/** @ctix-exclude-next */';
 
-    const r01 = getInlineIgnore(comment, {
+    const r01 = getInlineExclude(comment, {
       eol: '\n',
-      keyword: CE_INLINE_IGNORE_KEYWORD.NEXT_STATEMENT_IGNORE_KEYWORD,
+      keyword: CE_INLINE_EXCLUDE_KEYWORD.NEXT_STATEMENT_EXCLUDE_KEYWORD,
     });
 
     expect(r01).toMatchObject({
-      commentCode: '/** @ctix-ignore-next */',
+      commentCode: '/** @ctix-exclude-next */',
       pos: 4,
       line: 0,
       finded: true,
@@ -275,26 +275,26 @@ describe('getInlineIgnore', () => {
   it('multiline statement comment string, no namespace', () => {
     const comment = '/** not comment */';
 
-    const r01 = getInlineIgnore(comment, {
+    const r01 = getInlineExclude(comment, {
       eol: '\n',
-      keyword: CE_INLINE_IGNORE_KEYWORD.NEXT_STATEMENT_IGNORE_KEYWORD,
+      keyword: CE_INLINE_EXCLUDE_KEYWORD.NEXT_STATEMENT_EXCLUDE_KEYWORD,
     });
 
     expect(r01).toBeUndefined();
   });
 });
 
-describe('getIgnoreNamespace', () => {
+describe('getExcludeNamespace', () => {
   it('null value test', () => {
-    const r01 = getIgnoreNamespace();
+    const r01 = getExcludeNamespace();
     expect(r01).toBeUndefined();
   });
 
   it('whitespace', () => {
-    const r01 = getIgnoreNamespace('\t\t\t');
-    const r02 = getIgnoreNamespace('   ');
-    const r03 = getIgnoreNamespace('\n\n\n');
-    const r04 = getIgnoreNamespace(' \t\n');
+    const r01 = getExcludeNamespace('\t\t\t');
+    const r02 = getExcludeNamespace('   ');
+    const r03 = getExcludeNamespace('\n\n\n');
+    const r04 = getExcludeNamespace(' \t\n');
 
     expect(r01).toBeUndefined();
     expect(r02).toBeUndefined();
@@ -303,10 +303,10 @@ describe('getIgnoreNamespace', () => {
   });
 
   it('string value test', () => {
-    const r01 = getIgnoreNamespace(' i-am-ironman');
-    const r02 = getIgnoreNamespace(' i-am-ironman i-am-marvel');
-    const r03 = getIgnoreNamespace(' i-am-ironman, i-am-marvel');
-    const r04 = getIgnoreNamespace(' i-am-ironman, i-am-marvel, i-am-test01, i-am-test02');
+    const r01 = getExcludeNamespace(' i-am-ironman');
+    const r02 = getExcludeNamespace(' i-am-ironman i-am-marvel');
+    const r03 = getExcludeNamespace(' i-am-ironman, i-am-marvel');
+    const r04 = getExcludeNamespace(' i-am-ironman, i-am-marvel, i-am-test01, i-am-test02');
 
     expect(r01).toEqual(['i-am-ironman']);
     expect(r02).toEqual(['i-am-ironman', 'i-am-marvel']);
@@ -315,11 +315,11 @@ describe('getIgnoreNamespace', () => {
   });
 
   it('remove star end', () => {
-    const r01 = getIgnoreNamespace(' i-am-ironman *');
-    const r02 = getIgnoreNamespace(' i-am-ironman */');
-    const r03 = getIgnoreNamespace(' i-am-ironman **/');
-    const r04 = getIgnoreNamespace(' i-am-ironman * **/');
-    const r05 = getIgnoreNamespace(' i-am-ironman * */');
+    const r01 = getExcludeNamespace(' i-am-ironman *');
+    const r02 = getExcludeNamespace(' i-am-ironman */');
+    const r03 = getExcludeNamespace(' i-am-ironman **/');
+    const r04 = getExcludeNamespace(' i-am-ironman * **/');
+    const r05 = getExcludeNamespace(' i-am-ironman * */');
 
     expect(r01).toEqual(['i-am-ironman']);
     expect(r02).toEqual(['i-am-ironman']);
