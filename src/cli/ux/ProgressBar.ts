@@ -94,9 +94,9 @@ export class ProgressBar {
     });
   }
 
-  start(max: number, initial: number) {
+  start(max: number, initial?: number) {
     if (this.#enable) {
-      this.#bar.start(max, initial);
+      this.#bar.start(max, initial ?? 0);
     }
   }
 

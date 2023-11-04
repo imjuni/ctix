@@ -3,8 +3,11 @@ import { CE_CTIX_BUILD_MODE } from '#/configs/const-enum/CE_CTIX_BUILD_MODE';
 import { CE_CTIX_DEFAULT_VALUE } from '#/configs/const-enum/CE_CTIX_DEFAULT_VALUE';
 import { getGlobFiles } from '#/modules/file/getGlobFiles';
 import { defaultIgnore } from '#/modules/ignore/defaultIgnore';
+import chalk from 'chalk';
+import { exists } from 'find-up';
 import { Glob } from 'glob';
 import inquirer from 'inquirer';
+import path from 'node:path';
 
 export async function askInitOptions(): Promise<IInitQuestionAnswer> {
   const cwd = process.cwd();
@@ -14,14 +17,37 @@ export async function askInitOptions(): Promise<IInitQuestionAnswer> {
       type: 'input',
       name: 'cwd',
       default: cwd,
-      message: 'Here is your working directory?',
+      message: 'Enter the working directory',
     },
   ]);
 
+  const optionFilePath = path.join(cwdAnswer.cwd, CE_CTIX_DEFAULT_VALUE.CONFIG_FILENAME);
+  const optionFileExist = await exists(optionFilePath);
   const glob = new Glob('**/tsconfig.json', { cwd: cwdAnswer.cwd, ignore: defaultIgnore });
   const tsconfigFiles = getGlobFiles(glob);
 
-  const selectedConfig = await inquirer.prompt<Omit<IInitQuestionAnswer, 'cwd'>>([
+  if (optionFileExist) {
+    const overwriteAnswer = await inquirer.prompt<Pick<IInitQuestionAnswer, 'overwirte'>>([
+      {
+        type: 'confirm',
+        name: 'overwirte',
+        message: `Already exists ${chalk.redBright(optionFilePath)}, overwrite it?`,
+        default: false,
+      },
+    ]);
+
+    if (!overwriteAnswer.overwirte) {
+      return {
+        cwd: cwdAnswer.cwd,
+        overwirte: overwriteAnswer.overwirte,
+        tsconfig: [],
+        mode: CE_CTIX_BUILD_MODE.BUNDLE_MODE,
+        exportFilename: CE_CTIX_DEFAULT_VALUE.EXPORT_FILENAME,
+      } satisfies IInitQuestionAnswer;
+    }
+  }
+
+  const selectedConfig = await inquirer.prompt<Omit<IInitQuestionAnswer, 'cwd' | 'overwrite'>>([
     {
       type: 'checkbox',
       name: 'tsconfig',
@@ -40,13 +66,14 @@ export async function askInitOptions(): Promise<IInitQuestionAnswer> {
       type: 'input',
       name: 'exportFilename',
       default: CE_CTIX_DEFAULT_VALUE.EXPORT_FILENAME,
-      message: 'Here is your working directory?',
+      message: 'Enter the bundle file name',
     },
   ]);
 
   const answer: IInitQuestionAnswer = {
     ...cwdAnswer,
     ...selectedConfig,
+    overwirte: true,
   };
 
   return answer;

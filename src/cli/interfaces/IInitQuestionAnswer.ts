@@ -4,5 +4,6 @@ export interface IInitQuestionAnswer {
   cwd: string;
   tsconfig: string[];
   mode: CE_CTIX_BUILD_MODE;
+  overwirte: boolean;
   exportFilename: string;
 }

@@ -61,11 +61,12 @@ export const nestedOptionDefaultTemplate = `
   // @default false
   "overwrite": <%= it.overwrite %>,
 
-  // don't create backup file even if set overwrite option enable
+  // Create a backup file if the \`index.ts\` file already exists. 
+  // This option only works if the \`overwrite\` option is enabled.
   //
   // @mode create, bundle
   // @defulat true
-  "noBackup": <%= it.noBackup %>,
+  "backup": <%= it.backup %>,
 
   // When generating the \`index.ts\` file, decide how you want to generate it
   //
