@@ -29,7 +29,7 @@ jobs:
     - run: npm ci
     - run: npm run build
     - run: npm run clean
-    - run: npm test
+    - run: npm test:ci
     - run: npm run bundle
     - run: npm run clean
     - name: Upload coverage to Codecov

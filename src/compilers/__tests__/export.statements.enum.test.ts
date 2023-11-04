@@ -61,7 +61,7 @@ describe('getExportStatements - Enum', () => {
         isPureType: false,
         isAnonymous: false,
         isDefault: true,
-        isIgnored: false,
+        isExcluded: false,
         comments: [],
       } satisfies IExportStatement,
       {
@@ -79,7 +79,7 @@ describe('getExportStatements - Enum', () => {
         isPureType: false,
         isAnonymous: false,
         isDefault: false,
-        isIgnored: false,
+        isExcluded: false,
         comments: [],
       } satisfies IExportStatement,
     ]);

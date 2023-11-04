@@ -52,7 +52,7 @@ ReactComponent.props = { name: 'ironman' };
         isAnonymous: false,
         isPureType: false,
         isDefault: false,
-        isIgnored: false,
+        isExcluded: false,
         comments: [],
       } satisfies IExportStatement,
     ]);
@@ -97,7 +97,7 @@ export default ReactComponent;
         isAnonymous: false,
         isPureType: false,
         isDefault: true,
-        isIgnored: false,
+        isExcluded: false,
         comments: [],
       } satisfies IExportStatement,
     ]);
@@ -143,7 +143,7 @@ export default withComponent()(ReactComponent);
         isPureType: false,
         isAnonymous: true,
         isDefault: true,
-        isIgnored: false,
+        isExcluded: false,
         comments: [],
       } satisfies IExportStatement,
     ]);
@@ -185,7 +185,7 @@ export default CONST_VALUE;
         isPureType: false,
         isAnonymous: false,
         isDefault: true,
-        isIgnored: false,
+        isExcluded: false,
         comments: [],
       } satisfies IExportStatement,
     ]);
@@ -231,7 +231,7 @@ export type CE_CTIX_DEFAULT_VALUE =
         isPureType: false,
         isAnonymous: false,
         isDefault: false,
-        isIgnored: false,
+        isExcluded: false,
         comments: [],
       } satisfies IExportStatement,
     ]);

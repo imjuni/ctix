@@ -9,11 +9,11 @@ export function getAutoRenderCase(renderData: IIndexRenderData): {
   // case 01.
   // default export (o)
   // named export   (o)
-  // partial ignore (x)
+  // partial exclude (x)
   if (
     renderData.statement.isHasDefault &&
     renderData.statement.named.length > 0 &&
-    !renderData.statement.isHasPartialIgnore
+    !renderData.statement.isHasPartialExclude
   ) {
     return {
       case: CE_AUTO_RENDER_CASE.DEFAULT_NAMED,
@@ -24,11 +24,11 @@ export function getAutoRenderCase(renderData: IIndexRenderData): {
   // case 02.
   // default export (o)
   // named export   (x)
-  // partial ignore (x)
+  // partial exclude (x)
   if (
     renderData.statement.isHasDefault &&
     renderData.statement.named.length <= 0 &&
-    !renderData.statement.isHasPartialIgnore
+    !renderData.statement.isHasPartialExclude
   ) {
     return {
       case: CE_AUTO_RENDER_CASE.DEFAULT,
@@ -39,11 +39,11 @@ export function getAutoRenderCase(renderData: IIndexRenderData): {
   // case 03.
   // default export (x)
   // named export   (o)
-  // partial ignore (x)
+  // partial exclude (x)
   if (
     !renderData.statement.isHasDefault &&
     renderData.statement.named.length > 0 &&
-    !renderData.statement.isHasPartialIgnore
+    !renderData.statement.isHasPartialExclude
   ) {
     return {
       case: CE_AUTO_RENDER_CASE.NAMED,
@@ -54,14 +54,14 @@ export function getAutoRenderCase(renderData: IIndexRenderData): {
   // case 04.
   // default export (x)
   // named export   (o)
-  // partial ignore (o)
+  // partial exclude (o)
   //
-  // - partial ignore apply on default export
-  // - partial ignore apply on named export and dosen't have a default export
+  // - partial exclude apply on default export
+  // - partial exclude apply on named export and dosen't have a default export
   if (
     !renderData.statement.isHasDefault &&
     renderData.statement.named.length > 0 &&
-    renderData.statement.isHasPartialIgnore
+    renderData.statement.isHasPartialExclude
   ) {
     return {
       case: CE_AUTO_RENDER_CASE.NAMED_PARTAL,
@@ -72,14 +72,14 @@ export function getAutoRenderCase(renderData: IIndexRenderData): {
   // case 05.
   // default export (o)
   // named export   (x)
-  // partial ignore (o)
+  // partial exclude (o)
   //
-  // - partial ignore apply on named export
+  // - partial exclude apply on named export
   // - named export item only one
   if (
     renderData.statement.isHasDefault &&
     renderData.statement.named.length <= 0 &&
-    renderData.statement.isHasPartialIgnore
+    renderData.statement.isHasPartialExclude
   ) {
     // 이 방식으로 되어 있을 때는 경고가 필요하다, rollup-plugin-dts에서는 이 방식인 경우,
     // default export를 2번 내보내서 오류가 발생한다.
@@ -92,14 +92,14 @@ export function getAutoRenderCase(renderData: IIndexRenderData): {
   // case 06.
   // default export (o)
   // named export   (o)
-  // partial ignore (o)
+  // partial exclude (o)
   //
-  // - partial ignore apply on named export
+  // - partial exclude apply on named export
   // - named export item more then one
   if (
     renderData.statement.isHasDefault &&
     renderData.statement.named.length > 0 &&
-    renderData.statement.isHasPartialIgnore
+    renderData.statement.isHasPartialExclude
   ) {
     // 이 방식으로 되어 있을 때는 경고가 필요하다, rollup-plugin-dts에서는 이 방식인 경우,
     // default export를 2번 내보내서 오류가 발생한다.

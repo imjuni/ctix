@@ -1,12 +1,12 @@
 import { getGlobFiles } from '#/modules/file/getGlobFiles';
-import { defaultIgnore } from '#/modules/ignore/defaultIgnore';
+import { defaultExclude } from '#/modules/scope/defaultExclude';
 import { describe, expect, it } from '@jest/globals';
 import { Glob } from 'glob';
 import path from 'node:path';
 
 describe('getGlobFiles', () => {
   it('string filename', () => {
-    const glob = new Glob('**/tsconfig.json', { cwd: process.cwd(), ignore: defaultIgnore });
+    const glob = new Glob('**/tsconfig.json', { cwd: process.cwd(), ignore: defaultExclude });
     const files = getGlobFiles(glob);
 
     expect(files).toEqual([
@@ -28,7 +28,7 @@ describe('getGlobFiles', () => {
   it('Paths filename', () => {
     const glob = new Glob('**/tsconfig.json', {
       cwd: process.cwd(),
-      ignore: defaultIgnore,
+      ignore: defaultExclude,
       withFileTypes: true,
     });
     const files = getGlobFiles(glob);

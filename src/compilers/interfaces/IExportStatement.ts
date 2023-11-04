@@ -1,4 +1,4 @@
-import type { IInlineIgnoreInfo } from '#/comments/interfaces/IInlineIgnoreInfo';
+import type { IInlineExcludeInfo } from '#/comments/interfaces/IInlineExcludeInfo';
 
 export interface IExportStatement {
   path: {
@@ -55,12 +55,12 @@ export interface IExportStatement {
   isAnonymous: boolean;
 
   /**
-   * inline comment를 사용해서 ignore를 한 것인지 표시
+   * inline comment를 사용해서 exclude를 한 것인지 표시
    */
-  isIgnored: boolean;
+  isExcluded: boolean;
 
   /**
-   * inline comment에 @ctix-ignore-next 를 추가한 경우, 그 주석에 대한 정보
+   * inline comment에 @ctix-exclude-next 를 추가한 경우, 그 주석에 대한 정보
    */
-  comments: IInlineIgnoreInfo[];
+  comments: IInlineExcludeInfo[];
 }

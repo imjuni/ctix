@@ -55,7 +55,7 @@ export interface IAbility {
         isAnonymous: false,
         isPureType: true,
         isDefault: false,
-        isIgnored: false,
+        isExcluded: false,
         comments: [],
       } satisfies IExportStatement,
       {
@@ -73,7 +73,7 @@ export interface IAbility {
         isAnonymous: false,
         isPureType: true,
         isDefault: false,
-        isIgnored: false,
+        isExcluded: false,
         comments: [],
       } satisfies IExportStatement,
     ]);
@@ -123,7 +123,7 @@ export interface IOrganization {
         isPureType: true,
         isAnonymous: false,
         isDefault: true,
-        isIgnored: false,
+        isExcluded: false,
         comments: [],
       } satisfies IExportStatement,
       {
@@ -141,7 +141,7 @@ export interface IOrganization {
         isAnonymous: false,
         isPureType: true,
         isDefault: false,
-        isIgnored: false,
+        isExcluded: false,
         comments: [],
       } satisfies IExportStatement,
       {
@@ -159,7 +159,7 @@ export interface IOrganization {
         isAnonymous: false,
         isPureType: true,
         isDefault: false,
-        isIgnored: false,
+        isExcluded: false,
         comments: [],
       } satisfies IExportStatement,
     ]);

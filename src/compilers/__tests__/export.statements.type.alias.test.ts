@@ -49,7 +49,7 @@ export type THero = { name: string; ability: string[] };
         isPureType: true,
         isAnonymous: false,
         isDefault: false,
-        isIgnored: false,
+        isExcluded: false,
         comments: [],
       } satisfies IExportStatement,
     ]);
@@ -93,7 +93,7 @@ export default TSuperHero;
         isPureType: true,
         isAnonymous: false,
         isDefault: true,
-        isIgnored: false,
+        isExcluded: false,
         comments: [],
       } satisfies IExportStatement,
       {
@@ -111,7 +111,7 @@ export default TSuperHero;
         isPureType: true,
         isAnonymous: false,
         isDefault: false,
-        isIgnored: false,
+        isExcluded: false,
         comments: [],
       } satisfies IExportStatement,
     ]);

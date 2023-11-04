@@ -21,7 +21,7 @@ const context: IIndexRenderData = {
     },
     importPath: `./${uuid}`,
     isHasDefault: false,
-    isHasPartialIgnore: false,
+    isHasPartialExclude: false,
     named: [
       {
         path: {
@@ -41,7 +41,7 @@ const context: IIndexRenderData = {
         isPureType: false,
         isAnonymous: false,
         isDefault: false,
-        isIgnored: false,
+        isExcluded: false,
         comments: [],
       },
       {
@@ -62,7 +62,7 @@ const context: IIndexRenderData = {
         isPureType: false,
         isAnonymous: false,
         isDefault: false,
-        isIgnored: false,
+        isExcluded: false,
         comments: [],
       },
     ],
@@ -73,7 +73,7 @@ describe('getAutoRenderCase', () => {
   it('case 01', () => {
     const renderData = { ...context, statement: { ...context.statement } };
     renderData.statement.isHasDefault = true;
-    renderData.statement.isHasPartialIgnore = false;
+    renderData.statement.isHasPartialExclude = false;
 
     const r01 = getAutoRenderCase(renderData);
 
@@ -87,7 +87,7 @@ describe('getAutoRenderCase', () => {
     const renderData = { ...context, statement: { ...context.statement } };
     renderData.statement.isHasDefault = true;
     renderData.statement.named = [];
-    renderData.statement.isHasPartialIgnore = false;
+    renderData.statement.isHasPartialExclude = false;
 
     const r01 = getAutoRenderCase(renderData);
 
@@ -100,7 +100,7 @@ describe('getAutoRenderCase', () => {
   it('case 03', () => {
     const renderData = { ...context, statement: { ...context.statement } };
     renderData.statement.isHasDefault = false;
-    renderData.statement.isHasPartialIgnore = false;
+    renderData.statement.isHasPartialExclude = false;
 
     const r01 = getAutoRenderCase(renderData);
 
@@ -113,7 +113,7 @@ describe('getAutoRenderCase', () => {
   it('case 04', () => {
     const renderData = { ...context, statement: { ...context.statement } };
     renderData.statement.isHasDefault = false;
-    renderData.statement.isHasPartialIgnore = true;
+    renderData.statement.isHasPartialExclude = true;
 
     const r01 = getAutoRenderCase(renderData);
 
@@ -127,7 +127,7 @@ describe('getAutoRenderCase', () => {
     const renderData = { ...context, statement: { ...context.statement } };
     renderData.statement.isHasDefault = true;
     renderData.statement.named = [];
-    renderData.statement.isHasPartialIgnore = true;
+    renderData.statement.isHasPartialExclude = true;
 
     const r01 = getAutoRenderCase(renderData);
 
@@ -140,7 +140,7 @@ describe('getAutoRenderCase', () => {
   it('case 06', () => {
     const renderData = { ...context, statement: { ...context.statement } };
     renderData.statement.isHasDefault = true;
-    renderData.statement.isHasPartialIgnore = true;
+    renderData.statement.isHasPartialExclude = true;
 
     const r01 = getAutoRenderCase(renderData);
 
@@ -154,7 +154,7 @@ describe('getAutoRenderCase', () => {
     const renderData = { ...context, statement: { ...context.statement } };
     renderData.statement.isHasDefault = false;
     renderData.statement.named = [];
-    renderData.statement.isHasPartialIgnore = false;
+    renderData.statement.isHasPartialExclude = false;
 
     const r01 = getAutoRenderCase(renderData);
 

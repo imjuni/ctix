@@ -29,7 +29,7 @@ describe('SymbolTable', () => {
       },
       isPureType: false,
       isAnonymous: false,
-      isIgnored: false,
+      isExcluded: false,
       comments: [],
     };
 

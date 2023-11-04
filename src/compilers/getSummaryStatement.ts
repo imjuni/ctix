@@ -1,6 +1,6 @@
-import { CE_INLINE_IGNORE_KEYWORD } from '#/comments/const-enum/CE_INLINE_IGNORE_KEYWORD';
-import { getInlineIgnore } from '#/comments/getInlineIgnore';
-import type { IInlineIgnoreInfo } from '#/comments/interfaces/IInlineIgnoreInfo';
+import { CE_INLINE_EXCLUDE_KEYWORD } from '#/comments/const-enum/CE_INLINE_EXCLUDE_KEYWORD';
+import { getInlineExclude } from '#/comments/getInlineExclude';
+import type { IInlineExcludeInfo } from '#/comments/interfaces/IInlineExcludeInfo';
 import { getExportedKind } from '#/compilers/getExportedKind';
 import type { IExportStatement } from '#/compilers/interfaces/IExportStatement';
 import { filenamify } from '#/modules/path/filenamify';
@@ -21,12 +21,12 @@ export function getSummaryStatement(params: {
   const comments = params.node
     .getLeadingCommentRanges()
     .map((comment) =>
-      getInlineIgnore(comment.getText(), {
+      getInlineExclude(comment.getText(), {
         eol: params.eol,
-        keyword: CE_INLINE_IGNORE_KEYWORD.NEXT_STATEMENT_IGNORE_KEYWORD,
+        keyword: CE_INLINE_EXCLUDE_KEYWORD.NEXT_STATEMENT_EXCLUDE_KEYWORD,
       }),
     )
-    .filter((comment): comment is IInlineIgnoreInfo => comment != null);
+    .filter((comment): comment is IInlineExcludeInfo => comment != null);
 
   const pos = params.node.getSourceFile().getLineAndColumnAtPos(params.node.getStart(false));
 
@@ -41,7 +41,7 @@ export function getSummaryStatement(params: {
     isPureType: kind.isPureType,
     isAnonymous: kind.name == null,
     isDefault: params.isDefault ?? false,
-    isIgnored: comments.length > 0,
+    isExcluded: comments.length > 0,
     comments,
   } satisfies IExportStatement;
 }

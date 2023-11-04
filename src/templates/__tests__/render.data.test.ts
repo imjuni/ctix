@@ -71,7 +71,7 @@ export class DCHero {
         },
         importPath: `./${uuid}`,
         isHasDefault: false,
-        isHasPartialIgnore: false,
+        isHasPartialExclude: false,
         named: [
           {
             path: {
@@ -87,7 +87,7 @@ export class DCHero {
             isPureType: false,
             isAnonymous: false,
             isDefault: false,
-            isIgnored: false,
+            isExcluded: false,
             comments: [],
           },
           {
@@ -104,7 +104,7 @@ export class DCHero {
             isPureType: false,
             isAnonymous: false,
             isDefault: false,
-            isIgnored: false,
+            isExcluded: false,
             comments: [],
           },
         ],
@@ -112,7 +112,7 @@ export class DCHero {
     });
   });
 
-  it('every statement ignored', async () => {
+  it('every statement excluded', async () => {
     const uuid = randomUUID();
     const filename = `${uuid}.ts`;
     const source = `
@@ -151,7 +151,7 @@ export class DCHero {
         useSemicolon: false,
       },
       filename,
-      statements.map((statement) => ({ ...statement, isIgnored: true })),
+      statements.map((statement) => ({ ...statement, isExcluded: true })),
     );
 
     expect(r01).toBeUndefined();
@@ -199,7 +199,7 @@ export class DCHero {
         useSemicolon: false,
       },
       filename,
-      statements.map((statement) => ({ ...statement, isIgnored: false })),
+      statements.map((statement) => ({ ...statement, isExcluded: false })),
       path.join(process.cwd(), 'example'),
     );
 
@@ -216,7 +216,7 @@ export class DCHero {
         },
         importPath: `../${uuid}`,
         isHasDefault: false,
-        isHasPartialIgnore: false,
+        isHasPartialExclude: false,
         default: undefined,
         named: [
           {
@@ -236,7 +236,7 @@ export class DCHero {
             isPureType: false,
             isAnonymous: false,
             isDefault: false,
-            isIgnored: false,
+            isExcluded: false,
             comments: [],
           },
           {
@@ -257,7 +257,7 @@ export class DCHero {
             isPureType: false,
             isAnonymous: false,
             isDefault: false,
-            isIgnored: false,
+            isExcluded: false,
             comments: [],
           },
         ],

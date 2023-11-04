@@ -1,7 +1,7 @@
 import { ProgressBar } from '#/cli/ux/ProgressBar';
 import { Reasoner } from '#/cli/ux/Reasoner';
 import { Spinner } from '#/cli/ux/Spinner';
-import { getInlineIgnoredFiles } from '#/comments/getInlineIgnoredFiles';
+import { getInlineExcludedFiles } from '#/comments/getInlineExcludedFiles';
 import { SymbolTable } from '#/compilers/SymbolTable';
 import { getExportStatement } from '#/compilers/getExportStatement';
 import type { IExportStatement } from '#/compilers/interfaces/IExportStatement';
@@ -13,8 +13,8 @@ import { ProjectContainer } from '#/modules/file/ProjectContainer';
 import { checkOutputFile } from '#/modules/file/checkOutputFile';
 import { getTsExcludeFiles } from '#/modules/file/getTsExcludeFiles';
 import { getTsIncludeFiles } from '#/modules/file/getTsIncludeFiles';
-import { ExcludeContainer } from '#/modules/ignore/ExcludeContainer';
-import { IncludeContainer } from '#/modules/ignore/IncludeContainer';
+import { ExcludeContainer } from '#/modules/scope/ExcludeContainer';
+import { IncludeContainer } from '#/modules/scope/IncludeContainer';
 import { indexWrites } from '#/modules/writes/indexWrites';
 import { CE_AUTO_RENDER_CASE } from '#/templates/const-enum/CE_AUTO_RENDER_CASE';
 import type { IIndexRenderData } from '#/templates/interfaces/IIndexRenderData';
@@ -42,21 +42,21 @@ export async function bundling(_buildOptions: TCommandBuildOptions, bundleOption
     config: { include: getTsIncludeFiles({ config: bundleOption, extend: extendOptions }) },
   });
 
-  const inlineIgnoreds = getInlineIgnoredFiles({
+  const inlineExcludeds = getInlineExcludedFiles({
     project,
     extendOptions,
     filePaths: extendOptions.tsconfig.fileNames,
   });
 
   /**
-   * SourceCode를 읽어서 inline file ignore 된 파일을 별도로 전달한다. 이렇게 하는 이유는, 이 파일은 왜 포함되지
+   * SourceCode를 읽어서 inline file exclude 된 파일을 별도로 전달한다. 이렇게 하는 이유는, 이 파일은 왜 포함되지
    * 않았지? 라는 등의 리포트를 생성할 때 한 곳에서 이 정보를 다 관리해야 리포트를 생성해서 보여줄 수 있기 때문이다
    */
   const exclude = new ExcludeContainer({
     config: {
       exclude: [...getTsExcludeFiles({ config: bundleOption, extend: extendOptions }), ...[output]],
     },
-    inlineIgnoreds,
+    inlineExcludeds,
   });
 
   const filenames = extendOptions.tsconfig.fileNames
