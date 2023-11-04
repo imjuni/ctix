@@ -127,6 +127,12 @@ module.exports = {
         'no-console': ['off'],
       },
     },
+    {
+      files: ['src/cli/ux/Reasoner.ts'],
+      rules: {
+        'no-console': ['off'],
+      },
+    },
   ],
   settings: {
     'import/resolver': {
