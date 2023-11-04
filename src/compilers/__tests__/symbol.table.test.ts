@@ -1,6 +1,7 @@
 import { SymbolTable } from '#/compilers/SymbolTable';
 import type { IExportStatement } from '#/compilers/interfaces/IExportStatement';
 import { beforeAll, describe, expect, it } from '@jest/globals';
+import chalk from 'chalk';
 import { randomUUID } from 'node:crypto';
 import path from 'node:path';
 
@@ -29,7 +30,7 @@ describe('SymbolTable', () => {
       },
       isPureType: false,
       isAnonymous: false,
-      isIgnored: false,
+      isExcluded: false,
       comments: [],
     };
 
@@ -263,7 +264,7 @@ describe('SymbolTable', () => {
           character: 1,
         },
         filePath: path.join(context[0].statement.path.dirPath, context[0].statement.path.filename),
-        message: `detect same name of export statement: "\u001b[33m${context[0].uuid}\u001b[39m"`,
+        message: `detect same name of export statement: "${chalk.yellow(context[0].uuid)}"`,
       },
       {
         type: 'warn',
@@ -272,7 +273,7 @@ describe('SymbolTable', () => {
           character: 4,
         },
         filePath: path.join(context[3].statement.path.dirPath, context[3].statement.path.filename),
-        message: `detect same name of export statement: "\u001b[33m${context[3].uuid}\u001b[39m"`,
+        message: `detect same name of export statement: "${chalk.yellow(context[3].uuid)}"`,
       },
       {
         type: 'warn',
@@ -281,7 +282,7 @@ describe('SymbolTable', () => {
           character: 5,
         },
         filePath: path.join(context[4].statement.path.dirPath, context[4].statement.path.filename),
-        message: `detect same name of export statement: "\u001b[33m${context[4].uuid}\u001b[39m"`,
+        message: `detect same name of export statement: "${chalk.yellow(context[4].uuid)}"`,
       },
       {
         type: 'warn',
@@ -290,7 +291,7 @@ describe('SymbolTable', () => {
           character: 6,
         },
         filePath: path.join(context[5].statement.path.dirPath, context[5].statement.path.filename),
-        message: `detect same name of default export statement: "\u001b[33m${context[5].uuid}\u001b[39m"`,
+        message: `detect same name of default export statement: "${chalk.yellow(context[5].uuid)}"`,
       },
       {
         type: 'warn',
@@ -299,7 +300,7 @@ describe('SymbolTable', () => {
           character: 7,
         },
         filePath: path.join(context[6].statement.path.dirPath, context[6].statement.path.filename),
-        message: `detect same name of export statement: "\u001b[33m${context[6].uuid}\u001b[39m"`,
+        message: `detect same name of export statement: "${chalk.yellow(context[6].uuid)}"`,
       },
     ]);
   });

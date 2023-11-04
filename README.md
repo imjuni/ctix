@@ -1,95 +1,101 @@
 # ctix - Next generation Create TypeScript Index file
 
-[![Download Status](https://img.shields.io/npm/dw/ctix.svg)](https://npmcharts.com/compare/ctix?minimal=true) [![Github Star](https://img.shields.io/github/stars/imjuni/ctix.svg?style=popout)](https://github.com/imjuni/ctix) [![Github Issues](https://img.shields.io/github/issues-raw/imjuni/ctix.svg)](https://github.com/imjuni/ctix/issues) [![NPM version](https://img.shields.io/npm/v/ctix.svg)](https://www.npmjs.com/package/ctix) [![License](https://img.shields.io/npm/l/ctix.svg)](https://github.com/imjuni/ctix/blob/master/LICENSE) [![ctix](https://github.com/imjuni/ctix/actions/workflows/ci.yml/badge.svg)](https://github.com/imjuni/ctix/actions/workflows/ci.yml) [![codecov](https://codecov.io/gh/imjuni/ctix/branch/master/graph/badge.svg?token=DADV7ss5bh)](https://codecov.io/gh/imjuni/ctix)
+![ts](https://flat.badgen.net/badge/Built%20With/TypeScript/blue)
+[![Download Status](https://img.shields.io/npm/dw/ctix.svg)](https://npmcharts.com/compare/ctix?minimal=true)
+[![Github Star](https://img.shields.io/github/stars/imjuni/ctix.svg?style=popout)](https://github.com/imjuni/ctix)
+[![Github Issues](https://img.shields.io/github/issues-raw/imjuni/ctix.svg)](https://github.com/imjuni/ctix/issues)
+[![NPM version](https://img.shields.io/npm/v/ctix.svg)](https://www.npmjs.com/package/ctix)
+[![License](https://img.shields.io/npm/l/ctix.svg)](https://github.com/imjuni/ctix/blob/master/LICENSE)
+[![ci](https://github.com/imjuni/ctix/actions/workflows/ci.yml/badge.svg)](https://github.com/imjuni/ctix/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/imjuni/ctix/branch/master/graph/badge.svg?token=DADV7ss5bh)](https://codecov.io/gh/imjuni/ctix)
+[![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
+
+entrypoint `index.ts` file automatically generated cli tool
+
+## Why ctix?
+
+Have you ever developed a library project in the TypeScript language? Unlike API servers or desktop applications, library projects do not have executable scripts or functions. Therefore, it is common to organize a number of functions and variables to be included in the library in an `index.ts` file. However, it is inconvenient to rewrite the `index.ts` file every time you add a function or variable, and it is easy to make a mistake and miss a function or variable you intended. `ctix` uses the [TypeScript compiler API](https://github.com/microsoft/TypeScript/wiki/Using-the-Compiler-API) to automatically generate the `index.ts` file by searching your TypeScript project for functions and variables with the export keyword added.
+
+To summarize,
+
+1. automatically extracts statement with the export keyword applied
+1. generate a single `index.ts` file or directory-specific `index.ts` files
+1. automatically generate configuration files via interactive prompts
+1. automatically add type keyword to interface, type aliases to indicate they are pure types
+    - eg. `export { type IAmSuperHero } from './marvel';`
+1. can be set to exception files via comments in source code files (eslint style)
+
+In addition, `ctix` will auto-generate `index.ts` files so that a single `index.d.ts` file can be generated correctly when using the [rollup-plugin-dts](https://github.com/Swatinem/rollup-plugin-dts) plugin. Now you can develop your TypeScript library projects more easily!
+
+## Table of Contents <!-- omit in toc -->
+
+- [Why ctix?](#why-ctix)
+- [Getting Starts](#getting-starts)
+- [How it works?](#how-it-works)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Requirement](#requirement)
+- [Important](#important)
+- [More information](#more-information)
+- [What is difference Re-Map paths?](#what-is-difference-re-map-paths)
+- [Option](#option)
+
+## Getting Starts
+
+```bash
+npm install ctix --save-dev
+npx ctix init
+npx ctix build
+```
+
+`ctix` provides interactive prompts to help you create the configuration file. Execute the `ctix init` command to create a configuration file.
+
+## How it works?
+
+The graph below outlines the behavioral flow of `ctix`.
+
+```mermaid
+flowchart TD
+    START(start) --> |execute cli|ctix
+    ctix --> |TypeScript Compiler API| INP01[Source Code files] 
+    ctix --> |TypeScript Compiler API| INP02["tsconfig.json"]
+    ctix --> |json, json5, yaml| INP03[".ctirc"]
+    INP01 --> TF[/Summray target source files/]
+    INP02 --> TF
+    INP03 --> TF
+    TF --> TS[/Summray target export statements/]
+    TS --> IW["index.ts file generation"]
+    IW --> END(end)
+```
+
+Because `ctix` uses the TypeScript Compiler API to summary target files and extract export statements, developers don't need to write source code in a special format or make any changes to existing code to make it work.
 
 ## Installation
 
 ```bash
-npm i ctix --save-dev
+npm install ctix --save-dev
 ```
 
 ## Usage
 
 ```bash
-ctix create -p ./tsconfig.json
+ctix build -p ./tsconfig.json -o ./src
 ```
 
-## Introduction
+## Requirement
 
-You have to create a list of files when bundling with [webpack](https://webpack.js.org/) and [rollup.js](https://rollupjs.org/guide/en/), or creating documents with [typedoc](https://typedoc.org/). It's boring to re-list files every time they change files change. ctix is a simple tool that automates the creation of file lists.
-
-## Why ctix?
-
-An application project has a clear [entry point](https://webpack.js.org/concepts/entry-points/), but if it is a library project, the entry point is not clear, so you have to create it yourself. typedoc have to explicitly specify what to document, even for an application project.
-
-1. use TypeScript compiler API
-1. create index.ts file by separating default export and export
-1. support isolatedModules option
-1. various ignore options such as gitignore, npmignore, citignore
+- Node.js 18
+- TypeScript
 
 ## Important
 
 `ctix` does not work in JavaScript code because it uses TypeScript API, please use it **`before`** Babel translation or TypeScript compilation.
 
-## How to works?
+## More information
 
-ctix use TypeScript Compiler API and directory structure. Export something from TypeScript source file after run ctix to create `index.ts` file. Detail working see [here](https://imjuni.github.io/ctix/#how-to-works)
-
-## Use ctix with Non TypeScript files
-
-### Fonts
-
-webpack, rollup.js bundling fonts like [that](https://github.com/imjuni/ctix/tree/master/example/type08). You can create `.d.ts` file and include it.
-
-```ts
-// @types/DeclareTtfModule.d.ts
-declare module '*.ttf';
-
-// fonts/fonts.ts
-/// <reference path="../@types/DeclareTtfModule.d.ts" />
-import Friend from 'Friend.ttf';
-import AlsoFriend from './fonts/AlsoFriend.ttf';
-
-export { Friend, AlsoFriend };
-```
-
-### Vue.js
-
-If you use vue.js framework, you can use it as follows.
-
-```ts
-// @types/vue.d.ts
-declare module '*.vue' {
-  import Vue from 'vue';
-  export default Vue;
-}
-
-// components/vue-components.ts
-/// <reference path="../@types/vue.d.ts" />
-import Foo from 'Foo.vue';
-import Bar from './Bar.vue';
-
-export { Foo, Bar };
-```
-
-## Pros & Cons
-
-### Pros
-
-1. pass tsconfig.json file, another process don't care about
-1. Support default exportation
-   - using TypeScript API so detect default export and named export
-   - my_default_index.test.ts file create `export { default as myDefaultIndexTest } from './my_default_index.test.ts'`
-1. Partial ignore
-   - specific export statement exclude on index.ts file.
-   - eg. `{ "my_lib_package.ts": ["exists", "temp"] }`
-1. Skip empty directory
-1. isolatedModules support
-
-### Cons
-
-1. It may be slow for some project
-   - since ctix uses TypeScript compiler API, big projects may take time to generate index files
+- [Applying a font file to your source code](https://github.com/imjuni/ctix/blob/master/doc/IN_DEPTH_FONT.md)
+- [Applying a Vue.js components to your source code](https://github.com/imjuni/ctix/blob/master/doc/IN_DEPTH_VUE.md)
+- [Applying a include, exclude configuration to `.ctirc`](https://github.com/imjuni/ctix/blob/master/doc/IN_DEPTH_IGNORE.md)
 
 ## What is difference Re-Map paths?
 
@@ -97,107 +103,7 @@ It is not recommended to use `index.ts` file to re-map paths or shorten the path
 
 ## Option
 
-| Name             | Short | Default     | Command                | Description                                                                                                                    |
-| :--------------- | ----- | ----------- | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| --config         | -c    |             | All                    | configuration file(.ctirc) path                                                                                                |
-| --project        | -p    | required    | All                    | tsconfig.json path: you must pass path with filename, like this "./tsconfig.json"                                              |
-| --spinnerStream  |       | stdout      | All                    | Stream of cli spinner, you can pass stdout or stderr                                                                           |
-| --progressStream |       | stdout      | All                    | Stream of cli progress, you can pass stdout or stderr                                                                          |
-| --reasonerStream |       | stderr      | All                    | Stream of cli reasoner. Reasoner show name conflict error and already exist index.ts file error. You can pass stdout or stderr |
-| --startAt        | -a    | = --project | All                    | start working from startAt directory. If you do not pass startAt use project directory.                                        |
-| --exportFilename | -f    | index.ts    | create, single, remove | Export filename, if you not pass this field that use "index.ts" or "index.d.ts"                                                |
-| --useSemicolon   | -s    | true        | create, single         | add semicolon on line ending at every export statement                                                                         |
-| --useTimestamp   | -t    | false       | create, single         | timestamp write on ctix comment right-side, only works in useComment option set true                                           |
-| --useComment     | -m    | true        | create, single         | ctix comment add on first line of created export file(default index.ts) file, that remark created from ctix                    |
-| --quote          | -q    | '           | create, single         | change quote character at export syntax                                                                                        |
-| --keepFileExt    | -k    | '           | create, single         | keep file extension on export statement path literal                                                                           |
-| --overwrite      | -w    | '           | create, single         | overwrite each index.ts file                                                                                                   |
-| --ignoreFile     | -g    |             | create, single         | ignore file name. You can pass ignore, config file at ctix and use it like profile                                             |
-| --noBackup       |       | false       | create, single         | not create backup file even if set overwrite option enable                                                                     |
-| --skipEmptyDir   | -e    | '           | create                 | empty directory skip create index.ts file                                                                                      |
-| --output         | -o    | N/A         | single                 | output directory                                                                                                               |
-| --useRootDir     | -r    | false       | single                 | output file under rootDir in tsconfig.json.                                                                                    |
-| --includeBackup  | -b    | false       | remove                 | If this option set true on remove mode what will be delete backup file.                                                        |
-
-## Ignore
-
-Ignore file 3 way belows:
-
-- `.gitignore`
-- `.npmignore`
-- `.ctiignore`
-
-`.gitignore` file follow [.gitignore spec 2.22.1](http://git-scm.com/docs/gitignore). `.ctiignore` file key follow [.gitignore spec 2.22.1](http://git-scm.com/docs/gitignore). `.gitignore spec 2.22.` spec using by [ignore](https://github.com/kaelzhang/node-ignore) package. `.npmignore` spec using by [minimatch](https://github.com/isaacs/minimatch)
-
-### .ctiignore
-
-.ctiignore file is json with comments. See below.
-
-```jsonc
-{
-  "juvenile/**": "*",
-  "wellmade/FlakyCls.ts": "*",
-  "wellmade/WhisperingCls.ts": "*",
-  "wellmade/ChildlikeCls.ts": ["transfer", "stomach"]
-}
-```
-
-json key indicate ignore file path. You can use glob pattern like `.gitignore`. If set `'*'` character at value that is totally ignore file or glob pattern. If set string array that is ignore type name array.
-
-### Partial Ignore glob pattern (higher v1.6.x)
-
-You can use glob pattern in partial ignore like that. Partial ignore follow [.gitignore spec 2.22.1](http://git-scm.com/docs/gitignore).
-
-```jsonc
-{
-  "case00?.ts": ["*Case00*"]
-}
-```
-
-### ignore testcase
-
-testcase directory ignore using glob pattern.
-
-```jsonc
-{
-  // ignore testcase file
-  "**/__tests__/*": "*"
-}
-```
-
-The testcase file is ignored if you add to the ignore file or if there is no export syntax.
-
-### rootDir, rootDirs
-
-useRootDir option activate using rootDir option in tsconfig.json. This option run below [flowchart](https://github.com/imjuni/ctix/blob/master/docs/UseRootDir.md).
-
-## CLI with .ctirc
-
-ctix cli support `.ctirc` configuration file. Available name is only `.ctirc`. Also cti cli arguments forced applied. And `.ctirc` file can write [json with comments](https://www.npmjs.com/package/jsonc-parser).
-
-## .ctirc creation
-
-You can use cli for `.ctirc` file creation.
-
-```bash
-# create current directory
-> cti init
-
-# pass tsconfig.json path
-> cti init -p ./server/tsconfig.json
-```
-
-## Breaking Change
-
-0.6.x and 1.x version big different. See [migration guide](https://github.com/imjuni/ctix/blob/master/docs/MigrationGuide.md). cli command, option, ignore file changed. Support TypeScript `4.7.2` and `new file extensions(.mts, .cts, etc)`.
-
-## Programming interface
-
-Each command can use that function. Each function can pass isMessageDisplay flag second parameter. isMessageDisplay pass false or undefined after not display console message and progress.
-
-| Function        | Argument                                   | command |
-| :-------------- | :----------------------------------------- | :-----: |
-| createWritor    | TCreateOptionWithDirInfo, isMessageDisplay | create  |
-| singleWritor    | TSingleOptionWithDirInfo, isMessageDisplay | single  |
-| removeIndexFile | TRemoveOptionWithDirInfo, isMessageDisplay | remove  |
-| createInitFile  | TTInitOptionWithDirInfo, isMessageDisplay  |  init   |
+- build command
+  - [bundle mode](https://github.com/imjuni/ctix/blob/master/doc/OPTION_BUILD_BUNDLE.md)
+  - [create mode](https://github.com/imjuni/ctix/blob/master/doc/OPTION_BUILD_CREATE.md)
+- [remove command](https://github.com/imjuni/ctix/blob/master/doc/OPTION_REVMOE.md)

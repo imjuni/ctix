@@ -16,14 +16,14 @@ export function getRenderData(
   statements: IExportStatement[],
   output?: string,
 ): IIndexRenderData | undefined {
-  const included = statements.filter((statement) => !statement.isIgnored);
+  const included = statements.filter((statement) => !statement.isExcluded);
 
   if (included.length <= 0) {
     return undefined;
   }
 
-  const isHasPartialIgnore = statements.length !== included.length;
-  const defaultExport = included.find((statement) => !statement.isIgnored && statement.isDefault);
+  const isHasPartialExclude = statements.length !== included.length;
+  const defaultExport = included.find((statement) => !statement.isExcluded && statement.isDefault);
   const extname = getExtname(filePath);
   const renderExtname = getImportStatementExtname(option.fileExt, extname);
   const filename = filePath.replace(new RegExp(`${extname}$`), '');
@@ -45,9 +45,9 @@ export function getRenderData(
       },
       importPath: relativePath,
       isHasDefault: defaultExport != null,
-      isHasPartialIgnore,
+      isHasPartialExclude,
       default: defaultExport,
-      named: statements.filter((statement) => !statement.isIgnored && !statement.isDefault),
+      named: statements.filter((statement) => !statement.isExcluded && !statement.isDefault),
     },
   } satisfies IIndexRenderData;
 }

@@ -91,7 +91,7 @@ describe('getExportStatements - SourceFile', () => {
         isPureType: false,
         isAnonymous: true,
         isDefault: false,
-        isIgnored: false,
+        isExcluded: false,
         comments: [],
       },
     ]);

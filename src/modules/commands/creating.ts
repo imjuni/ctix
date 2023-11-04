@@ -1,8 +1,8 @@
 import { ProgressBar } from '#/cli/ux/ProgressBar';
 import { Reasoner } from '#/cli/ux/Reasoner';
 import { Spinner } from '#/cli/ux/Spinner';
-import { getInlineIgnoredFiles } from '#/comments/getInlineIgnoredFiles';
-import { getOutputIgnoredFiles } from '#/comments/getOutputIgnoredFiles';
+import { getInlineExcludedFiles } from '#/comments/getInlineExcludedFiles';
+import { getOutputExcludedFiles } from '#/comments/getOutputExcludedFiles';
 import { SymbolTable } from '#/compilers/SymbolTable';
 import { getExportStatement } from '#/compilers/getExportStatement';
 import type { IExportStatement } from '#/compilers/interfaces/IExportStatement';
@@ -16,12 +16,12 @@ import { checkOutputFile } from '#/modules/file/checkOutputFile';
 import { getTsExcludeFiles } from '#/modules/file/getTsExcludeFiles';
 import { getTsIncludeFiles } from '#/modules/file/getTsIncludeFiles';
 import { dfsWalk } from '#/modules/file/walk';
-import { ExcludeContainer } from '#/modules/ignore/ExcludeContainer';
-import { IncludeContainer } from '#/modules/ignore/IncludeContainer';
 import { addCurrentDirPrefix } from '#/modules/path/addCurrentDirPrefix';
 import { getDepth } from '#/modules/path/getDepth';
 import { getImportStatementExtname } from '#/modules/path/getImportStatementExtname';
 import { getParentDir } from '#/modules/path/getParentDir';
+import { ExcludeContainer } from '#/modules/scope/ExcludeContainer';
+import { IncludeContainer } from '#/modules/scope/IncludeContainer';
 import { indexWrites } from '#/modules/writes/indexWrites';
 import { CE_AUTO_RENDER_CASE } from '#/templates/const-enum/CE_AUTO_RENDER_CASE';
 import type { IIndexRenderData } from '#/templates/interfaces/IIndexRenderData';
@@ -48,13 +48,13 @@ export async function creating(_buildOptions: TCommandBuildOptions, createOption
     config: { include: getTsIncludeFiles({ config: createOption, extend: extendOptions }) },
   });
 
-  const inlineIgnoreds = getInlineIgnoredFiles({
+  const inlineExcludeds = getInlineExcludedFiles({
     project,
     extendOptions,
     filePaths: extendOptions.tsconfig.fileNames,
   });
 
-  const outputIgnoreds = await getOutputIgnoredFiles({
+  const outputExcludeds = await getOutputExcludedFiles({
     project,
     filePaths: extendOptions.tsconfig.fileNames,
     extendOptions,
@@ -62,17 +62,17 @@ export async function creating(_buildOptions: TCommandBuildOptions, createOption
   });
 
   /**
-   * SourceCode를 읽어서 inline file ignore 된 파일을 별도로 전달한다. 이렇게 하는 이유는, 이 파일은 왜 포함되지
+   * SourceCode를 읽어서 inline file exclude 된 파일을 별도로 전달한다. 이렇게 하는 이유는, 이 파일은 왜 포함되지
    * 않았지? 라는 등의 리포트를 생성할 때 한 곳에서 이 정보를 다 관리해야 리포트를 생성해서 보여줄 수 있기 때문이다
    */
   const exclude = new ExcludeContainer({
     config: {
       exclude: [
         ...getTsExcludeFiles({ config: createOption, extend: extendOptions }),
-        ...outputIgnoreds,
+        ...outputExcludeds,
       ],
     },
-    inlineIgnoreds,
+    inlineExcludeds,
   });
 
   const filenames = extendOptions.tsconfig.fileNames
@@ -210,7 +210,7 @@ export async function creating(_buildOptions: TCommandBuildOptions, createOption
             render: getImportStatementExtname(createOption.fileExt, '.ts'),
           },
           isHasDefault: false,
-          isHasPartialIgnore: false,
+          isHasPartialExclude: false,
           default: undefined,
           named: dirPathMap.get(params.dirPath) ?? [],
         },
@@ -239,7 +239,7 @@ export async function creating(_buildOptions: TCommandBuildOptions, createOption
             render: getImportStatementExtname(createOption.fileExt, '.ts'),
           },
           isHasDefault: false,
-          isHasPartialIgnore: false,
+          isHasPartialExclude: false,
           default: undefined,
           named: currentDirStatements,
         },

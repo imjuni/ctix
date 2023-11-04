@@ -1,6 +1,6 @@
 import type { ICommonGenerateOptions } from '#/configs/interfaces/ICommonGenerateOptions';
 import { getGlobFiles } from '#/modules/file/getGlobFiles';
-import { defaultIgnore } from '#/modules/ignore/defaultIgnore';
+import { defaultExclude } from '#/modules/scope/defaultExclude';
 import { Glob, type GlobOptions } from 'glob';
 import path from 'path';
 
@@ -11,7 +11,7 @@ export class IncludeContainer {
 
   constructor(args: { config: Pick<ICommonGenerateOptions, 'include'>; cwd?: string }) {
     const globs = new Glob(args.config.include, {
-      ignore: defaultIgnore,
+      ignore: defaultExclude,
       cwd: args.cwd ?? process.cwd(),
     });
 

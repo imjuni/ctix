@@ -1,6 +1,6 @@
-import type { IInlineIgnoreInfo } from '#/comments/interfaces/IInlineIgnoreInfo';
+import type { IInlineExcludeInfo } from '#/comments/interfaces/IInlineExcludeInfo';
 import type { ICommonGenerateOptions } from '#/configs/interfaces/ICommonGenerateOptions';
-import { defaultIgnore } from '#/modules/ignore/defaultIgnore';
+import { defaultExclude } from '#/modules/scope/defaultExclude';
 import { Glob, type GlobOptions } from 'glob';
 import path from 'path';
 
@@ -9,15 +9,15 @@ export class ExcludeContainer {
 
   #map: Map<string, boolean>;
 
-  #inline: Map<string, IInlineIgnoreInfo & { filePath: string }>;
+  #inline: Map<string, IInlineExcludeInfo & { filePath: string }>;
 
   constructor(params: {
     config: Pick<ICommonGenerateOptions, 'exclude'>;
-    inlineIgnoreds: (IInlineIgnoreInfo & { filePath: string })[];
+    inlineExcludeds: (IInlineExcludeInfo & { filePath: string })[];
     cwd?: string;
   }) {
     const globs = new Glob(params.config.exclude, {
-      ignore: defaultIgnore,
+      ignore: defaultExclude,
       cwd: params.cwd ?? process.cwd(),
     });
 
@@ -29,13 +29,13 @@ export class ExcludeContainer {
 
     this.#globs = [globs];
 
-    this.#inline = new Map<string, IInlineIgnoreInfo & { filePath: string }>();
+    this.#inline = new Map<string, IInlineExcludeInfo & { filePath: string }>();
 
-    params.inlineIgnoreds.forEach((inlineIgnored) => {
-      const filePath = path.isAbsolute(inlineIgnored.filePath)
-        ? inlineIgnored.filePath
-        : path.resolve(inlineIgnored.filePath);
-      this.#inline.set(filePath, inlineIgnored);
+    params.inlineExcludeds.forEach((inlineExcluded) => {
+      const filePath = path.isAbsolute(inlineExcluded.filePath)
+        ? inlineExcluded.filePath
+        : path.resolve(inlineExcluded.filePath);
+      this.#inline.set(filePath, inlineExcluded);
     });
   }
 

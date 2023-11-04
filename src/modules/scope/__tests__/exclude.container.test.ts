@@ -1,4 +1,4 @@
-import { ExcludeContainer } from '#/modules/ignore/ExcludeContainer';
+import { ExcludeContainer } from '#/modules/scope/ExcludeContainer';
 import { describe, expect, it } from '@jest/globals';
 import path from 'node:path';
 
@@ -6,7 +6,7 @@ describe('ExcludeContainer', () => {
   it('getter', () => {
     const container = new ExcludeContainer({
       config: { exclude: ['src/cli/**/*.ts', 'src/compilers/**/*.ts'] },
-      inlineIgnoreds: [],
+      inlineExcludeds: [],
     });
 
     expect(container.globs).toBeDefined();
@@ -15,7 +15,7 @@ describe('ExcludeContainer', () => {
   it('isExclude - no glob files', () => {
     const container = new ExcludeContainer({
       config: { exclude: [] },
-      inlineIgnoreds: [],
+      inlineExcludeds: [],
     });
 
     const r01 = container.isExclude('src/files/IncludeContainer.ts');
@@ -25,15 +25,15 @@ describe('ExcludeContainer', () => {
   it('isExclude', () => {
     const container = new ExcludeContainer({
       config: { exclude: ['src/cli/**/*.ts', 'src/compilers/**/*.ts'] },
-      inlineIgnoreds: [
+      inlineExcludeds: [
         {
-          commentCode: 'inline ignore test',
+          commentCode: 'inline exclude test',
           pos: 1,
           line: 1,
           filePath: 'example/type03/ComparisonCls.tsx',
         },
         {
-          commentCode: 'inline ignore test',
+          commentCode: 'inline exclude test',
           pos: 1,
           line: 1,
           filePath: path.resolve('example/type03/HandsomelyCls.tsx'),
@@ -66,7 +66,7 @@ describe('ExcludeContainer', () => {
           '!src/compilers/getTypeScriptProject.ts',
         ],
       },
-      inlineIgnoreds: [],
+      inlineExcludeds: [],
     });
 
     const r01 = container.isExclude('src/files/IncludeContainer.ts');

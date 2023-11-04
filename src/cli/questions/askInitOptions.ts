@@ -2,7 +2,7 @@ import type { IInitQuestionAnswer } from '#/cli/interfaces/IInitQuestionAnswer';
 import { CE_CTIX_BUILD_MODE } from '#/configs/const-enum/CE_CTIX_BUILD_MODE';
 import { CE_CTIX_DEFAULT_VALUE } from '#/configs/const-enum/CE_CTIX_DEFAULT_VALUE';
 import { getGlobFiles } from '#/modules/file/getGlobFiles';
-import { defaultIgnore } from '#/modules/ignore/defaultIgnore';
+import { defaultExclude } from '#/modules/scope/defaultExclude';
 import chalk from 'chalk';
 import { exists } from 'find-up';
 import { Glob } from 'glob';
@@ -23,7 +23,7 @@ export async function askInitOptions(): Promise<IInitQuestionAnswer> {
 
   const optionFilePath = path.join(cwdAnswer.cwd, CE_CTIX_DEFAULT_VALUE.CONFIG_FILENAME);
   const optionFileExist = await exists(optionFilePath);
-  const glob = new Glob('**/tsconfig.json', { cwd: cwdAnswer.cwd, ignore: defaultIgnore });
+  const glob = new Glob('**/tsconfig.json', { cwd: cwdAnswer.cwd, ignore: defaultExclude });
   const tsconfigFiles = getGlobFiles(glob);
 
   if (optionFileExist) {

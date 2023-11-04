@@ -31,8 +31,8 @@ export interface IIndexRenderData {
     /** default export를 가지고 있는가 여부 */
     isHasDefault: boolean;
 
-    /** named export에서 일부 export statement가 ignore에 포함되어 있는가 */
-    isHasPartialIgnore: boolean;
+    /** named export에서 일부 export statement가 exclude에 포함되어 있는가 */
+    isHasPartialExclude: boolean;
 
     /** default export statemt 정보 */
     default?: IExportStatement;

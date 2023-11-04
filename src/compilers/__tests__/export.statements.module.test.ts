@@ -75,7 +75,7 @@ describe('getExportStatements - Module', () => {
         isPureType: false,
         isAnonymous: false,
         isDefault: false,
-        isIgnored: false,
+        isExcluded: false,
         comments: [],
       },
       {
@@ -93,7 +93,7 @@ describe('getExportStatements - Module', () => {
         isPureType: false,
         isAnonymous: false,
         isDefault: false,
-        isIgnored: false,
+        isExcluded: false,
         comments: [],
       },
     ]);

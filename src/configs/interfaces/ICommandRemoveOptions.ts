@@ -1,21 +1,30 @@
 export interface ICommandRemoveOptions {
   /**
    * remove with backup file
-   * @mode remove
+   *
+   * @command remove
+   * @mode
+   *
    * @default false
    */
   removeBackup: boolean;
 
   /**
    * Export filename, if you not pass this field that use "index.ts" or "index.d.ts"
-   * @mode create, single, remove
+   *
+   * @command build, remove
+   * @mode bundle, create
+   *
    * @default index.ts
    */
   exportFilename: string;
 
   /**
    * answer `yes` to all questions
-   * @mode remove
+   *
+   * @command remove
+   * @mode
+   *
    * @default false
    */
   forceYes: boolean;

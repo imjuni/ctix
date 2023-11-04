@@ -7,7 +7,7 @@ import type { TCommandBuildArgvOptions } from '#/configs/interfaces/TCommandBuil
 import type { TCommandRemoveOptions } from '#/configs/interfaces/TCommandRemoveOptions';
 import { getRemoveFileGlobPattern } from '#/modules/file/getRemoveFileGlobPattern';
 import { unlinks } from '#/modules/file/unlinks';
-import { IncludeContainer } from '#/modules/ignore/IncludeContainer';
+import { IncludeContainer } from '#/modules/scope/IncludeContainer';
 import chalk from 'chalk';
 import consola from 'consola';
 import path from 'node:path';

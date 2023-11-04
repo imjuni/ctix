@@ -1,13 +1,13 @@
 {
   "name": "ctix",
-  "version": "2.0.0-beta.2",
+  "version": "2.0.0-beta.3",
   "description": "Automatic create index.ts file",
   "scripts": {
     "prepublishOnly": "node prepublish.js",
     "dev": "cross-env TS_NODE_PROJECT=tsconfig.json node -r ts-node/register -r tsconfig-paths/register ./src/cli.ts",
     "debug": "cross-env TS_NODE_PROJECT=tsconfig.json node -r ts-node/register -r tsconfig-paths/register --nolazy --inspect-brk=9229 ./src/cli.ts ",
     "test": "cross-env NODE_ENV=develop jest --coverage",
-    "test:update": "cross-env NODE_ENV=develop jest --runInBand --coverage --updateSnapshot",
+    "test:ci": "jest --silent",
     "test:debug": "node --nolazy --inspect ./node_modules/jest/bin/jest --runInBand",
     "ctix": "cross-env TS_NODE_PROJECT=tsconfig.json node -r ts-node/register -r tsconfig-paths/register ./src/cli.ts build -p tsconfig.json -o ./src --overwrite --no-backup",
     "ctix-clean": "rimraf src/index.ts",

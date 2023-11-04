@@ -38,7 +38,7 @@ export async function createBuildOptions(
   Reasoner.it.stream = argv.reasonerStream;
 
   // config 파일을 읽은 다음, options 필드가 존재하는 경우 argv.include, argv.exclude는 무시된다
-  // After reading the config file, argv.include, argv.exclude are ignored if the options field is present
+  // After reading the config file, argv.include, argv.exclude are excluded if the options field is present
   if (argv.options != null) {
     options.options = argv.options;
 

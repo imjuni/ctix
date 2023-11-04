@@ -53,7 +53,7 @@ export default [ name, age ]
         isPureType: false,
         isAnonymous: true,
         isDefault: true,
-        isIgnored: false,
+        isExcluded: false,
         comments: [],
       } satisfies IExportStatement,
     ]);
@@ -97,7 +97,7 @@ export default { name, age };
         isPureType: false,
         isAnonymous: true,
         isDefault: true,
-        isIgnored: false,
+        isExcluded: false,
         comments: [],
       } satisfies IExportStatement,
     ]);
@@ -143,7 +143,7 @@ export const { name, age, ability } = IronMan;
         isPureType: false,
         isAnonymous: false,
         isDefault: false,
-        isIgnored: false,
+        isExcluded: false,
         comments: [],
       } satisfies IExportStatement,
       {
@@ -161,7 +161,7 @@ export const { name, age, ability } = IronMan;
         isPureType: false,
         isAnonymous: false,
         isDefault: false,
-        isIgnored: false,
+        isExcluded: false,
         comments: [],
       } satisfies IExportStatement,
       {
@@ -179,7 +179,7 @@ export const { name, age, ability } = IronMan;
         isPureType: false,
         isAnonymous: false,
         isDefault: false,
-        isIgnored: false,
+        isExcluded: false,
         comments: [],
       } satisfies IExportStatement,
     ]);

@@ -1,4 +1,4 @@
-export function getIgnoreNamespace(raw?: string) {
+export function getExcludeNamespace(raw?: string) {
   if (raw == null) {
     return undefined;
   }
