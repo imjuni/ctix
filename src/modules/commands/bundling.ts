@@ -22,7 +22,7 @@ import { TemplateContainer } from '#/templates/modules/TemplateContainer';
 import { getAutoRenderCase } from '#/templates/modules/getAutoRenderCase';
 import { getRenderData } from '#/templates/modules/getRenderData';
 import chalk from 'chalk';
-import path from 'path';
+import path from 'node:path';
 import type * as tsm from 'ts-morph';
 
 export async function bundling(_buildOptions: TCommandBuildOptions, bundleOption: TBundleOptions) {
@@ -153,8 +153,11 @@ export async function bundling(_buildOptions: TCommandBuildOptions, bundleOption
   }
 
   await indexWrites(outputMap, bundleOption, extendOptions);
-  Spinner.it.succeed(`${output} file build completed!`);
 
+  ProjectContainer.addSourceFilesAtPaths(bundleOption.project, Array.from(outputMap.keys()));
+
+  Spinner.it.succeed(`${output} file build completed!`);
   Spinner.it.succeed("ctix 'bundle' mode completed!");
+
   Reasoner.it.start(symbolTable.getDuplicateReason());
 }

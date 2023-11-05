@@ -1,0 +1,38 @@
+{
+  "spinnerStream": "stdout",
+  "progressStream": "stdout",
+  "reasonerStream": "stderr",
+  "options": [
+    {
+      "mode": "module",
+      "project": "example/type10/tsconfig.json",
+      "exportFilename": "index.ts",
+      "directive": "/// <reference path=\"../types/vue.d.ts\" />",
+      "output": "example/type10/components",
+      "overwrite": true,
+      "backup": false,
+      "include": ["example/type10/components/**/*.vue"]
+    },
+    {
+      "mode": "bundle",
+      "project": "example/type10/tsconfig.json",
+      "exportFilename": "index.ts",
+      "useSemicolon": true,
+      "useBanner": false,
+      "useTimestamp": false,
+      "quote": "'",
+      "directive": "",
+      "fileExt": "none",
+      "overwrite": true,
+      "backup": false,
+      "generationStyle": "auto",
+      "include": ["**/*.ts"],
+      "exclude": [],
+      "skipEmptyDir": true,
+      "startFrom": "/Users/imjuni/project/github/ctix/ctix/example/type10",
+      "output": "example/type10",
+      "removeBackup": false,
+      "forceYes": false
+    }
+  ]
+}

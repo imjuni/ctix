@@ -11,11 +11,12 @@ const expactation = new Map<string, string>([
   [CE_TEMPLATE_NAME.INDEX_FILE_TEMPLATE, '1'],
   [CE_TEMPLATE_NAME.OPTIONS_TEMPLATE, '2'],
   [CE_TEMPLATE_NAME.NESTED_OPTIONS_TEMPLATE, '3'],
-  [CE_GENERATION_STYLE.DEFAULT_ALIAS_NAMED_STAR, '4'],
-  [CE_GENERATION_STYLE.DEFAULT_ALIAS_NAMED_DESTRUCTIVE, '5'],
-  [CE_GENERATION_STYLE.DEFAULT_NON_ALIAS_NAMED_DESTRUCTIVE, '6'],
-  [CE_GENERATION_STYLE.DEFAULT_STAR_NAMED_STAR, '7'],
-  [CE_GENERATION_STYLE.DEFAULT_STAR_NAMED_DESTRUCTIVE, '8'],
+  [CE_TEMPLATE_NAME.MODULE_INDEX_FILE_TEMPLATE, '4'],
+  [CE_GENERATION_STYLE.DEFAULT_ALIAS_NAMED_STAR, '5'],
+  [CE_GENERATION_STYLE.DEFAULT_ALIAS_NAMED_DESTRUCTIVE, '6'],
+  [CE_GENERATION_STYLE.DEFAULT_NON_ALIAS_NAMED_DESTRUCTIVE, '7'],
+  [CE_GENERATION_STYLE.DEFAULT_STAR_NAMED_STAR, '8'],
+  [CE_GENERATION_STYLE.DEFAULT_STAR_NAMED_DESTRUCTIVE, '9'],
 ]);
 
 describe('TemplateContainer', () => {
@@ -93,11 +94,12 @@ describe('TemplateContainer', () => {
         indexFile: '1',
         options: '2',
         nestedOptions: '3',
-        defaultAliasNamedStar: '4',
-        defaultAliasNamedDestructive: '5',
-        defaultNonAliasNamedDestructive: '6',
-        defaultStarNamedStar: '7',
-        defaultStarNamedDestructive: '8',
+        moduleIndexFile: '4',
+        defaultAliasNamedStar: '5',
+        defaultAliasNamedDestructive: '6',
+        defaultNonAliasNamedDestructive: '7',
+        defaultStarNamedStar: '8',
+        defaultStarNamedDestructive: '9',
       }),
     );
 

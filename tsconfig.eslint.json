@@ -3,7 +3,7 @@
   "compilerOptions": {
     "allowJs": true
   },
-  "include": ["src/**/*.ts", "prepublish.js"],
+  "include": ["src/**/*.ts", "prepublish.js", ".eslintrc.cjs"],
   "exclude": [
     "node_modules/**",
     "dist/**/*",

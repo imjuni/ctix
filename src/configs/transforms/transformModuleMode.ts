@@ -1,26 +1,25 @@
 import { CE_CTIX_BUILD_MODE } from '#/configs/const-enum/CE_CTIX_BUILD_MODE';
 import { CE_CTIX_DEFAULT_VALUE } from '#/configs/const-enum/CE_CTIX_DEFAULT_VALUE';
-import { CE_EXTENSION_PROCESSING } from '#/configs/const-enum/CE_EXTENSION_PROCESSING';
-import { CE_GENERATION_STYLE } from '#/configs/const-enum/CE_GENERATION_STYLE';
 import type { TBundleOptions } from '#/configs/interfaces/TBundleOptions';
 import type { TCommandBuildArgvOptions } from '#/configs/interfaces/TCommandBuildArgvOptions';
 import type { TCreateOptions } from '#/configs/interfaces/TCreateOptions';
-import { getOutputValue } from '#/configs/transforms/getOutputValue';
+import type { TModuleOptions } from '#/configs/interfaces/TModuleOptions';
 import type { SetRequired } from 'type-fest';
+import { getOutputValue } from './getOutputValue';
 
-export function transformBundleMode(
+export async function transformModuleMode(
   argv: SetRequired<Partial<TCommandBuildArgvOptions>, 'project'> & {
-    options?: (TCreateOptions | TBundleOptions)[];
+    options?: (TCreateOptions | TBundleOptions | TModuleOptions)[];
   },
-  option: Partial<TBundleOptions> & {
-    include: TBundleOptions['include'];
-    exclude: TBundleOptions['exclude'];
+  option: Partial<Omit<TModuleOptions, 'include' | 'exclude'>> & {
+    include: TModuleOptions['include'];
+    exclude: TModuleOptions['exclude'];
   },
-): TBundleOptions {
+): Promise<TModuleOptions> {
   const output = getOutputValue(argv, option);
 
   return {
-    mode: CE_CTIX_BUILD_MODE.BUNDLE_MODE,
+    mode: CE_CTIX_BUILD_MODE.MODULE_MODE,
     project: argv.project,
     exportFilename:
       argv.exportFilename ?? option.exportFilename ?? CE_CTIX_DEFAULT_VALUE.EXPORT_FILENAME,
@@ -29,10 +28,8 @@ export function transformBundleMode(
     useTimestamp: argv.useTimestamp ?? option.useTimestamp ?? false,
     quote: argv.quote ?? option.quote ?? "'",
     directive: argv.directive ?? option.directive ?? '',
-    fileExt: argv.fileExt ?? option.fileExt ?? CE_EXTENSION_PROCESSING.NOT_EXTENSION,
     overwrite: argv.overwrite ?? option.overwrite ?? false,
     backup: argv.backup ?? option.backup ?? true,
-    generationStyle: argv.generationStyle ?? option.generationStyle ?? CE_GENERATION_STYLE.AUTO,
     include: option.include,
     exclude: option.exclude,
 

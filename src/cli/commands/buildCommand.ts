@@ -1,10 +1,12 @@
 import { ProgressBar } from '#/cli/ux/ProgressBar';
 import { Reasoner } from '#/cli/ux/Reasoner';
 import { Spinner } from '#/cli/ux/Spinner';
+import { CE_CTIX_BUILD_MODE } from '#/configs/const-enum/CE_CTIX_BUILD_MODE';
 import { createBuildOptions } from '#/configs/createBuildOptions';
 import type { TCommandBuildArgvOptions } from '#/configs/interfaces/TCommandBuildArgvOptions';
 import { bundling } from '#/modules/commands/bundling';
 import { creating } from '#/modules/commands/creating';
+import { moduling } from '#/modules/commands/moduling';
 import consola from 'consola';
 import type yargs from 'yargs';
 
@@ -12,11 +14,14 @@ async function buildCommandCode(argv: yargs.ArgumentsCamelCase<TCommandBuildArgv
   const options = await createBuildOptions(argv);
 
   await options.options.reduce(async (prevHandle, modeOption) => {
-    const handle = async () => {
-      if (modeOption.mode === 'create') {
-        await creating(options, modeOption);
-      } else {
-        await bundling(options, modeOption);
+    const handle = () => {
+      switch (modeOption.mode) {
+        case CE_CTIX_BUILD_MODE.MODULE_MODE:
+          return moduling(options, modeOption);
+        case CE_CTIX_BUILD_MODE.CREATE_MODE:
+          return creating(options, modeOption);
+        default:
+          return bundling(options, modeOption);
       }
     };
 

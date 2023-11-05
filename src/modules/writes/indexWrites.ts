@@ -1,6 +1,7 @@
 import type { IExtendOptions } from '#/configs/interfaces/IExtendOptions';
 import type { TBundleOptions } from '#/configs/interfaces/TBundleOptions';
 import type { TCreateOptions } from '#/configs/interfaces/TCreateOptions';
+import type { TModuleOptions } from '#/configs/interfaces/TModuleOptions';
 import { getBanner } from '#/modules/writes/getBanner';
 import { prettifing } from '#/modules/writes/prettifing';
 import { CE_TEMPLATE_NAME } from '#/templates/const-enum/CE_TEMPLATE_NAME';
@@ -12,7 +13,10 @@ import { exists } from 'my-node-fp';
 
 export async function indexWrites(
   outputMap: Map<string, string>,
-  option: TCreateOptions | TBundleOptions,
+  option: Pick<
+    TCreateOptions | TBundleOptions | TModuleOptions,
+    'directive' | 'useBanner' | 'useTimestamp' | 'backup'
+  >,
   extendOptions: IExtendOptions,
 ) {
   await Promise.all(

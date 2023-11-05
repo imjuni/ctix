@@ -291,6 +291,8 @@ export async function creating(_buildOptions: TCommandBuildOptions, createOption
 
   await indexWrites(outputMap, createOption, extendOptions);
 
+  ProjectContainer.addSourceFilesAtPaths(createOption.project, Array.from(outputMap.keys()));
+
   Reasoner.it.start(symbolTable.getDuplicateReason());
   Spinner.it.succeed("ctix 'create' mode complete!");
 }
