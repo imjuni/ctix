@@ -1,6 +1,6 @@
 {
   "name": "ctix",
-  "version": "2.0.0-beta.3",
+  "version": "2.0.0-beta.4",
   "description": "Automatic create index.ts file",
   "scripts": {
     "prepublishOnly": "node prepublish.js",
