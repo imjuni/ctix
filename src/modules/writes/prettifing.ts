@@ -16,7 +16,7 @@ export async function prettifing(
     });
 
     if (resolved != null) {
-      const prettiered = await prettier.format(contents, options);
+      const prettiered = await prettier.format(contents, resolved);
       return { apply: true, contents: prettiered };
     }
 

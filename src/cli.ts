@@ -11,6 +11,7 @@ import type { ICommandBundleOptions } from '#/configs/interfaces/ICommandBundleO
 import type { ICommandCreateOptions } from '#/configs/interfaces/ICommandCreateOptions';
 import type { ICommandRemoveOptions } from '#/configs/interfaces/ICommandRemoveOptions';
 import type { ICommonGenerateOptions } from '#/configs/interfaces/ICommonGenerateOptions';
+import type { ICommonTsGenerateOptions } from '#/configs/interfaces/ICommonTsGenerateOptions';
 import type { IProjectOptions } from '#/configs/interfaces/IProjectOptions';
 import type { TCommandBuildArgvOptions } from '#/configs/interfaces/TCommandBuildArgvOptions';
 import type { TCommandRemoveOptions } from '#/configs/interfaces/TCommandRemoveOptions';
@@ -28,7 +29,7 @@ const buildCommandModule: CommandModule<TCommandBuildArgvOptions, TCommandBuildA
   aliases: [CE_CTIX_COMMAND.BUILD_COMMAND_ALIAS],
   describe: 'build index.ts file that aggregate on bundle file',
   builder: (argv) => {
-    const projectArgv = setProjectOptions<Argv<ICommonGenerateOptions>>(
+    const projectArgv = setProjectOptions<Argv<ICommonGenerateOptions & ICommonTsGenerateOptions>>(
       argv as Argv<IProjectOptions>,
     );
 

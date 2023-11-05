@@ -1,6 +1,3 @@
-import type { CE_EXTENSION_PROCESSING } from '#/configs/const-enum/CE_EXTENSION_PROCESSING';
-import type { CE_GENERATION_STYLE } from '#/configs/const-enum/CE_GENERATION_STYLE';
-
 export interface ICommonGenerateOptions {
   /**
    * tsconfig.json path: you must pass path with filename, like this "./tsconfig.json"
@@ -73,19 +70,6 @@ export interface ICommonGenerateOptions {
   directive: string;
 
   /**
-   * keep file extension in export statement path
-   *
-   * if this option set true that see below
-   * `export * from './test.ts'`
-   *
-   * @command build
-   * @mode bundle, create
-   *
-   * @default none
-   */
-  fileExt: CE_EXTENSION_PROCESSING;
-
-  /**
    * overwrite each index.ts file
    *
    * @command build
@@ -105,16 +89,6 @@ export interface ICommonGenerateOptions {
    * @defulat true
    * */
   backup: boolean;
-
-  /**
-   * When generating the `index.ts` file, decide how you want to generate it
-   *
-   * @command build
-   * @mode bundle, create
-   *
-   * @default auto
-   */
-  generationStyle: CE_GENERATION_STYLE;
 
   /**
    * index.ts 파일을 생성할 때 사용할 파일의 목록입니다. 만약 아무런 값을 설정하지 않는다면

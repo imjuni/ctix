@@ -13,8 +13,10 @@ import type { TCreateOptions } from '#/configs/interfaces/TCreateOptions';
 import { getOutputValue } from '#/configs/transforms/getOutputValue';
 import { transformBundleMode } from '#/configs/transforms/transformBundleMode';
 import { transformCreateMode } from '#/configs/transforms/transformCreateMode';
+import { transformModuleMode } from '#/configs/transforms/transformModuleMode';
 import { getTsExcludeFiles } from '#/modules/file/getTsExcludeFiles';
 import { getTsIncludeFiles } from '#/modules/file/getTsIncludeFiles';
+import { toArray } from 'my-easy-fp';
 import { replaceSepToPosix } from 'my-node-fp';
 import path from 'path';
 import type { ArgumentsCamelCase } from 'yargs';
@@ -44,6 +46,28 @@ export async function createBuildOptions(
 
     options.options = await Promise.all(
       options.options.map(async (option) => {
+        if (option.mode === CE_CTIX_BUILD_MODE.MODULE_MODE) {
+          const projectPath = replaceSepToPosix(path.resolve(option.project));
+          const tsconfig = getTypeScriptConfig(projectPath);
+
+          const moduleMode = await transformModuleMode(
+            { ...argv, project: projectPath },
+            {
+              ...option,
+              include: getTsIncludeFiles({
+                config: { include: option.include },
+                extend: { tsconfig, resolved: { projectDirPath: projectPath } },
+              }),
+              exclude: getTsExcludeFiles({
+                config: { exclude: option.exclude },
+                extend: { tsconfig },
+              }),
+            },
+          );
+
+          return moduleMode;
+        }
+
         if (option.mode === CE_CTIX_BUILD_MODE.CREATE_MODE) {
           const projectPath = replaceSepToPosix(path.resolve(option.project));
           const tsconfig = getTypeScriptConfig(projectPath);
@@ -53,11 +77,11 @@ export async function createBuildOptions(
             {
               ...option,
               include: getTsIncludeFiles({
-                config: { include: [] },
+                config: { include: option.include },
                 extend: { tsconfig, resolved: { projectDirPath: projectPath } },
               }),
               exclude: getTsExcludeFiles({
-                config: { exclude: [] },
+                config: { exclude: option.exclude },
                 extend: { tsconfig },
               }),
             },
@@ -74,11 +98,11 @@ export async function createBuildOptions(
           {
             ...option,
             include: getTsIncludeFiles({
-              config: { include: [] },
+              config: { include: option.include },
               extend: { tsconfig, resolved: { projectDirPath: projectPath } },
             }),
             exclude: getTsExcludeFiles({
-              config: { exclude: [] },
+              config: { exclude: option.exclude },
               extend: { tsconfig },
             }),
           },
@@ -94,18 +118,20 @@ export async function createBuildOptions(
   const tsconfig = getTypeScriptConfig(projectPath);
 
   const include =
-    argv.include ??
-    getTsIncludeFiles({
-      config: { include: [] },
-      extend: { tsconfig, resolved: { projectDirPath: projectPath } },
-    });
+    argv.include != null
+      ? toArray(argv.include)
+      : getTsIncludeFiles({
+          config: { include: [] },
+          extend: { tsconfig, resolved: { projectDirPath: projectPath } },
+        });
 
   const exclude =
-    argv.exclude ??
-    getTsExcludeFiles({
-      config: { exclude: [] },
-      extend: { tsconfig },
-    });
+    argv.exclude != null
+      ? toArray(argv.exclude)
+      : getTsExcludeFiles({
+          config: { exclude: [] },
+          extend: { tsconfig },
+        });
 
   const mode = argv.mode ?? CE_CTIX_BUILD_MODE.BUNDLE_MODE;
 
@@ -123,6 +149,19 @@ export async function createBuildOptions(
   }
 
   const output = getOutputValue(argv, { output: argv.output });
+
+  if (mode === CE_CTIX_BUILD_MODE.MODULE_MODE) {
+    options.options = [
+      await transformModuleMode(argv, {
+        ...argv,
+        mode: CE_CTIX_BUILD_MODE.MODULE_MODE,
+        include,
+        exclude,
+      }),
+    ];
+
+    return options;
+  }
 
   options.options = [
     transformBundleMode(argv, {

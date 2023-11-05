@@ -7,6 +7,7 @@ import { defaultNonAliasNamedDestructiveDefaultTemplate } from '#/templates/temp
 import { defaultStarNamedDestructiveDefaultTemplate } from '#/templates/templates/defaultStarNamedDestructiveDefaultTemplate';
 import { defaultStarNamedStarDefaultTemplate } from '#/templates/templates/defaultStarNamedStarDefaultTemplate';
 import { indexFileDefaultTemplate } from '#/templates/templates/indexFileDefaultTemplate';
+import { moduleIndexFileDefaultTemplate } from '#/templates/templates/moduleIndexFileDefaultTemplate';
 import { nestedOptionDefaultTemplate } from '#/templates/templates/nestedOptionDefaultTemplate';
 import { optionDefaultTemplate } from '#/templates/templates/optionDefaultTemplate';
 import consola from 'consola';
@@ -30,6 +31,7 @@ export class TemplateContainer {
 
   static getDefaultTemplate() {
     return new Map<string, string>([
+      [CE_TEMPLATE_NAME.MODULE_INDEX_FILE_TEMPLATE, moduleIndexFileDefaultTemplate.trim()],
       [CE_TEMPLATE_NAME.INDEX_FILE_TEMPLATE, indexFileDefaultTemplate.trim()],
       [CE_TEMPLATE_NAME.OPTIONS_TEMPLATE, optionDefaultTemplate.trim()],
       [CE_TEMPLATE_NAME.NESTED_OPTIONS_TEMPLATE, nestedOptionDefaultTemplate.trim()],
@@ -62,6 +64,7 @@ export class TemplateContainer {
       [CE_TEMPLATE_NAME.INDEX_FILE_TEMPLATE, templates.indexFile],
       [CE_TEMPLATE_NAME.OPTIONS_TEMPLATE, templates.options],
       [CE_TEMPLATE_NAME.NESTED_OPTIONS_TEMPLATE, templates.nestedOptions],
+      [CE_TEMPLATE_NAME.MODULE_INDEX_FILE_TEMPLATE, templates.moduleIndexFile],
       [CE_GENERATION_STYLE.DEFAULT_ALIAS_NAMED_DESTRUCTIVE, templates.defaultAliasNamedDestructive],
       [
         CE_GENERATION_STYLE.DEFAULT_NON_ALIAS_NAMED_DESTRUCTIVE,
@@ -95,6 +98,7 @@ export class TemplateContainer {
       readFile(n(CE_TEMPLATE_NAME.INDEX_FILE_TEMPLATE)),
       readFile(n(CE_TEMPLATE_NAME.OPTIONS_TEMPLATE)),
       readFile(n(CE_TEMPLATE_NAME.NESTED_OPTIONS_TEMPLATE)),
+      readFile(n(CE_TEMPLATE_NAME.MODULE_INDEX_FILE_TEMPLATE)),
       readFile(n(CE_GENERATION_STYLE.DEFAULT_ALIAS_NAMED_STAR)),
       readFile(n(CE_GENERATION_STYLE.DEFAULT_ALIAS_NAMED_DESTRUCTIVE)),
       readFile(n(CE_GENERATION_STYLE.DEFAULT_NON_ALIAS_NAMED_DESTRUCTIVE)),
@@ -106,6 +110,7 @@ export class TemplateContainer {
       indexFile,
       options,
       nestedOptions,
+      moduleIndexFile,
       defaultAliasNamedStar,
       defaultAliasNamedDestructive,
       defaultNonAliasNamedDestructive,
@@ -117,6 +122,7 @@ export class TemplateContainer {
       indexFile,
       options,
       nestedOptions,
+      moduleIndexFile,
       defaultAliasNamedStar,
       defaultAliasNamedDestructive,
       defaultNonAliasNamedDestructive,

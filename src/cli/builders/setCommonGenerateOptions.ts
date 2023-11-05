@@ -1,17 +1,32 @@
+import { CE_CTIX_BUILD_MODE } from '#/configs/const-enum/CE_CTIX_BUILD_MODE';
 import { CE_CTIX_DEFAULT_VALUE } from '#/configs/const-enum/CE_CTIX_DEFAULT_VALUE';
 import { CE_EXTENSION_PROCESSING } from '#/configs/const-enum/CE_EXTENSION_PROCESSING';
 import { CE_GENERATION_STYLE } from '#/configs/const-enum/CE_GENERATION_STYLE';
 import type { ICommonGenerateOptions } from '#/configs/interfaces/ICommonGenerateOptions';
+import type { ICommonTsGenerateOptions } from '#/configs/interfaces/ICommonTsGenerateOptions';
 import type { Argv } from 'yargs';
 
-export function setCommonGenerateOptions<T = Argv<ICommonGenerateOptions>>(
-  args: Argv<ICommonGenerateOptions>,
-) {
+export function setCommonGenerateOptions<
+  T = Argv<ICommonGenerateOptions & ICommonTsGenerateOptions>,
+>(args: Argv<ICommonGenerateOptions & ICommonTsGenerateOptions>) {
   args
     .option('project', {
       alias: 'p',
       describe: 'tsconfig.json path: you must pass path with filename, like this "./tsconfig.json"',
       type: 'string',
+    })
+    .option('mode', {
+      describe: [
+        'The mode in which the `index.ts` file is to be generated. There is a create mode that',
+        'generates an `index.ts` file per directory, a bundle mode that generates a single `index.ts` file,',
+        'and a module mode that generates an `index.ts` file by filename for `vue`, `sevelte`, etc.',
+      ].join(''),
+      type: 'string',
+      choices: [
+        CE_CTIX_BUILD_MODE.BUNDLE_MODE,
+        CE_CTIX_BUILD_MODE.CREATE_MODE,
+        CE_CTIX_BUILD_MODE.MODULE_MODE,
+      ],
     })
     .option('export-filename', {
       alias: 'f',

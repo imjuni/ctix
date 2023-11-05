@@ -7,6 +7,7 @@ import type { ICommandBundleOptions } from '#/configs/interfaces/ICommandBundleO
 import type { ICommandCreateOptions } from '#/configs/interfaces/ICommandCreateOptions';
 import type { ICommandRemoveOptions } from '#/configs/interfaces/ICommandRemoveOptions';
 import type { ICommonGenerateOptions } from '#/configs/interfaces/ICommonGenerateOptions';
+import type { ICommonTsGenerateOptions } from '#/configs/interfaces/ICommonTsGenerateOptions';
 import type { IProjectOptions } from '#/configs/interfaces/IProjectOptions';
 import { describe, expect, it } from '@jest/globals';
 import yargs from 'yargs';
@@ -24,7 +25,9 @@ describe('option builder', () => {
   describe('setCommonGenerateOptions', () => {
     it('common option builded', () => {
       const y = yargs(hideBin(process.argv));
-      const builded = setCommonGenerateOptions(y as unknown as yargs.Argv<ICommonGenerateOptions>);
+      const builded = setCommonGenerateOptions(
+        y as unknown as yargs.Argv<ICommonGenerateOptions & ICommonTsGenerateOptions>,
+      );
       expect(builded).toBeDefined();
     });
   });

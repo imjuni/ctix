@@ -1,4 +1,4 @@
-export interface ICommandBundleOptions {
+export interface ICommandModuleOptions {
   /**
    * Output directory. Default value is same project directory
    *

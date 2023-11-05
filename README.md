@@ -22,7 +22,7 @@ To summarize,
 1. generate a single `index.ts` file or directory-specific `index.ts` files
 1. automatically generate configuration files via interactive prompts
 1. automatically add type keyword to interface, type aliases to indicate they are pure types
-    - eg. `export { type IAmSuperHero } from './marvel';`
+   - eg. `export { type IAmSuperHero } from './marvel';`
 1. can be set to exception files via comments in source code files (eslint style)
 
 In addition, `ctix` will auto-generate `index.ts` files so that a single `index.d.ts` file can be generated correctly when using the [rollup-plugin-dts](https://github.com/Swatinem/rollup-plugin-dts) plugin. Now you can develop your TypeScript library projects more easily!
@@ -57,7 +57,7 @@ The graph below outlines the behavioral flow of `ctix`.
 ```mermaid
 flowchart TD
     START(start) --> |execute cli|ctix
-    ctix --> |TypeScript Compiler API| INP01[Source Code files] 
+    ctix --> |TypeScript Compiler API| INP01[Source Code files]
     ctix --> |TypeScript Compiler API| INP02["tsconfig.json"]
     ctix --> |json, json5, yaml| INP03[".ctirc"]
     INP01 --> TF[/Summray target source files/]
@@ -79,8 +79,23 @@ npm install ctix --save-dev
 ## Usage
 
 ```bash
-ctix build -p ./tsconfig.json -o ./src
+# bundle mode
+ctix build --mode bundle -p ./tsconfig.json -o ./src
+
+# create mode
+ctix build --mode create -p ./tsconfig.json --start-from ./src
+
+# module mode
+ctix build --mode module -p ./tsconfig.json -o ./src/components
 ```
+
+The mode in which the `index.ts` file is to be generated. There is a create mode that generates an `index.ts` file per directory, a bundle mode that generates a single `index.ts` file, and a module mode that generates an `index.ts` file by filename for `vue`, `sevelte`, etc.
+
+| `bundle` mode                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            | `create` mode                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                | `module` mode                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| <pre><code>.<br />└──&nbsp;src/<br />&nbsp;&nbsp;&nbsp;&nbsp;├──&nbsp;components/<br />&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├──&nbsp;Apple.tsx<br />&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├──&nbsp;Peach.tsx<br />&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├──&nbsp;Pear.tsx<br />&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└──&nbsp;Banana.tsx<br />&nbsp;&nbsp;&nbsp;&nbsp;├──&nbsp;hooks/<br />&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├──&nbsp;useSugarRatio.ts<br />&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└──&nbsp;useHardness.ts<br />&nbsp;&nbsp;&nbsp;&nbsp;└──&nbsp;index.ts</code></pre> | <pre><code>.<br />└──&nbsp;src/<br />&nbsp;&nbsp;&nbsp;&nbsp;├──&nbsp;components/<br />&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├──&nbsp;Apple.tsx<br />&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├──&nbsp;Peach.tsx<br />&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├──&nbsp;Pear.tsx<br />&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├──&nbsp;Banana.tsx<br />&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└──&nbsp;index.ts<br />&nbsp;&nbsp;&nbsp;&nbsp;├──&nbsp;hooks/<br />&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├──&nbsp;useSugarRatio.ts<br />&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├──&nbsp;useHardness.ts<br />&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└──&nbsp;index.ts<br />&nbsp;&nbsp;&nbsp;&nbsp;└──&nbsp;index.ts</code></pre> | <pre><code>.<br />└──&nbsp;src/<br />&nbsp;&nbsp;&nbsp;&nbsp;└──&nbsp;components/<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├──&nbsp;Apple.vue<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├──&nbsp;Peach.vue<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├──&nbsp;Pear.vue<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├──&nbsp;Banana.vue<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└──&nbsp;index.ts</code></pre> |
+
+Check out the `.ctirc` in [example/type10](https://github.com/imjuni/ctix/blob/master/example/type10/.ctirc) to see how to utilize the `module` mode.
 
 ## Requirement
 
@@ -95,7 +110,7 @@ ctix build -p ./tsconfig.json -o ./src
 
 - [Applying a font file to your source code](https://github.com/imjuni/ctix/blob/master/doc/IN_DEPTH_FONT.md)
 - [Applying a Vue.js components to your source code](https://github.com/imjuni/ctix/blob/master/doc/IN_DEPTH_VUE.md)
-- [Applying a include, exclude configuration to `.ctirc`](https://github.com/imjuni/ctix/blob/master/doc/IN_DEPTH_IGNORE.md)
+- [Applying a include, exclude configuration to `.ctirc`](https://github.com/imjuni/ctix/blob/master/doc/IN_DEPTH_EXCLUDE.md)
 
 ## What is difference Re-Map paths?
 
@@ -106,4 +121,5 @@ It is not recommended to use `index.ts` file to re-map paths or shorten the path
 - build command
   - [bundle mode](https://github.com/imjuni/ctix/blob/master/doc/OPTION_BUILD_BUNDLE.md)
   - [create mode](https://github.com/imjuni/ctix/blob/master/doc/OPTION_BUILD_CREATE.md)
+  - [module mode](https://github.com/imjuni/ctix/blob/master/doc/OPTION_BUILD_MODULE.md)
 - [remove command](https://github.com/imjuni/ctix/blob/master/doc/OPTION_REVMOE.md)
