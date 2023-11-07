@@ -15,13 +15,17 @@ import { getTsExcludeFiles } from '#/modules/file/getTsExcludeFiles';
 import { getTsIncludeFiles } from '#/modules/file/getTsIncludeFiles';
 import { ExcludeContainer } from '#/modules/scope/ExcludeContainer';
 import { IncludeContainer } from '#/modules/scope/IncludeContainer';
+import { getBanner } from '#/modules/writes/getBanner';
 import { indexWrites } from '#/modules/writes/indexWrites';
 import { CE_AUTO_RENDER_CASE } from '#/templates/const-enum/CE_AUTO_RENDER_CASE';
+import { CE_TEMPLATE_NAME } from '#/templates/const-enum/CE_TEMPLATE_NAME';
+import type { IIndexFileWriteParams } from '#/templates/interfaces/IIndexFileWriteParams';
 import type { IIndexRenderData } from '#/templates/interfaces/IIndexRenderData';
 import { TemplateContainer } from '#/templates/modules/TemplateContainer';
 import { getAutoRenderCase } from '#/templates/modules/getAutoRenderCase';
 import { getRenderData } from '#/templates/modules/getRenderData';
 import chalk from 'chalk';
+import dayjs from 'dayjs';
 import path from 'node:path';
 import type * as tsm from 'ts-morph';
 
@@ -152,7 +156,23 @@ export async function bundling(_buildOptions: TCommandBuildOptions, bundleOption
     return;
   }
 
-  await indexWrites(outputMap, bundleOption, extendOptions);
+  const indexFiles = await Promise.all(
+    Array.from(outputMap.entries())
+      .map(([filePath, fileContent]) => ({ filePath, fileContent }))
+      .map(async (file) => {
+        return {
+          path: file.filePath,
+          content: await TemplateContainer.evaluate(CE_TEMPLATE_NAME.INDEX_FILE_TEMPLATE, {
+            directive: bundleOption.directive,
+            banner: getBanner(bundleOption, dayjs()),
+            eol: extendOptions.eol,
+            content: file.fileContent,
+          } satisfies IIndexFileWriteParams),
+        };
+      }),
+  );
+
+  await indexWrites(indexFiles, bundleOption, extendOptions);
 
   ProjectContainer.addSourceFilesAtPaths(bundleOption.project, Array.from(outputMap.keys()));
 

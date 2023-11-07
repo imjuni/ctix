@@ -2,17 +2,12 @@ import type { IExtendOptions } from '#/configs/interfaces/IExtendOptions';
 import type { TBundleOptions } from '#/configs/interfaces/TBundleOptions';
 import type { TCreateOptions } from '#/configs/interfaces/TCreateOptions';
 import type { TModuleOptions } from '#/configs/interfaces/TModuleOptions';
-import { getBanner } from '#/modules/writes/getBanner';
 import { prettifing } from '#/modules/writes/prettifing';
-import { CE_TEMPLATE_NAME } from '#/templates/const-enum/CE_TEMPLATE_NAME';
-import type { IIndexFileWriteParams } from '#/templates/interfaces/IIndexFileWriteParams';
-import { TemplateContainer } from '#/templates/modules/TemplateContainer';
-import dayjs from 'dayjs';
-import { readFile, writeFile } from 'fs/promises';
 import { exists } from 'my-node-fp';
+import { readFile, writeFile } from 'node:fs/promises';
 
 export async function indexWrites(
-  outputMap: Map<string, string>,
+  indexFiles: { path: string; content: string }[],
   option: Pick<
     TCreateOptions | TBundleOptions | TModuleOptions,
     'directive' | 'useBanner' | 'useTimestamp' | 'backup'
@@ -20,30 +15,21 @@ export async function indexWrites(
   extendOptions: IExtendOptions,
 ) {
   await Promise.all(
-    Array.from(outputMap.entries())
-      .map(([filePath, fileContent]) => ({ filePath, fileContent }))
-      .map(async (file) => {
-        const rendered = await TemplateContainer.evaluate(CE_TEMPLATE_NAME.INDEX_FILE_TEMPLATE, {
-          directive: option.directive,
-          banner: getBanner(option, dayjs()),
-          eol: extendOptions.eol,
-          content: file.fileContent,
-        } satisfies IIndexFileWriteParams);
+    indexFiles.map(async (file) => {
+      const prettified = await prettifing(
+        extendOptions.resolved.projectDirPath,
+        `${file.content}${extendOptions.eol}`,
+      );
 
-        const prettified = await prettifing(
-          extendOptions.resolved.projectDirPath,
-          `${rendered}${extendOptions.eol}`,
-        );
-
-        if (option.backup) {
-          if (await exists(file.filePath)) {
-            await writeFile(`${file.filePath}.bak`, await readFile(file.filePath));
-          }
-
-          await writeFile(file.filePath, `${prettified.contents.trim()}${extendOptions.eol}`);
-        } else {
-          await writeFile(file.filePath, `${prettified.contents.trim()}${extendOptions.eol}`);
+      if (option.backup) {
+        if (await exists(file.path)) {
+          await writeFile(`${file.path}.bak`, await readFile(file.path));
         }
-      }),
+
+        await writeFile(file.path, `${prettified.contents.trim()}${extendOptions.eol}`);
+      } else {
+        await writeFile(file.path, `${prettified.contents.trim()}${extendOptions.eol}`);
+      }
+    }),
   );
 }

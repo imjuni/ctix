@@ -2,8 +2,8 @@ import { getExportStatement } from '#/compilers/getExportStatement';
 import type { IExportStatement } from '#/compilers/interfaces/IExportStatement';
 import { filenamify } from '#/modules/path/filenamify';
 import { describe, expect, it } from '@jest/globals';
-import { randomUUID } from 'crypto';
-import path from 'path';
+import { randomUUID } from 'node:crypto';
+import path from 'node:path';
 import * as tsm from 'ts-morph';
 
 const tsconfigPath = path.join(process.cwd(), 'example', 'tsconfig.example.json');

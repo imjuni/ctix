@@ -9,9 +9,9 @@ import { parseConfig } from '#/configs/parseConfig';
 import { getConfigFilePath } from '#/modules/path/getConfigFilePath';
 import consola from 'consola';
 import findUp from 'find-up';
-import fs from 'fs';
 import minimist from 'minimist';
 import { isError } from 'my-easy-fp';
+import fs from 'node:fs';
 
 export async function loadConfig(): Promise<
   TCommandBuildArgvOptions | TCommandRemoveOptions | IProjectOptions

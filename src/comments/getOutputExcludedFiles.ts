@@ -1,7 +1,7 @@
 import type { IExtendOptions } from '#/configs/interfaces/IExtendOptions';
 import { settify } from 'my-easy-fp';
 import { getDirname } from 'my-node-fp';
-import path from 'path';
+import path from 'node:path';
 import type * as tsm from 'ts-morph';
 
 export async function getOutputExcludedFiles(params: {

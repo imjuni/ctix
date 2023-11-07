@@ -1,4 +1,4 @@
-import path from 'path';
+import path from 'node:path';
 
 export function addCurrentDirPrefix(filePath: string, sep?: string): string {
   const pathSep = sep ?? path.posix.sep;

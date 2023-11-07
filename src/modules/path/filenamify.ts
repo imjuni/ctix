@@ -1,7 +1,7 @@
 import { getExtname } from '#/modules/path/getExtname';
 import { camelCase } from 'change-case';
 import doFilenamify from 'filenamify';
-import path from 'path';
+import path from 'node:path';
 
 export function filenamify(filename: string): string {
   const basename = path.basename(filename, getExtname(filename));

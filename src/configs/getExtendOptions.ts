@@ -4,7 +4,7 @@ import type { IExtendOptions } from '#/configs/interfaces/IExtendOptions';
 import { getDepth } from '#/modules/path/getDepth';
 import { settify } from 'my-easy-fp';
 import { getDirname, isDescendant, replaceSepToPosix } from 'my-node-fp';
-import path from 'path';
+import path from 'node:path';
 
 export async function getExtendOptions(project: string): Promise<IExtendOptions> {
   const projectPath = replaceSepToPosix(path.resolve(project));

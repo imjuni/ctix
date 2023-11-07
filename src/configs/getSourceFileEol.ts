@@ -1,5 +1,5 @@
-import fs from 'fs';
-import os from 'os';
+import fs from 'node:fs';
+import os from 'node:os';
 
 // https://stackoverflow.com/questions/34820267/detecting-type-of-line-breaks
 export function getEOL(text: string) {

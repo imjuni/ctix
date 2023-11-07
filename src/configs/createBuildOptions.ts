@@ -1,5 +1,3 @@
-/* eslint-disable no-param-reassign */
-
 import { ProgressBar } from '#/cli/ux/ProgressBar';
 import { Reasoner } from '#/cli/ux/Reasoner';
 import { Spinner } from '#/cli/ux/Spinner';
@@ -18,7 +16,7 @@ import { getTsExcludeFiles } from '#/modules/file/getTsExcludeFiles';
 import { getTsIncludeFiles } from '#/modules/file/getTsIncludeFiles';
 import { toArray } from 'my-easy-fp';
 import { replaceSepToPosix } from 'my-node-fp';
-import path from 'path';
+import path from 'node:path';
 import type { ArgumentsCamelCase } from 'yargs';
 
 export async function createBuildOptions(
