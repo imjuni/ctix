@@ -1,5 +1,5 @@
 import { extensions } from '#/modules/path/extensions';
-import path from 'path';
+import path from 'node:path';
 
 export function getExtname(filePath: string): string {
   if (extensions.every((extension) => filePath.endsWith(extension) === false)) {

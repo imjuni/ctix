@@ -4,8 +4,8 @@ import type { TBundleOptions } from '#/configs/interfaces/TBundleOptions';
 import type { TCommandBuildArgvOptions } from '#/configs/interfaces/TCommandBuildArgvOptions';
 import type { TCreateOptions } from '#/configs/interfaces/TCreateOptions';
 import type { TModuleOptions } from '#/configs/interfaces/TModuleOptions';
+import { getOutputValue } from '#/configs/transforms/getOutputValue';
 import type { SetRequired } from 'type-fest';
-import { getOutputValue } from './getOutputValue';
 
 export async function transformModuleMode(
   argv: SetRequired<Partial<TCommandBuildArgvOptions>, 'project'> & {

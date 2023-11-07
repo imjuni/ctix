@@ -3,8 +3,8 @@ import type { IExportStatement } from '#/compilers/interfaces/IExportStatement';
 import { filenamify } from '#/modules/path/filenamify';
 import { posixJoin } from '#/modules/path/posixJoin';
 import { describe, expect, it } from '@jest/globals';
-import { randomUUID } from 'crypto';
 import { atOrThrow } from 'my-easy-fp';
+import { randomUUID } from 'node:crypto';
 import path from 'node:path';
 import * as tsm from 'ts-morph';
 

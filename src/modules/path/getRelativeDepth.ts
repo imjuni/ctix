@@ -1,5 +1,5 @@
 import { replaceSepToPosix } from 'my-node-fp';
-import path from 'path';
+import path from 'node:path';
 
 export function getRelativeDepth(basePath: string, dirPath: string) {
   if (basePath == null) {

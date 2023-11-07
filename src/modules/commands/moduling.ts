@@ -11,11 +11,14 @@ import { getTsExcludeFiles } from '#/modules/file/getTsExcludeFiles';
 import { getTsIncludeFiles } from '#/modules/file/getTsIncludeFiles';
 import { ExcludeContainer } from '#/modules/scope/ExcludeContainer';
 import { IncludeContainer } from '#/modules/scope/IncludeContainer';
+import { getBanner } from '#/modules/writes/getBanner';
 import { indexWrites } from '#/modules/writes/indexWrites';
 import { CE_TEMPLATE_NAME } from '#/templates/const-enum/CE_TEMPLATE_NAME';
+import type { IIndexFileWriteParams } from '#/templates/interfaces/IIndexFileWriteParams';
 import type { IIndexRenderData } from '#/templates/interfaces/IIndexRenderData';
 import { TemplateContainer } from '#/templates/modules/TemplateContainer';
 import { getModuleRenderData } from '#/templates/modules/getModuleRenderData';
+import dayjs from 'dayjs';
 import path from 'node:path';
 
 export async function moduling(_buildOptions: TCommandBuildOptions, moduleOption: TModuleOptions) {
@@ -90,9 +93,25 @@ export async function moduling(_buildOptions: TCommandBuildOptions, moduleOption
     return;
   }
 
-  // index 파일을 쓰고 나면 이걸 project에 등록해줘야 한다
-  await indexWrites(outputMap, moduleOption, extendOptions);
+  const indexFiles = await Promise.all(
+    Array.from(outputMap.entries())
+      .map(([filePath, fileContent]) => ({ filePath, fileContent }))
+      .map(async (file) => {
+        return {
+          path: file.filePath,
+          content: await TemplateContainer.evaluate(CE_TEMPLATE_NAME.INDEX_FILE_TEMPLATE, {
+            directive: moduleOption.directive,
+            banner: getBanner(moduleOption, dayjs()),
+            eol: extendOptions.eol,
+            content: file.fileContent,
+          } satisfies IIndexFileWriteParams),
+        };
+      }),
+  );
 
+  await indexWrites(indexFiles, moduleOption, extendOptions);
+
+  // index 파일을 쓰고 나면 이걸 project에 등록해줘야 한다
   ProjectContainer.addSourceFilesAtPaths(moduleOption.project, Array.from(outputMap.keys()));
 
   Spinner.it.succeed(`${output} file build completed!`);

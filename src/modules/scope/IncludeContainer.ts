@@ -2,7 +2,7 @@ import type { ICommonGenerateOptions } from '#/configs/interfaces/ICommonGenerat
 import { getGlobFiles } from '#/modules/file/getGlobFiles';
 import { defaultExclude } from '#/modules/scope/defaultExclude';
 import { Glob, type GlobOptions } from 'glob';
-import path from 'path';
+import path from 'node:path';
 
 export class IncludeContainer {
   #globs: Glob<GlobOptions>[];

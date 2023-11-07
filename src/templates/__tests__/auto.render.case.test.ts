@@ -4,7 +4,7 @@ import { CE_AUTO_RENDER_CASE } from '#/templates/const-enum/CE_AUTO_RENDER_CASE'
 import type { IIndexRenderData } from '#/templates/interfaces/IIndexRenderData';
 import { getAutoRenderCase } from '#/templates/modules/getAutoRenderCase';
 import { describe, expect, it } from '@jest/globals';
-import { randomUUID } from 'crypto';
+import { randomUUID } from 'node:crypto';
 
 const uuid = randomUUID();
 const filename = `${uuid}.ts`;

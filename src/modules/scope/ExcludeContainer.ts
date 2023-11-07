@@ -2,7 +2,7 @@ import type { IInlineExcludeInfo } from '#/comments/interfaces/IInlineExcludeInf
 import type { ICommonGenerateOptions } from '#/configs/interfaces/ICommonGenerateOptions';
 import { defaultExclude } from '#/modules/scope/defaultExclude';
 import { Glob, type GlobOptions } from 'glob';
-import path from 'path';
+import path from 'node:path';
 
 export class ExcludeContainer {
   #globs: Glob<GlobOptions>[];

@@ -1,7 +1,7 @@
 import { getExportedKind } from '#/compilers/getExportedKind';
 import { beforeAll, describe, expect, it } from '@jest/globals';
-import { randomUUID } from 'crypto';
-import path from 'path';
+import { randomUUID } from 'node:crypto';
+import path from 'node:path';
 import * as tsm from 'ts-morph';
 
 const tsconfigPath = path.join(process.cwd(), 'example', 'tsconfig.example.json');

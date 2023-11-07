@@ -1,7 +1,7 @@
 import type { IReason } from '#/compilers/interfaces/IReason';
 import type { TStreamType } from '#/configs/interfaces/TStreamType';
 import chalk from 'chalk';
-import * as path from 'path';
+import * as path from 'node:path';
 
 export class Reasoner {
   static #it: Reasoner;
