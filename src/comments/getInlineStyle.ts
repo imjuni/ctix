@@ -1,14 +1,15 @@
 import { getJsDocComment } from '#/comments/getJsDocComment';
 import { getJsDocTag } from '#/comments/getJsDocTag';
-import type { IInlineExcludeInfo } from '#/comments/interfaces/IInlineExcludeInfo';
+import type { IInlineGenerationStyleInfo } from '#/comments/interfaces/IInlineGenerationStyleInfo';
 import type { IStatementComments } from '#/comments/interfaces/IStatementComments';
+import { getGenerationStyle } from '#/templates/modules/getGenerationStyle';
 import { parse } from 'comment-parser';
 import { getCommentNamespaces } from './getCommentNamespaces';
 
-export function getInlineExclude(params: {
+export function getInlineStyle(params: {
   comment: IStatementComments;
   options: { keyword: string };
-}): IInlineExcludeInfo | undefined {
+}): IInlineGenerationStyleInfo | undefined {
   const content = params.comment.range;
   const refined = getJsDocComment(params.comment.kind, content);
   const blocks = parse(refined);
@@ -22,12 +23,12 @@ export function getInlineExclude(params: {
 
   if (tag?.tag === params.options.keyword || tag?.tag === params.options.keyword.substring(1)) {
     return {
-      commentCode: content,
+      commentCode: params.comment.range,
       filePath: params.comment.filePath,
+      style: getGenerationStyle(tag.name),
       pos: params.comment.pos,
-      tag: tag.tag,
-      namespaces: getCommentNamespaces([tag.name ?? '', tag.description ?? ''].join(' ')),
-    } satisfies IInlineExcludeInfo;
+      namespaces: getCommentNamespaces(tag.description ?? ''),
+    } satisfies IInlineGenerationStyleInfo;
   }
 
   return undefined;

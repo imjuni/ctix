@@ -230,9 +230,14 @@ export class UnknownHero {
       comments: [
         {
           commentCode: '/** @ctix-exclude-next */',
-          line: 0,
-          namespaces: undefined,
-          pos: 4,
+          filePath: posixJoin(process.cwd(), filename),
+          pos: {
+            start: 230,
+            line: 18,
+            column: 1,
+          },
+          tag: 'ctix-exclude-next',
+          namespaces: [],
         },
       ],
     } satisfies IExportStatement);

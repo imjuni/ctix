@@ -13,7 +13,7 @@ export class ExcludeContainer {
 
   constructor(params: {
     config: Pick<ICommonGenerateOptions, 'exclude'>;
-    inlineExcludeds: (IInlineExcludeInfo & { filePath: string })[];
+    inlineExcludeds: IInlineExcludeInfo[];
     cwd?: string;
   }) {
     const globs = new Glob(params.config.exclude, {

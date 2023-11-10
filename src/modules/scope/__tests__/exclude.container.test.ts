@@ -28,14 +28,22 @@ describe('ExcludeContainer', () => {
       inlineExcludeds: [
         {
           commentCode: 'inline exclude test',
-          pos: 1,
-          line: 1,
+          tag: 'ctix-exclude',
+          pos: {
+            line: 1,
+            start: 1,
+            column: 1,
+          },
           filePath: 'example/type03/ComparisonCls.tsx',
         },
         {
           commentCode: 'inline exclude test',
-          pos: 1,
-          line: 1,
+          tag: 'ctix-exclude',
+          pos: {
+            line: 1,
+            start: 1,
+            column: 1,
+          },
           filePath: path.resolve('example/type03/HandsomelyCls.tsx'),
         },
       ],

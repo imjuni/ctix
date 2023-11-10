@@ -2,10 +2,11 @@ import { ProgressBar } from '#/cli/ux/ProgressBar';
 import { Reasoner } from '#/cli/ux/Reasoner';
 import { Spinner } from '#/cli/ux/Spinner';
 import { getInlineExcludedFiles } from '#/comments/getInlineExcludedFiles';
-import { SymbolTable } from '#/compilers/SymbolTable';
+import { getSourceFileComments } from '#/comments/getSourceFileComments';
+import type { ISourceFileComments } from '#/comments/interfaces/ISourceFileComments';
+import { StatementTable } from '#/compilers/StatementTable';
 import { getExportStatement } from '#/compilers/getExportStatement';
 import type { IExportStatement } from '#/compilers/interfaces/IExportStatement';
-import { CE_GENERATION_STYLE } from '#/configs/const-enum/CE_GENERATION_STYLE';
 import { getExtendOptions } from '#/configs/getExtendOptions';
 import type { TBundleOptions } from '#/configs/interfaces/TBundleOptions';
 import type { TCommandBuildOptions } from '#/configs/interfaces/TCommandBuildOptions';
@@ -17,13 +18,12 @@ import { ExcludeContainer } from '#/modules/scope/ExcludeContainer';
 import { IncludeContainer } from '#/modules/scope/IncludeContainer';
 import { getBanner } from '#/modules/writes/getBanner';
 import { indexWrites } from '#/modules/writes/indexWrites';
-import { CE_AUTO_RENDER_CASE } from '#/templates/const-enum/CE_AUTO_RENDER_CASE';
 import { CE_TEMPLATE_NAME } from '#/templates/const-enum/CE_TEMPLATE_NAME';
 import type { IIndexFileWriteParams } from '#/templates/interfaces/IIndexFileWriteParams';
 import type { IIndexRenderData } from '#/templates/interfaces/IIndexRenderData';
 import { TemplateContainer } from '#/templates/modules/TemplateContainer';
-import { getAutoRenderCase } from '#/templates/modules/getAutoRenderCase';
 import { getRenderData } from '#/templates/modules/getRenderData';
+import { getSelectStyle } from '#/templates/modules/getSelectStyle';
 import chalk from 'chalk';
 import dayjs from 'dayjs';
 import path from 'node:path';
@@ -89,45 +89,59 @@ export async function bundling(_buildOptions: TCommandBuildOptions, bundleOption
 
   ProgressBar.it.stop();
 
-  const map = new Map<string, IExportStatement[]>();
-  const symbolTable = new SymbolTable();
+  const statementMap = new Map<string, IExportStatement[]>();
+  const statementTable = new StatementTable();
 
-  symbolTable.inserts(statements);
+  statementTable.inserts(statements);
 
   Spinner.it.start(`build ${`"${chalk.green(bundleOption.exportFilename)}"`} file start`);
 
   statements
-    .filter((statement) => !symbolTable.isDuplicate(statement))
+    .filter((statement) => !statementTable.isDuplicate(statement))
     .forEach((statement) => {
       const filePath = path.join(statement.path.dirPath, statement.path.filename);
-      const accessed = map.get(filePath);
+      const accessed = statementMap.get(filePath);
 
       if (accessed == null) {
-        map.set(filePath, [statement]);
+        statementMap.set(filePath, [statement]);
       } else {
         accessed.push(statement);
-        map.set(filePath, accessed);
+        statementMap.set(filePath, accessed);
       }
     });
+
+  const commentMap = new Map<string, ISourceFileComments>(
+    Array.from(statementMap.keys())
+      .map((filePath) => {
+        const sourceFile = project.getSourceFile(filePath);
+
+        if (sourceFile != null) {
+          const comments = getSourceFileComments(sourceFile);
+          return [filePath, comments];
+        }
+
+        return undefined;
+      })
+      .filter((comment): comment is [string, ISourceFileComments] => comment != null),
+  );
 
   Spinner.it.stop();
   ProgressBar.it.head = '  export ';
   ProgressBar.it.start(statements.length, 0);
 
-  const datas = Array.from(map.entries())
+  const datas = Array.from(statementMap.entries())
     .map(([filePath, exportStatements]) => {
       const data = getRenderData(bundleOption, filePath, exportStatements, bundleOption.output);
       return data;
     })
     .filter((renderData): renderData is IIndexRenderData => renderData != null)
     .map((renderData) => {
-      const style =
-        bundleOption.generationStyle === CE_GENERATION_STYLE.AUTO
-          ? getAutoRenderCase(renderData)
-          : ({
-              case: CE_AUTO_RENDER_CASE.UNKNOWN,
-              style: bundleOption.generationStyle,
-            } satisfies ReturnType<typeof getAutoRenderCase>);
+      const comment = commentMap.get(renderData.filePath)?.comments.at(0);
+      const style = getSelectStyle({
+        comment,
+        options: { style: bundleOption.generationStyle },
+        renderData,
+      });
 
       ProgressBar.it.increment();
 
@@ -152,7 +166,7 @@ export async function bundling(_buildOptions: TCommandBuildOptions, bundleOption
 
   if (!bundleOption.overwrite && !bundleOption.backup && fileExistReason.length > 0) {
     Spinner.it.fail("ctix 'bundle' mode incomplete ...");
-    Reasoner.it.start([...fileExistReason, ...symbolTable.getDuplicateReason()]);
+    Reasoner.it.start([...fileExistReason, ...statementTable.getDuplicateReason()]);
     return;
   }
 
@@ -179,5 +193,5 @@ export async function bundling(_buildOptions: TCommandBuildOptions, bundleOption
   Spinner.it.succeed(`${output} file build completed!`);
   Spinner.it.succeed("ctix 'bundle' mode completed!");
 
-  Reasoner.it.start(symbolTable.getDuplicateReason());
+  Reasoner.it.start(statementTable.getDuplicateReason());
 }
