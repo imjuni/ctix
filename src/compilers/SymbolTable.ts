@@ -1,115 +1,24 @@
-import type { IExportStatement } from '#/compilers/interfaces/IExportStatement';
-import type { IReason } from '#/compilers/interfaces/IReason';
-import chalk from 'chalk';
-import path from 'node:path';
+import type * as tsm from 'ts-morph';
 
 export class SymbolTable {
-  static key(statement: string | IExportStatement): string {
-    if (typeof statement === 'string') {
-      return statement;
-    }
+  #table: Map<number, tsm.Node>;
 
-    const tableKey = statement.isDefault ? statement.identifier.alias : statement.identifier.name;
-    return tableKey;
+  constructor(sourceFile: tsm.SourceFile) {
+    const nodes: [number, tsm.Node][] = [];
+
+    sourceFile.forEachChild((node) => {
+      const pos = node.getStart();
+      nodes.push([pos, node]);
+    });
+
+    this.#table = new Map<number, tsm.Node>(nodes);
   }
 
-  #table: Map<string, IExportStatement[]>;
-
-  constructor() {
-    this.#table = new Map<string, IExportStatement[]>();
+  get table(): Readonly<Map<number, tsm.Node>> {
+    return this.#table;
   }
 
-  select(key: string | IExportStatement) {
-    return this.#table.get(SymbolTable.key(key)) ?? [];
-  }
-
-  selects() {
-    return Array.from(this.#table.values());
-  }
-
-  insert(statement: IExportStatement) {
-    const key = SymbolTable.key(statement);
-    const prev = this.#table.get(key);
-
-    if (prev == null) {
-      this.#table.set(key, [statement]);
-    } else {
-      this.#table.set(key, [...prev, statement]);
-    }
-  }
-
-  inserts(statements: IExportStatement[]) {
-    statements.forEach((statement) => this.insert(statement));
-  }
-
-  isDuplicate(statement: IExportStatement) {
-    const prev = this.#table.get(SymbolTable.key(statement));
-
-    if (prev == null) {
-      return false;
-    }
-
-    return prev.length > 1;
-  }
-
-  isDuplicateFromSecond(statement: IExportStatement) {
-    const prev = this.#table.get(SymbolTable.key(statement));
-    const first = prev?.at(0);
-
-    if (prev == null || first == null) {
-      return false;
-    }
-
-    const prevStatementKey = `${path.join(first.path.dirPath, first.path.filename)}::${
-      first.identifier.alias
-    }`;
-    const nextStatementKey = `${path.join(statement.path.dirPath, statement.path.filename)}::${
-      statement.identifier.alias
-    }`;
-
-    if (prevStatementKey === nextStatementKey) {
-      return false;
-    }
-
-    return prev.length > 1;
-  }
-
-  getDuplicateReason() {
-    const reasons = Array.from(this.#table.entries())
-      .map(([identifier, statements]) => ({
-        identifier,
-        statements,
-      }))
-      .filter((symbols) => symbols.statements.length > 1)
-      .map((symbols) => {
-        return symbols.statements.map((statement) => {
-          if (statement.isDefault) {
-            const reason: IReason = {
-              type: 'warn',
-              lineAndCharacter: { line: statement.pos.line, character: statement.pos.column },
-              filePath: path.join(statement.path.dirPath, statement.path.filename),
-              message: `detect same name of default export statement: "${chalk.yellow(
-                SymbolTable.key(statement),
-              )}"`,
-            };
-
-            return reason;
-          }
-
-          const reason: IReason = {
-            type: 'warn',
-            lineAndCharacter: { line: statement.pos.line, character: statement.pos.column },
-            filePath: path.join(statement.path.dirPath, statement.path.filename),
-            message: `detect same name of export statement: "${chalk.yellow(
-              SymbolTable.key(statement),
-            )}"`,
-          };
-
-          return reason;
-        });
-      })
-      .flat();
-
-    return reasons;
+  getByPos(pos: number): tsm.Node | undefined {
+    return this.#table.get(pos);
   }
 }

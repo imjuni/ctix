@@ -1,9 +1,13 @@
 import { ProgressBar } from '#/cli/ux/ProgressBar';
 import { Reasoner } from '#/cli/ux/Reasoner';
 import { Spinner } from '#/cli/ux/Spinner';
+import { CE_INLINE_COMMENT_KEYWORD } from '#/comments/const-enum/CE_INLINE_COMMENT_KEYWORD';
 import { getInlineExcludedFiles } from '#/comments/getInlineExcludedFiles';
+import { getInlineStyle } from '#/comments/getInlineStyle';
 import { getOutputExcludedFiles } from '#/comments/getOutputExcludedFiles';
-import { SymbolTable } from '#/compilers/SymbolTable';
+import { getSourceFileComments } from '#/comments/getSourceFileComments';
+import type { ISourceFileComments } from '#/comments/interfaces/ISourceFileComments';
+import { StatementTable } from '#/compilers/StatementTable';
 import { getExportStatement } from '#/compilers/getExportStatement';
 import type { IExportStatement } from '#/compilers/interfaces/IExportStatement';
 import { CE_GENERATION_STYLE } from '#/configs/const-enum/CE_GENERATION_STYLE';
@@ -105,14 +109,14 @@ export async function creating(_buildOptions: TCommandBuildOptions, createOption
 
   const filePathMap = new Map<string, IExportStatement[]>();
   const dirPathMap = new Map<string, IExportStatement[]>();
-  const symbolTable = new SymbolTable();
+  const statementTable = new StatementTable();
 
-  symbolTable.inserts(statements);
+  statementTable.inserts(statements);
 
   Spinner.it.start(`build ${`"${chalk.green(createOption.exportFilename)}"`} file start`);
 
   statements
-    .filter((statement) => !symbolTable.isDuplicate(statement))
+    .filter((statement) => !statementTable.isDuplicate(statement))
     .forEach((statement) => {
       const filePath = path.join(statement.path.dirPath, statement.path.filename);
       const filePathAccessed = filePathMap.get(filePath);
@@ -134,6 +138,21 @@ export async function creating(_buildOptions: TCommandBuildOptions, createOption
       }
     });
 
+  const commentMap = new Map<string, ISourceFileComments>(
+    Array.from(filePathMap.keys())
+      .map((filePath) => {
+        const sourceFile = project.getSourceFile(filePath);
+
+        if (sourceFile != null) {
+          const comments = getSourceFileComments(sourceFile);
+          return [filePath, comments];
+        }
+
+        return undefined;
+      })
+      .filter((comment): comment is [string, ISourceFileComments] => comment != null),
+  );
+
   Spinner.it.stop();
   ProgressBar.it.head = '  export ';
   ProgressBar.it.start(statements.length, 0);
@@ -147,8 +166,19 @@ export async function creating(_buildOptions: TCommandBuildOptions, createOption
     .map(([filePath, exportStatements]) => getRenderData(createOption, filePath, exportStatements))
     .filter((renderData): renderData is IIndexRenderData => renderData != null)
     .map((renderData) => {
+      const comment = commentMap.get(renderData.filePath)?.comments.at(0);
+      const styleInfo =
+        comment != null
+          ? getInlineStyle({
+              comment,
+              options: {
+                keyword: CE_INLINE_COMMENT_KEYWORD.FILE_GENERATION_STYLE_KEYWORD,
+              },
+            })
+          : undefined;
+
       const style =
-        createOption.generationStyle === CE_GENERATION_STYLE.AUTO
+        styleInfo?.style ?? createOption.generationStyle === CE_GENERATION_STYLE.AUTO
           ? getAutoRenderCase(renderData)
           : ({
               case: CE_AUTO_RENDER_CASE.UNKNOWN,
@@ -259,7 +289,7 @@ export async function creating(_buildOptions: TCommandBuildOptions, createOption
     }
   });
 
-  const renders = await Promise.all(
+  const rendereds = await Promise.all(
     Array.from(renderDataMap.entries()).map(async ([dirPath, datas]) => {
       const indexFilePath = path.join(dirPath, createOption.exportFilename);
       const rendered = await Promise.all(
@@ -280,7 +310,7 @@ export async function creating(_buildOptions: TCommandBuildOptions, createOption
   Spinner.it.start('output file exists check, ...');
 
   const outputMap: Map<string, string> = new Map<string, string>(
-    renders.map((render) => {
+    rendereds.map((render) => {
       return [render.filePath, render.rendered.join('\n')];
     }),
   );
@@ -289,7 +319,7 @@ export async function creating(_buildOptions: TCommandBuildOptions, createOption
 
   if (!createOption.overwrite && !createOption.backup && fileExistReason.length > 0) {
     Spinner.it.fail("ctix 'create' mode incomplete ...");
-    Reasoner.it.start([...fileExistReason, ...symbolTable.getDuplicateReason()]);
+    Reasoner.it.start([...fileExistReason, ...statementTable.getDuplicateReason()]);
     return;
   }
 
@@ -313,6 +343,6 @@ export async function creating(_buildOptions: TCommandBuildOptions, createOption
 
   ProjectContainer.addSourceFilesAtPaths(createOption.project, Array.from(outputMap.keys()));
 
-  Reasoner.it.start(symbolTable.getDuplicateReason());
+  Reasoner.it.start(statementTable.getDuplicateReason());
   Spinner.it.succeed("ctix 'create' mode complete!");
 }

@@ -1,5 +1,6 @@
-import { CE_INLINE_EXCLUDE_KEYWORD } from '#/comments/const-enum/CE_INLINE_EXCLUDE_KEYWORD';
+import { CE_INLINE_COMMENT_KEYWORD } from '#/comments/const-enum/CE_INLINE_COMMENT_KEYWORD';
 import { getInlineExclude } from '#/comments/getInlineExclude';
+import { getNodeComments } from '#/comments/getNodeComments';
 import type { IInlineExcludeInfo } from '#/comments/interfaces/IInlineExcludeInfo';
 import { getExportedKind } from '#/compilers/getExportedKind';
 import type { IExportStatement } from '#/compilers/interfaces/IExportStatement';
@@ -18,12 +19,13 @@ export function getSummaryStatement(params: {
   const kind = getExportedKind(params.node);
   const filenamified = filenamify(params.path.filename);
   const identifier = params.identifier ?? kind.name ?? filenamified;
-  const comments = params.node
-    .getLeadingCommentRanges()
+  const comments = getNodeComments(params.node)
     .map((comment) =>
-      getInlineExclude(comment.getText(), {
-        eol: params.eol,
-        keyword: CE_INLINE_EXCLUDE_KEYWORD.NEXT_STATEMENT_EXCLUDE_KEYWORD,
+      getInlineExclude({
+        comment,
+        options: {
+          keyword: CE_INLINE_COMMENT_KEYWORD.NEXT_STATEMENT_EXCLUDE_KEYWORD,
+        },
       }),
     )
     .filter((comment): comment is IInlineExcludeInfo => comment != null);

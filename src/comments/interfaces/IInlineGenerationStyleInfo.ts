@@ -1,12 +1,14 @@
-export interface IInlineExcludeInfo {
+import type { CE_GENERATION_STYLE } from '#/configs/const-enum/CE_GENERATION_STYLE';
+
+export interface IInlineGenerationStyleInfo {
   /** 주석 내용 */
   commentCode: string;
 
   /** 소스 파일 경로 */
   filePath: string;
 
-  /** tag of exclude comment */
-  tag: string;
+  /** export 생성 스타일 */
+  style: CE_GENERATION_STYLE;
 
   pos: {
     /** inline exclude 키워드가 몇 번째 line에 있는가 */

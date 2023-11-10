@@ -1,4 +1,5 @@
 import { getInlineExcludedFiles } from '#/comments/getInlineExcludedFiles';
+import { posixJoin } from '#/modules/path/posixJoin';
 import { describe, expect, it } from '@jest/globals';
 import { randomUUID } from 'node:crypto';
 import path from 'node:path';
@@ -13,7 +14,7 @@ const context = {
 };
 
 describe('getInlineExcludedFiles', () => {
-  it('multiline comment with file, statement exclude', () => {
+  it('comment top of file', () => {
     const uuid = randomUUID();
     const filename01 = `${uuid}_01.ts`;
     const source01 = `
@@ -58,17 +59,20 @@ export class SuperHero {
 
     expect(excluded).toMatchObject([
       {
-        commentCode: '* @ctix-exclude',
-        pos: 2,
-        line: 1,
-        finded: true,
-        namespaces: undefined,
+        commentCode: '/**\n * @ctix-exclude\n */',
         filePath: path.join(process.cwd(), filename01),
+        pos: {
+          start: 25,
+          line: 4,
+          column: 1,
+        },
+        tag: 'ctix-exclude',
+        namespaces: [],
       },
     ]);
   });
 
-  it('multiline comment with file, statement exclude', () => {
+  it('comment middle of file', () => {
     const uuid = randomUUID();
     const filename01 = `${uuid}_01.ts`;
     const source01 = `
@@ -88,15 +92,15 @@ export default class Hero {
     const source02 = `
 import path from 'node:path';
 
-/** @ctix-exclude-next */
 export class MarvelHero {
   #name: string;
-
+  
   constructor(name: string) {
     this.#name = name;
   }
 }
 
+// @ctix-exclude
 export class DCHero {
   #name: string;
 
@@ -115,17 +119,18 @@ export class DCHero {
       filePaths: [filename01, filename02],
     });
 
-    console.log(excluded);
-
-    // expect(excluded).toMatchObject([
-    //   {
-    //     commentCode: '* @ctix-exclude',
-    //     pos: 2,
-    //     line: 1,
-    //     finded: true,
-    //     namespaces: undefined,
-    //     filePath: path.join(process.cwd(), filename01),
-    //   },
-    // ]);
+    expect(excluded).toMatchObject([
+      {
+        commentCode: '// @ctix-exclude',
+        filePath: posixJoin(process.cwd(), filename02),
+        pos: {
+          start: 154,
+          line: 12,
+          column: 1,
+        },
+        tag: 'ctix-exclude',
+        namespaces: [],
+      },
+    ]);
   });
 });
