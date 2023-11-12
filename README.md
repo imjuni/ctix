@@ -34,6 +34,7 @@ In addition, `ctix` will auto-generate `index.ts` files so that a single `index.
 - [How it works?](#how-it-works)
 - [Installation](#installation)
 - [Usage](#usage)
+  - [How can I exclude unwanted files?](#how-can-i-exclude-unwanted-files)
 - [Requirement](#requirement)
 - [Important](#important)
 - [More information](#more-information)
@@ -98,6 +99,35 @@ The mode in which the `index.ts` file is to be generated. There is a create mode
 | ![bundle mode](static/img/bundle-mode.png) | ![create mode](static/img/create-mode.png) | ![module mode](static/img/module-mode.png) |
 
 Check out the `.ctirc` in [example/type10](https://github.com/imjuni/ctix/blob/master/example/type10/.ctirc) to see how to utilize the `module` mode.
+
+### How can I exclude unwanted files?
+
+There are two ways to do this. The first is to create a `.ctirc` file and set the include or exclude value, which works similarly to the include and exclude values in the `tsconfig.json` file. The second is to comment out `@ctix-exclude` at the top of the files you want to exclude, such as eslint.
+
+> `.ctirc`
+
+```json
+{
+  "options": {
+    "mode": "bundle",
+    "exclude": [
+      "**/*.storybook.tsx"
+    ]
+  }
+}
+```
+
+If you want to use a `.ctirc` file, I recommend creating one with the `npx ctix init` command.
+
+> eslint style inline comment
+
+```tsx
+// @ctix-exclude
+
+const Button = () => {
+  return <button>Sample</button>
+}
+```
 
 ## Requirement
 
