@@ -1,4 +1,4 @@
-# ctix - Next generation Create TypeScript Index file
+# ctix - Next generation Create TypeScript barrel
 
 ![ts](https://flat.badgen.net/badge/Built%20With/TypeScript/blue)
 [![Download Status](https://img.shields.io/npm/dw/ctix.svg)](https://npmcharts.com/compare/ctix?minimal=true)
@@ -10,28 +10,30 @@
 [![codecov](https://codecov.io/gh/imjuni/ctix/branch/master/graph/badge.svg?token=DADV7ss5bh)](https://codecov.io/gh/imjuni/ctix)
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
 
-entrypoint `index.ts` file automatically generated cli tool
+entrypoint `barrel` file automatically generated cli tool
 
 ## Why ctix?
 
-Have you ever developed a library project in the TypeScript language? Unlike API servers or desktop applications, library projects do not have executable scripts or functions. Therefore, it is common to organize a number of functions and variables to be included in the library in an `index.ts` file. However, it is inconvenient to rewrite the `index.ts` file every time you add a function or variable, and it is easy to make a mistake and miss a function or variable you intended. `ctix` uses the [TypeScript compiler API](https://github.com/microsoft/TypeScript/wiki/Using-the-Compiler-API) to automatically generate the `index.ts` file by searching your TypeScript project for functions and variables with the export keyword added.
+Have you ever developed a library project in the TypeScript language? Unlike API servers or desktop applications, library projects do not have executable scripts or functions. Therefore, it is common to organize a number of functions and variables to be included in the library in an `barrel` file. However, it is inconvenient to rewrite the `barrel` file every time you add a function or variable, and it is easy to make a mistake and miss a function or variable you intended. `ctix` uses the [TypeScript compiler API](https://github.com/microsoft/TypeScript/wiki/Using-the-Compiler-API) to automatically generate the `barrel` file by searching your TypeScript project for functions and variables with the export keyword added.
 
 To summarize,
 
 1. automatically extracts statement with the export keyword applied
-1. generate a single `index.ts` file or directory-specific `index.ts` files
+1. generate a single `barrel` file or directory-specific `barrel` files
 1. automatically generate configuration files via interactive prompts
 1. automatically add type keyword to interface, type aliases to indicate they are pure types
    - eg. `export { type IAmSuperHero } from './marvel';`
 1. can be set to exception files via comments in source code files (eslint style)
+1. always generates a compilable `barrel` file because it uses the TypeScript compiler API
 
-In addition, `ctix` will auto-generate `index.ts` files so that a single `index.d.ts` file can be generated correctly when using the [rollup-plugin-dts](https://github.com/Swatinem/rollup-plugin-dts) plugin. Now you can develop your TypeScript library projects more easily!
+In addition, `ctix` will auto-generate `barrel` files so that a single `index.d.ts` file can be generated correctly when using the [rollup-plugin-dts](https://github.com/Swatinem/rollup-plugin-dts) plugin. Now you can develop your TypeScript library projects more easily!
 
 ## Table of Contents <!-- omit in toc -->
 
 - [Why ctix?](#why-ctix)
 - [Getting Starts](#getting-starts)
 - [How it works?](#how-it-works)
+  - [Barrel file](#barrel-file)
 - [Installation](#installation)
 - [Usage](#usage)
   - [How can I exclude unwanted files?](#how-can-i-exclude-unwanted-files)
@@ -73,6 +75,14 @@ flowchart TD
 
 Because `ctix` uses the TypeScript Compiler API to summary target files and extract export statements, developers don't need to write source code in a special format or make any changes to existing code to make it work.
 
+### Barrel file
+
+A [barrel](https://basarat.gitbook.io/typescript/main-1/barrel) is a way to rollup exports from several modules into a single convenient module. The barrel itself is a module file that re-exports selected exports of other modules.
+
+- [TypeScript Deep Dive - barrel](https://basarat.gitbook.io/typescript/main-1/barrel)
+- [How we optimized package imports in Next.js](https://vercel.com/blog/how-we-optimized-package-imports-in-next-js)
+- [In-Depth guide for TypeScript Library](https://dev.to/imjuni/in-depth-guide-for-typescript-library-project-o1j)
+
 ## Installation
 
 ```bash
@@ -92,7 +102,7 @@ ctix build --mode create -p ./tsconfig.json --start-from ./src
 ctix build --mode module -p ./tsconfig.json -o ./src/components
 ```
 
-The mode in which the `index.ts` file is to be generated. There is a create mode that generates an `index.ts` file per directory, a bundle mode that generates a single `index.ts` file, and a module mode that generates an `index.ts` file by filename for `vue`, `sevelte`, etc.
+The mode in which the `barrel` file is to be generated. There is a create mode that generates an `barrel` file per directory, a bundle mode that generates a single `barrel` file, and a module mode that generates an `barrel` file by filename for `vue`, `sevelte`, etc.
 
 | `bundle` mode                              | `create` mode                              | `module` mode                              |
 | ------------------------------------------ | ------------------------------------------ | ------------------------------------------ |
