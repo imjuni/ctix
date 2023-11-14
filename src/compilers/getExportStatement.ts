@@ -1,15 +1,15 @@
 import { getExportedKind } from '#/compilers/getExportedKind';
 import { getSummaryStatement } from '#/compilers/getSummaryStatement';
 import type { IExportStatement } from '#/compilers/interfaces/IExportStatement';
-import type { ICommonGenerateOptions } from '#/configs/interfaces/ICommonGenerateOptions';
 import type { IExtendOptions } from '#/configs/interfaces/IExtendOptions';
+import type { IModeGenerateOptions } from '#/configs/interfaces/IModeGenerateOptions';
 import { getDirname, replaceSepToPosix, startSepRemove } from 'my-node-fp';
 import path from 'node:path';
 import * as tsm from 'ts-morph';
 
 export async function getExportStatement(
   sourceFile: tsm.SourceFile,
-  option: Pick<ICommonGenerateOptions, 'project' | 'exportFilename'>,
+  option: Pick<IModeGenerateOptions, 'project' | 'exportFilename'>,
   extendOptions: Pick<IExtendOptions, 'eol'>,
 ): Promise<IExportStatement[]> {
   const dirPath = replaceSepToPosix(

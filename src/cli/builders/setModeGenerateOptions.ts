@@ -2,13 +2,13 @@ import { CE_CTIX_BUILD_MODE } from '#/configs/const-enum/CE_CTIX_BUILD_MODE';
 import { CE_CTIX_DEFAULT_VALUE } from '#/configs/const-enum/CE_CTIX_DEFAULT_VALUE';
 import { CE_EXTENSION_PROCESSING } from '#/configs/const-enum/CE_EXTENSION_PROCESSING';
 import { CE_GENERATION_STYLE } from '#/configs/const-enum/CE_GENERATION_STYLE';
-import type { ICommonGenerateOptions } from '#/configs/interfaces/ICommonGenerateOptions';
-import type { ICommonTsGenerateOptions } from '#/configs/interfaces/ICommonTsGenerateOptions';
+import type { IModeGenerateOptions } from '#/configs/interfaces/IModeGenerateOptions';
+import type { IModeTsGenerateOptions } from '#/configs/interfaces/IModeTsGenerateOptions';
 import type { Argv } from 'yargs';
 
-export function setCommonGenerateOptions<
-  T = Argv<ICommonGenerateOptions & ICommonTsGenerateOptions>,
->(args: Argv<ICommonGenerateOptions & ICommonTsGenerateOptions>) {
+export function setModeGenerateOptions<T = Argv<IModeGenerateOptions & IModeTsGenerateOptions>>(
+  args: Argv<IModeGenerateOptions & IModeTsGenerateOptions>,
+) {
   args
     .option('project', {
       alias: 'p',

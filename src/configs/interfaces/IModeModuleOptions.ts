@@ -1,4 +1,4 @@
-export interface ICommandModuleOptions {
+export interface IModeModuleOptions {
   /**
    * Output directory. Default value is same project directory
    *

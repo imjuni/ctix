@@ -29,10 +29,10 @@ describe('IncludeContainer', () => {
     });
 
     const r01 = container.isInclude('src/files/IncludeContainer.ts');
-    const r02 = container.isInclude('src/cli/builders/setCommandBundleOptions.ts');
+    const r02 = container.isInclude('src/cli/builders/setModeBundleOptions.ts');
     const r03 = container.isInclude(path.join(process.cwd(), 'src/files/IncludeContainer.ts'));
     const r04 = container.isInclude(
-      path.join(process.cwd(), 'src/cli/builders/setCommandBundleOptions.ts'),
+      path.join(process.cwd(), 'src/cli/builders/setModeBundleOptions.ts'),
     );
 
     expect(r01).toBeFalsy();
@@ -54,10 +54,10 @@ describe('IncludeContainer', () => {
     });
 
     const r01 = container.isInclude('src/files/IncludeContainer.ts');
-    const r02 = container.isInclude('src/cli/builders/setCommandBundleOptions.ts');
+    const r02 = container.isInclude('src/cli/builders/setModeBundleOptions.ts');
     const r03 = container.isInclude(path.join(process.cwd(), 'src/files/IncludeContainer.ts'));
     const r04 = container.isInclude(
-      path.join(process.cwd(), 'src/cli/builders/setCommandBundleOptions.ts'),
+      path.join(process.cwd(), 'src/cli/builders/setModeBundleOptions.ts'),
     );
     const r05 = container.isInclude(
       path.join(process.cwd(), 'src/cli/compilers/getTypeScriptProject.ts'),

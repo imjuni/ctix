@@ -1,4 +1,4 @@
-export interface ICommonGenerateOptions {
+export interface IModeGenerateOptions {
   /**
    * tsconfig.json path: you must pass path with filename, like this "./tsconfig.json"
    * * only work root directory or cli parameter

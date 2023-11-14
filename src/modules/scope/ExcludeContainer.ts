@@ -1,5 +1,5 @@
 import type { IInlineExcludeInfo } from '#/comments/interfaces/IInlineExcludeInfo';
-import type { ICommonGenerateOptions } from '#/configs/interfaces/ICommonGenerateOptions';
+import type { IModeGenerateOptions } from '#/configs/interfaces/IModeGenerateOptions';
 import { defaultExclude } from '#/modules/scope/defaultExclude';
 import { Glob, type GlobOptions } from 'glob';
 import path from 'node:path';
@@ -12,7 +12,7 @@ export class ExcludeContainer {
   #inline: Map<string, IInlineExcludeInfo & { filePath: string }>;
 
   constructor(params: {
-    config: Pick<ICommonGenerateOptions, 'exclude'>;
+    config: Pick<IModeGenerateOptions, 'exclude'>;
     inlineExcludeds: IInlineExcludeInfo[];
     cwd?: string;
   }) {

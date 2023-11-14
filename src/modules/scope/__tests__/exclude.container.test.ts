@@ -50,10 +50,10 @@ describe('ExcludeContainer', () => {
     });
 
     const r01 = container.isExclude('src/files/IncludeContainer.ts');
-    const r02 = container.isExclude('src/cli/builders/setCommandBundleOptions.ts');
+    const r02 = container.isExclude('src/cli/builders/setModeBundleOptions.ts');
     const r03 = container.isExclude(path.join(process.cwd(), 'src/files/IncludeContainer.ts'));
     const r04 = container.isExclude(
-      path.join(process.cwd(), 'src/cli/builders/setCommandBundleOptions.ts'),
+      path.join(process.cwd(), 'src/cli/builders/setModeBundleOptions.ts'),
     );
     const r05 = container.isExclude('example/type03/ComparisonCls.tsx');
 
@@ -78,10 +78,10 @@ describe('ExcludeContainer', () => {
     });
 
     const r01 = container.isExclude('src/files/IncludeContainer.ts');
-    const r02 = container.isExclude('src/cli/builders/setCommandBundleOptions.ts');
+    const r02 = container.isExclude('src/cli/builders/setModeBundleOptions.ts');
     const r03 = container.isExclude(path.join(process.cwd(), 'src/files/IncludeContainer.ts'));
     const r04 = container.isExclude(
-      path.join(process.cwd(), 'src/cli/builders/setCommandBundleOptions.ts'),
+      path.join(process.cwd(), 'src/cli/builders/setModeBundleOptions.ts'),
     );
     const r05 = container.isExclude(
       path.join(process.cwd(), 'src/cli/compilers/getTypeScriptProject.ts'),

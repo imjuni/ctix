@@ -1,9 +1,7 @@
-import type { ICommandCreateOptions } from '#/configs/interfaces/ICommandCreateOptions';
+import type { IModeCreateOptions } from '#/configs/interfaces/IModeCreateOptions';
 import type { Argv } from 'yargs';
 
-export function setCommandCreateOptions<T = Argv<ICommandCreateOptions>>(
-  args: Argv<ICommandCreateOptions>,
-) {
+export function setModeCreateOptions<T = Argv<IModeCreateOptions>>(args: Argv<IModeCreateOptions>) {
   args
     .option('skip-empty-dir', {
       describe:

@@ -1,4 +1,4 @@
-export interface ICommandCreateOptions {
+export interface IModeCreateOptions {
   /**
    * If `skipEmptyDir` is set to true, an empty directory with no files will not create an `index.ts` file
    *

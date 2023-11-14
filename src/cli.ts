@@ -1,17 +1,19 @@
-import { setCommandBundleOptions } from '#/cli/builders/setCommandBundleOptions';
-import { setCommandCreateOptions } from '#/cli/builders/setCommandCreateOptions';
+import { setCommandInitOptions } from '#/cli/builders/setCommandInitOptions';
 import { setCommandRemoveOptions } from '#/cli/builders/setCommandRemoveOptions';
-import { setCommonGenerateOptions } from '#/cli/builders/setCommonGenerateOptions';
+import { setModeBundleOptions } from '#/cli/builders/setModeBundleOptions';
+import { setModeCreateOptions } from '#/cli/builders/setModeCreateOptions';
+import { setModeGenerateOptions } from '#/cli/builders/setModeGenerateOptions';
 import { setProjectOptions } from '#/cli/builders/setProjectOptions';
 import { buildCommand } from '#/cli/commands/buildCommand';
 import { initCommand } from '#/cli/commands/initCommand';
 import { removeCommand } from '#/cli/commands/removeCommand';
 import { CE_CTIX_COMMAND } from '#/configs/const-enum/CE_CTIX_COMMAND';
-import type { ICommandBundleOptions } from '#/configs/interfaces/ICommandBundleOptions';
-import type { ICommandCreateOptions } from '#/configs/interfaces/ICommandCreateOptions';
+import type { ICommandInitOptions } from '#/configs/interfaces/ICommandInitOptions';
 import type { ICommandRemoveOptions } from '#/configs/interfaces/ICommandRemoveOptions';
-import type { ICommonGenerateOptions } from '#/configs/interfaces/ICommonGenerateOptions';
-import type { ICommonTsGenerateOptions } from '#/configs/interfaces/ICommonTsGenerateOptions';
+import type { IModeBundleOptions } from '#/configs/interfaces/IModeBundleOptions';
+import type { IModeCreateOptions } from '#/configs/interfaces/IModeCreateOptions';
+import type { IModeGenerateOptions } from '#/configs/interfaces/IModeGenerateOptions';
+import type { IModeTsGenerateOptions } from '#/configs/interfaces/IModeTsGenerateOptions';
 import type { IProjectOptions } from '#/configs/interfaces/IProjectOptions';
 import type { TCommandBuildArgvOptions } from '#/configs/interfaces/TCommandBuildArgvOptions';
 import type { TCommandRemoveOptions } from '#/configs/interfaces/TCommandRemoveOptions';
@@ -29,13 +31,13 @@ const buildCommandModule: CommandModule<TCommandBuildArgvOptions, TCommandBuildA
   aliases: [CE_CTIX_COMMAND.BUILD_COMMAND_ALIAS],
   describe: 'build index.ts file that aggregate on bundle file',
   builder: (argv) => {
-    const projectArgv = setProjectOptions<Argv<ICommonGenerateOptions & ICommonTsGenerateOptions>>(
+    const projectArgv = setProjectOptions<Argv<IModeGenerateOptions & IModeTsGenerateOptions>>(
       argv as Argv<IProjectOptions>,
     );
 
-    const generateArgv = setCommonGenerateOptions<Argv<ICommandBundleOptions>>(projectArgv);
-    const bundleArgv = setCommandBundleOptions<Argv<ICommandCreateOptions>>(generateArgv);
-    const createArgv = setCommandCreateOptions<Argv<TCommandBuildArgvOptions>>(bundleArgv);
+    const generateArgv = setModeGenerateOptions<Argv<IModeBundleOptions>>(projectArgv);
+    const bundleArgv = setModeBundleOptions<Argv<IModeCreateOptions>>(generateArgv);
+    const createArgv = setModeCreateOptions<Argv<TCommandBuildArgvOptions>>(bundleArgv);
 
     return createArgv;
   },
@@ -75,10 +77,17 @@ const removeCommandModule: CommandModule<
   },
 };
 
-const initCommandModule: CommandModule<undefined, undefined> = {
+const initCommandModule: CommandModule<ICommandInitOptions, ICommandInitOptions> = {
   command: CE_CTIX_COMMAND.INIT_COMMAND,
   aliases: [CE_CTIX_COMMAND.INIT_COMMAND_ALIAS],
   describe: 'create .ctirc configuration',
+  builder: (argv) => {
+    const initArgv = setCommandInitOptions<Argv<ICommandInitOptions>>(
+      argv as unknown as Argv<ICommandInitOptions>,
+    );
+
+    return initArgv;
+  },
   handler: async (argv) => {
     try {
       await initCommand(argv);

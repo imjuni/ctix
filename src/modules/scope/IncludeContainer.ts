@@ -1,4 +1,4 @@
-import type { ICommonGenerateOptions } from '#/configs/interfaces/ICommonGenerateOptions';
+import type { IModeGenerateOptions } from '#/configs/interfaces/IModeGenerateOptions';
 import { getGlobFiles } from '#/modules/file/getGlobFiles';
 import { defaultExclude } from '#/modules/scope/defaultExclude';
 import { Glob, type GlobOptions } from 'glob';
@@ -9,7 +9,7 @@ export class IncludeContainer {
 
   #map: Map<string, boolean>;
 
-  constructor(args: { config: Pick<ICommonGenerateOptions, 'include'>; cwd?: string }) {
+  constructor(args: { config: Pick<IModeGenerateOptions, 'include'>; cwd?: string }) {
     const globs = new Glob(args.config.include, {
       ignore: defaultExclude,
       cwd: args.cwd ?? process.cwd(),

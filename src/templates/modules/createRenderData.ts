@@ -1,7 +1,7 @@
 import type { CE_GENERATION_STYLE } from '#/configs/const-enum/CE_GENERATION_STYLE';
-import type { ICommandBundleOptions } from '#/configs/interfaces/ICommandBundleOptions';
-import type { ICommonGenerateOptions } from '#/configs/interfaces/ICommonGenerateOptions';
-import type { ICommonTsGenerateOptions } from '#/configs/interfaces/ICommonTsGenerateOptions';
+import type { IModeBundleOptions } from '#/configs/interfaces/IModeBundleOptions';
+import type { IModeGenerateOptions } from '#/configs/interfaces/IModeGenerateOptions';
+import type { IModeTsGenerateOptions } from '#/configs/interfaces/IModeTsGenerateOptions';
 import type { CE_AUTO_RENDER_CASE } from '#/templates/const-enum/CE_AUTO_RENDER_CASE';
 import type { IIndexRenderData } from '#/templates/interfaces/IIndexRenderData';
 
@@ -9,7 +9,7 @@ export function createRenderData(
   renderCase: CE_AUTO_RENDER_CASE,
   style: CE_GENERATION_STYLE,
   option: Pick<
-    ICommonGenerateOptions & ICommonTsGenerateOptions & ICommandBundleOptions,
+    IModeGenerateOptions & IModeTsGenerateOptions & IModeBundleOptions,
     'fileExt' | 'quote' | 'useSemicolon'
   >,
   filePath: string,
