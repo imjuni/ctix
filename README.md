@@ -60,7 +60,7 @@ npx ctix build
 The graph below outlines the behavioral flow of `ctix`.
 
 ```mermaid
-flowchart TD
+flowchart LR
     START(start) --> |execute cli|ctix
     ctix --> |TypeScript Compiler API| INP01[Source Code files]
     ctix --> |TypeScript Compiler API| INP02["tsconfig.json"]

@@ -1,11 +1,11 @@
+import { CE_INLINE_COMMENT_KEYWORD } from '#/comments/const-enum/CE_INLINE_COMMENT_KEYWORD';
 import { getInlineStyle } from '#/comments/getInlineStyle';
+import { getSourceFileComments } from '#/comments/getSourceFileComments';
 import { describe, expect, it, jest } from '@jest/globals';
 import * as cp from 'comment-parser';
 import { randomUUID } from 'node:crypto';
 import path from 'node:path';
 import * as tsm from 'ts-morph';
-import { CE_INLINE_COMMENT_KEYWORD } from '../const-enum/CE_INLINE_COMMENT_KEYWORD';
-import { getSourceFileComments } from '../getSourceFileComments';
 
 const tsconfigPath = path.join(process.cwd(), 'example', 'tsconfig.example.json');
 const context = {

@@ -1,8 +1,8 @@
+import { SymbolTable } from '#/compilers/SymbolTable';
 import { describe, expect, it } from '@jest/globals';
 import { randomUUID } from 'node:crypto';
 import path from 'node:path';
 import * as tsm from 'ts-morph';
-import { SymbolTable } from '../SymbolTable';
 
 const tsconfigPath = path.join(process.cwd(), 'example', 'tsconfig.example.json');
 const context = {

@@ -1,6 +1,6 @@
 import { getCommentNamespace } from '#/comments/getCommentNamespace';
+import { getCommentNamespaces } from '#/comments/getCommentNamespaces';
 import { describe, expect, it } from '@jest/globals';
-import { getCommentNamespaces } from '../getCommentNamespaces';
 
 describe('getCommentNamespace', () => {
   it('ends-with ,', () => {
