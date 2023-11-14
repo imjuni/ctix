@@ -37,6 +37,7 @@ In addition, `ctix` will auto-generate `barrel` files so that a single `index.d.
 - [Installation](#installation)
 - [Usage](#usage)
   - [How can I exclude unwanted files?](#how-can-i-exclude-unwanted-files)
+  - [Programming interface](#programming-interface)
 - [Requirement](#requirement)
 - [Important](#important)
 - [More information](#more-information)
@@ -138,6 +139,18 @@ const Button = () => {
   return <button>Sample</button>
 }
 ```
+
+### Programming interface
+
+When using task runners like Gulp and Just, as well as bundlers like webpack and rollup, you need a programming interface to add ctix.
+
+| function | option | descryption |
+| - | - | - |
+| building | [TCommandBuildOptions](https://github.com/imjuni/ctix/blob/master/src/configs/interfaces/TCommandBuildOptions.ts) | Execute the `build` command |
+| initializing | [TCommandInitOptions](https://github.com/imjuni/ctix/blob/master/src/configs/interfaces/TCommandInitOptions.ts) | Execute the `init` command |
+| removing | [TCommandRemoveOptions](https://github.com/imjuni/ctix/blob/master/src/configs/interfaces/TCommandRemoveOptions.ts), [TCommandBuildOptions](https://github.com/imjuni/ctix/blob/master/src/configs/interfaces/TCommandBuildOptions.ts) | Execute the `remove` command |
+
+Check out the [example code](https://github.com/imjuni/ctix/blob/master/doc/PROGRAMMING_INTERFACE.md).
 
 ## Requirement
 
