@@ -1,13 +1,13 @@
-import { setCommandBundleOptions } from '#/cli/builders/setCommandBundleOptions';
-import { setCommandCreateOptions } from '#/cli/builders/setCommandCreateOptions';
 import { setCommandRemoveOptions } from '#/cli/builders/setCommandRemoveOptions';
-import { setCommonGenerateOptions } from '#/cli/builders/setCommonGenerateOptions';
+import { setModeBundleOptions } from '#/cli/builders/setModeBundleOptions';
+import { setModeCreateOptions } from '#/cli/builders/setModeCreateOptions';
+import { setModeGenerateOptions } from '#/cli/builders/setModeGenerateOptions';
 import { setProjectOptions } from '#/cli/builders/setProjectOptions';
-import type { ICommandBundleOptions } from '#/configs/interfaces/ICommandBundleOptions';
-import type { ICommandCreateOptions } from '#/configs/interfaces/ICommandCreateOptions';
 import type { ICommandRemoveOptions } from '#/configs/interfaces/ICommandRemoveOptions';
-import type { ICommonGenerateOptions } from '#/configs/interfaces/ICommonGenerateOptions';
-import type { ICommonTsGenerateOptions } from '#/configs/interfaces/ICommonTsGenerateOptions';
+import type { IModeBundleOptions } from '#/configs/interfaces/IModeBundleOptions';
+import type { IModeCreateOptions } from '#/configs/interfaces/IModeCreateOptions';
+import type { IModeGenerateOptions } from '#/configs/interfaces/IModeGenerateOptions';
+import type { IModeTsGenerateOptions } from '#/configs/interfaces/IModeTsGenerateOptions';
 import type { IProjectOptions } from '#/configs/interfaces/IProjectOptions';
 import { describe, expect, it } from '@jest/globals';
 import yargs from 'yargs';
@@ -25,8 +25,8 @@ describe('option builder', () => {
   describe('setCommonGenerateOptions', () => {
     it('common option builded', () => {
       const y = yargs(hideBin(process.argv));
-      const builded = setCommonGenerateOptions(
-        y as unknown as yargs.Argv<ICommonGenerateOptions & ICommonTsGenerateOptions>,
+      const builded = setModeGenerateOptions(
+        y as unknown as yargs.Argv<IModeGenerateOptions & IModeTsGenerateOptions>,
       );
       expect(builded).toBeDefined();
     });
@@ -35,7 +35,7 @@ describe('option builder', () => {
   describe('setCommandCreateOptions', () => {
     it('common option builded', () => {
       const y = yargs(hideBin(process.argv));
-      const builded = setCommandCreateOptions(y as unknown as yargs.Argv<ICommandCreateOptions>);
+      const builded = setModeCreateOptions(y as unknown as yargs.Argv<IModeCreateOptions>);
       expect(builded).toBeDefined();
     });
   });
@@ -43,7 +43,7 @@ describe('option builder', () => {
   describe('setCommandBundleOptions', () => {
     it('common option builded', () => {
       const y = yargs(hideBin(process.argv));
-      const builded = setCommandBundleOptions(y as unknown as yargs.Argv<ICommandBundleOptions>);
+      const builded = setModeBundleOptions(y as unknown as yargs.Argv<IModeBundleOptions>);
       expect(builded).toBeDefined();
     });
   });

@@ -1,9 +1,9 @@
 import { getFileScope } from '#/compilers/getFileScope';
-import type { ICommonGenerateOptions } from '#/configs/interfaces/ICommonGenerateOptions';
 import type { IExtendOptions } from '#/configs/interfaces/IExtendOptions';
+import type { IModeGenerateOptions } from '#/configs/interfaces/IModeGenerateOptions';
 
 export function getTsExcludeFiles(config: {
-  config: Pick<ICommonGenerateOptions, 'exclude'>;
+  config: Pick<IModeGenerateOptions, 'exclude'>;
   extend: Pick<IExtendOptions, 'tsconfig'>;
 }): string[] {
   if (config.config.exclude != null && config.config.exclude.length > 0) {

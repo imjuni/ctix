@@ -1,8 +1,8 @@
 import { ProgressBar } from '#/cli/ux/ProgressBar';
 import { Reasoner } from '#/cli/ux/Reasoner';
 import { Spinner } from '#/cli/ux/Spinner';
-import { createBuildOptions } from '#/configs/createBuildOptions';
 import type { TCommandBuildArgvOptions } from '#/configs/interfaces/TCommandBuildArgvOptions';
+import { createBuildOptions } from '#/configs/transforms/createBuildOptions';
 import { building } from '#/modules/commands/building';
 import consola from 'consola';
 import type yargs from 'yargs';

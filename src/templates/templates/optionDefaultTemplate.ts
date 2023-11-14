@@ -1,8 +1,5 @@
 export const optionDefaultTemplate = `
 {
-  // configuration file(.ctirc) path
-  "config": "<%= it.config %>",
-
   // Stream of cli spinner, you can pass stdout or stderr
   //
   // @mode all

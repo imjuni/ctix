@@ -1,7 +1,7 @@
 import type { CE_EXTENSION_PROCESSING } from '#/configs/const-enum/CE_EXTENSION_PROCESSING';
 import type { CE_GENERATION_STYLE } from '#/configs/const-enum/CE_GENERATION_STYLE';
 
-export interface ICommonTsGenerateOptions {
+export interface IModeTsGenerateOptions {
   /**
    * keep file extension in export statement path
    *

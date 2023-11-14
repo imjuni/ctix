@@ -1,6 +1,6 @@
 import type { IExportStatement } from '#/compilers/interfaces/IExportStatement';
-import type { ICommandBundleOptions } from '#/configs/interfaces/ICommandBundleOptions';
-import type { ICommonGenerateOptions } from '#/configs/interfaces/ICommonGenerateOptions';
+import type { IModeBundleOptions } from '#/configs/interfaces/IModeBundleOptions';
+import type { IModeGenerateOptions } from '#/configs/interfaces/IModeGenerateOptions';
 import { addCurrentDirPrefix } from '#/modules/path/addCurrentDirPrefix';
 import { getExtname } from '#/modules/path/getExtname';
 import { getRelativeDepth } from '#/modules/path/getRelativeDepth';
@@ -9,10 +9,7 @@ import { getDirname } from 'my-node-fp';
 import path from 'node:path';
 
 export async function getModuleRenderData(
-  option: Pick<
-    ICommonGenerateOptions & ICommandBundleOptions,
-    'project' | 'quote' | 'useSemicolon'
-  >,
+  option: Pick<IModeGenerateOptions & IModeBundleOptions, 'project' | 'quote' | 'useSemicolon'>,
   filePath: string,
   output: string,
 ): Promise<IIndexRenderData | undefined> {

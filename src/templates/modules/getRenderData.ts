@@ -1,7 +1,7 @@
 import type { IExportStatement } from '#/compilers/interfaces/IExportStatement';
-import type { ICommandBundleOptions } from '#/configs/interfaces/ICommandBundleOptions';
-import type { ICommonGenerateOptions } from '#/configs/interfaces/ICommonGenerateOptions';
-import type { ICommonTsGenerateOptions } from '#/configs/interfaces/ICommonTsGenerateOptions';
+import type { IModeBundleOptions } from '#/configs/interfaces/IModeBundleOptions';
+import type { IModeGenerateOptions } from '#/configs/interfaces/IModeGenerateOptions';
+import type { IModeTsGenerateOptions } from '#/configs/interfaces/IModeTsGenerateOptions';
 import { addCurrentDirPrefix } from '#/modules/path/addCurrentDirPrefix';
 import { getExtname } from '#/modules/path/getExtname';
 import { getImportStatementExtname } from '#/modules/path/getImportStatementExtname';
@@ -10,7 +10,7 @@ import path from 'node:path';
 
 export function getRenderData(
   option: Pick<
-    ICommonGenerateOptions & ICommonTsGenerateOptions & ICommandBundleOptions,
+    IModeGenerateOptions & IModeTsGenerateOptions & IModeBundleOptions,
     'fileExt' | 'quote' | 'useSemicolon'
   >,
   filePath: string,

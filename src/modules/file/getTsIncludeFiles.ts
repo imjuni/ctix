@@ -1,10 +1,10 @@
 import { getFileScope } from '#/compilers/getFileScope';
-import type { ICommonGenerateOptions } from '#/configs/interfaces/ICommonGenerateOptions';
 import type { IExtendOptions } from '#/configs/interfaces/IExtendOptions';
+import type { IModeGenerateOptions } from '#/configs/interfaces/IModeGenerateOptions';
 import { isDescendant } from 'my-node-fp';
 
 export function getTsIncludeFiles(config: {
-  config: Pick<ICommonGenerateOptions, 'include'>;
+  config: Pick<IModeGenerateOptions, 'include'>;
   extend: Pick<IExtendOptions, 'tsconfig'> & {
     resolved: Pick<IExtendOptions['resolved'], 'projectDirPath'>;
   };

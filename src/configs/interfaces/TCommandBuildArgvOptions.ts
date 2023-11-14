@@ -1,13 +1,13 @@
-import type { ICommandBundleOptions } from '#/configs/interfaces/ICommandBundleOptions';
-import type { ICommandCreateOptions } from '#/configs/interfaces/ICommandCreateOptions';
-import type { ICommonGenerateOptions } from '#/configs/interfaces/ICommonGenerateOptions';
 import type { ICommonModeOptions } from '#/configs/interfaces/ICommonModeOptions';
-import type { ICommonTsGenerateOptions } from '#/configs/interfaces/ICommonTsGenerateOptions';
+import type { IModeBundleOptions } from '#/configs/interfaces/IModeBundleOptions';
+import type { IModeCreateOptions } from '#/configs/interfaces/IModeCreateOptions';
+import type { IModeGenerateOptions } from '#/configs/interfaces/IModeGenerateOptions';
+import type { IModeTsGenerateOptions } from '#/configs/interfaces/IModeTsGenerateOptions';
 import type { IProjectOptions } from '#/configs/interfaces/IProjectOptions';
 
 export type TCommandBuildArgvOptions = IProjectOptions &
   ICommonModeOptions &
-  ICommonGenerateOptions &
-  ICommonTsGenerateOptions &
-  ICommandBundleOptions &
-  ICommandCreateOptions;
+  IModeGenerateOptions &
+  IModeTsGenerateOptions &
+  IModeBundleOptions &
+  IModeCreateOptions;

@@ -1,6 +1,6 @@
 import { getTypeScriptConfig } from '#/compilers/getTypeScriptConfig';
-import { getSourceFileEol } from '#/configs/getSourceFileEol';
 import type { IExtendOptions } from '#/configs/interfaces/IExtendOptions';
+import { getSourceFileEol } from '#/configs/modules/getSourceFileEol';
 import { getDepth } from '#/modules/path/getDepth';
 import { settify } from 'my-easy-fp';
 import { getDirname, isDescendant, replaceSepToPosix } from 'my-node-fp';

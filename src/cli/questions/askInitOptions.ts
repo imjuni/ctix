@@ -1,6 +1,7 @@
 import type { IInitQuestionAnswer } from '#/cli/interfaces/IInitQuestionAnswer';
 import { CE_CTIX_BUILD_MODE } from '#/configs/const-enum/CE_CTIX_BUILD_MODE';
 import { CE_CTIX_DEFAULT_VALUE } from '#/configs/const-enum/CE_CTIX_DEFAULT_VALUE';
+import { getTsconfigComparer } from '#/configs/modules/getTsconfigComparer';
 import { getGlobFiles } from '#/modules/file/getGlobFiles';
 import { defaultExclude } from '#/modules/scope/defaultExclude';
 import chalk from 'chalk';
@@ -23,8 +24,12 @@ export async function askInitOptions(): Promise<IInitQuestionAnswer> {
 
   const optionFilePath = path.join(cwdAnswer.cwd, CE_CTIX_DEFAULT_VALUE.CONFIG_FILENAME);
   const optionFileExist = await exists(optionFilePath);
-  const glob = new Glob('**/tsconfig.json', { cwd: cwdAnswer.cwd, ignore: defaultExclude });
+  const glob = new Glob(['**/tsconfig.json', '**/tsconfig.*.json'], {
+    cwd: cwdAnswer.cwd,
+    ignore: defaultExclude,
+  });
   const tsconfigFiles = getGlobFiles(glob);
+  const sortedTsconfigFiles = tsconfigFiles.sort(getTsconfigComparer(cwdAnswer.cwd));
 
   if (optionFileExist) {
     const overwriteAnswer = await inquirer.prompt<Pick<IInitQuestionAnswer, 'overwirte'>>([
@@ -52,8 +57,8 @@ export async function askInitOptions(): Promise<IInitQuestionAnswer> {
       type: 'checkbox',
       name: 'tsconfig',
       message: 'Select your tsconfig files',
-      default: tsconfigFiles,
-      choices: tsconfigFiles,
+      default: sortedTsconfigFiles,
+      choices: sortedTsconfigFiles,
     },
     {
       type: 'list',
