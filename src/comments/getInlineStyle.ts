@@ -1,10 +1,10 @@
+import { getCommentNamespaces } from '#/comments/getCommentNamespaces';
 import { getJsDocComment } from '#/comments/getJsDocComment';
 import { getJsDocTag } from '#/comments/getJsDocTag';
 import type { IInlineGenerationStyleInfo } from '#/comments/interfaces/IInlineGenerationStyleInfo';
 import type { IStatementComments } from '#/comments/interfaces/IStatementComments';
 import { getGenerationStyle } from '#/templates/modules/getGenerationStyle';
 import { parse } from 'comment-parser';
-import { getCommentNamespaces } from './getCommentNamespaces';
 
 export function getInlineStyle(params: {
   comment: IStatementComments;

@@ -1,6 +1,7 @@
 import type { IStatementComments } from '#/comments/interfaces/IStatementComments';
 import { CE_GENERATION_STYLE } from '#/configs/const-enum/CE_GENERATION_STYLE';
 import { filenamify } from '#/modules/path/filenamify';
+import { CE_AUTO_RENDER_CASE } from '#/templates/const-enum/CE_AUTO_RENDER_CASE';
 import type { IIndexRenderData } from '#/templates/interfaces/IIndexRenderData';
 import { getSelectStyle } from '#/templates/modules/getSelectStyle';
 import { describe, expect, it } from '@jest/globals';
@@ -8,7 +9,6 @@ import copy from 'fast-copy';
 import { randomUUID } from 'node:crypto';
 import path from 'node:path';
 import * as tsm from 'ts-morph';
-import { CE_AUTO_RENDER_CASE } from '../const-enum/CE_AUTO_RENDER_CASE';
 
 const uuid = randomUUID();
 const filename = `${uuid}.ts`;
