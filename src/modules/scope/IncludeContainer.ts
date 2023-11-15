@@ -9,23 +9,23 @@ export class IncludeContainer {
 
   #map: Map<string, boolean>;
 
-  constructor(args: { config: Pick<IModeGenerateOptions, 'include'>; cwd?: string }) {
-    const globs = new Glob(args.config.include, {
+  constructor(params: { config: Pick<IModeGenerateOptions, 'include'>; cwd: string }) {
+    const globs = new Glob(params.config.include, {
+      absolute: true,
       ignore: defaultExclude,
-      cwd: args.cwd ?? process.cwd(),
+      cwd: params.cwd,
     });
 
-    this.#map = new Map<string, boolean>();
-
-    for (const filePath of globs) {
-      this.#map.set(path.resolve(filePath), true);
-    }
-
+    this.#map = new Map<string, boolean>(getGlobFiles(globs).map((filePath) => [filePath, true]));
     this.#globs = [globs];
   }
 
   get globs(): Readonly<Glob<GlobOptions>[]> {
     return this.#globs;
+  }
+
+  get map(): Readonly<Map<string, boolean>> {
+    return this.#map;
   }
 
   isInclude(filePath: string): boolean {

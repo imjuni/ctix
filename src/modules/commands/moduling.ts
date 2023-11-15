@@ -36,6 +36,7 @@ export async function moduling(_buildOptions: TCommandBuildOptions, moduleOption
 
   const include = new IncludeContainer({
     config: { include: getTsIncludeFiles({ config: moduleOption, extend: extendOptions }) },
+    cwd: extendOptions.resolved.projectDirPath,
   });
 
   const inlineExcludeds = getInlineExcludedFiles({
@@ -53,6 +54,7 @@ export async function moduling(_buildOptions: TCommandBuildOptions, moduleOption
       exclude: [...getTsExcludeFiles({ config: moduleOption, extend: extendOptions }), ...[output]],
     },
     inlineExcludeds,
+    cwd: extendOptions.resolved.projectDirPath,
   });
 
   const filenames = include.files().filter((filename) => !exclude.isExclude(filename));

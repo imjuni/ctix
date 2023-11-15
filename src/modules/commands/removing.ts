@@ -18,6 +18,7 @@ export async function removing(
 
   const include = new IncludeContainer({
     config: { include: patterns.map((projectDir) => projectDir.pattern) },
+    cwd: process.cwd(),
   });
   const filePaths = include.files();
 

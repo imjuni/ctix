@@ -18,6 +18,10 @@ export async function transformCreateMode(
     exclude: TCreateOptions['exclude'];
   },
 ): Promise<TCreateOptions> {
+  const startFrom =
+    argv.startFrom ?? option.startFrom ?? path.resolve(await getDirname(argv.project));
+  const resolvedStartFrom = path.isAbsolute(startFrom) ? startFrom : path.resolve(startFrom);
+
   return {
     mode: CE_CTIX_BUILD_MODE.CREATE_MODE,
     project: argv.project,
@@ -36,6 +40,6 @@ export async function transformCreateMode(
     exclude: option.exclude,
 
     skipEmptyDir: argv.skipEmptyDir ?? option.skipEmptyDir ?? true,
-    startFrom: argv.startFrom ?? option.startFrom ?? path.resolve(await getDirname(argv.project)),
+    startFrom: resolvedStartFrom,
   };
 }

@@ -7,15 +7,18 @@ describe('ExcludeContainer', () => {
     const container = new ExcludeContainer({
       config: { exclude: ['src/cli/**/*.ts', 'src/compilers/**/*.ts'] },
       inlineExcludeds: [],
+      cwd: process.cwd(),
     });
 
     expect(container.globs).toBeDefined();
+    expect(container.map).toBeDefined();
   });
 
   it('isExclude - no glob files', () => {
     const container = new ExcludeContainer({
       config: { exclude: [] },
       inlineExcludeds: [],
+      cwd: process.cwd(),
     });
 
     const r01 = container.isExclude('src/files/IncludeContainer.ts');
@@ -47,6 +50,7 @@ describe('ExcludeContainer', () => {
           filePath: path.resolve('example/type03/HandsomelyCls.tsx'),
         },
       ],
+      cwd: process.cwd(),
     });
 
     const r01 = container.isExclude('src/files/IncludeContainer.ts');
@@ -75,6 +79,7 @@ describe('ExcludeContainer', () => {
         ],
       },
       inlineExcludeds: [],
+      cwd: process.cwd(),
     });
 
     const r01 = container.isExclude('src/files/IncludeContainer.ts');

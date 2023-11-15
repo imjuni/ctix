@@ -11,7 +11,7 @@
       "output": "example/type10/components",
       "overwrite": true,
       "backup": false,
-      "include": ["example/type10/components/**/*.vue"]
+      "include": ["components/**/*.vue"]
     },
     {
       "mode": "bundle",
