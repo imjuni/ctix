@@ -41,15 +41,19 @@ export async function bundling(_buildOptions: TCommandBuildOptions, bundleOption
   Spinner.it.update('include, exclude config');
 
   const output = path.resolve(path.join(bundleOption.output, bundleOption.exportFilename));
+  const filePaths = project
+    .getSourceFiles()
+    .map((sourceFile) => sourceFile.getFilePath().toString());
 
   const include = new IncludeContainer({
     config: { include: getTsIncludeFiles({ config: bundleOption, extend: extendOptions }) },
+    cwd: extendOptions.resolved.projectDirPath,
   });
 
   const inlineExcludeds = getInlineExcludedFiles({
     project,
     extendOptions,
-    filePaths: extendOptions.tsconfig.fileNames,
+    filePaths,
   });
 
   /**
@@ -61,9 +65,10 @@ export async function bundling(_buildOptions: TCommandBuildOptions, bundleOption
       exclude: [...getTsExcludeFiles({ config: bundleOption, extend: extendOptions }), ...[output]],
     },
     inlineExcludeds,
+    cwd: extendOptions.resolved.projectDirPath,
   });
 
-  const filenames = extendOptions.tsconfig.fileNames
+  const filenames = filePaths
     .filter((filename) => include.isInclude(filename))
     .filter((filename) => !exclude.isExclude(filename));
 

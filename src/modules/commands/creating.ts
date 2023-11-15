@@ -52,19 +52,24 @@ export async function creating(_buildOptions: TCommandBuildOptions, createOption
   Spinner.it.succeed(`${createOption.project} loading complete!`);
   Spinner.it.update('include, exclude config');
 
+  const filePaths = project
+    .getSourceFiles()
+    .map((sourceFile) => sourceFile.getFilePath().toString());
+
   const include = new IncludeContainer({
     config: { include: getTsIncludeFiles({ config: createOption, extend: extendOptions }) },
+    cwd: extendOptions.resolved.projectDirPath,
   });
 
   const inlineExcludeds = getInlineExcludedFiles({
     project,
     extendOptions,
-    filePaths: extendOptions.tsconfig.fileNames,
+    filePaths,
   });
 
   const outputExcludeds = await getOutputExcludedFiles({
     project,
-    filePaths: extendOptions.tsconfig.fileNames,
+    filePaths,
     extendOptions,
     exportFilename: createOption.exportFilename,
   });
@@ -80,10 +85,11 @@ export async function creating(_buildOptions: TCommandBuildOptions, createOption
         ...outputExcludeds,
       ],
     },
+    cwd: extendOptions.resolved.projectDirPath,
     inlineExcludeds,
   });
 
-  const filenames = extendOptions.tsconfig.fileNames
+  const filenames = filePaths
     .filter((filename) => include.isInclude(filename))
     .filter((filename) => !exclude.isExclude(filename));
 
@@ -223,7 +229,15 @@ export async function creating(_buildOptions: TCommandBuildOptions, createOption
       const firstExistDir = parentDirs
         .sort((l, r) => getDepth(r) - getDepth(l))
         .find((dir) => {
-          return (dirPathMap.get(dir) ?? []).length > 0;
+          if ((dirPathMap.get(dir) ?? []).length > 0) {
+            return true;
+          }
+
+          if (dir === createOption.startFrom) {
+            return true;
+          }
+
+          return false;
         });
 
       if (firstExistDir == null) {

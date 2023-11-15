@@ -1,5 +1,6 @@
 import type { IInlineExcludeInfo } from '#/comments/interfaces/IInlineExcludeInfo';
 import type { IModeGenerateOptions } from '#/configs/interfaces/IModeGenerateOptions';
+import { getGlobFiles } from '#/modules/file/getGlobFiles';
 import { defaultExclude } from '#/modules/scope/defaultExclude';
 import { Glob, type GlobOptions } from 'glob';
 import path from 'node:path';
@@ -14,21 +15,16 @@ export class ExcludeContainer {
   constructor(params: {
     config: Pick<IModeGenerateOptions, 'exclude'>;
     inlineExcludeds: IInlineExcludeInfo[];
-    cwd?: string;
+    cwd: string;
   }) {
     const globs = new Glob(params.config.exclude, {
+      absolute: true,
       ignore: defaultExclude,
-      cwd: params.cwd ?? process.cwd(),
+      cwd: params.cwd,
     });
 
-    this.#map = new Map<string, boolean>();
-
-    for (const filePath of globs) {
-      this.#map.set(path.resolve(filePath), true);
-    }
-
+    this.#map = new Map<string, boolean>(getGlobFiles(globs).map((filePath) => [filePath, true]));
     this.#globs = [globs];
-
     this.#inline = new Map<string, IInlineExcludeInfo & { filePath: string }>();
 
     params.inlineExcludeds.forEach((inlineExcluded) => {
@@ -41,6 +37,10 @@ export class ExcludeContainer {
 
   get globs(): Readonly<Glob<GlobOptions>[]> {
     return this.#globs;
+  }
+
+  get map(): Readonly<Map<string, boolean>> {
+    return this.#map;
   }
 
   isExclude(filePath: string): boolean {

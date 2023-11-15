@@ -9,14 +9,17 @@ describe('IncludeContainer', () => {
   it('getter', () => {
     const container = new IncludeContainer({
       config: { include: ['src/cli/**/*.ts', 'src/compilers/**/*.ts', 'examples/**/*.ts'] },
+      cwd: process.cwd(),
     });
 
     expect(container.globs).toBeDefined();
+    expect(container.map).toBeDefined();
   });
 
   it('isInclude - no glob files', () => {
     const container = new IncludeContainer({
       config: { include: [] },
+      cwd: process.cwd(),
     });
 
     const r01 = container.isInclude('src/files/IncludeContainer.ts');
@@ -26,6 +29,7 @@ describe('IncludeContainer', () => {
   it('isInclude', () => {
     const container = new IncludeContainer({
       config: { include: ['src/cli/**/*.ts', 'src/compilers/**/*.ts', 'examples/**/*.ts'] },
+      cwd: process.cwd(),
     });
 
     const r01 = container.isInclude('src/files/IncludeContainer.ts');
@@ -51,6 +55,7 @@ describe('IncludeContainer', () => {
           'examples/**/*.ts',
         ],
       },
+      cwd: process.cwd(),
     });
 
     const r01 = container.isInclude('src/files/IncludeContainer.ts');
@@ -75,10 +80,12 @@ describe('IncludeContainer', () => {
       new Glob('example/type03/**/*.ts', {
         ignore: defaultExclude,
         cwd: process.cwd(),
+        absolute: true,
       }),
     );
     const container = new IncludeContainer({
       config: { include: ['example/type03/**/*.ts'] },
+      cwd: process.cwd(),
     });
 
     const r01 = container.files();
