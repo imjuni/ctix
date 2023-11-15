@@ -1,6 +1,6 @@
 {
   "name": "ctix",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "description": "Automatic create index.ts file",
   "scripts": {
     "clean": "rimraf ./dist",
