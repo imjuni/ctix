@@ -17,6 +17,10 @@ export interface IInlineExcludeInfo {
     start: number;
   };
 
-  /** 사용자가 exclude에 namespace를 지정한 경우, namespace */
-  namespaces?: string[];
+  /**
+   * 사용자가 exclude에 workspace를 지정한 경우, workspace
+   *
+   * If the user specified a workspace in the `exclude comment`, the `workspace`
+   * */
+  workspaces?: string[];
 }
