@@ -187,7 +187,7 @@ describe('getInlineExclude', () => {
         column: 1,
         start: 1,
       },
-      namespaces: [],
+      workspaces: [],
     });
   });
 
@@ -221,7 +221,7 @@ describe('getInlineExclude', () => {
         column: 2,
         start: 2,
       },
-      namespaces: [],
+      workspaces: [],
     });
   });
 
@@ -262,7 +262,7 @@ describe('getInlineExclude', () => {
         start: 3,
       },
       filePath: path.join(process.cwd(), filename),
-      namespaces: [],
+      workspaces: [],
     });
   });
 
@@ -303,7 +303,7 @@ describe('getInlineExclude', () => {
         start: 4,
       },
       filePath: path.join(process.cwd(), filename),
-      namespaces: [],
+      workspaces: [],
     });
   });
 
@@ -344,7 +344,7 @@ describe('getInlineExclude', () => {
         start: 5,
       },
       filePath: path.join(process.cwd(), filename),
-      namespaces: ['i-am-ironman'],
+      workspaces: ['i-am-ironman'],
     });
   });
 
@@ -385,7 +385,7 @@ describe('getInlineExclude', () => {
         start: 6,
       },
       filePath: path.join(process.cwd(), filename),
-      namespaces: ['i-am-ironman', 'i-am-marvel'],
+      workspaces: ['i-am-ironman', 'i-am-marvel'],
     });
   });
 
@@ -420,7 +420,7 @@ describe('getInlineExclude', () => {
         start: 7,
       },
       filePath: path.join(process.cwd(), filename),
-      namespaces: [],
+      workspaces: [],
     });
   });
 
@@ -588,7 +588,7 @@ describe('getInlineExclude', () => {
         start: 7,
       },
       tag: 'ctix-exclude-next',
-      namespaces: [],
+      workspaces: [],
     });
   });
 });

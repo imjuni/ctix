@@ -1,4 +1,4 @@
-import { getCommentNamespaces } from '#/comments/getCommentNamespaces';
+import { getCommentWorkspaces } from '#/comments/getCommentWorkspaces';
 import { getJsDocComment } from '#/comments/getJsDocComment';
 import { getJsDocTag } from '#/comments/getJsDocTag';
 import type { IInlineGenerationStyleInfo } from '#/comments/interfaces/IInlineGenerationStyleInfo';
@@ -27,7 +27,7 @@ export function getInlineStyle(params: {
       filePath: params.comment.filePath,
       style: getGenerationStyle(tag.name),
       pos: params.comment.pos,
-      namespaces: getCommentNamespaces(tag.description ?? ''),
+      workspaces: getCommentWorkspaces(tag.description ?? ''),
     } satisfies IInlineGenerationStyleInfo;
   }
 

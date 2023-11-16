@@ -108,7 +108,7 @@ describe('getInlineStyle', () => {
           line: 14,
           column: 1,
         },
-        namespaces: ['namespace-001', 'namespace-002'],
+        workspaces: ['namespace-001', 'namespace-002'],
       },
     ]);
   });
@@ -361,7 +361,7 @@ describe('getInlineStyle', () => {
           line: 11,
           column: 1,
         },
-        namespaces: [],
+        workspaces: [],
       },
     ]);
   });

@@ -19,6 +19,10 @@ export interface IInlineGenerationStyleInfo {
     start: number;
   };
 
-  /** 사용자가 exclude에 namespace를 지정한 경우, namespace */
-  namespaces?: string[];
+  /**
+   * 사용자가 style comment에 namespace를 지정한 경우, namespace
+   *
+   * If the user specified a workspace in the `exclude style`, the `workspace`
+   * */
+  workspaces?: string[];
 }

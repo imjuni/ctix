@@ -67,7 +67,7 @@ export class SuperHero {
           column: 1,
         },
         tag: 'ctix-exclude',
-        namespaces: [],
+        workspaces: [],
       },
     ]);
   });
@@ -129,7 +129,7 @@ export class DCHero {
           column: 1,
         },
         tag: 'ctix-exclude',
-        namespaces: [],
+        workspaces: [],
       },
     ]);
   });

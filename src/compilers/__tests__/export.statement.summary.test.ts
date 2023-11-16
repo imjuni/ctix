@@ -237,7 +237,7 @@ export class UnknownHero {
             column: 1,
           },
           tag: 'ctix-exclude-next',
-          namespaces: [],
+          workspaces: [],
         },
       ],
     } satisfies IExportStatement);

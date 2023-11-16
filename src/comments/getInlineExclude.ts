@@ -1,4 +1,4 @@
-import { getCommentNamespaces } from '#/comments/getCommentNamespaces';
+import { getCommentWorkspaces } from '#/comments/getCommentWorkspaces';
 import { getJsDocComment } from '#/comments/getJsDocComment';
 import { getJsDocTag } from '#/comments/getJsDocTag';
 import type { IInlineExcludeInfo } from '#/comments/interfaces/IInlineExcludeInfo';
@@ -26,7 +26,7 @@ export function getInlineExclude(params: {
       filePath: params.comment.filePath,
       pos: params.comment.pos,
       tag: tag.tag,
-      namespaces: getCommentNamespaces([tag.name ?? '', tag.description ?? ''].join(' ')),
+      workspaces: getCommentWorkspaces([tag.name ?? '', tag.description ?? ''].join(' ')),
     } satisfies IInlineExcludeInfo;
   }
 
