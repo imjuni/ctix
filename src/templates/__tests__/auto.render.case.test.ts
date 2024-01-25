@@ -3,8 +3,9 @@ import { filenamify } from '#/modules/path/filenamify';
 import { CE_AUTO_RENDER_CASE } from '#/templates/const-enum/CE_AUTO_RENDER_CASE';
 import type { IIndexRenderData } from '#/templates/interfaces/IIndexRenderData';
 import { getAutoRenderCase } from '#/templates/modules/getAutoRenderCase';
-import { describe, expect, it } from '@jest/globals';
+import { replaceSepToPosix } from 'my-node-fp';
 import { randomUUID } from 'node:crypto';
+import { describe, expect, it } from 'vitest';
 
 const uuid = randomUUID();
 const filename = `${uuid}.ts`;
@@ -26,7 +27,7 @@ const context: IIndexRenderData = {
       {
         path: {
           filename,
-          dirPath: process.cwd(),
+          dirPath: replaceSepToPosix(process.cwd()),
           relativePath: '..',
         },
         depth: 2,
@@ -47,7 +48,7 @@ const context: IIndexRenderData = {
       {
         path: {
           filename,
-          dirPath: process.cwd(),
+          dirPath: replaceSepToPosix(process.cwd()),
           relativePath: '..',
         },
         depth: 2,

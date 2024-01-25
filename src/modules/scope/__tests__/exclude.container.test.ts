@@ -1,6 +1,7 @@
+import { posixJoin } from '#/modules/path/posixJoin';
 import { ExcludeContainer } from '#/modules/scope/ExcludeContainer';
-import { describe, expect, it } from '@jest/globals';
 import path from 'node:path';
+import { describe, expect, it } from 'vitest';
 
 describe('ExcludeContainer', () => {
   it('getter', () => {
@@ -55,9 +56,9 @@ describe('ExcludeContainer', () => {
 
     const r01 = container.isExclude('src/files/IncludeContainer.ts');
     const r02 = container.isExclude('src/cli/builders/setModeBundleOptions.ts');
-    const r03 = container.isExclude(path.join(process.cwd(), 'src/files/IncludeContainer.ts'));
+    const r03 = container.isExclude(posixJoin(process.cwd(), 'src/files/IncludeContainer.ts'));
     const r04 = container.isExclude(
-      path.join(process.cwd(), 'src/cli/builders/setModeBundleOptions.ts'),
+      posixJoin(process.cwd(), 'src/cli/builders/setModeBundleOptions.ts'),
     );
     const r05 = container.isExclude('example/type03/ComparisonCls.tsx');
 
@@ -84,12 +85,12 @@ describe('ExcludeContainer', () => {
 
     const r01 = container.isExclude('src/files/IncludeContainer.ts');
     const r02 = container.isExclude('src/cli/builders/setModeBundleOptions.ts');
-    const r03 = container.isExclude(path.join(process.cwd(), 'src/files/IncludeContainer.ts'));
+    const r03 = container.isExclude(posixJoin(process.cwd(), 'src/files/IncludeContainer.ts'));
     const r04 = container.isExclude(
-      path.join(process.cwd(), 'src/cli/builders/setModeBundleOptions.ts'),
+      posixJoin(process.cwd(), 'src/cli/builders/setModeBundleOptions.ts'),
     );
     const r05 = container.isExclude(
-      path.join(process.cwd(), 'src/cli/compilers/getTypeScriptProject.ts'),
+      posixJoin(process.cwd(), 'src/cli/compilers/getTypeScriptProject.ts'),
     );
 
     expect(r01).toBeFalsy();

@@ -4,8 +4,8 @@ import type { IIndexFileWriteParams } from '#/templates/interfaces/IIndexFileWri
 import { TemplateContainer } from '#/templates/modules/TemplateContainer';
 import { defaultStarNamedStarDefaultTemplate } from '#/templates/templates/defaultStarNamedStarDefaultTemplate';
 import { optionDefaultTemplate } from '#/templates/templates/optionDefaultTemplate';
-import { beforeAll, describe, expect, it, jest } from '@jest/globals';
-import fs from 'node:fs/promises';
+import fs from 'node:fs';
+import { beforeAll, describe, expect, it, vitest } from 'vitest';
 
 const expactation = new Map<string, string>([
   [CE_TEMPLATE_NAME.INDEX_FILE_TEMPLATE, '1'],
@@ -57,8 +57,8 @@ describe('TemplateContainer', () => {
   });
 
   it('readFiles', async () => {
-    const spyH01 = jest
-      .spyOn(fs, 'readFile')
+    const spyH01 = vitest
+      .spyOn(fs.promises, 'readFile')
       .mockImplementation((name: any) => Promise.resolve(Buffer.from(`${name}\nfile readed`)));
 
     const r01 = await TemplateContainer.readFiles('a');
@@ -77,7 +77,7 @@ describe('TemplateContainer', () => {
   });
 
   it('load by default', async () => {
-    const spyH01 = jest
+    const spyH01 = vitest
       .spyOn(TemplateContainer, 'load')
       .mockImplementation(() => Promise.resolve(expactation));
 
@@ -89,7 +89,7 @@ describe('TemplateContainer', () => {
   });
 
   it('load by template file', async () => {
-    const spyH01 = jest.spyOn(TemplateContainer, 'readFiles').mockImplementation(() =>
+    const spyH01 = vitest.spyOn(TemplateContainer, 'readFiles').mockImplementation(() =>
       Promise.resolve({
         indexFile: '1',
         options: '2',

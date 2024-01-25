@@ -1,11 +1,11 @@
 import { getExportStatement } from '#/compilers/getExportStatement';
 import { filenamify } from '#/modules/path/filenamify';
-import { beforeAll, describe, expect, it } from '@jest/globals';
+import { posixJoin } from '#/modules/path/posixJoin';
 import { randomUUID } from 'node:crypto';
-import path from 'node:path';
 import * as tsm from 'ts-morph';
+import { beforeAll, describe, expect, it } from 'vitest';
 
-const tsconfigPath = path.join(process.cwd(), 'example', 'tsconfig.example.json');
+const tsconfigPath = posixJoin(process.cwd(), 'example', 'tsconfig.example.json');
 const context: {
   tsconfig: string;
   project: tsm.Project;
@@ -26,9 +26,9 @@ describe('getExportStatements - SourceFile', () => {
 
     context.files.push({
       uuid: m00Uuid,
-      dir: path.join(process.cwd(), '@types'),
+      dir: posixJoin(process.cwd(), '@types'),
       name: `${m00Uuid}.d.ts`,
-      filePath: path.join(process.cwd(), '@types', `${m00Uuid}.d.ts`),
+      filePath: posixJoin(process.cwd(), '@types', `${m00Uuid}.d.ts`),
       source: `    
       declare module '*.vue' {
         import Vue from 'vue';
@@ -38,9 +38,9 @@ describe('getExportStatements - SourceFile', () => {
 
     context.files.push({
       uuid: m01Uuid,
-      dir: path.join(process.cwd(), 'lib'),
+      dir: posixJoin(process.cwd(), 'lib'),
       name: `${m01Uuid}.ts`,
-      filePath: path.join(process.cwd(), 'lib', `${m01Uuid}.ts`),
+      filePath: posixJoin(process.cwd(), 'lib', `${m01Uuid}.ts`),
       source: `    
       export function identity <T>(value: T): T {
         return value;
@@ -49,9 +49,9 @@ describe('getExportStatements - SourceFile', () => {
 
     context.files.push({
       uuid: m02Uuid,
-      dir: path.join(process.cwd(), 'components'),
+      dir: posixJoin(process.cwd(), 'components'),
       name: `${m02Uuid}.ts`,
-      filePath: path.join(process.cwd(), 'components', `${m02Uuid}.ts`),
+      filePath: posixJoin(process.cwd(), 'components', `${m02Uuid}.ts`),
       source: `    
       /// <reference path="../@types/${m00Uuid}.d.ts" />
       import Foo from './Foo.vue';

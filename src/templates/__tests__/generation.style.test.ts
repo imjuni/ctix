@@ -1,6 +1,6 @@
 import { CE_GENERATION_STYLE } from '#/configs/const-enum/CE_GENERATION_STYLE';
 import { getGenerationStyle } from '#/templates//modules/getGenerationStyle';
-import { describe, expect, it } from '@jest/globals';
+import { describe, expect, it } from 'vitest';
 
 describe('getGenerationStyle', () => {
   it('pass', async () => {

@@ -1,5 +1,5 @@
 import { getTsconfigComparer } from '#/configs/modules/getTsconfigComparer';
-import { describe, expect, it } from '@jest/globals';
+import { describe, expect, it } from 'vitest';
 
 describe('getTsconfigComparer', () => {
   it('sort multi depth tsconfig', async () => {

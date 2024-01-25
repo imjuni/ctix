@@ -1,8 +1,8 @@
 import { CE_INLINE_COMMENT_KEYWORD } from '#/comments/const-enum/CE_INLINE_COMMENT_KEYWORD';
 import { getJsDocComment } from '#/comments/getJsDocComment';
 import { getJsDocTag } from '#/comments/getJsDocTag';
-import { describe, expect, it } from '@jest/globals';
 import * as tsm from 'ts-morph';
+import { describe, expect, it } from 'vitest';
 
 describe('getJsDocComment', () => {
   it('multi-line comment', () => {

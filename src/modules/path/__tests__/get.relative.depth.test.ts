@@ -1,5 +1,5 @@
 import { getRelativeDepth } from '#/modules/path/getRelativeDepth';
-import { describe, expect, it } from '@jest/globals';
+import { describe, expect, it } from 'vitest';
 
 describe('getRelativeDepth', () => {
   it('normal case, depth 3', () => {

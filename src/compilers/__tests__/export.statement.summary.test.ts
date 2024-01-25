@@ -2,13 +2,13 @@ import { getSummaryStatement } from '#/compilers/getSummaryStatement';
 import type { IExportStatement } from '#/compilers/interfaces/IExportStatement';
 import { filenamify } from '#/modules/path/filenamify';
 import { posixJoin } from '#/modules/path/posixJoin';
-import { describe, expect, it } from '@jest/globals';
 import { atOrThrow } from 'my-easy-fp';
+import { replaceSepToPosix } from 'my-node-fp';
 import { randomUUID } from 'node:crypto';
-import path from 'node:path';
 import * as tsm from 'ts-morph';
+import { describe, expect, it } from 'vitest';
 
-const tsconfigPath = path.join(process.cwd(), 'example', 'tsconfig.example.json');
+const tsconfigPath = posixJoin(process.cwd(), 'example', 'tsconfig.example.json');
 const context = {
   tsconfig: tsconfigPath,
   project: new tsm.Project({
@@ -41,7 +41,7 @@ export default class Hero {
       eol: '\n',
       path: {
         filename: posixJoin(process.cwd(), uuid),
-        dirPath: process.cwd(),
+        dirPath: replaceSepToPosix(process.cwd()),
         relativePath: process.cwd(),
       },
       isDefault: true,
@@ -50,7 +50,7 @@ export default class Hero {
     expect(statement).toMatchObject({
       path: {
         filename: posixJoin(process.cwd(), uuid),
-        dirPath: process.cwd(),
+        dirPath: replaceSepToPosix(process.cwd()),
         relativePath: process.cwd(),
       },
       depth: 0,
@@ -90,7 +90,7 @@ export default class Hero {
       eol: '\n',
       path: {
         filename: posixJoin(process.cwd(), uuid),
-        dirPath: process.cwd(),
+        dirPath: replaceSepToPosix(process.cwd()),
         relativePath: process.cwd(),
       },
     });
@@ -98,7 +98,7 @@ export default class Hero {
     expect(statement).toMatchObject({
       path: {
         filename: posixJoin(process.cwd(), uuid),
-        dirPath: process.cwd(),
+        dirPath: replaceSepToPosix(process.cwd()),
         relativePath: process.cwd(),
       },
       depth: 0,
@@ -135,7 +135,7 @@ export default () => 'invalid use case';
       eol: '\n',
       path: {
         filename: posixJoin(process.cwd(), uuid),
-        dirPath: process.cwd(),
+        dirPath: replaceSepToPosix(process.cwd()),
         relativePath: process.cwd(),
       },
     });
@@ -143,7 +143,7 @@ export default () => 'invalid use case';
     expect(statement).toMatchObject({
       path: {
         filename: posixJoin(process.cwd(), uuid),
-        dirPath: process.cwd(),
+        dirPath: replaceSepToPosix(process.cwd()),
         relativePath: process.cwd(),
       },
       pos: {
@@ -203,7 +203,7 @@ export class UnknownHero {
       eol: '\n',
       path: {
         filename: posixJoin(process.cwd(), uuid),
-        dirPath: process.cwd(),
+        dirPath: replaceSepToPosix(process.cwd()),
         relativePath: process.cwd(),
       },
     });
@@ -211,7 +211,7 @@ export class UnknownHero {
     expect(statement).toMatchObject({
       path: {
         filename: posixJoin(process.cwd(), uuid),
-        dirPath: process.cwd(),
+        dirPath: replaceSepToPosix(process.cwd()),
         relativePath: process.cwd(),
       },
       depth: 0,

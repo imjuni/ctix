@@ -1,5 +1,6 @@
 import { CE_GENERATION_STYLE } from '#/configs/const-enum/CE_GENERATION_STYLE';
 import { addExt } from '#/modules/path/addExt';
+import { posixJoin } from '#/modules/path/posixJoin';
 import { CE_TEMPLATE_NAME } from '#/templates/const-enum/CE_TEMPLATE_NAME';
 import { defaultAliasNamedDestructiveDefaultTemplate } from '#/templates/templates/defaultAliasNamedDestructiveDefaultTemplate';
 import { defaultAliasNamedStarDefaultTemplate } from '#/templates/templates/defaultAliasNamedStarDefaultTemplate';
@@ -13,7 +14,7 @@ import { optionDefaultTemplate } from '#/templates/templates/optionDefaultTempla
 import consola from 'consola';
 import { Eta } from 'eta';
 import { isError } from 'my-easy-fp';
-import { readFile } from 'node:fs/promises';
+import fs from 'node:fs';
 import path from 'node:path';
 
 export class TemplateContainer {
@@ -88,22 +89,22 @@ export class TemplateContainer {
   }
 
   static getTemplateFileNames(basePath: string, templateName: string): string {
-    return path.join(basePath, addExt(templateName, 'eta'));
+    return posixJoin(basePath, addExt(templateName, 'eta'));
   }
 
   static async readFiles(basePath: string) {
     const n = (t: string) => TemplateContainer.getTemplateFileNames(basePath, t);
 
     const buffers = await Promise.all([
-      readFile(n(CE_TEMPLATE_NAME.INDEX_FILE_TEMPLATE)),
-      readFile(n(CE_TEMPLATE_NAME.OPTIONS_TEMPLATE)),
-      readFile(n(CE_TEMPLATE_NAME.NESTED_OPTIONS_TEMPLATE)),
-      readFile(n(CE_TEMPLATE_NAME.MODULE_INDEX_FILE_TEMPLATE)),
-      readFile(n(CE_GENERATION_STYLE.DEFAULT_ALIAS_NAMED_STAR)),
-      readFile(n(CE_GENERATION_STYLE.DEFAULT_ALIAS_NAMED_DESTRUCTIVE)),
-      readFile(n(CE_GENERATION_STYLE.DEFAULT_NON_ALIAS_NAMED_DESTRUCTIVE)),
-      readFile(n(CE_GENERATION_STYLE.DEFAULT_STAR_NAMED_STAR)),
-      readFile(n(CE_GENERATION_STYLE.DEFAULT_STAR_NAMED_DESTRUCTIVE)),
+      fs.promises.readFile(n(CE_TEMPLATE_NAME.INDEX_FILE_TEMPLATE)),
+      fs.promises.readFile(n(CE_TEMPLATE_NAME.OPTIONS_TEMPLATE)),
+      fs.promises.readFile(n(CE_TEMPLATE_NAME.NESTED_OPTIONS_TEMPLATE)),
+      fs.promises.readFile(n(CE_TEMPLATE_NAME.MODULE_INDEX_FILE_TEMPLATE)),
+      fs.promises.readFile(n(CE_GENERATION_STYLE.DEFAULT_ALIAS_NAMED_STAR)),
+      fs.promises.readFile(n(CE_GENERATION_STYLE.DEFAULT_ALIAS_NAMED_DESTRUCTIVE)),
+      fs.promises.readFile(n(CE_GENERATION_STYLE.DEFAULT_NON_ALIAS_NAMED_DESTRUCTIVE)),
+      fs.promises.readFile(n(CE_GENERATION_STYLE.DEFAULT_STAR_NAMED_STAR)),
+      fs.promises.readFile(n(CE_GENERATION_STYLE.DEFAULT_STAR_NAMED_DESTRUCTIVE)),
     ]);
 
     const [

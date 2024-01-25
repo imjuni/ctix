@@ -1,3 +1,4 @@
+import { posixJoin } from '#/modules/path/posixJoin';
 import { isDirectory } from 'my-node-fp';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -13,7 +14,7 @@ export async function dfsWalk(
   const dirPaths = (
     await Promise.all(
       readed.map(async (filePath) => {
-        if (await isDirectory(path.join(resolved, filePath))) {
+        if (await isDirectory(posixJoin(resolved, filePath))) {
           return filePath;
         }
 
@@ -31,7 +32,7 @@ export async function dfsWalk(
 
   await dirPaths.reduce(async (prevHandle, dirPath) => {
     const handle = async () => {
-      await dfsWalk(path.join(resolved, dirPath), callback);
+      await dfsWalk(posixJoin(resolved, dirPath), callback);
     };
 
     await prevHandle;

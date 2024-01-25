@@ -2,6 +2,7 @@ import type { TBundleOptions } from '#/configs/interfaces/TBundleOptions';
 import type { TCommandBuildArgvOptions } from '#/configs/interfaces/TCommandBuildArgvOptions';
 import type { TCommandRemoveOptions } from '#/configs/interfaces/TCommandRemoveOptions';
 import type { TCreateOptions } from '#/configs/interfaces/TCreateOptions';
+import { posixJoin } from '#/modules/path/posixJoin';
 import { getDirname } from 'my-node-fp';
 import path from 'node:path';
 import type yargs from 'yargs';
@@ -31,7 +32,7 @@ export async function getRemoveFileGlobPattern(
           {
             origin: dir,
             project: modeOption.project,
-            pattern: path.join(
+            pattern: posixJoin(
               path.resolve(dir),
               '**',
               argv.exportFilename ?? modeOption.exportFilename,
@@ -43,7 +44,7 @@ export async function getRemoveFileGlobPattern(
           results.push({
             origin: dir,
             project: modeOption.project,
-            pattern: path.join(
+            pattern: posixJoin(
               path.resolve(dir),
               '**',
               argv.exportFilename != null

@@ -1,9 +1,10 @@
 import { StatementTable } from '#/compilers/StatementTable';
 import type { IExportStatement } from '#/compilers/interfaces/IExportStatement';
-import { beforeAll, describe, expect, it } from '@jest/globals';
+import { posixJoin } from '#/modules/path/posixJoin';
 import chalk from 'chalk';
+import { replaceSepToPosix } from 'my-node-fp';
 import { randomUUID } from 'node:crypto';
-import path from 'node:path';
+import { beforeAll, describe, expect, it } from 'vitest';
 
 const context: { uuid: string; filename: string; statement: IExportStatement }[] = [];
 
@@ -15,7 +16,7 @@ describe('StatementTable', () => {
     const stmt01: IExportStatement = {
       path: {
         filename: fn01,
-        dirPath: process.cwd(),
+        dirPath: replaceSepToPosix(process.cwd()),
         relativePath: '.',
       },
       depth: 1,
@@ -40,7 +41,7 @@ describe('StatementTable', () => {
       ...stmt01,
       path: {
         filename: fn02,
-        dirPath: process.cwd(),
+        dirPath: replaceSepToPosix(process.cwd()),
         relativePath: '.',
       },
       pos: {
@@ -59,7 +60,7 @@ describe('StatementTable', () => {
       ...stmt01,
       path: {
         filename: fn03,
-        dirPath: process.cwd(),
+        dirPath: replaceSepToPosix(process.cwd()),
         relativePath: '.',
       },
       pos: {
@@ -76,7 +77,7 @@ describe('StatementTable', () => {
       ...stmt01,
       path: {
         filename: stmt01.path.filename,
-        dirPath: path.join(process.cwd(), 'marvel'),
+        dirPath: posixJoin(process.cwd(), 'marvel'),
         relativePath: '.',
       },
       pos: {
@@ -92,7 +93,7 @@ describe('StatementTable', () => {
       ...stmt01,
       path: {
         filename: stmt01.path.filename,
-        dirPath: path.join(process.cwd(), 'dc'),
+        dirPath: posixJoin(process.cwd(), 'dc'),
         relativePath: '.',
       },
       pos: {
@@ -111,7 +112,7 @@ describe('StatementTable', () => {
       isDefault: true,
       path: {
         filename: fn06,
-        dirPath: path.join(process.cwd(), 'dc'),
+        dirPath: posixJoin(process.cwd(), 'dc'),
         relativePath: '.',
       },
       pos: {
@@ -128,7 +129,7 @@ describe('StatementTable', () => {
       ...stmt01,
       path: {
         filename: fn06,
-        dirPath: path.join(process.cwd(), 'dc'),
+        dirPath: posixJoin(process.cwd(), 'dc'),
         relativePath: '.',
       },
       pos: {
@@ -263,7 +264,7 @@ describe('StatementTable', () => {
           line: 1,
           character: 1,
         },
-        filePath: path.join(context[0].statement.path.dirPath, context[0].statement.path.filename),
+        filePath: posixJoin(context[0].statement.path.dirPath, context[0].statement.path.filename),
         message: `detect same name of export statement: "${chalk.yellow(context[0].uuid)}"`,
       },
       {
@@ -272,7 +273,7 @@ describe('StatementTable', () => {
           line: 4,
           character: 4,
         },
-        filePath: path.join(context[3].statement.path.dirPath, context[3].statement.path.filename),
+        filePath: posixJoin(context[3].statement.path.dirPath, context[3].statement.path.filename),
         message: `detect same name of export statement: "${chalk.yellow(context[3].uuid)}"`,
       },
       {
@@ -281,7 +282,7 @@ describe('StatementTable', () => {
           line: 5,
           character: 5,
         },
-        filePath: path.join(context[4].statement.path.dirPath, context[4].statement.path.filename),
+        filePath: posixJoin(context[4].statement.path.dirPath, context[4].statement.path.filename),
         message: `detect same name of export statement: "${chalk.yellow(context[4].uuid)}"`,
       },
       {
@@ -290,7 +291,7 @@ describe('StatementTable', () => {
           line: 6,
           character: 6,
         },
-        filePath: path.join(context[5].statement.path.dirPath, context[5].statement.path.filename),
+        filePath: posixJoin(context[5].statement.path.dirPath, context[5].statement.path.filename),
         message: `detect same name of default export statement: "${chalk.yellow(context[5].uuid)}"`,
       },
       {
@@ -299,7 +300,7 @@ describe('StatementTable', () => {
           line: 7,
           character: 7,
         },
-        filePath: path.join(context[6].statement.path.dirPath, context[6].statement.path.filename),
+        filePath: posixJoin(context[6].statement.path.dirPath, context[6].statement.path.filename),
         message: `detect same name of export statement: "${chalk.yellow(context[6].uuid)}"`,
       },
     ]);

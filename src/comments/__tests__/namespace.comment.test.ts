@@ -1,6 +1,6 @@
 import { getCommentWorkspace } from '#/comments/getCommentWorkspace';
 import { getCommentWorkspaces } from '#/comments/getCommentWorkspaces';
-import { describe, expect, it } from '@jest/globals';
+import { describe, expect, it } from 'vitest';
 
 describe('getCommentNamespace', () => {
   it('ends-with ,', () => {

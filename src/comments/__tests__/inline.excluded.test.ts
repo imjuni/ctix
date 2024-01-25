@@ -1,11 +1,10 @@
 import { getInlineExcludedFiles } from '#/comments/getInlineExcludedFiles';
 import { posixJoin } from '#/modules/path/posixJoin';
-import { describe, expect, it } from '@jest/globals';
 import { randomUUID } from 'node:crypto';
-import path from 'node:path';
 import * as tsm from 'ts-morph';
+import { describe, expect, it } from 'vitest';
 
-const tsconfigPath = path.join(process.cwd(), 'example', 'tsconfig.example.json');
+const tsconfigPath = posixJoin(process.cwd(), 'example', 'tsconfig.example.json');
 const context = {
   tsconfig: tsconfigPath,
   project: new tsm.Project({
@@ -60,7 +59,7 @@ export class SuperHero {
     expect(excluded).toMatchObject([
       {
         commentCode: '/**\n * @ctix-exclude\n */',
-        filePath: path.join(process.cwd(), filename01),
+        filePath: posixJoin(process.cwd(), filename01),
         pos: {
           start: 25,
           line: 4,

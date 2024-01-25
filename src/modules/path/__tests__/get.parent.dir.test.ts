@@ -1,5 +1,5 @@
 import { getParentDir } from '#/modules/path/getParentDir';
-import { describe, expect, it } from '@jest/globals';
+import { describe, expect, it } from 'vitest';
 
 describe('getParentDir', () => {
   it('absolute multi depth path parent ', () => {

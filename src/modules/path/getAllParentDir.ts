@@ -1,3 +1,4 @@
+import { posixJoin } from '#/modules/path/posixJoin';
 import { populate } from 'my-easy-fp';
 import { startSepAppend, startSepRemove } from 'my-node-fp';
 import path from 'node:path';
@@ -10,7 +11,7 @@ export function getAllParentDir(parentDir: string, childDir: string): string[] {
   return [
     parentDir,
     ...populate(elements.length, true).map((index) => {
-      return path.join(parent, ...elements.slice(0, index));
+      return posixJoin(parent, ...elements.slice(0, index));
     }),
   ];
 }

@@ -1,6 +1,6 @@
 import { getFunctionName } from '#/compilers/getFunctionName';
-import { describe, expect, it } from '@jest/globals';
 import * as tsm from 'ts-morph';
+import { describe, expect, it } from 'vitest';
 
 describe('getFunctionName', () => {
   it('arrow function', async () => {

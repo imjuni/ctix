@@ -24,6 +24,7 @@ import { addCurrentDirPrefix } from '#/modules/path/addCurrentDirPrefix';
 import { getDepth } from '#/modules/path/getDepth';
 import { getImportStatementExtname } from '#/modules/path/getImportStatementExtname';
 import { getParentDir } from '#/modules/path/getParentDir';
+import { posixJoin } from '#/modules/path/posixJoin';
 import { ExcludeContainer } from '#/modules/scope/ExcludeContainer';
 import { IncludeContainer } from '#/modules/scope/IncludeContainer';
 import { getBanner } from '#/modules/writes/getBanner';
@@ -124,7 +125,7 @@ export async function creating(_buildOptions: TCommandBuildOptions, createOption
   statements
     .filter((statement) => !statementTable.isDuplicate(statement))
     .forEach((statement) => {
-      const filePath = path.join(statement.path.dirPath, statement.path.filename);
+      const filePath = posixJoin(statement.path.dirPath, statement.path.filename);
       const filePathAccessed = filePathMap.get(filePath);
 
       if (filePathAccessed == null) {
@@ -250,7 +251,7 @@ export async function creating(_buildOptions: TCommandBuildOptions, createOption
         CE_AUTO_RENDER_CASE.DEFAULT_NAMED,
         CE_GENERATION_STYLE.DEFAULT_STAR_NAMED_STAR,
         createOption,
-        path.join(firstExistDir, createOption.exportFilename),
+        posixJoin(firstExistDir, createOption.exportFilename),
         {
           importPath: addCurrentDirPrefix(path.relative(firstExistDir, params.dirPath)),
           extname: {
@@ -279,7 +280,7 @@ export async function creating(_buildOptions: TCommandBuildOptions, createOption
         CE_AUTO_RENDER_CASE.DEFAULT_NAMED,
         CE_GENERATION_STYLE.DEFAULT_STAR_NAMED_STAR,
         createOption,
-        path.join(params.dirPath, createOption.exportFilename),
+        posixJoin(params.dirPath, createOption.exportFilename),
         {
           importPath: addCurrentDirPrefix(path.relative(parentDir, params.dirPath)),
           extname: {
@@ -305,7 +306,7 @@ export async function creating(_buildOptions: TCommandBuildOptions, createOption
 
   const rendereds = await Promise.all(
     Array.from(renderDataMap.entries()).map(async ([dirPath, datas]) => {
-      const indexFilePath = path.join(dirPath, createOption.exportFilename);
+      const indexFilePath = posixJoin(dirPath, createOption.exportFilename);
       const rendered = await Promise.all(
         datas.map(async (data) => {
           const evaluated = await TemplateContainer.evaluate(data.style, data.renderData);

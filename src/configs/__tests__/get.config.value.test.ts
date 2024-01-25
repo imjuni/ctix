@@ -1,5 +1,5 @@
 import { getConfigValue } from '#/configs/getConfigValue';
-import { describe, expect, it } from '@jest/globals';
+import { describe, expect, it } from 'vitest';
 
 describe('getConfigValue', () => {
   it('not key', async () => {
