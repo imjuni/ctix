@@ -1,12 +1,13 @@
 import { getExportStatement } from '#/compilers/getExportStatement';
 import type { IExportStatement } from '#/compilers/interfaces/IExportStatement';
 import { filenamify } from '#/modules/path/filenamify';
-import { describe, expect, it } from '@jest/globals';
+import { posixJoin } from '#/modules/path/posixJoin';
+import { replaceSepToPosix } from 'my-node-fp';
 import { randomUUID } from 'node:crypto';
-import path from 'node:path';
 import * as tsm from 'ts-morph';
+import { describe, expect, it } from 'vitest';
 
-const tsconfigPath = path.join(process.cwd(), 'example', 'tsconfig.example.json');
+const tsconfigPath = posixJoin(process.cwd(), 'example', 'tsconfig.example.json');
 const context = {
   tsconfig: tsconfigPath,
   project: new tsm.Project({
@@ -43,7 +44,7 @@ export interface IAbility {
       {
         path: {
           filename,
-          dirPath: process.cwd(),
+          dirPath: replaceSepToPosix(process.cwd()),
           relativePath: '..',
         },
         depth: 2,
@@ -61,7 +62,7 @@ export interface IAbility {
       {
         path: {
           filename,
-          dirPath: process.cwd(),
+          dirPath: replaceSepToPosix(process.cwd()),
           relativePath: '..',
         },
         depth: 2,
@@ -111,7 +112,7 @@ export interface IOrganization {
       {
         path: {
           filename,
-          dirPath: process.cwd(),
+          dirPath: replaceSepToPosix(process.cwd()),
           relativePath: '..',
         },
         depth: 2,
@@ -129,7 +130,7 @@ export interface IOrganization {
       {
         path: {
           filename,
-          dirPath: process.cwd(),
+          dirPath: replaceSepToPosix(process.cwd()),
           relativePath: '..',
         },
         depth: 2,
@@ -147,7 +148,7 @@ export interface IOrganization {
       {
         path: {
           filename,
-          dirPath: process.cwd(),
+          dirPath: replaceSepToPosix(process.cwd()),
           relativePath: '..',
         },
         depth: 2,

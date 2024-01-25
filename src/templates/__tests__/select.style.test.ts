@@ -1,14 +1,15 @@
 import type { IStatementComments } from '#/comments/interfaces/IStatementComments';
 import { CE_GENERATION_STYLE } from '#/configs/const-enum/CE_GENERATION_STYLE';
 import { filenamify } from '#/modules/path/filenamify';
+import { posixJoin } from '#/modules/path/posixJoin';
 import { CE_AUTO_RENDER_CASE } from '#/templates/const-enum/CE_AUTO_RENDER_CASE';
 import type { IIndexRenderData } from '#/templates/interfaces/IIndexRenderData';
 import { getSelectStyle } from '#/templates/modules/getSelectStyle';
-import { describe, expect, it } from '@jest/globals';
 import copy from 'fast-copy';
+import { replaceSepToPosix } from 'my-node-fp';
 import { randomUUID } from 'node:crypto';
-import path from 'node:path';
 import * as tsm from 'ts-morph';
+import { describe, expect, it } from 'vitest';
 
 const uuid = randomUUID();
 const filename = `${uuid}.ts`;
@@ -46,7 +47,7 @@ const context: { comment: IStatementComments; renderData: IIndexRenderData } = {
         {
           path: {
             filename,
-            dirPath: process.cwd(),
+            dirPath: replaceSepToPosix(process.cwd()),
             relativePath: '..',
           },
           depth: 2,
@@ -67,7 +68,7 @@ const context: { comment: IStatementComments; renderData: IIndexRenderData } = {
         {
           path: {
             filename,
-            dirPath: process.cwd(),
+            dirPath: replaceSepToPosix(process.cwd()),
             relativePath: '..',
           },
           depth: 2,
@@ -119,7 +120,7 @@ describe('getSelectStyle', () => {
 
   it('extracted style comment', () => {
     const comment = copy<IStatementComments>(context.comment);
-    comment.filePath = path.join(process.cwd());
+    comment.filePath = posixJoin(process.cwd());
 
     const r01 = getSelectStyle({
       comment,
@@ -135,7 +136,7 @@ describe('getSelectStyle', () => {
 
   it('extract fail style comment', () => {
     const comment = copy<IStatementComments>(context.comment);
-    comment.filePath = path.join(process.cwd());
+    comment.filePath = posixJoin(process.cwd());
     comment.range = `/** @hello-world */`;
 
     const r01 = getSelectStyle({

@@ -9,6 +9,7 @@ import { ProjectContainer } from '#/modules/file/ProjectContainer';
 import { checkOutputFile } from '#/modules/file/checkOutputFile';
 import { getTsExcludeFiles } from '#/modules/file/getTsExcludeFiles';
 import { getTsIncludeFiles } from '#/modules/file/getTsIncludeFiles';
+import { posixJoin } from '#/modules/path/posixJoin';
 import { ExcludeContainer } from '#/modules/scope/ExcludeContainer';
 import { IncludeContainer } from '#/modules/scope/IncludeContainer';
 import { getBanner } from '#/modules/writes/getBanner';
@@ -32,7 +33,7 @@ export async function moduling(_buildOptions: TCommandBuildOptions, moduleOption
   Spinner.it.succeed(`[${moduleOption.project}] loading compelete!`);
   Spinner.it.update('include, exclude config');
 
-  const output = path.resolve(path.join(moduleOption.output, moduleOption.exportFilename));
+  const output = path.resolve(posixJoin(moduleOption.output, moduleOption.exportFilename));
 
   const include = new IncludeContainer({
     config: { include: getTsIncludeFiles({ config: moduleOption, extend: extendOptions }) },

@@ -1,5 +1,5 @@
 import { filenamify } from '#/modules/path/filenamify';
-import { describe, expect, it } from '@jest/globals';
+import { describe, expect, it } from 'vitest';
 
 describe('getFilenamify', () => {
   it('upper first case', () => {

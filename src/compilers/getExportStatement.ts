@@ -16,8 +16,8 @@ export async function getExportStatement(
     path.resolve(await getDirname(sourceFile.getFilePath().toString())),
   );
   const filename = startSepRemove(
-    sourceFile.getFilePath().toString().replace(dirPath, ''),
-    path.sep,
+    replaceSepToPosix(sourceFile.getFilePath().toString().replace(dirPath, '')),
+    path.posix.sep,
   );
   // rootDir 또는 output, project 셋 중에 하나를 선택해서 써야 한다
   const relativePath = path.relative(await getDirname(option.project), dirPath);

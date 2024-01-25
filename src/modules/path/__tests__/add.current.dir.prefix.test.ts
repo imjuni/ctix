@@ -1,5 +1,5 @@
 import { addCurrentDirPrefix } from '#/modules/path/addCurrentDirPrefix';
-import { describe, expect, it } from '@jest/globals';
+import { describe, expect, it } from 'vitest';
 
 describe('addCurrentDirPrefix', () => {
   it('skip path-sep', () => {

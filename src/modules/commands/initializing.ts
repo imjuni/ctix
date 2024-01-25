@@ -8,12 +8,12 @@ import type { TCommandInitOptions } from '#/configs/interfaces/TCommandInitOptio
 import { getDefaultInitAnswer } from '#/configs/modules/getDefaultInitAnswer';
 import { transformBundleMode } from '#/configs/transforms/transformBundleMode';
 import { transformCreateMode } from '#/configs/transforms/transformCreateMode';
+import { posixJoin } from '#/modules/path/posixJoin';
 import { prettifing } from '#/modules/writes/prettifing';
 import { CE_TEMPLATE_NAME } from '#/templates/const-enum/CE_TEMPLATE_NAME';
 import { TemplateContainer } from '#/templates/modules/TemplateContainer';
 import chalk from 'chalk';
 import { writeFile } from 'node:fs/promises';
-import path from 'node:path';
 
 export async function initializing(option: TCommandInitOptions) {
   await TemplateContainer.bootstrap();
@@ -21,7 +21,7 @@ export async function initializing(option: TCommandInitOptions) {
   const answer = option.forceYes ? await getDefaultInitAnswer() : await askInitOptions();
 
   if (!answer.overwirte) {
-    const optionFilePath = path.join(answer.cwd, CE_CTIX_DEFAULT_VALUE.CONFIG_FILENAME);
+    const optionFilePath = posixJoin(answer.cwd, CE_CTIX_DEFAULT_VALUE.CONFIG_FILENAME);
     Spinner.it.fail(`${chalk.yellow(optionFilePath)} already exists`);
     return;
   }

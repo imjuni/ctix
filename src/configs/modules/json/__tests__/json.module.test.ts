@@ -3,8 +3,8 @@ import { readJson5 } from '#/configs/modules/json/readJson5';
 import { readJsonc } from '#/configs/modules/json/readJsonc';
 import { readYaml } from '#/configs/modules/json/readYml';
 import { parseConfig } from '#/configs/parseConfig';
-import { describe, expect, it } from '@jest/globals';
 import { stringify as stringify5 } from 'json5';
+import { describe, expect, it } from 'vitest';
 import { stringify as ystringify } from 'yaml';
 
 describe('getString', () => {

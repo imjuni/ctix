@@ -14,6 +14,7 @@ import { ProjectContainer } from '#/modules/file/ProjectContainer';
 import { checkOutputFile } from '#/modules/file/checkOutputFile';
 import { getTsExcludeFiles } from '#/modules/file/getTsExcludeFiles';
 import { getTsIncludeFiles } from '#/modules/file/getTsIncludeFiles';
+import { posixJoin } from '#/modules/path/posixJoin';
 import { ExcludeContainer } from '#/modules/scope/ExcludeContainer';
 import { IncludeContainer } from '#/modules/scope/IncludeContainer';
 import { getBanner } from '#/modules/writes/getBanner';
@@ -40,7 +41,7 @@ export async function bundling(_buildOptions: TCommandBuildOptions, bundleOption
   Spinner.it.succeed(`[${bundleOption.project}] loading compelete!`);
   Spinner.it.update('include, exclude config');
 
-  const output = path.resolve(path.join(bundleOption.output, bundleOption.exportFilename));
+  const output = path.resolve(posixJoin(bundleOption.output, bundleOption.exportFilename));
   const filePaths = project
     .getSourceFiles()
     .map((sourceFile) => sourceFile.getFilePath().toString());
@@ -104,7 +105,7 @@ export async function bundling(_buildOptions: TCommandBuildOptions, bundleOption
   statements
     .filter((statement) => !statementTable.isDuplicate(statement))
     .forEach((statement) => {
-      const filePath = path.join(statement.path.dirPath, statement.path.filename);
+      const filePath = posixJoin(statement.path.dirPath, statement.path.filename);
       const accessed = statementMap.get(filePath);
 
       if (accessed == null) {

@@ -21,6 +21,7 @@ export class ExcludeContainer {
       absolute: true,
       ignore: defaultExclude,
       cwd: params.cwd,
+      windowsPathsNoEscape: true,
     });
 
     this.#map = new Map<string, boolean>(getGlobFiles(globs).map((filePath) => [filePath, true]));

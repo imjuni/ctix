@@ -1,13 +1,21 @@
 import { CE_INLINE_COMMENT_KEYWORD } from '#/comments/const-enum/CE_INLINE_COMMENT_KEYWORD';
 import { getInlineStyle } from '#/comments/getInlineStyle';
 import { getSourceFileComments } from '#/comments/getSourceFileComments';
-import { describe, expect, it, jest } from '@jest/globals';
+import { posixJoin } from '#/modules/path/posixJoin';
 import * as cp from 'comment-parser';
 import { randomUUID } from 'node:crypto';
-import path from 'node:path';
 import * as tsm from 'ts-morph';
+import { describe, expect, it, vitest } from 'vitest';
 
-const tsconfigPath = path.join(process.cwd(), 'example', 'tsconfig.example.json');
+vitest.mock('comment-parser', async (importOriginal) => {
+  // eslint-disable-next-line @typescript-eslint/consistent-type-imports
+  const mod = await importOriginal<typeof import('comment-parser')>();
+  return {
+    ...mod,
+  };
+});
+
+const tsconfigPath = posixJoin(process.cwd(), 'example', 'tsconfig.example.json');
 const context = {
   tsconfig: tsconfigPath,
   project: new tsm.Project({
@@ -102,7 +110,7 @@ describe('getInlineStyle', () => {
       {
         commentCode:
           '/**\n* Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla efficitur odio nulla. Curabitur vel varius arcu. \n* Pellentesque consectetur nulla fermentum, tristique mauris nec, sollicitudin lectus. In quam nisi, tempor ac ex ut, \n* accumsan commodo massa. Donec posuere nisi ligula, eu fermentum massa pharetra et. Nullam cursus, ante nec fermentum \n* ullamcorper, neque urna rutrum magna, id venenatis nunc erat vitae lectus. Aenean quis laoreet lectus. \n* Morbi at viverra urna.\n* \n* @ctix-generation-style default-alias-named-star namespace-001 namespace-002\n*/',
-        filePath: path.join(process.cwd(), filename),
+        filePath: posixJoin(process.cwd(), filename),
         style: 'default-alias-named-star',
         pos: {
           line: 14,
@@ -114,7 +122,7 @@ describe('getInlineStyle', () => {
   });
 
   it('not found style comment', () => {
-    const spyH01 = jest.spyOn(cp, 'parse').mockImplementation(() => []);
+    const spyH01 = vitest.spyOn(cp, 'parse').mockImplementation(() => []);
 
     const uuid = randomUUID();
     const filename = `${uuid}.ts`;
@@ -336,7 +344,7 @@ describe('getInlineStyle', () => {
       },
     ];
 
-    const spyH01 = jest.spyOn(cp, 'parse').mockImplementationOnce(() => mockValue as any);
+    const spyH01 = vitest.spyOn(cp, 'parse').mockImplementationOnce(() => mockValue as any);
     const sourceFile = context.project.createSourceFile(filename, s03.trim());
     const sourceFileComments = getSourceFileComments(sourceFile);
 
@@ -355,7 +363,7 @@ describe('getInlineStyle', () => {
       {
         commentCode:
           '/**\n * Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla efficitur odio nulla. \n * \n * @ctix-generation-style default-alias-named-star\n * @params string description\n */',
-        filePath: path.join(process.cwd(), filename),
+        filePath: posixJoin(process.cwd(), filename),
         style: 'default-alias-named-star',
         pos: {
           line: 11,

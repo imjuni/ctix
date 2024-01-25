@@ -1,13 +1,14 @@
 import { getExportStatement } from '#/compilers/getExportStatement';
 import { CE_EXTENSION_PROCESSING } from '#/configs/const-enum/CE_EXTENSION_PROCESSING';
 import { filenamify } from '#/modules/path/filenamify';
+import { posixJoin } from '#/modules/path/posixJoin';
 import { getRenderData } from '#/templates/modules/getRenderData';
-import { describe, expect, it } from '@jest/globals';
+import { replaceSepToPosix } from 'my-node-fp';
 import { randomUUID } from 'node:crypto';
-import path from 'node:path';
 import * as tsm from 'ts-morph';
+import { describe, expect, it } from 'vitest';
 
-const tsconfigPath = path.join(process.cwd(), 'example', 'tsconfig.example.json');
+const tsconfigPath = posixJoin(process.cwd(), 'example', 'tsconfig.example.json');
 const context = {
   tsconfig: tsconfigPath,
   project: new tsm.Project({
@@ -76,7 +77,7 @@ export class DCHero {
           {
             path: {
               filename,
-              dirPath: process.cwd(),
+              dirPath: replaceSepToPosix(process.cwd()),
               relativePath: '..',
             },
             depth: 2,
@@ -93,7 +94,7 @@ export class DCHero {
           {
             path: {
               filename,
-              dirPath: process.cwd(),
+              dirPath: replaceSepToPosix(process.cwd()),
               relativePath: '..',
             },
             depth: 2,
@@ -179,7 +180,7 @@ export class DCHero {
     `;
 
     const sourceFile = context.project.createSourceFile(
-      path.join(process.cwd(), 'example', filename),
+      posixJoin(process.cwd(), 'example', filename),
       source.trim(),
     );
 
@@ -200,7 +201,7 @@ export class DCHero {
       },
       filename,
       statements.map((statement) => ({ ...statement, isExcluded: false })),
-      path.join(process.cwd(), 'example'),
+      posixJoin(process.cwd(), 'example'),
     );
 
     expect(r01).toMatchObject({
@@ -221,7 +222,7 @@ export class DCHero {
         named: [
           {
             path: {
-              dirPath: path.join(process.cwd(), 'example'),
+              dirPath: posixJoin(process.cwd(), 'example'),
               relativePath: '',
             },
             depth: 1,
@@ -242,7 +243,7 @@ export class DCHero {
           {
             path: {
               filename,
-              dirPath: path.join(process.cwd(), 'example'),
+              dirPath: posixJoin(process.cwd(), 'example'),
               relativePath: '',
             },
             depth: 1,

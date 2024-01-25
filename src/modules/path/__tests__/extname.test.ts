@@ -4,7 +4,7 @@ import { getExtname } from '#/modules/path/getExtname';
 import { getImportStatementExtname } from '#/modules/path/getImportStatementExtname';
 import { getImportStatementRemoveExtname } from '#/modules/path/getImportStatementRemoveExtname';
 import { getImportStatementReplaceJs } from '#/modules/path/getImportStatementReplaceJs';
-import { describe, expect, it } from '@jest/globals';
+import { describe, expect, it } from 'vitest';
 
 describe('getImportStatementReplaceJs', () => {
   it('everything test', () => {

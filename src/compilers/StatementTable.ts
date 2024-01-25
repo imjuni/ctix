@@ -1,7 +1,7 @@
 import type { IExportStatement } from '#/compilers/interfaces/IExportStatement';
 import type { IReason } from '#/compilers/interfaces/IReason';
+import { posixJoin } from '#/modules/path/posixJoin';
 import chalk from 'chalk';
-import path from 'node:path';
 
 export class StatementTable {
   static key(statement: string | IExportStatement): string {
@@ -60,10 +60,10 @@ export class StatementTable {
       return false;
     }
 
-    const prevStatementKey = `${path.join(first.path.dirPath, first.path.filename)}::${
+    const prevStatementKey = `${posixJoin(first.path.dirPath, first.path.filename)}::${
       first.identifier.alias
     }`;
-    const nextStatementKey = `${path.join(statement.path.dirPath, statement.path.filename)}::${
+    const nextStatementKey = `${posixJoin(statement.path.dirPath, statement.path.filename)}::${
       statement.identifier.alias
     }`;
 
@@ -87,7 +87,7 @@ export class StatementTable {
             const reason: IReason = {
               type: 'warn',
               lineAndCharacter: { line: statement.pos.line, character: statement.pos.column },
-              filePath: path.join(statement.path.dirPath, statement.path.filename),
+              filePath: posixJoin(statement.path.dirPath, statement.path.filename),
               message: `detect same name of default export statement: "${chalk.yellow(
                 StatementTable.key(statement),
               )}"`,
@@ -99,7 +99,7 @@ export class StatementTable {
           const reason: IReason = {
             type: 'warn',
             lineAndCharacter: { line: statement.pos.line, character: statement.pos.column },
-            filePath: path.join(statement.path.dirPath, statement.path.filename),
+            filePath: posixJoin(statement.path.dirPath, statement.path.filename),
             message: `detect same name of export statement: "${chalk.yellow(
               StatementTable.key(statement),
             )}"`,

@@ -1,9 +1,9 @@
 import { getGlobFiles } from '#/modules/file/getGlobFiles';
+import { posixJoin } from '#/modules/path/posixJoin';
 import { IncludeContainer } from '#/modules/scope/IncludeContainer';
 import { defaultExclude } from '#/modules/scope/defaultExclude';
-import { describe, expect, it } from '@jest/globals';
 import { Glob } from 'glob';
-import path from 'node:path';
+import { describe, expect, it } from 'vitest';
 
 describe('IncludeContainer', () => {
   it('getter', () => {
@@ -34,9 +34,9 @@ describe('IncludeContainer', () => {
 
     const r01 = container.isInclude('src/files/IncludeContainer.ts');
     const r02 = container.isInclude('src/cli/builders/setModeBundleOptions.ts');
-    const r03 = container.isInclude(path.join(process.cwd(), 'src/files/IncludeContainer.ts'));
+    const r03 = container.isInclude(posixJoin(process.cwd(), 'src/files/IncludeContainer.ts'));
     const r04 = container.isInclude(
-      path.join(process.cwd(), 'src/cli/builders/setModeBundleOptions.ts'),
+      posixJoin(process.cwd(), 'src/cli/builders/setModeBundleOptions.ts'),
     );
 
     expect(r01).toBeFalsy();
@@ -60,12 +60,12 @@ describe('IncludeContainer', () => {
 
     const r01 = container.isInclude('src/files/IncludeContainer.ts');
     const r02 = container.isInclude('src/cli/builders/setModeBundleOptions.ts');
-    const r03 = container.isInclude(path.join(process.cwd(), 'src/files/IncludeContainer.ts'));
+    const r03 = container.isInclude(posixJoin(process.cwd(), 'src/files/IncludeContainer.ts'));
     const r04 = container.isInclude(
-      path.join(process.cwd(), 'src/cli/builders/setModeBundleOptions.ts'),
+      posixJoin(process.cwd(), 'src/cli/builders/setModeBundleOptions.ts'),
     );
     const r05 = container.isInclude(
-      path.join(process.cwd(), 'src/cli/compilers/getTypeScriptProject.ts'),
+      posixJoin(process.cwd(), 'src/cli/compilers/getTypeScriptProject.ts'),
     );
 
     expect(r01).toBeFalsy();

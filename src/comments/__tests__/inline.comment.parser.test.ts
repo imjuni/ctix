@@ -3,14 +3,22 @@ import { getCommentKind } from '#/comments/getCommentKind';
 import { getInlineExclude } from '#/comments/getInlineExclude';
 import { getSourceFileComments } from '#/comments/getSourceFileComments';
 import type { IStatementComments } from '#/comments/interfaces/IStatementComments';
-import { describe, expect, it, jest } from '@jest/globals';
+import { posixJoin } from '#/modules/path/posixJoin';
 import * as cp from 'comment-parser';
 import copy from 'fast-copy';
 import { randomUUID } from 'node:crypto';
-import path from 'node:path';
 import * as tsm from 'ts-morph';
+import { describe, expect, it, vitest } from 'vitest';
 
-const tsconfigPath = path.join(process.cwd(), 'example', 'tsconfig.example.json');
+vitest.mock('comment-parser', async (importOriginal) => {
+  // eslint-disable-next-line @typescript-eslint/consistent-type-imports
+  const mod = await importOriginal<typeof import('comment-parser')>();
+  return {
+    ...mod,
+  };
+});
+
+const tsconfigPath = posixJoin(process.cwd(), 'example', 'tsconfig.example.json');
 const context = {
   tsconfig: tsconfigPath,
   project: new tsm.Project({
@@ -56,7 +64,7 @@ export default class Hero {
     const comments = getSourceFileComments(sourceFile);
 
     expect(comments).toMatchObject({
-      filePath: path.join(process.cwd(), filename),
+      filePath: posixJoin(process.cwd(), filename),
       comments: [
         { kind: tsm.SyntaxKind.MultiLineCommentTrivia, pos: { column: 1, line: 4, start: 25 } },
         { kind: tsm.SyntaxKind.MultiLineCommentTrivia, pos: { column: 1, line: 9, start: 86 } },
@@ -89,7 +97,7 @@ export default class Hero {
     const comments = getSourceFileComments(sourceFile);
 
     expect(comments).toMatchObject({
-      filePath: path.join(process.cwd(), filename),
+      filePath: posixJoin(process.cwd(), filename),
       comments: [
         { kind: tsm.SyntaxKind.MultiLineCommentTrivia, pos: { column: 1, line: 4, start: 24 } },
         { kind: tsm.SyntaxKind.MultiLineCommentTrivia, pos: { column: 1, line: 9, start: 84 } },
@@ -118,7 +126,7 @@ export default class Hero {
     const comments = getSourceFileComments(sourceFile);
 
     expect(comments).toMatchObject({
-      filePath: path.join(process.cwd(), filename),
+      filePath: posixJoin(process.cwd(), filename),
       comments: [
         { kind: tsm.SyntaxKind.SingleLineCommentTrivia, pos: { column: 1, line: 2, start: 17 } },
         { kind: tsm.SyntaxKind.SingleLineCommentTrivia, pos: { column: 1, line: 5, start: 70 } },
@@ -147,7 +155,7 @@ export default class Hero {
     const comments = getSourceFileComments(sourceFile);
 
     expect(comments).toMatchObject({
-      filePath: path.join(process.cwd(), filename),
+      filePath: posixJoin(process.cwd(), filename),
       comments: [
         { kind: tsm.SyntaxKind.SingleLineCommentTrivia, pos: { column: 1, line: 2, start: 18 } },
         { kind: tsm.SyntaxKind.SingleLineCommentTrivia, pos: { column: 1, line: 5, start: 72 } },
@@ -167,7 +175,7 @@ describe('getInlineExclude', () => {
         column: 1,
         start: 1,
       },
-      filePath: path.join(process.cwd(), filename),
+      filePath: posixJoin(process.cwd(), filename),
       range: '/**\n * @ctix-exclude\n */',
     };
 
@@ -180,7 +188,7 @@ describe('getInlineExclude', () => {
 
     expect(r01).toMatchObject({
       commentCode: '/**\n * @ctix-exclude\n */',
-      filePath: path.join(process.cwd(), filename),
+      filePath: posixJoin(process.cwd(), filename),
       tag: 'ctix-exclude',
       pos: {
         line: 1,
@@ -201,7 +209,7 @@ describe('getInlineExclude', () => {
         column: 2,
         start: 2,
       },
-      filePath: path.join(process.cwd(), filename),
+      filePath: posixJoin(process.cwd(), filename),
       range: '/*\n\n * @ctix-exclude\n */',
     };
 
@@ -214,7 +222,7 @@ describe('getInlineExclude', () => {
 
     expect(r01).toMatchObject({
       commentCode: '/*\n\n * @ctix-exclude\n */',
-      filePath: path.join(process.cwd(), filename),
+      filePath: posixJoin(process.cwd(), filename),
       tag: 'ctix-exclude',
       pos: {
         line: 2,
@@ -242,7 +250,7 @@ describe('getInlineExclude', () => {
         column: 3,
         start: 3,
       },
-      filePath: path.join(process.cwd(), filename),
+      filePath: posixJoin(process.cwd(), filename),
       range,
     };
 
@@ -261,7 +269,7 @@ describe('getInlineExclude', () => {
         column: 3,
         start: 3,
       },
-      filePath: path.join(process.cwd(), filename),
+      filePath: posixJoin(process.cwd(), filename),
       workspaces: [],
     });
   });
@@ -283,7 +291,7 @@ describe('getInlineExclude', () => {
         column: 4,
         start: 4,
       },
-      filePath: path.join(process.cwd(), filename),
+      filePath: posixJoin(process.cwd(), filename),
       range,
     };
 
@@ -302,7 +310,7 @@ describe('getInlineExclude', () => {
         column: 4,
         start: 4,
       },
-      filePath: path.join(process.cwd(), filename),
+      filePath: posixJoin(process.cwd(), filename),
       workspaces: [],
     });
   });
@@ -324,7 +332,7 @@ describe('getInlineExclude', () => {
         column: 5,
         start: 5,
       },
-      filePath: path.join(process.cwd(), filename),
+      filePath: posixJoin(process.cwd(), filename),
       range,
     };
 
@@ -343,7 +351,7 @@ describe('getInlineExclude', () => {
         column: 5,
         start: 5,
       },
-      filePath: path.join(process.cwd(), filename),
+      filePath: posixJoin(process.cwd(), filename),
       workspaces: ['i-am-ironman'],
     });
   });
@@ -365,7 +373,7 @@ describe('getInlineExclude', () => {
         column: 6,
         start: 6,
       },
-      filePath: path.join(process.cwd(), filename),
+      filePath: posixJoin(process.cwd(), filename),
       range,
     };
 
@@ -384,7 +392,7 @@ describe('getInlineExclude', () => {
         column: 6,
         start: 6,
       },
-      filePath: path.join(process.cwd(), filename),
+      filePath: posixJoin(process.cwd(), filename),
       workspaces: ['i-am-ironman', 'i-am-marvel'],
     });
   });
@@ -400,7 +408,7 @@ describe('getInlineExclude', () => {
         column: 7,
         start: 7,
       },
-      filePath: path.join(process.cwd(), filename),
+      filePath: posixJoin(process.cwd(), filename),
       range,
     };
 
@@ -419,7 +427,7 @@ describe('getInlineExclude', () => {
         column: 7,
         start: 7,
       },
-      filePath: path.join(process.cwd(), filename),
+      filePath: posixJoin(process.cwd(), filename),
       workspaces: [],
     });
   });
@@ -434,7 +442,7 @@ describe('getInlineExclude', () => {
         column: 8,
         start: 8,
       },
-      filePath: path.join(process.cwd(), filename),
+      filePath: posixJoin(process.cwd(), filename),
       range: '/** not comment */',
     };
 
@@ -449,7 +457,7 @@ describe('getInlineExclude', () => {
   });
 
   it('empty comment block', () => {
-    const spyH01 = jest.spyOn(cp, 'parse').mockImplementation(() => []);
+    const spyH01 = vitest.spyOn(cp, 'parse').mockImplementation(() => []);
 
     const uuid = randomUUID();
     const filename = `${uuid}.ts`;
@@ -460,7 +468,7 @@ describe('getInlineExclude', () => {
         column: 8,
         start: 8,
       },
-      filePath: path.join(process.cwd(), filename),
+      filePath: posixJoin(process.cwd(), filename),
       range: '/** not comment */',
     };
 
@@ -564,11 +572,11 @@ describe('getInlineExclude', () => {
         column: 7,
         start: 7,
       },
-      filePath: path.join(process.cwd(), filename),
+      filePath: posixJoin(process.cwd(), filename),
       range,
     };
 
-    const spyH01 = jest.spyOn(cp, 'parse').mockImplementation(() => [v1]);
+    const spyH01 = vitest.spyOn(cp, 'parse').mockImplementation(() => [v1]);
 
     const r01 = getInlineExclude({
       comment,
@@ -581,7 +589,7 @@ describe('getInlineExclude', () => {
 
     expect(r01).toMatchObject({
       commentCode: '/** @ctix-exclude-next */',
-      filePath: path.join(process.cwd(), filename),
+      filePath: posixJoin(process.cwd(), filename),
       pos: {
         line: 7,
         column: 7,

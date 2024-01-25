@@ -1,7 +1,7 @@
 import { CE_TEMPLATE_NAME } from '#/templates/const-enum/CE_TEMPLATE_NAME';
 import type { IIndexFileWriteParams } from '#/templates/interfaces/IIndexFileWriteParams';
 import { TemplateContainer } from '#/templates/modules/TemplateContainer';
-import { describe, expect, it } from '@jest/globals';
+import { describe, expect, it } from 'vitest';
 
 describe('TemplateContainer', () => {
   it('exception - not bootstrap', async () => {

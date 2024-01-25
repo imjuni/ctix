@@ -9,7 +9,7 @@ import type { IModeCreateOptions } from '#/configs/interfaces/IModeCreateOptions
 import type { IModeGenerateOptions } from '#/configs/interfaces/IModeGenerateOptions';
 import type { IModeTsGenerateOptions } from '#/configs/interfaces/IModeTsGenerateOptions';
 import type { IProjectOptions } from '#/configs/interfaces/IProjectOptions';
-import { describe, expect, it } from '@jest/globals';
+import { describe, expect, it } from 'vitest';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 

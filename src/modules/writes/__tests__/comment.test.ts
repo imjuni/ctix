@@ -1,12 +1,12 @@
 import { getBanner } from '#/modules/writes/getBanner';
-import { beforeAll, describe, expect, it, jest } from '@jest/globals';
 import dayjs from 'dayjs';
+import { beforeAll, describe, expect, it, vitest } from 'vitest';
 
 const testTimestamp = '2023-10-11T11:22:33.000';
 
 describe('getBanner', () => {
   beforeAll(() => {
-    jest.useFakeTimers().setSystemTime(new Date(testTimestamp));
+    vitest.useFakeTimers().setSystemTime(new Date(testTimestamp));
   });
 
   it('only use banner', async () => {

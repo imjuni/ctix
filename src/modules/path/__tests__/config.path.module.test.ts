@@ -1,8 +1,16 @@
 import { getConfigValue } from '#/configs/getConfigValue';
 import { getConfigFilePath } from '#/modules/path/getConfigFilePath';
-import { describe, expect, it, jest } from '@jest/globals';
 import findUp from 'find-up';
 import * as mnf from 'my-node-fp';
+import { describe, expect, it, vitest } from 'vitest';
+
+vitest.mock('my-node-fp', async (importOriginal) => {
+  // eslint-disable-next-line @typescript-eslint/consistent-type-imports
+  const mod = await importOriginal<typeof import('my-node-fp')>();
+  return {
+    ...mod,
+  };
+});
 
 // ---------------------------------------------------------------------------------------------
 // getConfigValue
@@ -51,7 +59,7 @@ describe('getConfigValue', () => {
 
 describe('getConfigFilePath', () => {
   it('config path from argv', () => {
-    const spyH = jest.spyOn(mnf, 'existsSync').mockImplementationOnce(() => true);
+    const spyH = vitest.spyOn(mnf, 'existsSync').mockImplementationOnce(() => true);
 
     const configPath = 'i-am-config';
     const input = { $0: '', config: configPath };
@@ -64,11 +72,11 @@ describe('getConfigFilePath', () => {
 
   it('config path from process.cwd() with find-up', () => {
     const findUpPath = 'i-am-findUp';
-    const spyH01 = jest
+    const spyH01 = vitest
       .spyOn(mnf, 'existsSync')
       .mockImplementationOnce(() => false)
       .mockImplementationOnce(() => true);
-    const spyH02 = jest.spyOn(findUp, 'sync').mockImplementationOnce(() => findUpPath);
+    const spyH02 = vitest.spyOn(findUp, 'sync').mockImplementationOnce(() => findUpPath);
 
     const configPath = 'i-am-config';
     const input = { $0: '', config: configPath };
@@ -82,11 +90,11 @@ describe('getConfigFilePath', () => {
 
   it('config path from project-path with find-up', () => {
     const findUpPath = 'i-am-findUp';
-    const spyH01 = jest
+    const spyH01 = vitest
       .spyOn(mnf, 'existsSync')
       .mockImplementationOnce(() => false)
       .mockImplementationOnce(() => true);
-    const spyH02 = jest
+    const spyH02 = vitest
       .spyOn(findUp, 'sync')
       .mockImplementationOnce(() => undefined)
       .mockImplementationOnce(() => findUpPath);
@@ -104,11 +112,11 @@ describe('getConfigFilePath', () => {
   });
 
   it('undefined - not founded, empty project path', () => {
-    const spyH01 = jest
+    const spyH01 = vitest
       .spyOn(mnf, 'existsSync')
       .mockImplementationOnce(() => false)
       .mockImplementationOnce(() => true);
-    const spyH02 = jest
+    const spyH02 = vitest
       .spyOn(findUp, 'sync')
       .mockImplementationOnce(() => undefined)
       .mockImplementationOnce(() => undefined);
@@ -125,11 +133,11 @@ describe('getConfigFilePath', () => {
   });
 
   it('undefined - not founded, pass project path', () => {
-    const spyH01 = jest
+    const spyH01 = vitest
       .spyOn(mnf, 'existsSync')
       .mockImplementationOnce(() => false)
       .mockImplementationOnce(() => true);
-    const spyH02 = jest
+    const spyH02 = vitest
       .spyOn(findUp, 'sync')
       .mockImplementationOnce(() => undefined)
       .mockImplementationOnce(() => undefined);
