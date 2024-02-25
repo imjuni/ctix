@@ -6,14 +6,13 @@ export function getRelativeDepth(basePath: string, dirPath: string) {
     throw new Error('[getRelativeDepth] basePaths is empty array');
   }
 
-  const relativePath = replaceSepToPosix(
-    path.relative(replaceSepToPosix(basePath), replaceSepToPosix(dirPath)),
-  );
+  const relativePath = path.relative(replaceSepToPosix(basePath), replaceSepToPosix(dirPath));
+  const replaced = replaceSepToPosix(relativePath);
 
-  if (relativePath === '') {
+  if (replaced === '') {
     return 0;
   }
 
-  const depth = relativePath.split(path.posix.sep);
+  const depth = replaced.split(path.posix.sep);
   return depth.length;
 }

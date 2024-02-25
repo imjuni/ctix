@@ -3,7 +3,7 @@ import path from 'node:path';
 
 export function getParentDir(rawDirPath: string): string | undefined {
   const dirPath = replaceSepToPosix(rawDirPath);
-  const elements = dirPath.split(path.sep);
+  const elements = dirPath.split(path.posix.sep);
   const parentElements = elements.slice(0, -1);
 
   if (parentElements.length === 1 && parentElements.at(0) === '') {
@@ -14,5 +14,5 @@ export function getParentDir(rawDirPath: string): string | undefined {
     return undefined;
   }
 
-  return parentElements.join(path.sep);
+  return parentElements.join(path.posix.sep);
 }

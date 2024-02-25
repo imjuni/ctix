@@ -6,6 +6,7 @@ import { addCurrentDirPrefix } from '#/modules/path/addCurrentDirPrefix';
 import { getExtname } from '#/modules/path/getExtname';
 import { getImportStatementExtname } from '#/modules/path/getImportStatementExtname';
 import type { IIndexRenderData } from '#/templates/interfaces/IIndexRenderData';
+import { replaceSepToPosix } from 'my-node-fp';
 import path from 'node:path';
 
 export function getRenderData(
@@ -30,8 +31,8 @@ export function getRenderData(
   const filename = filePath.replace(new RegExp(`${extname}$`), '');
   const relativePath =
     output != null
-      ? addCurrentDirPrefix(path.relative(output, filename))
-      : `.${path.posix.sep}${path.basename(filename, getExtname(filePath))}`;
+      ? replaceSepToPosix(addCurrentDirPrefix(path.relative(output, filename)))
+      : replaceSepToPosix(`.${path.posix.sep}${path.basename(filename, getExtname(filePath))}`);
 
   return {
     options: {

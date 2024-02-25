@@ -1,5 +1,6 @@
 import { posixJoin } from '#/modules/path/posixJoin';
 import { ExcludeContainer } from '#/modules/scope/ExcludeContainer';
+import { replaceSepToPosix } from 'my-node-fp';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 
@@ -48,7 +49,7 @@ describe('ExcludeContainer', () => {
             start: 1,
             column: 1,
           },
-          filePath: path.resolve('example/type03/HandsomelyCls.tsx'),
+          filePath: replaceSepToPosix(path.resolve('example/type03/HandsomelyCls.tsx')),
         },
       ],
       cwd: process.cwd(),
