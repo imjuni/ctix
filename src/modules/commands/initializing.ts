@@ -8,7 +8,7 @@ import type { TCommandInitOptions } from '#/configs/interfaces/TCommandInitOptio
 import { getDefaultInitAnswer } from '#/configs/modules/getDefaultInitAnswer';
 import { transformBundleMode } from '#/configs/transforms/transformBundleMode';
 import { transformCreateMode } from '#/configs/transforms/transformCreateMode';
-import { posixJoin } from '#/modules/path/posixJoin';
+import { posixJoin } from '#/modules/path/modules/posixJoin';
 import { prettifing } from '#/modules/writes/prettifing';
 import { CE_TEMPLATE_NAME } from '#/templates/const-enum/CE_TEMPLATE_NAME';
 import { TemplateContainer } from '#/templates/modules/TemplateContainer';

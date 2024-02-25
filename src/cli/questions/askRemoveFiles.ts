@@ -1,10 +1,10 @@
 import type { IChoiceTypeItem } from '#/cli/interfaces/IChoiceTypeItem';
 import { getRatioNumber } from '#/cli/modules/getRatioNumber';
 import { CE_CTIX_DEFAULT_VALUE } from '#/configs/const-enum/CE_CTIX_DEFAULT_VALUE';
+import { posixRelative } from '#/modules/path/modules/posixRelative';
 import Fuse from 'fuse.js';
 import inquirer from 'inquirer';
 import { CheckboxPlusPrompt } from 'inquirer-ts-checkbox-plus-prompt';
-import path from 'node:path';
 
 export async function askRemoveFiles(filePaths: string[]) {
   inquirer.registerPrompt('checkbox-plus', CheckboxPlusPrompt);
@@ -12,7 +12,7 @@ export async function askRemoveFiles(filePaths: string[]) {
   const choiceAbleTypes = filePaths.map((filePath) => {
     return {
       filePath,
-      name: path.relative(process.cwd(), filePath),
+      name: posixRelative(process.cwd(), filePath),
       value: filePath,
     } satisfies IChoiceTypeItem;
   });

@@ -1,6 +1,6 @@
 import { StatementTable } from '#/compilers/StatementTable';
 import type { IExportStatement } from '#/compilers/interfaces/IExportStatement';
-import { posixJoin } from '#/modules/path/posixJoin';
+import { posixJoin } from '#/modules/path/modules/posixJoin';
 import chalk from 'chalk';
 import { replaceSepToPosix } from 'my-node-fp';
 import { randomUUID } from 'node:crypto';

@@ -3,7 +3,7 @@ import { CE_CTIX_BUILD_MODE } from '#/configs/const-enum/CE_CTIX_BUILD_MODE';
 import { CE_CTIX_DEFAULT_VALUE } from '#/configs/const-enum/CE_CTIX_DEFAULT_VALUE';
 import { getTsconfigComparer } from '#/configs/modules/getTsconfigComparer';
 import { getGlobFiles } from '#/modules/file/getGlobFiles';
-import { posixJoin } from '#/modules/path/posixJoin';
+import { posixJoin } from '#/modules/path/modules/posixJoin';
 import { defaultExclude } from '#/modules/scope/defaultExclude';
 import chalk from 'chalk';
 import { exists } from 'find-up';

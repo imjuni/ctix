@@ -1,8 +1,8 @@
 import type { IModeGenerateOptions } from '#/configs/interfaces/IModeGenerateOptions';
 import { getGlobFiles } from '#/modules/file/getGlobFiles';
+import { posixResolve } from '#/modules/path/modules/posixResolve';
 import { defaultExclude } from '#/modules/scope/defaultExclude';
 import { Glob, type GlobOptions } from 'glob';
-import { replaceSepToPosix } from 'my-node-fp';
 import path from 'node:path';
 
 export class IncludeContainer {
@@ -40,7 +40,7 @@ export class IncludeContainer {
       return this.#map.get(filePath) != null;
     }
 
-    return this.#map.get(replaceSepToPosix(path.resolve(filePath))) != null;
+    return this.#map.get(posixResolve(filePath)) != null;
   }
 
   files() {

@@ -24,7 +24,8 @@ import { addCurrentDirPrefix } from '#/modules/path/addCurrentDirPrefix';
 import { getDepth } from '#/modules/path/getDepth';
 import { getImportStatementExtname } from '#/modules/path/getImportStatementExtname';
 import { getParentDir } from '#/modules/path/getParentDir';
-import { posixJoin } from '#/modules/path/posixJoin';
+import { posixJoin } from '#/modules/path/modules/posixJoin';
+import { posixRelative } from '#/modules/path/modules/posixRelative';
 import { ExcludeContainer } from '#/modules/scope/ExcludeContainer';
 import { IncludeContainer } from '#/modules/scope/IncludeContainer';
 import { getBanner } from '#/modules/writes/getBanner';
@@ -40,7 +41,6 @@ import { getRenderData } from '#/templates/modules/getRenderData';
 import chalk from 'chalk';
 import dayjs from 'dayjs';
 import { getDirnameSync } from 'my-node-fp';
-import path from 'node:path';
 import type * as tsm from 'ts-morph';
 
 export async function creating(_buildOptions: TCommandBuildOptions, createOption: TCreateOptions) {
@@ -253,7 +253,7 @@ export async function creating(_buildOptions: TCommandBuildOptions, createOption
         createOption,
         posixJoin(firstExistDir, createOption.exportFilename),
         {
-          importPath: addCurrentDirPrefix(path.relative(firstExistDir, params.dirPath)),
+          importPath: addCurrentDirPrefix(posixRelative(firstExistDir, params.dirPath)),
           extname: {
             origin: '.ts',
             render: getImportStatementExtname(createOption.fileExt, '.ts'),
@@ -282,7 +282,7 @@ export async function creating(_buildOptions: TCommandBuildOptions, createOption
         createOption,
         posixJoin(params.dirPath, createOption.exportFilename),
         {
-          importPath: addCurrentDirPrefix(path.relative(parentDir, params.dirPath)),
+          importPath: addCurrentDirPrefix(posixRelative(parentDir, params.dirPath)),
           extname: {
             origin: '.ts',
             render: getImportStatementExtname(createOption.fileExt, '.ts'),

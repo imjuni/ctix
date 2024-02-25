@@ -5,8 +5,9 @@ import type { IModeTsGenerateOptions } from '#/configs/interfaces/IModeTsGenerat
 import { addCurrentDirPrefix } from '#/modules/path/addCurrentDirPrefix';
 import { getExtname } from '#/modules/path/getExtname';
 import { getImportStatementExtname } from '#/modules/path/getImportStatementExtname';
+import { posixRelative } from '#/modules/path/modules/posixRelative';
 import type { IIndexRenderData } from '#/templates/interfaces/IIndexRenderData';
-import { replaceSepToPosix } from 'my-node-fp';
+import { basenames, replaceSepToPosix } from 'my-node-fp';
 import path from 'node:path';
 
 export function getRenderData(
@@ -31,8 +32,8 @@ export function getRenderData(
   const filename = filePath.replace(new RegExp(`${extname}$`), '');
   const relativePath =
     output != null
-      ? replaceSepToPosix(addCurrentDirPrefix(path.relative(output, filename)))
-      : replaceSepToPosix(`.${path.posix.sep}${path.basename(filename, getExtname(filePath))}`);
+      ? addCurrentDirPrefix(posixRelative(output, filename))
+      : replaceSepToPosix(`.${path.posix.sep}${basenames(filename, getExtname(filePath))}`);
 
   return {
     options: {

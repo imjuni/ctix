@@ -1,5 +1,5 @@
 import type { IExtendOptions } from '#/configs/interfaces/IExtendOptions';
-import { posixJoin } from '#/modules/path/posixJoin';
+import { posixJoin } from '#/modules/path/modules/posixJoin';
 import { settify } from 'my-easy-fp';
 import { getDirname } from 'my-node-fp';
 import type * as tsm from 'ts-morph';

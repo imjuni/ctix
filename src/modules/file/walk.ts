@@ -1,14 +1,14 @@
-import { posixJoin } from '#/modules/path/posixJoin';
+import { posixJoin } from '#/modules/path/modules/posixJoin';
+import { posixResolve } from '#/modules/path/modules/posixResolve';
 import { isDirectory } from 'my-node-fp';
 import fs from 'node:fs';
-import path from 'node:path';
 import { isPromise } from 'node:util/types';
 
 export async function dfsWalk(
   currentDirPath: string,
   callback: (params: { dirPath: string; filePaths: string[] }) => void | Promise<void>,
 ) {
-  const resolved = path.resolve(currentDirPath);
+  const resolved = posixResolve(currentDirPath);
   const readed = await fs.promises.readdir(resolved);
 
   const dirPaths = (

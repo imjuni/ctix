@@ -9,7 +9,8 @@ import { ProjectContainer } from '#/modules/file/ProjectContainer';
 import { checkOutputFile } from '#/modules/file/checkOutputFile';
 import { getTsExcludeFiles } from '#/modules/file/getTsExcludeFiles';
 import { getTsIncludeFiles } from '#/modules/file/getTsIncludeFiles';
-import { posixJoin } from '#/modules/path/posixJoin';
+import { posixJoin } from '#/modules/path/modules/posixJoin';
+import { posixResolve } from '#/modules/path/modules/posixResolve';
 import { ExcludeContainer } from '#/modules/scope/ExcludeContainer';
 import { IncludeContainer } from '#/modules/scope/IncludeContainer';
 import { getBanner } from '#/modules/writes/getBanner';
@@ -20,7 +21,6 @@ import type { IIndexRenderData } from '#/templates/interfaces/IIndexRenderData';
 import { TemplateContainer } from '#/templates/modules/TemplateContainer';
 import { getModuleRenderData } from '#/templates/modules/getModuleRenderData';
 import dayjs from 'dayjs';
-import path from 'node:path';
 
 export async function moduling(_buildOptions: TCommandBuildOptions, moduleOption: TModuleOptions) {
   Spinner.it.start("ctix 'module' mode start, ...");
@@ -33,7 +33,7 @@ export async function moduling(_buildOptions: TCommandBuildOptions, moduleOption
   Spinner.it.succeed(`[${moduleOption.project}] loading compelete!`);
   Spinner.it.update('include, exclude config');
 
-  const output = path.resolve(posixJoin(moduleOption.output, moduleOption.exportFilename));
+  const output = posixResolve(posixJoin(moduleOption.output, moduleOption.exportFilename));
 
   const include = new IncludeContainer({
     config: { include: getTsIncludeFiles({ config: moduleOption, extend: extendOptions }) },

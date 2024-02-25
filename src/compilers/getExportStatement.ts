@@ -3,6 +3,8 @@ import { getSummaryStatement } from '#/compilers/getSummaryStatement';
 import type { IExportStatement } from '#/compilers/interfaces/IExportStatement';
 import type { IExtendOptions } from '#/configs/interfaces/IExtendOptions';
 import type { IModeGenerateOptions } from '#/configs/interfaces/IModeGenerateOptions';
+import { posixRelative } from '#/modules/path/modules/posixRelative';
+import { posixResolve } from '#/modules/path/modules/posixResolve';
 import { getDirname, replaceSepToPosix, startSepRemove } from 'my-node-fp';
 import path from 'node:path';
 import * as tsm from 'ts-morph';
@@ -12,15 +14,13 @@ export async function getExportStatement(
   option: Pick<IModeGenerateOptions, 'project' | 'exportFilename'>,
   extendOptions: Pick<IExtendOptions, 'eol'>,
 ): Promise<IExportStatement[]> {
-  const dirPath = replaceSepToPosix(
-    path.resolve(await getDirname(sourceFile.getFilePath().toString())),
-  );
+  const dirPath = posixResolve(await getDirname(sourceFile.getFilePath().toString()));
   const filename = startSepRemove(
     replaceSepToPosix(sourceFile.getFilePath().toString().replace(dirPath, '')),
     path.posix.sep,
   );
   // rootDir 또는 output, project 셋 중에 하나를 선택해서 써야 한다
-  const relativePath = replaceSepToPosix(path.relative(await getDirname(option.project), dirPath));
+  const relativePath = posixRelative(await getDirname(option.project), dirPath);
 
   const exportedDeclarationsMap = sourceFile.getExportedDeclarations();
   const defaultExportedDeclarations = exportedDeclarationsMap.get('default')?.at(0);

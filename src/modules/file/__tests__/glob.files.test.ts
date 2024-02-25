@@ -1,5 +1,5 @@
 import { getGlobFiles } from '#/modules/file/getGlobFiles';
-import { posixJoin } from '#/modules/path/posixJoin';
+import { posixJoin } from '#/modules/path/modules/posixJoin';
 import { defaultExclude } from '#/modules/scope/defaultExclude';
 import { Glob } from 'glob';
 import { describe, expect, it } from 'vitest';

@@ -2,12 +2,12 @@ import { getTypeScriptConfig } from '#/compilers/getTypeScriptConfig';
 import type { IExtendOptions } from '#/configs/interfaces/IExtendOptions';
 import { getSourceFileEol } from '#/configs/modules/getSourceFileEol';
 import { getDepth } from '#/modules/path/getDepth';
+import { posixResolve } from '#/modules/path/modules/posixResolve';
 import { settify } from 'my-easy-fp';
 import { getDirname, isDescendant, replaceSepToPosix } from 'my-node-fp';
-import path from 'node:path';
 
 export async function getExtendOptions(project: string): Promise<IExtendOptions> {
-  const projectPath = replaceSepToPosix(path.resolve(project));
+  const projectPath = replaceSepToPosix(posixResolve(project));
   const tsconfig = getTypeScriptConfig(projectPath);
   const resolvedProjectDirPath = replaceSepToPosix(await getDirname(projectPath));
 
@@ -21,7 +21,7 @@ export async function getExtendOptions(project: string): Promise<IExtendOptions>
   const topDirDepth = (
     await Promise.all(
       filePaths.map(async (filePath) => {
-        const dirPath = replaceSepToPosix(path.resolve(await getDirname(filePath)));
+        const dirPath = replaceSepToPosix(posixResolve(await getDirname(filePath)));
         return {
           filePaths: [dirPath],
           depth: getDepth(dirPath),

@@ -1,7 +1,7 @@
 import { CE_INLINE_COMMENT_KEYWORD } from '#/comments/const-enum/CE_INLINE_COMMENT_KEYWORD';
 import { getInlineStyle } from '#/comments/getInlineStyle';
 import { getSourceFileComments } from '#/comments/getSourceFileComments';
-import { posixJoin } from '#/modules/path/posixJoin';
+import { posixJoin } from '#/modules/path/modules/posixJoin';
 import * as cp from 'comment-parser';
 import { randomUUID } from 'node:crypto';
 import * as tsm from 'ts-morph';

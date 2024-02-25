@@ -1,4 +1,4 @@
-import { replaceSepToPosix } from 'my-node-fp';
+import { posixRelative } from '#/modules/path/modules/posixRelative';
 import path from 'node:path';
 
 export function getRelativeDepth(basePath: string, dirPath: string) {
@@ -6,13 +6,12 @@ export function getRelativeDepth(basePath: string, dirPath: string) {
     throw new Error('[getRelativeDepth] basePaths is empty array');
   }
 
-  const relativePath = path.relative(replaceSepToPosix(basePath), replaceSepToPosix(dirPath));
-  const replaced = replaceSepToPosix(relativePath);
+  const relativePath = posixRelative(basePath, dirPath);
 
-  if (replaced === '') {
+  if (relativePath === '') {
     return 0;
   }
 
-  const depth = replaced.split(path.posix.sep);
+  const depth = relativePath.split(path.posix.sep);
   return depth.length;
 }

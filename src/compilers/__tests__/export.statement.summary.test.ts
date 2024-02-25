@@ -1,7 +1,7 @@
 import { getSummaryStatement } from '#/compilers/getSummaryStatement';
 import type { IExportStatement } from '#/compilers/interfaces/IExportStatement';
 import { filenamify } from '#/modules/path/filenamify';
-import { posixJoin } from '#/modules/path/posixJoin';
+import { posixJoin } from '#/modules/path/modules/posixJoin';
 import { atOrThrow } from 'my-easy-fp';
 import { replaceSepToPosix } from 'my-node-fp';
 import { randomUUID } from 'node:crypto';

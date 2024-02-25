@@ -14,7 +14,8 @@ import { ProjectContainer } from '#/modules/file/ProjectContainer';
 import { checkOutputFile } from '#/modules/file/checkOutputFile';
 import { getTsExcludeFiles } from '#/modules/file/getTsExcludeFiles';
 import { getTsIncludeFiles } from '#/modules/file/getTsIncludeFiles';
-import { posixJoin } from '#/modules/path/posixJoin';
+import { posixJoin } from '#/modules/path/modules/posixJoin';
+import { posixResolve } from '#/modules/path/modules/posixResolve';
 import { ExcludeContainer } from '#/modules/scope/ExcludeContainer';
 import { IncludeContainer } from '#/modules/scope/IncludeContainer';
 import { getBanner } from '#/modules/writes/getBanner';
@@ -27,7 +28,6 @@ import { getRenderData } from '#/templates/modules/getRenderData';
 import { getSelectStyle } from '#/templates/modules/getSelectStyle';
 import chalk from 'chalk';
 import dayjs from 'dayjs';
-import path from 'node:path';
 import type * as tsm from 'ts-morph';
 
 export async function bundling(_buildOptions: TCommandBuildOptions, bundleOption: TBundleOptions) {
@@ -41,7 +41,7 @@ export async function bundling(_buildOptions: TCommandBuildOptions, bundleOption
   Spinner.it.succeed(`[${bundleOption.project}] loading compelete!`);
   Spinner.it.update('include, exclude config');
 
-  const output = path.resolve(posixJoin(bundleOption.output, bundleOption.exportFilename));
+  const output = posixResolve(posixJoin(bundleOption.output, bundleOption.exportFilename));
   const filePaths = project
     .getSourceFiles()
     .map((sourceFile) => sourceFile.getFilePath().toString());
