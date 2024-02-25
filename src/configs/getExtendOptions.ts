@@ -7,7 +7,7 @@ import { settify } from 'my-easy-fp';
 import { getDirname, isDescendant, replaceSepToPosix } from 'my-node-fp';
 
 export async function getExtendOptions(project: string): Promise<IExtendOptions> {
-  const projectPath = replaceSepToPosix(posixResolve(project));
+  const projectPath = posixResolve(project);
   const tsconfig = getTypeScriptConfig(projectPath);
   const resolvedProjectDirPath = replaceSepToPosix(await getDirname(projectPath));
 
