@@ -1,4 +1,3 @@
-import { posixResolve } from '#/modules/path/modules/posixResolve';
 import path from 'node:path';
 import * as tsm from 'ts-morph';
 
@@ -8,7 +7,7 @@ import * as tsm from 'ts-morph';
  * @param project - project directory
  */
 export function getTypeScriptConfig(project: string): tsm.ts.ParsedCommandLine {
-  const resolvedProjectPath = posixResolve(project);
+  const resolvedProjectPath = path.resolve(project);
   const parseConfigHost: tsm.ts.ParseConfigHost = {
     fileExists: tsm.ts.sys.fileExists.bind(tsm.ts),
     readFile: tsm.ts.sys.readFile.bind(tsm.ts),

@@ -1,4 +1,5 @@
 import { getTypeScriptProject } from '#/compilers/getTypeScriptProject';
+import path from 'node:path';
 import type * as tsm from 'ts-morph';
 
 export class ProjectContainer {
@@ -53,7 +54,7 @@ export class ProjectContainer {
     }
 
     const loadedProject = getTypeScriptProject({
-      tsConfigFilePath: projectPath,
+      tsConfigFilePath: path.resolve(projectPath),
     });
 
     this.#projects.set(projectPath, loadedProject);
