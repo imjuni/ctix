@@ -1,6 +1,6 @@
 import type { IExportStatement } from '#/compilers/interfaces/IExportStatement';
 import type { IReason } from '#/compilers/interfaces/IReason';
-import { posixJoin } from '#/modules/path/posixJoin';
+import { posixJoin } from '#/modules/path/modules/posixJoin';
 import chalk from 'chalk';
 
 export class StatementTable {

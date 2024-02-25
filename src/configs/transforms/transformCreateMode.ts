@@ -5,6 +5,7 @@ import { CE_GENERATION_STYLE } from '#/configs/const-enum/CE_GENERATION_STYLE';
 import type { TBundleOptions } from '#/configs/interfaces/TBundleOptions';
 import type { TCommandBuildArgvOptions } from '#/configs/interfaces/TCommandBuildArgvOptions';
 import type { TCreateOptions } from '#/configs/interfaces/TCreateOptions';
+import { posixResolve } from '#/modules/path/modules/posixResolve';
 import { getDirname } from 'my-node-fp';
 import path from 'node:path';
 import type { SetRequired } from 'type-fest';
@@ -19,8 +20,8 @@ export async function transformCreateMode(
   },
 ): Promise<TCreateOptions> {
   const startFrom =
-    argv.startFrom ?? option.startFrom ?? path.resolve(await getDirname(argv.project));
-  const resolvedStartFrom = path.isAbsolute(startFrom) ? startFrom : path.resolve(startFrom);
+    argv.startFrom ?? option.startFrom ?? posixResolve(await getDirname(argv.project));
+  const resolvedStartFrom = path.isAbsolute(startFrom) ? startFrom : posixResolve(startFrom);
 
   return {
     mode: CE_CTIX_BUILD_MODE.CREATE_MODE,

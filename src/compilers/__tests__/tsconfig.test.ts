@@ -1,6 +1,6 @@
 import { getFileScope } from '#/compilers/getFileScope';
 import { getTypeScriptConfig } from '#/compilers/getTypeScriptConfig';
-import { posixJoin } from '#/modules/path/posixJoin';
+import { posixJoin } from '#/modules/path/modules/posixJoin';
 import { describe, expect, it } from 'vitest';
 
 describe('getTypeScriptConfig', () => {

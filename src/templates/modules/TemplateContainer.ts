@@ -1,6 +1,7 @@
 import { CE_GENERATION_STYLE } from '#/configs/const-enum/CE_GENERATION_STYLE';
 import { addExt } from '#/modules/path/addExt';
-import { posixJoin } from '#/modules/path/posixJoin';
+import { posixJoin } from '#/modules/path/modules/posixJoin';
+import { posixResolve } from '#/modules/path/modules/posixResolve';
 import { CE_TEMPLATE_NAME } from '#/templates/const-enum/CE_TEMPLATE_NAME';
 import { defaultAliasNamedDestructiveDefaultTemplate } from '#/templates/templates/defaultAliasNamedDestructiveDefaultTemplate';
 import { defaultAliasNamedStarDefaultTemplate } from '#/templates/templates/defaultAliasNamedStarDefaultTemplate';
@@ -15,7 +16,6 @@ import consola from 'consola';
 import { Eta } from 'eta';
 import { isError } from 'my-easy-fp';
 import fs from 'node:fs';
-import path from 'node:path';
 
 export class TemplateContainer {
   static #it: TemplateContainer;
@@ -58,7 +58,7 @@ export class TemplateContainer {
       return TemplateContainer.getDefaultTemplate();
     }
 
-    const resolvedTemplateFilePath = path.resolve(templatePath);
+    const resolvedTemplateFilePath = posixResolve(templatePath);
     const templates = await TemplateContainer.readFiles(resolvedTemplateFilePath);
 
     return new Map<string, string>([

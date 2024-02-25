@@ -3,7 +3,7 @@ import { getCommentKind } from '#/comments/getCommentKind';
 import { getInlineExclude } from '#/comments/getInlineExclude';
 import { getSourceFileComments } from '#/comments/getSourceFileComments';
 import type { IStatementComments } from '#/comments/interfaces/IStatementComments';
-import { posixJoin } from '#/modules/path/posixJoin';
+import { posixJoin } from '#/modules/path/modules/posixJoin';
 import * as cp from 'comment-parser';
 import copy from 'fast-copy';
 import { randomUUID } from 'node:crypto';

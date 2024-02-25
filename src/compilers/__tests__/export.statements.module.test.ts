@@ -1,6 +1,6 @@
 import { getExportStatement } from '#/compilers/getExportStatement';
 import { filenamify } from '#/modules/path/filenamify';
-import { posixJoin } from '#/modules/path/posixJoin';
+import { posixJoin } from '#/modules/path/modules/posixJoin';
 import { randomUUID } from 'node:crypto';
 import * as tsm from 'ts-morph';
 import { beforeAll, describe, expect, it } from 'vitest';

@@ -1,5 +1,5 @@
 import { getInlineExcludedFiles } from '#/comments/getInlineExcludedFiles';
-import { posixJoin } from '#/modules/path/posixJoin';
+import { posixJoin } from '#/modules/path/modules/posixJoin';
 import { randomUUID } from 'node:crypto';
 import * as tsm from 'ts-morph';
 import { describe, expect, it } from 'vitest';

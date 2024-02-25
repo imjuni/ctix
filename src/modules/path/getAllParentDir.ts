@@ -1,4 +1,4 @@
-import { posixJoin } from '#/modules/path/posixJoin';
+import { posixJoin } from '#/modules/path/modules/posixJoin';
 import { populate } from 'my-easy-fp';
 import { startSepAppend, startSepRemove } from 'my-node-fp';
 import path from 'node:path';

@@ -1,7 +1,7 @@
 import type { IStatementComments } from '#/comments/interfaces/IStatementComments';
 import { CE_GENERATION_STYLE } from '#/configs/const-enum/CE_GENERATION_STYLE';
 import { filenamify } from '#/modules/path/filenamify';
-import { posixJoin } from '#/modules/path/posixJoin';
+import { posixJoin } from '#/modules/path/modules/posixJoin';
 import { CE_AUTO_RENDER_CASE } from '#/templates/const-enum/CE_AUTO_RENDER_CASE';
 import type { IIndexRenderData } from '#/templates/interfaces/IIndexRenderData';
 import { getSelectStyle } from '#/templates/modules/getSelectStyle';

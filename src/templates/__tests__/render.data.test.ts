@@ -1,7 +1,7 @@
 import { getExportStatement } from '#/compilers/getExportStatement';
 import { CE_EXTENSION_PROCESSING } from '#/configs/const-enum/CE_EXTENSION_PROCESSING';
 import { filenamify } from '#/modules/path/filenamify';
-import { posixJoin } from '#/modules/path/posixJoin';
+import { posixJoin } from '#/modules/path/modules/posixJoin';
 import { getRenderData } from '#/templates/modules/getRenderData';
 import { replaceSepToPosix } from 'my-node-fp';
 import { randomUUID } from 'node:crypto';

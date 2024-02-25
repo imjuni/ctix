@@ -1,6 +1,7 @@
 import type { IInlineExcludeInfo } from '#/comments/interfaces/IInlineExcludeInfo';
 import type { IModeGenerateOptions } from '#/configs/interfaces/IModeGenerateOptions';
 import { getGlobFiles } from '#/modules/file/getGlobFiles';
+import { posixResolve } from '#/modules/path/modules/posixResolve';
 import { defaultExclude } from '#/modules/scope/defaultExclude';
 import { Glob, type GlobOptions } from 'glob';
 import { replaceSepToPosix } from 'my-node-fp';
@@ -36,7 +37,7 @@ export class ExcludeContainer {
     params.inlineExcludeds.forEach((inlineExcluded) => {
       const filePath = path.isAbsolute(inlineExcluded.filePath)
         ? replaceSepToPosix(inlineExcluded.filePath)
-        : replaceSepToPosix(path.resolve(inlineExcluded.filePath));
+        : posixResolve(inlineExcluded.filePath);
       this.#inline.set(filePath, inlineExcluded);
     });
   }
@@ -59,8 +60,8 @@ export class ExcludeContainer {
     }
 
     return (
-      this.#map.get(replaceSepToPosix(path.resolve(filePath))) != null ||
-      this.#inline.get(replaceSepToPosix(path.resolve(filePath))) != null
+      this.#map.get(posixResolve(filePath)) != null ||
+      this.#inline.get(posixResolve(filePath)) != null
     );
   }
 }

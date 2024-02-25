@@ -4,6 +4,7 @@ import type { IModeGenerateOptions } from '#/configs/interfaces/IModeGenerateOpt
 import { addCurrentDirPrefix } from '#/modules/path/addCurrentDirPrefix';
 import { getExtname } from '#/modules/path/getExtname';
 import { getRelativeDepth } from '#/modules/path/getRelativeDepth';
+import { posixRelative } from '#/modules/path/modules/posixRelative';
 import type { IIndexRenderData } from '#/templates/interfaces/IIndexRenderData';
 import { getDirname } from 'my-node-fp';
 import path from 'node:path';
@@ -18,7 +19,7 @@ export async function getModuleRenderData(
   const filename = path.basename(filePath).replace(new RegExp(`${extname}$`), '');
   const dirPath = await getDirname(filePath);
   const relativePath = addCurrentDirPrefix(
-    path.relative(await getDirname(output), await getDirname(filePath)),
+    posixRelative(await getDirname(output), await getDirname(filePath)),
   );
 
   const defaultExport: IExportStatement = {

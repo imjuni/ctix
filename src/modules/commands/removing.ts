@@ -5,9 +5,9 @@ import type { TCommandBuildOptions } from '#/configs/interfaces/TCommandBuildOpt
 import type { TCommandRemoveOptions } from '#/configs/interfaces/TCommandRemoveOptions';
 import { getRemoveFileGlobPattern } from '#/modules/file/getRemoveFileGlobPattern';
 import { unlinks } from '#/modules/file/unlinks';
+import { posixRelative } from '#/modules/path/modules/posixRelative';
 import { IncludeContainer } from '#/modules/scope/IncludeContainer';
 import chalk from 'chalk';
-import path from 'node:path';
 
 export async function removing(
   options: TCommandRemoveOptions & Omit<TCommandBuildOptions, '$kind'>,
@@ -37,7 +37,7 @@ export async function removing(
     await filePaths.reduce(async (prevHandle: Promise<void>, filePath: string) => {
       const handle = async () => {
         Spinner.it.succeed(
-          `${chalk.redBright('removed:')} ${path.relative(process.cwd(), filePath)}`,
+          `${chalk.redBright('removed:')} ${posixRelative(process.cwd(), filePath)}`,
         );
       };
 
@@ -62,7 +62,7 @@ export async function removing(
   await filePaths.reduce(async (prevHandle: Promise<void>, filePath: string) => {
     const handle = async () => {
       Spinner.it.succeed(
-        `${chalk.redBright('removed:')} ${path.relative(process.cwd(), filePath)}`,
+        `${chalk.redBright('removed:')} ${posixRelative(process.cwd(), filePath)}`,
       );
     };
 
