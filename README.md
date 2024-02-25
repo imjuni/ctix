@@ -40,6 +40,7 @@ In addition, `ctix` will auto-generate `barrel` files so that a single `index.d.
   - [Programming interface](#programming-interface)
 - [Requirement](#requirement)
 - [Important](#important)
+- [Generation Style](#generation-style)
 - [More information](#more-information)
 - [What is difference Re-Map paths?](#what-is-difference-re-map-paths)
 - [Option](#option)
@@ -146,11 +147,11 @@ When using task runners like Gulp and Just, as well as bundlers like webpack and
 
 | function | option | descryption |
 | - | - | - |
-| building | [TCommandBuildOptions](https://github.com/imjuni/ctix/blob/master/src/configs/interfaces/TCommandBuildOptions.ts) | Execute the `build` command |
-| initializing | [TCommandInitOptions](https://github.com/imjuni/ctix/blob/master/src/configs/interfaces/TCommandInitOptions.ts) | Execute the `init` command |
-| removing | [TCommandRemoveOptions](https://github.com/imjuni/ctix/blob/master/src/configs/interfaces/TCommandRemoveOptions.ts), [TCommandBuildOptions](https://github.com/imjuni/ctix/blob/master/src/configs/interfaces/TCommandBuildOptions.ts) | Execute the `remove` command |
+| building | [TCommandBuildOptions](src/configs/interfaces/TCommandBuildOptions.ts) | Execute the `build` command |
+| initializing | [TCommandInitOptions](src/configs/interfaces/TCommandInitOptions.ts) | Execute the `init` command |
+| removing | [TCommandRemoveOptions](src/configs/interfaces/TCommandRemoveOptions.ts), [TCommandBuildOptions](src/configs/interfaces/TCommandBuildOptions.ts) | Execute the `remove` command |
 
-Check out the [example code](https://github.com/imjuni/ctix/blob/master/doc/PROGRAMMING_INTERFACE.md).
+Check out the [example code](doc/PROGRAMMING_INTERFACE.md).
 
 ## Requirement
 
@@ -161,11 +162,19 @@ Check out the [example code](https://github.com/imjuni/ctix/blob/master/doc/PROG
 
 `ctix` does not work in JavaScript code because it uses TypeScript API, please use it **`before`** Babel translation or TypeScript compilation.
 
+## Generation Style
+
+The handling of the `default export` is an important issue, but many bundlers and type bundlers handle the `default export` differently, so ctix provides many ways to create a `default export`.
+
+You can change the `generation style` of the entire project by setting the `generation-style` option, or you can change the `generation style` of only certain files by adding the `@ctix-generation-style` inline comment at the top of the file.
+
+- [In Depth Guide of the Generation Style](doc/IN_DEPTH_GEN_STYLE.md)
+
 ## More information
 
-- [Applying a font file to your source code](https://github.com/imjuni/ctix/blob/master/doc/IN_DEPTH_FONT.md)
-- [Applying a Vue.js components to your source code](https://github.com/imjuni/ctix/blob/master/doc/IN_DEPTH_VUE.md)
-- [Applying a include, exclude configuration to `.ctirc`](https://github.com/imjuni/ctix/blob/master/doc/IN_DEPTH_EXCLUDE.md)
+- [Applying a font file to your source code](doc/IN_DEPTH_FONT.md)
+- [Applying a Vue.js components to your source code](doc/IN_DEPTH_VUE.md)
+- [Applying a include, exclude configuration to `.ctirc`](doc/IN_DEPTH_EXCLUDE.md)
 
 ## What is difference Re-Map paths?
 
@@ -174,14 +183,14 @@ It is not recommended to use `index.ts` file to re-map paths or shorten the path
 ## Option
 
 - build command
-  - [bundle mode](https://github.com/imjuni/ctix/blob/master/doc/OPTION_BUILD_BUNDLE.md)
-  - [create mode](https://github.com/imjuni/ctix/blob/master/doc/OPTION_BUILD_CREATE.md)
-  - [module mode](https://github.com/imjuni/ctix/blob/master/doc/OPTION_BUILD_MODULE.md)
-- [remove command](https://github.com/imjuni/ctix/blob/master/doc/OPTION_REVMOE.md)
+  - [bundle mode](doc/OPTION_BUILD_BUNDLE.md)
+  - [create mode](doc/OPTION_BUILD_CREATE.md)
+  - [module mode](doc/OPTION_BUILD_MODULE.md)
+- [remove command](doc/OPTION_REVMOE.md)
 
 ## License
 
-This software is licensed under the [MIT](https://github.com/imjuni/ctix/blob/master/LICENSE).
+This software is licensed under the [MIT](LICENSE).
 
 ## References
 
