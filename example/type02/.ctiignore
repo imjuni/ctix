@@ -1,6 +1,0 @@
-{
-  "**/__tests__/*": "*",
-  "juvenile/**": "*",
-  "wellmade/FlakyCls.ts": "*",
-  "wellmade/ChildlikeCls.ts": ["transfer","stomach"]
-}
