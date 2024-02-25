@@ -168,7 +168,7 @@ The handling of the `default export` is an important issue, but many bundlers an
 
 You can change the `generation style` of the entire project by setting the `generation-style` option, or you can change the `generation style` of only certain files by adding the `@ctix-generation-style` inline comment at the top of the file.
 
-- [In Depth Guide of the Generation Style](doc/IN_DEPTH_GEN_STYLE.md)
+- [More about Generation Style](doc/IN_DEPTH_GEN_STYLE.md)
 
 ## More information
 
