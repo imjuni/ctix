@@ -20,7 +20,7 @@ export async function getExportStatement(
     path.posix.sep,
   );
   // rootDir 또는 output, project 셋 중에 하나를 선택해서 써야 한다
-  const relativePath = path.relative(await getDirname(option.project), dirPath);
+  const relativePath = replaceSepToPosix(path.relative(await getDirname(option.project), dirPath));
 
   const exportedDeclarationsMap = sourceFile.getExportedDeclarations();
   const defaultExportedDeclarations = exportedDeclarationsMap.get('default')?.at(0);

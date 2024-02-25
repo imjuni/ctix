@@ -3,6 +3,7 @@ import type { IModeGenerateOptions } from '#/configs/interfaces/IModeGenerateOpt
 import { getGlobFiles } from '#/modules/file/getGlobFiles';
 import { defaultExclude } from '#/modules/scope/defaultExclude';
 import { Glob, type GlobOptions } from 'glob';
+import { replaceSepToPosix } from 'my-node-fp';
 import path from 'node:path';
 
 export class ExcludeContainer {
@@ -24,14 +25,18 @@ export class ExcludeContainer {
       windowsPathsNoEscape: true,
     });
 
-    this.#map = new Map<string, boolean>(getGlobFiles(globs).map((filePath) => [filePath, true]));
+    const files = getGlobFiles(globs).map((filePath): [string, boolean] => [
+      replaceSepToPosix(filePath),
+      true,
+    ]);
+    this.#map = new Map<string, boolean>(files);
     this.#globs = [globs];
     this.#inline = new Map<string, IInlineExcludeInfo & { filePath: string }>();
 
     params.inlineExcludeds.forEach((inlineExcluded) => {
       const filePath = path.isAbsolute(inlineExcluded.filePath)
-        ? inlineExcluded.filePath
-        : path.resolve(inlineExcluded.filePath);
+        ? replaceSepToPosix(inlineExcluded.filePath)
+        : replaceSepToPosix(path.resolve(inlineExcluded.filePath));
       this.#inline.set(filePath, inlineExcluded);
     });
   }
@@ -54,8 +59,8 @@ export class ExcludeContainer {
     }
 
     return (
-      this.#map.get(path.resolve(filePath)) != null ||
-      this.#inline.get(path.resolve(filePath)) != null
+      this.#map.get(replaceSepToPosix(path.resolve(filePath))) != null ||
+      this.#inline.get(replaceSepToPosix(path.resolve(filePath))) != null
     );
   }
 }
