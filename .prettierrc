@@ -24,6 +24,8 @@
         ".vscode/launch.json",
         ".vscode/settings.json",
         "tsconfig.prod.json",
+        "tsconfig.eslint.json",
+        "tsconfig.dts.json",
         "tsconfig.json"
       ],
       "options": {

@@ -3,12 +3,12 @@
   "compilerOptions": {
     "allowJs": true
   },
-  "include": ["src/**/*.ts", "prepublish.js", ".eslintrc.cjs", "vitest.config.ts"],
-  "exclude": [
-    "node_modules/**",
-    "dist/**/*",
-    ".configs/**",
-    "example/**",
-    "docs/**"
-  ]
+  "include": [
+    "src/**/*.ts",
+    "prepublish.js",
+    ".eslintrc.cjs",
+    "vitest.config.ts",
+    "commitlint.config.js"
+  ],
+  "exclude": ["node_modules/**", "dist/**/*", ".configs/**", "example/**", "docs/**"]
 }

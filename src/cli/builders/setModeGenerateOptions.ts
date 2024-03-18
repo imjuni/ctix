@@ -1,5 +1,4 @@
 import { CE_CTIX_BUILD_MODE } from '#/configs/const-enum/CE_CTIX_BUILD_MODE';
-import { CE_CTIX_DEFAULT_VALUE } from '#/configs/const-enum/CE_CTIX_DEFAULT_VALUE';
 import { CE_EXTENSION_PROCESSING } from '#/configs/const-enum/CE_EXTENSION_PROCESSING';
 import { CE_GENERATION_STYLE } from '#/configs/const-enum/CE_GENERATION_STYLE';
 import type { IModeGenerateOptions } from '#/configs/interfaces/IModeGenerateOptions';
@@ -32,7 +31,6 @@ export function setModeGenerateOptions<T = Argv<IModeGenerateOptions & IModeTsGe
       alias: 'f',
       describe: 'Export filename, if you not pass this field that use "index.ts" or "index.d.ts"',
       type: 'string',
-      default: CE_CTIX_DEFAULT_VALUE.EXPORT_FILENAME,
     })
     .option('use-semicolon', {
       describe: 'add semicolon on every export statement',
