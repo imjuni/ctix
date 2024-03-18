@@ -28,6 +28,7 @@
     "pub:prod": "pnpm run bundle && cross-env RELEASE_MODE=true pnpm publish --access=public",
     "lint": "eslint --cache .",
     "lint-staged": "lint-staged",
+    "commitlint": "commitlint",
     "prettier": "prettier --write src/**/*.ts",
     "dd": "deps-diff md -d prod -d dev --title-list-type '*' --deps-list-type '*' --content-list-type '*'",
     "prepublishOnly": "node prepublish.js",
@@ -69,6 +70,8 @@
     "ctix": "./dist/cjs/cli.cjs"
   },
   "devDependencies": {
+    "@commitlint/cli": "^19.2.0",
+    "@commitlint/config-conventional": "^19.1.0",
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@tsconfig/node18": "^18.2.2",
     "@types/cli-progress": "^3.11.4",

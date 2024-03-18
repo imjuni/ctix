@@ -1,4 +1,5 @@
 import { CE_CTIX_COMMAND } from '#/configs/const-enum/CE_CTIX_COMMAND';
+import { CE_CTIX_DEFAULT_VALUE } from '#/configs/const-enum/CE_CTIX_DEFAULT_VALUE';
 import type { TBundleOptions } from '#/configs/interfaces/TBundleOptions';
 import type { TCommandBuildArgvOptions } from '#/configs/interfaces/TCommandBuildArgvOptions';
 import type { TCommandRemoveOptions } from '#/configs/interfaces/TCommandRemoveOptions';
@@ -17,7 +18,7 @@ export function createRemoveOptions(
     progressStream: argv.progressStream,
     reasonerStream: argv.reasonerStream,
     removeBackup: argv.removeBackup,
-    exportFilename: argv.exportFilename,
+    exportFilename: argv.exportFilename ?? CE_CTIX_DEFAULT_VALUE.EXPORT_FILENAME,
     forceYes: argv.forceYes,
   };
 
