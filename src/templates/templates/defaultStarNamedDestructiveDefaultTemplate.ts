@@ -3,7 +3,7 @@ export const defaultStarNamedDestructiveDefaultTemplate = `
 
   export * from <%-= it.options.quote %><%= it.statement.importPath %><%= it.statement.extname.render %><%= it.options.quote %>
   <%- if (it.options.useSemicolon) { -%><%-= ";" -%><%- } -%>
-  export { <%= it.statement.named.map((named) => (named.isPureType ? 'type ' + named.identifier.name : named.identifier.name)).join(', ') %> } from 
+  export { <%= it.statement.named.map((named) => (named.isPureType ? 'type ' + named.identifier.name : named.identifier.name)).join(', ') %> } from<%= " " %>
   <%-= it.options.quote %><%= it.statement.importPath %><%= it.statement.extname.render %><%= it.options.quote %>
   <%- if (it.options.useSemicolon) { -%><%-= ";" -%><%- } -%>
 
@@ -14,7 +14,7 @@ export const defaultStarNamedDestructiveDefaultTemplate = `
 
 <% } else if (it.statement.named.length > 0) { -%>
 
-  export { <%= it.statement.named.map((named) => (named.isPureType ? 'type ' + named.identifier.name : named.identifier.name)).join(', ') %> } from 
+  export { <%= it.statement.named.map((named) => (named.isPureType ? 'type ' + named.identifier.name : named.identifier.name)).join(', ') %> } from<%= " " %>
   <%-= it.options.quote %><%= it.statement.importPath %><%= it.statement.extname.render %><%= it.options.quote %>
   <%- if (it.options.useSemicolon) { -%><%-= ";" -%><%- } -%>
 
