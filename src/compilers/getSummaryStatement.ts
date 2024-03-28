@@ -19,7 +19,7 @@ export function getSummaryStatement(params: {
   const kind = getExportedKind(params.node);
   const filenamified = filenamify(params.path.filename);
   const identifier = params.identifier ?? kind.name ?? filenamified;
-  const comments = getNodeComments(params.node)
+  const comments = getNodeComments(params.node, params.identifier)
     .map((comment) =>
       getInlineExclude({
         comment,
