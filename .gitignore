@@ -115,5 +115,5 @@ docs/TODO.md
 docs/api/
 docs-old/
 
-git-macro
-git-macro.sh
+git-short
+git-short.sh
