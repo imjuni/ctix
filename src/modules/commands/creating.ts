@@ -2,7 +2,7 @@ import { ProgressBar } from '#/cli/ux/ProgressBar';
 import { Reasoner } from '#/cli/ux/Reasoner';
 import { Spinner } from '#/cli/ux/Spinner';
 import { CE_INLINE_COMMENT_KEYWORD } from '#/comments/const-enum/CE_INLINE_COMMENT_KEYWORD';
-import { getInlineExcludedFiles } from '#/comments/getInlineExcludedFiles';
+import { getInlineCommentedFiles } from '#/comments/getInlineCommentedFiles';
 import { getInlineStyle } from '#/comments/getInlineStyle';
 import { getOutputExcludedFiles } from '#/comments/getOutputExcludedFiles';
 import { getSourceFileComments } from '#/comments/getSourceFileComments';
@@ -62,10 +62,10 @@ export async function creating(_buildOptions: TCommandBuildOptions, createOption
     cwd: extendOptions.resolved.projectDirPath,
   });
 
-  const inlineExcludeds = getInlineExcludedFiles({
+  const inlineExcludeds = getInlineCommentedFiles({
     project,
-    extendOptions,
     filePaths,
+    keyword: CE_INLINE_COMMENT_KEYWORD.FILE_EXCLUDE_KEYWORD,
   });
 
   const outputExcludeds = await getOutputExcludedFiles({

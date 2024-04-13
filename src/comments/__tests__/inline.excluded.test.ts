@@ -1,4 +1,5 @@
-import { getInlineExcludedFiles } from '#/comments/getInlineExcludedFiles';
+import { CE_INLINE_COMMENT_KEYWORD } from '#/comments/const-enum/CE_INLINE_COMMENT_KEYWORD';
+import { getInlineCommentedFiles } from '#/comments/getInlineCommentedFiles';
 import { posixJoin } from '#/modules/path/modules/posixJoin';
 import { randomUUID } from 'node:crypto';
 import * as tsm from 'ts-morph';
@@ -50,10 +51,10 @@ export class SuperHero {
     context.project.createSourceFile(filename01, source01.trim());
     context.project.createSourceFile(filename02, source02.trim());
 
-    const excluded = getInlineExcludedFiles({
+    const excluded = getInlineCommentedFiles({
       project: context.project,
-      extendOptions: { eol: '\n' },
       filePaths: [filename01, filename02],
+      keyword: CE_INLINE_COMMENT_KEYWORD.FILE_EXCLUDE_KEYWORD,
     });
 
     expect(excluded).toMatchObject([
@@ -112,10 +113,10 @@ export class DCHero {
     context.project.createSourceFile(filename01, source01.trim());
     context.project.createSourceFile(filename02, source02.trim());
 
-    const excluded = getInlineExcludedFiles({
+    const excluded = getInlineCommentedFiles({
       project: context.project,
-      extendOptions: { eol: '\n' },
       filePaths: [filename01, filename02],
+      keyword: CE_INLINE_COMMENT_KEYWORD.FILE_EXCLUDE_KEYWORD,
     });
 
     expect(excluded).toMatchObject([

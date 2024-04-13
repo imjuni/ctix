@@ -1,6 +1,6 @@
 import { CE_INLINE_COMMENT_KEYWORD } from '#/comments/const-enum/CE_INLINE_COMMENT_KEYWORD';
 import { getCommentKind } from '#/comments/getCommentKind';
-import { getInlineExclude } from '#/comments/getInlineExclude';
+import { getInlineCommented } from '#/comments/getInlineCommented';
 import { getSourceFileComments } from '#/comments/getSourceFileComments';
 import type { IStatementComments } from '#/comments/interfaces/IStatementComments';
 import { posixJoin } from '#/modules/path/modules/posixJoin';
@@ -179,7 +179,7 @@ describe('getInlineExclude', () => {
       range: '/**\n * @ctix-exclude\n */',
     };
 
-    const r01 = getInlineExclude({
+    const r01 = getInlineCommented({
       comment,
       options: {
         keyword: CE_INLINE_COMMENT_KEYWORD.FILE_EXCLUDE_KEYWORD,
@@ -213,7 +213,7 @@ describe('getInlineExclude', () => {
       range: '/*\n\n * @ctix-exclude\n */',
     };
 
-    const r01 = getInlineExclude({
+    const r01 = getInlineCommented({
       comment,
       options: {
         keyword: CE_INLINE_COMMENT_KEYWORD.FILE_EXCLUDE_KEYWORD,
@@ -254,7 +254,7 @@ describe('getInlineExclude', () => {
       range,
     };
 
-    const r01 = getInlineExclude({
+    const r01 = getInlineCommented({
       comment,
       options: {
         keyword: CE_INLINE_COMMENT_KEYWORD.FILE_EXCLUDE_KEYWORD,
@@ -295,7 +295,7 @@ describe('getInlineExclude', () => {
       range,
     };
 
-    const r01 = getInlineExclude({
+    const r01 = getInlineCommented({
       comment,
       options: {
         keyword: CE_INLINE_COMMENT_KEYWORD.FILE_EXCLUDE_KEYWORD,
@@ -336,7 +336,7 @@ describe('getInlineExclude', () => {
       range,
     };
 
-    const r01 = getInlineExclude({
+    const r01 = getInlineCommented({
       comment,
       options: {
         keyword: CE_INLINE_COMMENT_KEYWORD.FILE_EXCLUDE_KEYWORD,
@@ -377,7 +377,7 @@ describe('getInlineExclude', () => {
       range,
     };
 
-    const r01 = getInlineExclude({
+    const r01 = getInlineCommented({
       comment,
       options: {
         keyword: CE_INLINE_COMMENT_KEYWORD.FILE_EXCLUDE_KEYWORD,
@@ -412,7 +412,7 @@ describe('getInlineExclude', () => {
       range,
     };
 
-    const r01 = getInlineExclude({
+    const r01 = getInlineCommented({
       comment,
       options: {
         keyword: CE_INLINE_COMMENT_KEYWORD.NEXT_STATEMENT_EXCLUDE_KEYWORD,
@@ -446,7 +446,7 @@ describe('getInlineExclude', () => {
       range: '/** not comment */',
     };
 
-    const r01 = getInlineExclude({
+    const r01 = getInlineCommented({
       comment,
       options: {
         keyword: CE_INLINE_COMMENT_KEYWORD.NEXT_STATEMENT_EXCLUDE_KEYWORD,
@@ -472,7 +472,7 @@ describe('getInlineExclude', () => {
       range: '/** not comment */',
     };
 
-    const r01 = getInlineExclude({
+    const r01 = getInlineCommented({
       comment,
       options: {
         keyword: CE_INLINE_COMMENT_KEYWORD.NEXT_STATEMENT_EXCLUDE_KEYWORD,
@@ -578,7 +578,7 @@ describe('getInlineExclude', () => {
 
     const spyH01 = vitest.spyOn(cp, 'parse').mockImplementation(() => [v1]);
 
-    const r01 = getInlineExclude({
+    const r01 = getInlineCommented({
       comment,
       options: {
         keyword: CE_INLINE_COMMENT_KEYWORD.NEXT_STATEMENT_EXCLUDE_KEYWORD,

@@ -1,8 +1,8 @@
-import type { IInlineExcludeInfo } from '#/comments/interfaces/IInlineExcludeInfo';
+import type { IInlineCommentInfo } from '#/comments/interfaces/IInlineCommentInfo';
 
 export interface IExcludeFile {
   filePath: string;
-  fileExcludeComment: IInlineExcludeInfo[];
-  firstExcludeComment?: IInlineExcludeInfo;
+  fileExcludeComment: IInlineCommentInfo[];
+  firstExcludeComment?: IInlineCommentInfo;
   excluded: boolean;
 }

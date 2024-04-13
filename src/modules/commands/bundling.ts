@@ -1,12 +1,14 @@
 import { ProgressBar } from '#/cli/ux/ProgressBar';
 import { Reasoner } from '#/cli/ux/Reasoner';
 import { Spinner } from '#/cli/ux/Spinner';
-import { getInlineExcludedFiles } from '#/comments/getInlineExcludedFiles';
+import { CE_INLINE_COMMENT_KEYWORD } from '#/comments/const-enum/CE_INLINE_COMMENT_KEYWORD';
+import { getInlineCommentedFiles } from '#/comments/getInlineCommentedFiles';
 import { getSourceFileComments } from '#/comments/getSourceFileComments';
 import type { ISourceFileComments } from '#/comments/interfaces/ISourceFileComments';
 import { StatementTable } from '#/compilers/StatementTable';
 import { getExportStatement } from '#/compilers/getExportStatement';
 import type { IExportStatement } from '#/compilers/interfaces/IExportStatement';
+import { isDeclarationFile } from '#/compilers/isDeclarationFile';
 import { getExtendOptions } from '#/configs/getExtendOptions';
 import type { TBundleOptions } from '#/configs/interfaces/TBundleOptions';
 import type { TCommandBuildOptions } from '#/configs/interfaces/TCommandBuildOptions';
@@ -14,7 +16,9 @@ import { ProjectContainer } from '#/modules/file/ProjectContainer';
 import { checkOutputFile } from '#/modules/file/checkOutputFile';
 import { getTsExcludeFiles } from '#/modules/file/getTsExcludeFiles';
 import { getTsIncludeFiles } from '#/modules/file/getTsIncludeFiles';
+import { addCurrentDirPrefix } from '#/modules/path/addCurrentDirPrefix';
 import { posixJoin } from '#/modules/path/modules/posixJoin';
+import { posixRelative } from '#/modules/path/modules/posixRelative';
 import { posixResolve } from '#/modules/path/modules/posixResolve';
 import { ExcludeContainer } from '#/modules/scope/ExcludeContainer';
 import { IncludeContainer } from '#/modules/scope/IncludeContainer';
@@ -28,6 +32,8 @@ import { getRenderData } from '#/templates/modules/getRenderData';
 import { getSelectStyle } from '#/templates/modules/getSelectStyle';
 import chalk from 'chalk';
 import dayjs from 'dayjs';
+import { replaceSepToPosix } from 'my-node-fp';
+import path from 'node:path';
 import type * as tsm from 'ts-morph';
 
 export async function bundling(_buildOptions: TCommandBuildOptions, bundleOption: TBundleOptions) {
@@ -51,10 +57,10 @@ export async function bundling(_buildOptions: TCommandBuildOptions, bundleOption
     cwd: extendOptions.resolved.projectDirPath,
   });
 
-  const inlineExcludeds = getInlineExcludedFiles({
+  const inlineExcludeds = getInlineCommentedFiles({
     project,
-    extendOptions,
     filePaths,
+    keyword: CE_INLINE_COMMENT_KEYWORD.FILE_EXCLUDE_KEYWORD,
   });
 
   /**
@@ -67,6 +73,19 @@ export async function bundling(_buildOptions: TCommandBuildOptions, bundleOption
     },
     inlineExcludeds,
     cwd: extendOptions.resolved.projectDirPath,
+  });
+
+  const inlineDeclarations = getInlineCommentedFiles({
+    project,
+    filePaths,
+    keyword: CE_INLINE_COMMENT_KEYWORD.FILE_DECLARATION_KEYWORD,
+  }).filter((declaration) => {
+    const sourceFile = project.getSourceFile(declaration.filePath);
+    if (sourceFile == null) {
+      return false;
+    }
+
+    return isDeclarationFile(sourceFile);
   });
 
   const filenames = filePaths
@@ -154,7 +173,36 @@ export async function bundling(_buildOptions: TCommandBuildOptions, bundleOption
       return { renderData, ...style };
     });
 
-  const rendered = (
+  const importsRendered = await TemplateContainer.evaluate(
+    CE_TEMPLATE_NAME.DECLARATION_FILE_TEMPLATE,
+    {
+      options: { quote: bundleOption.quote },
+      declarations: await Promise.all(
+        inlineDeclarations.map((declaration) => {
+          const relativePath =
+            bundleOption.output != null
+              ? addCurrentDirPrefix(
+                  posixRelative(
+                    bundleOption.output,
+                    path.join(
+                      path.dirname(declaration.filePath),
+                      path.basename(declaration.filePath, path.extname(declaration.filePath)),
+                    ),
+                  ),
+                )
+              : replaceSepToPosix(
+                  `.${path.posix.sep}${path.join(
+                    path.dirname(declaration.filePath),
+                    path.basename(declaration.filePath, path.extname(declaration.filePath)),
+                  )}`,
+                );
+          return { ...declaration, relativePath };
+        }),
+      ),
+    },
+  );
+
+  const exportsRendered = (
     await Promise.all(
       datas.map(async (data) => {
         const evaluated = await TemplateContainer.evaluate(data.style, data.renderData);
@@ -167,7 +215,7 @@ export async function bundling(_buildOptions: TCommandBuildOptions, bundleOption
   Spinner.it.start('output file exists check, ...');
 
   const outputMap = new Map<string, string>();
-  outputMap.set(output, rendered.join('\n'));
+  outputMap.set(output, [importsRendered, ...exportsRendered].join('\n'));
   const fileExistReason = await checkOutputFile(outputMap);
 
   if (!bundleOption.overwrite && !bundleOption.backup && fileExistReason.length > 0) {

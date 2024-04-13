@@ -1,8 +1,8 @@
-export interface IInlineExcludeInfo {
-  /** 주석 내용 */
+export interface IInlineCommentInfo {
+  /** comment code in source file */
   commentCode: string;
 
-  /** 소스 파일 경로 */
+  /** file path of source file */
   filePath: string;
 
   /** tag of exclude comment */
