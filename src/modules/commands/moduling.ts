@@ -1,7 +1,8 @@
 import { ProgressBar } from '#/cli/ux/ProgressBar';
 import { Reasoner } from '#/cli/ux/Reasoner';
 import { Spinner } from '#/cli/ux/Spinner';
-import { getInlineExcludedFiles } from '#/comments/getInlineExcludedFiles';
+import { CE_INLINE_COMMENT_KEYWORD } from '#/comments/const-enum/CE_INLINE_COMMENT_KEYWORD';
+import { getInlineCommentedFiles } from '#/comments/getInlineCommentedFiles';
 import { getExtendOptions } from '#/configs/getExtendOptions';
 import type { TCommandBuildOptions } from '#/configs/interfaces/TCommandBuildOptions';
 import type { TModuleOptions } from '#/configs/interfaces/TModuleOptions';
@@ -40,10 +41,10 @@ export async function moduling(_buildOptions: TCommandBuildOptions, moduleOption
     cwd: extendOptions.resolved.projectDirPath,
   });
 
-  const inlineExcludeds = getInlineExcludedFiles({
+  const inlineExcludeds = getInlineCommentedFiles({
     project,
-    extendOptions,
     filePaths: extendOptions.tsconfig.fileNames,
+    keyword: CE_INLINE_COMMENT_KEYWORD.FILE_EXCLUDE_KEYWORD,
   });
 
   /**

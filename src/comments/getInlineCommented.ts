@@ -1,14 +1,14 @@
 import { getCommentWorkspaces } from '#/comments/getCommentWorkspaces';
 import { getJsDocComment } from '#/comments/getJsDocComment';
 import { getJsDocTag } from '#/comments/getJsDocTag';
-import type { IInlineExcludeInfo } from '#/comments/interfaces/IInlineExcludeInfo';
+import type { IInlineCommentInfo } from '#/comments/interfaces/IInlineCommentInfo';
 import type { IStatementComments } from '#/comments/interfaces/IStatementComments';
 import { parse } from 'comment-parser';
 
-export function getInlineExclude(params: {
+export function getInlineCommented(params: {
   comment: IStatementComments;
   options: { keyword: string };
-}): IInlineExcludeInfo | undefined {
+}): IInlineCommentInfo | undefined {
   const content = params.comment.range;
   const refined = getJsDocComment(params.comment.kind, content);
   const blocks = parse(refined);
@@ -27,7 +27,7 @@ export function getInlineExclude(params: {
       pos: params.comment.pos,
       tag: tag.tag,
       workspaces: getCommentWorkspaces([tag.name ?? '', tag.description ?? ''].join(' ')),
-    } satisfies IInlineExcludeInfo;
+    } satisfies IInlineCommentInfo;
   }
 
   return undefined;

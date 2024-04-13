@@ -1,4 +1,4 @@
-import type { IInlineExcludeInfo } from '#/comments/interfaces/IInlineExcludeInfo';
+import type { IInlineCommentInfo } from '#/comments/interfaces/IInlineCommentInfo';
 import type { IModeGenerateOptions } from '#/configs/interfaces/IModeGenerateOptions';
 import { getGlobFiles } from '#/modules/file/getGlobFiles';
 import { posixResolve } from '#/modules/path/modules/posixResolve';
@@ -12,11 +12,11 @@ export class ExcludeContainer {
 
   #map: Map<string, boolean>;
 
-  #inline: Map<string, IInlineExcludeInfo & { filePath: string }>;
+  #inline: Map<string, IInlineCommentInfo & { filePath: string }>;
 
   constructor(params: {
     config: Pick<IModeGenerateOptions, 'exclude'>;
-    inlineExcludeds: IInlineExcludeInfo[];
+    inlineExcludeds: IInlineCommentInfo[];
     cwd: string;
   }) {
     const globs = new Glob(params.config.exclude, {
@@ -32,7 +32,7 @@ export class ExcludeContainer {
     ]);
     this.#map = new Map<string, boolean>(files);
     this.#globs = [globs];
-    this.#inline = new Map<string, IInlineExcludeInfo & { filePath: string }>();
+    this.#inline = new Map<string, IInlineCommentInfo & { filePath: string }>();
 
     params.inlineExcludeds.forEach((inlineExcluded) => {
       const filePath = path.isAbsolute(inlineExcluded.filePath)

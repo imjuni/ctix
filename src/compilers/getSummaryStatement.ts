@@ -1,7 +1,7 @@
 import { CE_INLINE_COMMENT_KEYWORD } from '#/comments/const-enum/CE_INLINE_COMMENT_KEYWORD';
-import { getInlineExclude } from '#/comments/getInlineExclude';
+import { getInlineCommented } from '#/comments/getInlineCommented';
 import { getNodeComments } from '#/comments/getNodeComments';
-import type { IInlineExcludeInfo } from '#/comments/interfaces/IInlineExcludeInfo';
+import type { IInlineCommentInfo } from '#/comments/interfaces/IInlineCommentInfo';
 import { getExportedKind } from '#/compilers/getExportedKind';
 import type { IExportStatement } from '#/compilers/interfaces/IExportStatement';
 import { filenamify } from '#/modules/path/filenamify';
@@ -21,14 +21,14 @@ export function getSummaryStatement(params: {
   const identifier = params.identifier ?? kind.name ?? filenamified;
   const comments = getNodeComments(params.node, params.identifier)
     .map((comment) =>
-      getInlineExclude({
+      getInlineCommented({
         comment,
         options: {
           keyword: CE_INLINE_COMMENT_KEYWORD.NEXT_STATEMENT_EXCLUDE_KEYWORD,
         },
       }),
     )
-    .filter((comment): comment is IInlineExcludeInfo => comment != null);
+    .filter((comment): comment is IInlineCommentInfo => comment != null);
 
   const pos = params.node.getSourceFile().getLineAndColumnAtPos(params.node.getStart(false));
 

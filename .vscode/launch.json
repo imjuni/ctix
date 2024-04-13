@@ -5,28 +5,6 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Jest",
-      "request": "launch",
-      "runtimeArgs": ["run-script", "test:debug", "${input:testPath}"],
-      "runtimeExecutable": "npm",
-      "skipFiles": ["<node_internals>/**"],
-      "stopOnEntry": true,
-      "type": "node"
-    },
-    {
-      "type": "node",
-      "request": "launch",
-      "name": "Launch Test",
-      "args": ["--runInBand", "--no-cache", "${input:testPath}"],
-      "runtimeArgs": ["-r", "ts-node/register", "--inspect"],
-      "stopOnEntry": false,
-      "sourceMaps": true,
-      "program": "${workspaceFolder}/node_modules/jest/bin/jest",
-      "env": {
-        "TS_NODE_PROJECT": "tsconfig.json"
-      }
-    },
-    {
       "type": "node",
       "request": "attach",
       "name": "Attach Process",

@@ -3,6 +3,7 @@ import { addExt } from '#/modules/path/addExt';
 import { posixJoin } from '#/modules/path/modules/posixJoin';
 import { posixResolve } from '#/modules/path/modules/posixResolve';
 import { CE_TEMPLATE_NAME } from '#/templates/const-enum/CE_TEMPLATE_NAME';
+import { declarationFileTemplate } from '#/templates/templates/declarationFileTemplate';
 import { defaultAliasNamedDestructiveDefaultTemplate } from '#/templates/templates/defaultAliasNamedDestructiveDefaultTemplate';
 import { defaultAliasNamedStarDefaultTemplate } from '#/templates/templates/defaultAliasNamedStarDefaultTemplate';
 import { defaultNonAliasNamedDestructiveDefaultTemplate } from '#/templates/templates/defaultNonAliasNamedDestructiveDefaultTemplate';
@@ -32,6 +33,7 @@ export class TemplateContainer {
 
   static getDefaultTemplate() {
     return new Map<string, string>([
+      [CE_TEMPLATE_NAME.DECLARATION_FILE_TEMPLATE, declarationFileTemplate.trim()],
       [CE_TEMPLATE_NAME.MODULE_INDEX_FILE_TEMPLATE, moduleIndexFileDefaultTemplate.trim()],
       [CE_TEMPLATE_NAME.INDEX_FILE_TEMPLATE, indexFileDefaultTemplate.trim()],
       [CE_TEMPLATE_NAME.OPTIONS_TEMPLATE, optionDefaultTemplate.trim()],
@@ -66,6 +68,7 @@ export class TemplateContainer {
       [CE_TEMPLATE_NAME.OPTIONS_TEMPLATE, templates.options],
       [CE_TEMPLATE_NAME.NESTED_OPTIONS_TEMPLATE, templates.nestedOptions],
       [CE_TEMPLATE_NAME.MODULE_INDEX_FILE_TEMPLATE, templates.moduleIndexFile],
+      [CE_TEMPLATE_NAME.DECLARATION_FILE_TEMPLATE, templates.declarationFile],
       [CE_GENERATION_STYLE.DEFAULT_ALIAS_NAMED_DESTRUCTIVE, templates.defaultAliasNamedDestructive],
       [
         CE_GENERATION_STYLE.DEFAULT_NON_ALIAS_NAMED_DESTRUCTIVE,
@@ -100,6 +103,7 @@ export class TemplateContainer {
       fs.promises.readFile(n(CE_TEMPLATE_NAME.OPTIONS_TEMPLATE)),
       fs.promises.readFile(n(CE_TEMPLATE_NAME.NESTED_OPTIONS_TEMPLATE)),
       fs.promises.readFile(n(CE_TEMPLATE_NAME.MODULE_INDEX_FILE_TEMPLATE)),
+      fs.promises.readFile(n(CE_TEMPLATE_NAME.DECLARATION_FILE_TEMPLATE)),
       fs.promises.readFile(n(CE_GENERATION_STYLE.DEFAULT_ALIAS_NAMED_STAR)),
       fs.promises.readFile(n(CE_GENERATION_STYLE.DEFAULT_ALIAS_NAMED_DESTRUCTIVE)),
       fs.promises.readFile(n(CE_GENERATION_STYLE.DEFAULT_NON_ALIAS_NAMED_DESTRUCTIVE)),
@@ -112,6 +116,7 @@ export class TemplateContainer {
       options,
       nestedOptions,
       moduleIndexFile,
+      declarationFile,
       defaultAliasNamedStar,
       defaultAliasNamedDestructive,
       defaultNonAliasNamedDestructive,
@@ -124,6 +129,7 @@ export class TemplateContainer {
       options,
       nestedOptions,
       moduleIndexFile,
+      declarationFile,
       defaultAliasNamedStar,
       defaultAliasNamedDestructive,
       defaultNonAliasNamedDestructive,

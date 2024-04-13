@@ -1,4 +1,4 @@
-import type { IInlineExcludeInfo } from '#/comments/interfaces/IInlineExcludeInfo';
+import type { IInlineCommentInfo } from '#/comments/interfaces/IInlineCommentInfo';
 
 export interface IExportStatement {
   path: {
@@ -8,7 +8,7 @@ export interface IExportStatement {
     filename: string;
 
     /**
-     * export statement가 있던 소스코드 파 디렉터리일
+     * export statement가 있던 소스코드 디렉터리
      */
     dirPath: string;
 
@@ -62,5 +62,5 @@ export interface IExportStatement {
   /**
    * inline comment에 @ctix-exclude-next 를 추가한 경우, 그 주석에 대한 정보
    */
-  comments: IInlineExcludeInfo[];
+  comments: IInlineCommentInfo[];
 }
