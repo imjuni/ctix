@@ -5,17 +5,20 @@ import { posixJoin } from '#/modules/path/modules/posixJoin';
 import { replaceSepToPosix } from 'my-node-fp';
 import { randomUUID } from 'node:crypto';
 import * as tsm from 'ts-morph';
-import { describe, expect, it } from 'vitest';
+import { beforeAll, describe, expect, it } from 'vitest';
 
 const tsconfigPath = posixJoin(process.cwd(), 'examples', 'tsconfig.example.json');
-const context = {
+const context: { tsconfig: string; project: tsm.Project } = {
   tsconfig: tsconfigPath,
-  project: new tsm.Project({
-    tsConfigFilePath: tsconfigPath,
-  }),
-};
+} as any;
 
 describe('getExportStatements - literal export statement', () => {
+  beforeAll(() => {
+    context.project = new tsm.Project({
+      tsConfigFilePath: tsconfigPath,
+    });
+  });
+
   it('array literal, default export', async () => {
     const uuid = randomUUID();
     const filename = `${uuid}.ts`;
@@ -183,6 +186,82 @@ export const { name, age, ability } = IronMan;
         isExcluded: false,
         comments: [],
       } satisfies IExportStatement,
+    ]);
+  });
+
+  it('binding element, named exports using alias', async () => {
+    const uuid = randomUUID();
+    const filename = `${uuid}.ts`;
+    const source = `
+interface ISuperHero { 
+  name: string;
+  team: string;
+  ability: string[];
+};
+
+interface Options { 
+  name: string;
+  team: string;
+  ability: string[];
+};
+
+export { ISuperHero, Options as ISuperHeroOptions };
+    `;
+
+    const sourceFile = context.project.createSourceFile(filename, source.trim());
+
+    const statement = await getExportStatement(
+      sourceFile,
+      {
+        project: context.tsconfig,
+        exportFilename: 'index.ts',
+      },
+      { eol: '\n' },
+    );
+
+    expect(statement).toMatchObject([
+      {
+        path: {
+          filename: `${uuid}.ts`,
+          dirPath: replaceSepToPosix(process.cwd()),
+          relativePath: '..',
+        },
+        depth: 2,
+        pos: {
+          line: 1,
+          column: 1,
+        },
+        identifier: {
+          name: 'ISuperHero',
+          alias: filenamify(uuid),
+        },
+        isPureType: true,
+        isAnonymous: false,
+        isDefault: false,
+        isExcluded: false,
+        comments: [],
+      },
+      {
+        path: {
+          filename: `${uuid}.ts`,
+          dirPath: replaceSepToPosix(process.cwd()),
+          relativePath: '..',
+        },
+        depth: 2,
+        pos: {
+          line: 7,
+          column: 1,
+        },
+        identifier: {
+          name: 'ISuperHeroOptions',
+          alias: 'Options',
+        },
+        isPureType: true,
+        isAnonymous: false,
+        isDefault: false,
+        isExcluded: false,
+        comments: [],
+      },
     ]);
   });
 });

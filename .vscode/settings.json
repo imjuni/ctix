@@ -30,9 +30,14 @@
     "**/.ctiignore": "jsonc",
     ".ctirc": "jsonc"
   },
-  "editor.formatOnSave": true,
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true
+  },
+  "[markdown]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true
+  },
   "formattingToggle.affects": ["editor.formatOnSave"],
-  "javascript.preferences.importModuleSpecifier": "non-relative",
-  "jest.autoRevealOutput": "on-run",
-  "jest.autoRun": "off"
+  "javascript.preferences.importModuleSpecifier": "non-relative"
 }
