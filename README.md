@@ -42,6 +42,7 @@ In addition, `ctix` will auto-generate `barrel` files so that a single `index.d.
 - [Important](#important)
 - [Generation Style](#generation-style)
 - [More information](#more-information)
+- [Examples](#examples)
 - [What is difference Re-Map paths?](#what-is-difference-re-map-paths)
 - [Option](#option)
 - [License](#license)
@@ -122,9 +123,7 @@ There are two ways to do this. The first is to create a `.ctirc` file and set th
 {
   "options": {
     "mode": "bundle",
-    "exclude": [
-      "**/*.storybook.tsx"
-    ]
+    "exclude": ["**/*.storybook.tsx"]
   }
 }
 ```
@@ -137,19 +136,19 @@ If you want to use a `.ctirc` file, I recommend creating one with the `npx ctix 
 // @ctix-exclude
 
 const Button = () => {
-  return <button>Sample</button>
-}
+  return <button>Sample</button>;
+};
 ```
 
 ### Programming interface
 
 When using task runners like Gulp and Just, as well as bundlers like webpack and rollup, you need a programming interface to add ctix.
 
-| function | option | descryption |
-| - | - | - |
-| building | [TCommandBuildOptions](src/configs/interfaces/TCommandBuildOptions.ts) | Execute the `build` command |
-| initializing | [TCommandInitOptions](src/configs/interfaces/TCommandInitOptions.ts) | Execute the `init` command |
-| removing | [TCommandRemoveOptions](src/configs/interfaces/TCommandRemoveOptions.ts), [TCommandBuildOptions](src/configs/interfaces/TCommandBuildOptions.ts) | Execute the `remove` command |
+| function     | option                                                                                                                                           | descryption                  |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------- |
+| building     | [TCommandBuildOptions](src/configs/interfaces/TCommandBuildOptions.ts)                                                                           | Execute the `build` command  |
+| initializing | [TCommandInitOptions](src/configs/interfaces/TCommandInitOptions.ts)                                                                             | Execute the `init` command   |
+| removing     | [TCommandRemoveOptions](src/configs/interfaces/TCommandRemoveOptions.ts), [TCommandBuildOptions](src/configs/interfaces/TCommandBuildOptions.ts) | Execute the `remove` command |
 
 Check out the [example code](doc/PROGRAMMING_INTERFACE.md).
 
@@ -175,6 +174,20 @@ You can change the `generation style` of the entire project by setting the `gene
 - [Applying a font file to your source code](doc/IN_DEPTH_FONT.md)
 - [Applying a Vue.js components to your source code](doc/IN_DEPTH_VUE.md)
 - [Applying a include, exclude configuration to `.ctirc`](doc/IN_DEPTH_EXCLUDE.md)
+
+## Examples
+
+In the examples directory, you can find cases where `ctix` has been applied to various projects. For detailed explanations, please refer to the [Examples README.md](examples/README.md) file.
+
+| Directory Name | Purpose                                                                        |
+| -------------- | ------------------------------------------------------------------------------ |
+| type03         | When there are duplicate names in the entire project                           |
+| type05         | For React projects                                                             |
+| type06         | When using TypeScript enums                                                    |
+| type07         | When using destructive operations on variables for named exports               |
+| type09         | When using TTF fonts by declaring them as modules and using them in TypeScript |
+| type10         | For Vue.js projects                                                            |
+| type11         | When using Component Props in React projects                                   |
 
 ## What is difference Re-Map paths?
 
