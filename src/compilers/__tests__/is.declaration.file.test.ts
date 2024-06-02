@@ -1,3 +1,4 @@
+import { isDeclaration } from '#/compilers/isDeclaration';
 import { isDeclarationFile } from '#/compilers/isDeclarationFile';
 import { posixJoin } from '#/modules/path/modules/posixJoin';
 import { randomUUID } from 'node:crypto';
@@ -11,6 +12,21 @@ const context = {
     tsConfigFilePath: tsconfigPath,
   }),
 };
+
+describe('isDeclaration', () => {
+  it('declaration', () => {
+    const r01 = isDeclaration(tsm.SyntaxKind.ModuleDeclaration);
+    const r02 = isDeclaration(tsm.SyntaxKind.ImportDeclaration);
+
+    expect(r01).toBeTruthy();
+    expect(r02).toBeTruthy();
+  });
+
+  it('not declaration', () => {
+    const r01 = isDeclaration(tsm.SyntaxKind.InterfaceDeclaration);
+    expect(r01).toBeFalsy();
+  });
+});
 
 describe('isDeclarationFile', () => {
   it('file have only import-declarations', () => {

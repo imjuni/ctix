@@ -3,32 +3,11 @@ import { getInlineCommented } from '#/comments/getInlineCommented';
 import { getNodeComments } from '#/comments/getNodeComments';
 import type { IInlineCommentInfo } from '#/comments/interfaces/IInlineCommentInfo';
 import { getExportedKind } from '#/compilers/getExportedKind';
+import { getStatementAlias } from '#/compilers/getStatementAlias';
 import type { IExportStatement } from '#/compilers/interfaces/IExportStatement';
 import { filenamify } from '#/modules/path/filenamify';
 import { getRelativeDepth } from '#/modules/path/getRelativeDepth';
 import type * as tsm from 'ts-morph';
-
-function getAlias({
-  alias,
-  isDefault,
-  filenamified,
-  kind,
-}: {
-  alias?: string;
-  filenamified: string;
-  isDefault?: boolean;
-  kind: ReturnType<typeof getExportedKind>;
-}): string {
-  if (isDefault && kind.name != null) {
-    return kind.name;
-  }
-
-  if (alias != null) {
-    return alias;
-  }
-
-  return filenamified;
-}
 
 export function getSummaryStatement(params: {
   node: tsm.ExportedDeclarations;
@@ -61,7 +40,12 @@ export function getSummaryStatement(params: {
     pos,
     identifier: {
       name: identifier,
-      alias: getAlias({ kind, filenamified, alias: params.alias, isDefault: params.isDefault }),
+      alias: getStatementAlias({
+        kind,
+        filenamified,
+        alias: params.alias,
+        isDefault: params.isDefault,
+      }),
     },
     isPureType: kind.isPureType,
     isAnonymous: kind.name == null,
