@@ -1,17 +1,26 @@
 {
+  // This is an alias to @tsconfig/node12: https://github.com/tsconfig/bases
   "extends": "@tsconfig/node18/tsconfig.json",
+
+  // Most ts-node options can be specified here using their programmatic names.
   "ts-node": {
+    // It is faster to skip typechecking.
+    // Remove if you want ts-node to do typechecking.
     "transpileOnly": true,
     "files": true,
+    "compilerOptions": {
+      // compilerOptions specified here will override those declared below,
+      // but *only* in ts-node.  Useful if you want ts-node and tsc to use
+      // different options with a single tsconfig.json.
+    },
     "require": ["tsconfig-paths/register"]
   },
   "compileOnSave": false,
   "buildOnSave": false,
   "compilerOptions": {
     /* Basic Options */
-    "module": "CommonJS",
-    "moduleResolution": "Node" /* Specify module resolution strategy: 'node' (Node.js) or 'classic' (TypeScript pre-1.6). */,
     "declaration": true /* Generates corresponding '.d.ts' file. */,
+    "lib": ["es2021", "DOM"],
     "declarationMap": true /* Generates corresponding '.d.ts' file. */,
     "sourceMap": true /* Generates corresponding '.map' file. */,
     "outDir": "./dist" /* Redirect output structure to the directory. */,
@@ -28,6 +37,8 @@
     "isolatedModules": true /* Transpile each file as a separate module (similar to 'ts.transpileModule'). */,
 
     /* Module Resolution Options */
+    "module": "CommonJS",
+    "moduleResolution": "Node" /* Specify module resolution strategy: 'node' (Node.js) or 'classic' (TypeScript pre-1.6). */,
     "baseUrl": "." /* Base directory to resolve non-absolute module names. */,
     "rootDir": ".",
     "paths": {
@@ -40,6 +51,6 @@
     "emitDecoratorMetadata": true /* Enables experimental support for emitting type metadata for decorators. */,
     "pretty": true
   },
-  "include": ["*.ts"],
-  "exclude": ["example/**", "dist/**", "**/erdia_eg", "**/.configs/**", "**/docs/**/*"]
+  "include": ["src/**/*.ts"],
+  "exclude": ["examples/**", "dist/**", "**/erdia_eg", "**/.configs/**", "**/docs/**/*"]
 }

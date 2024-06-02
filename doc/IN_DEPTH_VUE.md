@@ -39,4 +39,4 @@ ctix does not yet automatically generate `index.ts` files for Vue.js component f
 export * from './components/index';
 ```
 
-You can see an example at [example/type10](https://github.com/imjuni/ctix/tree/master/example/type10)
+You can see an example at [examples/type10](https://github.com/imjuni/ctix/tree/master/examples/type10)

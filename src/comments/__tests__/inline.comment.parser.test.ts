@@ -18,7 +18,7 @@ vitest.mock('comment-parser', async (importOriginal) => {
   };
 });
 
-const tsconfigPath = posixJoin(process.cwd(), 'example', 'tsconfig.example.json');
+const tsconfigPath = posixJoin(process.cwd(), 'examples', 'tsconfig.example.json');
 const context = {
   tsconfig: tsconfigPath,
   project: new tsm.Project({

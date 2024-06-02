@@ -11,17 +11,17 @@ describe('getGlobFiles', () => {
 
     expect(files).toEqual([
       'tsconfig.json',
-      'example/type11/tsconfig.json',
-      'example/type10/tsconfig.json',
-      'example/type09/tsconfig.json',
-      'example/type08/tsconfig.json',
-      'example/type07/tsconfig.json',
-      'example/type06/tsconfig.json',
-      'example/type05/tsconfig.json',
-      'example/type04/tsconfig.json',
-      'example/type03/tsconfig.json',
-      'example/type02/tsconfig.json',
-      'example/type01/tsconfig.json',
+      'examples/type11/tsconfig.json',
+      'examples/type10/tsconfig.json',
+      'examples/type09/tsconfig.json',
+      'examples/type08/tsconfig.json',
+      'examples/type07/tsconfig.json',
+      'examples/type06/tsconfig.json',
+      'examples/type05/tsconfig.json',
+      'examples/type04/tsconfig.json',
+      'examples/type03/tsconfig.json',
+      'examples/type02/tsconfig.json',
+      'examples/type01/tsconfig.json',
     ]);
   });
 
@@ -35,17 +35,17 @@ describe('getGlobFiles', () => {
 
     expect(files).toEqual([
       posixJoin(process.cwd(), 'tsconfig.json'),
-      posixJoin(process.cwd(), 'example/type11/tsconfig.json'),
-      posixJoin(process.cwd(), 'example/type10/tsconfig.json'),
-      posixJoin(process.cwd(), 'example/type09/tsconfig.json'),
-      posixJoin(process.cwd(), 'example/type08/tsconfig.json'),
-      posixJoin(process.cwd(), 'example/type07/tsconfig.json'),
-      posixJoin(process.cwd(), 'example/type06/tsconfig.json'),
-      posixJoin(process.cwd(), 'example/type05/tsconfig.json'),
-      posixJoin(process.cwd(), 'example/type04/tsconfig.json'),
-      posixJoin(process.cwd(), 'example/type03/tsconfig.json'),
-      posixJoin(process.cwd(), 'example/type02/tsconfig.json'),
-      posixJoin(process.cwd(), 'example/type01/tsconfig.json'),
+      posixJoin(process.cwd(), 'examples/type11/tsconfig.json'),
+      posixJoin(process.cwd(), 'examples/type10/tsconfig.json'),
+      posixJoin(process.cwd(), 'examples/type09/tsconfig.json'),
+      posixJoin(process.cwd(), 'examples/type08/tsconfig.json'),
+      posixJoin(process.cwd(), 'examples/type07/tsconfig.json'),
+      posixJoin(process.cwd(), 'examples/type06/tsconfig.json'),
+      posixJoin(process.cwd(), 'examples/type05/tsconfig.json'),
+      posixJoin(process.cwd(), 'examples/type04/tsconfig.json'),
+      posixJoin(process.cwd(), 'examples/type03/tsconfig.json'),
+      posixJoin(process.cwd(), 'examples/type02/tsconfig.json'),
+      posixJoin(process.cwd(), 'examples/type01/tsconfig.json'),
     ]);
   });
 });

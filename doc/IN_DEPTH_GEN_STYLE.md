@@ -39,7 +39,7 @@ Configuration for entire project.
   "options": [
     {
       "mode": "bundle",
-      "project": "example/type10/tsconfig.json",
+      "project": "examples/type10/tsconfig.json",
       "exportFilename": "index.ts",
       "useSemicolon": true,
       "useBanner": false,
@@ -53,8 +53,8 @@ Configuration for entire project.
       "include": ["**/*.ts"],
       "exclude": [],
       "skipEmptyDir": true,
-      "startFrom": "/Users/imjuni/project/github/ctix/ctix/example/type10",
-      "output": "example/type10",
+      "startFrom": "[...your path]/examples/type10",
+      "output": "examples/type10",
       "removeBackup": false,
       "forceYes": false
     }

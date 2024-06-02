@@ -52,5 +52,5 @@
     "pretty": true
   },
   "include": ["src/**/*.ts"],
-  "exclude": ["example/**", "dist/**", "**/erdia_eg", "**/.configs/**", "**/docs/**/*"]
+  "exclude": ["examples/**", "dist/**", "**/erdia_eg", "**/.configs/**", "**/docs/**/*"]
 }

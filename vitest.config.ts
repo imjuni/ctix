@@ -8,7 +8,7 @@ export default defineConfig({
       provider: 'v8', // or 'v8'
       all: false,
     },
-    exclude: ['node_modules', 'example'],
+    exclude: ['node_modules', 'examples'],
   },
   plugins: [tsconfigPaths({ projects: ['tsconfig.json'] })],
 });
