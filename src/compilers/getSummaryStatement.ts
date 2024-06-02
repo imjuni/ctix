@@ -8,10 +8,33 @@ import { filenamify } from '#/modules/path/filenamify';
 import { getRelativeDepth } from '#/modules/path/getRelativeDepth';
 import type * as tsm from 'ts-morph';
 
+function getAlias({
+  alias,
+  isDefault,
+  filenamified,
+  kind,
+}: {
+  alias?: string;
+  filenamified: string;
+  isDefault?: boolean;
+  kind: ReturnType<typeof getExportedKind>;
+}): string {
+  if (isDefault && kind.name != null) {
+    return kind.name;
+  }
+
+  if (alias != null) {
+    return alias;
+  }
+
+  return filenamified;
+}
+
 export function getSummaryStatement(params: {
   node: tsm.ExportedDeclarations;
   project: string;
   identifier?: string;
+  alias?: string;
   eol: string;
   path: IExportStatement['path'];
   isDefault?: boolean;
@@ -38,7 +61,7 @@ export function getSummaryStatement(params: {
     pos,
     identifier: {
       name: identifier,
-      alias: params.isDefault ? kind.name ?? filenamified : filenamified,
+      alias: getAlias({ kind, filenamified, alias: params.alias, isDefault: params.isDefault }),
     },
     isPureType: kind.isPureType,
     isAnonymous: kind.name == null,

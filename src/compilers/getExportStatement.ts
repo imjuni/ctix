@@ -21,7 +21,7 @@ export async function getExportStatement(
   );
   // rootDir 또는 output, project 셋 중에 하나를 선택해서 써야 한다
   const relativePath = posixRelative(await getDirname(option.project), dirPath);
-
+  // sourceFile.getExportDeclarations().at(0)?.getNamedExports
   const exportedDeclarationsMap = sourceFile.getExportedDeclarations();
   const defaultExportedDeclarations = exportedDeclarationsMap.get('default')?.at(0);
 
@@ -74,6 +74,8 @@ export async function getExportStatement(
       return getSummaryStatement({
         path: { filename, dirPath, relativePath },
         node: exportedDeclaration,
+        identifier: exportedDeclarationKey,
+        alias: kind.name !== exportedDeclarationKey && kind.name != null ? kind.name : undefined,
         project: option.project,
         eol: extendOptions.eol,
         isDefault: false,
