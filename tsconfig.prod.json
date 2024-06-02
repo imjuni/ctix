@@ -8,7 +8,7 @@
   },
   "exclude": [
     "**/node_modules/**",
-    "**/example/**",
+    "**/examples/**",
     "**/__test__/**",
     "**/__tests__/**",
     "dist/**",

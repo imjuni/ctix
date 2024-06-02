@@ -8,7 +8,7 @@ import { randomUUID } from 'node:crypto';
 import * as tsm from 'ts-morph';
 import { describe, expect, it } from 'vitest';
 
-const tsconfigPath = posixJoin(process.cwd(), 'example', 'tsconfig.example.json');
+const tsconfigPath = posixJoin(process.cwd(), 'examples', 'tsconfig.example.json');
 const context = {
   tsconfig: tsconfigPath,
   project: new tsm.Project({
@@ -180,7 +180,7 @@ export class DCHero {
     `;
 
     const sourceFile = context.project.createSourceFile(
-      posixJoin(process.cwd(), 'example', filename),
+      posixJoin(process.cwd(), 'examples', filename),
       source.trim(),
     );
 
@@ -201,7 +201,7 @@ export class DCHero {
       },
       filename,
       statements.map((statement) => ({ ...statement, isExcluded: false })),
-      posixJoin(process.cwd(), 'example'),
+      posixJoin(process.cwd(), 'examples'),
     );
 
     expect(r01).toMatchObject({
@@ -222,7 +222,7 @@ export class DCHero {
         named: [
           {
             path: {
-              dirPath: posixJoin(process.cwd(), 'example'),
+              dirPath: posixJoin(process.cwd(), 'examples'),
               relativePath: '',
             },
             depth: 1,
@@ -243,7 +243,7 @@ export class DCHero {
           {
             path: {
               filename,
-              dirPath: posixJoin(process.cwd(), 'example'),
+              dirPath: posixJoin(process.cwd(), 'examples'),
               relativePath: '',
             },
             depth: 1,

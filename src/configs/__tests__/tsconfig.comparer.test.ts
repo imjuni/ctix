@@ -7,12 +7,12 @@ describe('getTsconfigComparer', () => {
     const r01 = [
       'tsconfig.eslint.json',
       'tsconfig.dts.json',
-      'example/tsconfig.empty.json',
-      'example/type03/tsconfig.json',
+      'examples/tsconfig.empty.json',
+      'examples/type03/tsconfig.json',
       'tsconfig.prod.json',
-      'example/tsconfig.example.json',
+      'examples/tsconfig.example.json',
       'tsconfig.json',
-      'example/tsconfig.for.test.json',
+      'examples/tsconfig.for.test.json',
     ].sort(comparer);
 
     expect(r01).toEqual([
@@ -20,10 +20,10 @@ describe('getTsconfigComparer', () => {
       'tsconfig.dts.json',
       'tsconfig.eslint.json',
       'tsconfig.prod.json',
-      'example/tsconfig.empty.json',
-      'example/tsconfig.example.json',
-      'example/tsconfig.for.test.json',
-      'example/type03/tsconfig.json',
+      'examples/tsconfig.empty.json',
+      'examples/tsconfig.example.json',
+      'examples/tsconfig.for.test.json',
+      'examples/type03/tsconfig.json',
     ]);
   });
 
@@ -33,11 +33,11 @@ describe('getTsconfigComparer', () => {
       'tsconfig.json',
       'tsconfig.eslint.json',
       'tsconfig.dts.json',
-      'example/tsconfig.empty.json',
-      'example/type03/tsconfig.json',
+      'examples/tsconfig.empty.json',
+      'examples/type03/tsconfig.json',
       'tsconfig.prod.json',
-      'example/tsconfig.example.json',
-      'example/tsconfig.for.test.json',
+      'examples/tsconfig.example.json',
+      'examples/tsconfig.for.test.json',
     ].sort(comparer);
 
     expect(r01).toEqual([
@@ -45,10 +45,10 @@ describe('getTsconfigComparer', () => {
       'tsconfig.dts.json',
       'tsconfig.eslint.json',
       'tsconfig.prod.json',
-      'example/tsconfig.empty.json',
-      'example/tsconfig.example.json',
-      'example/tsconfig.for.test.json',
-      'example/type03/tsconfig.json',
+      'examples/tsconfig.empty.json',
+      'examples/tsconfig.example.json',
+      'examples/tsconfig.for.test.json',
+      'examples/type03/tsconfig.json',
     ]);
   });
 });

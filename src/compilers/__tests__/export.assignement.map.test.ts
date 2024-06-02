@@ -4,7 +4,7 @@ import { randomUUID } from 'crypto';
 import * as tsm from 'ts-morph';
 import { describe, expect, it } from 'vitest';
 
-const tsconfigDirPath = posixJoin(process.cwd(), 'example');
+const tsconfigDirPath = posixJoin(process.cwd(), 'examples');
 const tsconfigFilePath = posixJoin(tsconfigDirPath, 'tsconfig.example.json');
 const context = {
   tsconfig: tsconfigFilePath,

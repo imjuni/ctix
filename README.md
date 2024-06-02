@@ -110,7 +110,7 @@ The mode in which the `barrel` file is to be generated. There is a create mode t
 | ------------------------------------------ | ------------------------------------------ | ------------------------------------------ |
 | ![bundle mode](static/img/bundle-mode.png) | ![create mode](static/img/create-mode.png) | ![module mode](static/img/module-mode.png) |
 
-Check out the `.ctirc` in [example/type10](https://github.com/imjuni/ctix/blob/master/example/type10/.ctirc) to see how to utilize the `module` mode.
+Check out the `.ctirc` in [examples/type10](https://github.com/imjuni/ctix/blob/master/examples/type10/.ctirc) to see how to utilize the `module` mode.
 
 ### How can I exclude unwanted files?
 

@@ -22,4 +22,4 @@ In this case, the TypeScript Compiler API reads the `DeclareTftModule.d.ts` file
 export * from './WildcardDeclaration';
 ```
 
-You can see an example at [example/type09](https://github.com/imjuni/ctix/tree/master/example/type09)
+You can see an example at [examples/type09](https://github.com/imjuni/ctix/tree/master/examples/type09)

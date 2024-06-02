@@ -10,5 +10,5 @@
     "vitest.config.ts",
     "commitlint.config.js"
   ],
-  "exclude": ["node_modules/**", "dist/**/*", ".configs/**", "example/**", "docs/**"]
+  "exclude": ["node_modules/**", "dist/**/*", ".configs/**", "examples/**", "docs/**"]
 }

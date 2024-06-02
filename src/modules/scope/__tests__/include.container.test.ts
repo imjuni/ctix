@@ -77,14 +77,14 @@ describe('IncludeContainer', () => {
 
   it('files - string path', () => {
     const expactation = getGlobFiles(
-      new Glob('example/type03/**/*.ts', {
+      new Glob('examples/type03/**/*.ts', {
         ignore: defaultExclude,
         cwd: process.cwd(),
         absolute: true,
       }),
     );
     const container = new IncludeContainer({
-      config: { include: ['example/type03/**/*.ts'] },
+      config: { include: ['examples/type03/**/*.ts'] },
       cwd: process.cwd(),
     });
 

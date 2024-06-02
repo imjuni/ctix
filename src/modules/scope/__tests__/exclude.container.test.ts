@@ -38,7 +38,7 @@ describe('ExcludeContainer', () => {
             start: 1,
             column: 1,
           },
-          filePath: 'example/type03/ComparisonCls.tsx',
+          filePath: 'examples/type03/ComparisonCls.tsx',
         },
         {
           commentCode: 'inline exclude test',
@@ -48,7 +48,7 @@ describe('ExcludeContainer', () => {
             start: 1,
             column: 1,
           },
-          filePath: posixResolve('example/type03/HandsomelyCls.tsx'),
+          filePath: posixResolve('examples/type03/HandsomelyCls.tsx'),
         },
       ],
       cwd: process.cwd(),
@@ -60,7 +60,7 @@ describe('ExcludeContainer', () => {
     const r04 = container.isExclude(
       posixJoin(process.cwd(), 'src/cli/builders/setModeBundleOptions.ts'),
     );
-    const r05 = container.isExclude('example/type03/ComparisonCls.tsx');
+    const r05 = container.isExclude('examples/type03/ComparisonCls.tsx');
 
     expect(r01).toBeFalsy();
     expect(r02).toBeTruthy();
