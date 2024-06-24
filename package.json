@@ -1,6 +1,6 @@
 {
   "name": "ctix",
-  "version": "2.4.5",
+  "version": "2.5.0",
   "description": "Automatic create index.ts file",
   "scripts": {
     "clean": "rimraf ./dist",
@@ -54,10 +54,12 @@
   "exports": {
     ".": {
       "require": {
+        "require": "./dist/cjs/index.cjs",
         "default": "./dist/cjs/index.cjs",
         "types": "./dist/types/index.d.ts"
       },
       "import": {
+        "import": "./dist/esm/index.mjs",
         "default": "./dist/esm/index.mjs",
         "types": "./dist/types/index.d.ts"
       }
@@ -106,6 +108,7 @@
     "rimraf": "^5.0.5",
     "rollup": "^4.14.2",
     "rollup-plugin-dts": "^6.1.0",
+    "ts-morph": "^23.0.0",
     "ts-node": "^10.9.2",
     "tsc-alias": "^1.8.8",
     "tsconfig-paths": "^4.2.0",
@@ -138,13 +141,14 @@
     "pathe": "^1.1.2",
     "prettier": "^3.2.5",
     "source-map-support": "^0.5.21",
-    "ts-morph": "^22.0.0",
     "ts-pattern": "^5.0.5",
     "tslib": "^2.6.2",
     "type-fest": "^4.15.0",
-    "typescript": "^5.4.5",
     "yaml": "^2.4.1",
     "yargs": "^17.7.2"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
