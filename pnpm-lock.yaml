@@ -80,6 +80,9 @@ importers:
       source-map-support:
         specifier: ^0.5.21
         version: 0.5.21
+      ts-morph:
+        specifier: ^23.0.0
+        version: 23.0.0
       ts-pattern:
         specifier: ^5.0.5
         version: 5.0.5
@@ -207,9 +210,6 @@ importers:
       rollup-plugin-dts:
         specifier: ^6.1.0
         version: 6.1.0(rollup@4.14.2)(typescript@5.5.2)
-      ts-morph:
-        specifier: ^23.0.0
-        version: 23.0.0
       ts-node:
         specifier: ^10.9.2
         version: 10.9.2(@types/node@20.9.0)(typescript@5.5.2)
