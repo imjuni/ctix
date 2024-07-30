@@ -36,6 +36,7 @@ In addition, `ctix` will auto-generate `barrel` files so that a single `index.d.
   - [Barrel file](#barrel-file)
 - [Installation](#installation)
 - [Usage](#usage)
+  - [How can I include wanted files?](#how-can-i-include-wanted-files)
   - [How can I exclude unwanted files?](#how-can-i-exclude-unwanted-files)
   - [Programming interface](#programming-interface)
 - [Requirement](#requirement)
@@ -112,6 +113,16 @@ The mode in which the `barrel` file is to be generated. There is a create mode t
 | ![bundle mode](static/img/bundle-mode.png) | ![create mode](static/img/create-mode.png) | ![module mode](static/img/module-mode.png) |
 
 Check out the `.ctirc` in [examples/type10](https://github.com/imjuni/ctix/blob/master/examples/type10/.ctirc) to see how to utilize the `module` mode.
+
+### How can I include wanted files?
+
+`ctix` gets a glob pattern to generate the `index.ts` file. The glob pattern is obtained from various configuration files such as:
+
+1. Glob pattern from cli argument `--include`
+2. Glob patterns from the `include` field in the `.ctirc` configuration file
+3. Glob patterns from the `include` field in the `tsconfig.json` configuration file
+
+If your `index.ts` file is empty or a warning is displayed, please check the above configuration.
 
 ### How can I exclude unwanted files?
 
