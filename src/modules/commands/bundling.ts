@@ -95,6 +95,14 @@ export async function bundling(_buildOptions: TCommandBuildOptions, bundleOption
   Spinner.it.succeed('analysis export statements completed!');
   Spinner.it.stop();
 
+  if (filenames.length <= 0) {
+    Spinner.it.fail(
+      'Cannot find target files. Please add --include option or add include section in .ctirc file',
+    );
+    Spinner.it.stop();
+    return;
+  }
+
   ProgressBar.it.head = '    file ';
   ProgressBar.it.start(filenames.length, 0);
 
