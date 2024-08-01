@@ -31,28 +31,7 @@ export async function askInitOptions(): Promise<IInitQuestionAnswer> {
   const tsconfigFiles = getGlobFiles(glob);
   const sortedTsconfigFiles = tsconfigFiles.sort(getTsconfigComparer(cwdAnswer.cwd));
 
-  if (optionFileExist) {
-    const overwriteAnswer = await inquirer.prompt<Pick<IInitQuestionAnswer, 'overwirte'>>([
-      {
-        type: 'confirm',
-        name: 'overwirte',
-        message: `Already exists ${chalk.redBright(optionFilePath)}, overwrite it?`,
-        default: false,
-      },
-    ]);
-
-    if (!overwriteAnswer.overwirte) {
-      return {
-        cwd: cwdAnswer.cwd,
-        overwirte: overwriteAnswer.overwirte,
-        tsconfig: [],
-        mode: CE_CTIX_BUILD_MODE.BUNDLE_MODE,
-        exportFilename: CE_CTIX_DEFAULT_VALUE.EXPORT_FILENAME,
-      } satisfies IInitQuestionAnswer;
-    }
-  }
-
-  const selectedConfig = await inquirer.prompt<Omit<IInitQuestionAnswer, 'cwd' | 'overwrite'>>([
+  const userSelectedAnswer = await inquirer.prompt<Omit<IInitQuestionAnswer, 'cwd' | 'overwrite'>>([
     {
       type: 'checkbox',
       name: 'tsconfig',
@@ -68,6 +47,13 @@ export async function askInitOptions(): Promise<IInitQuestionAnswer> {
       choices: [CE_CTIX_BUILD_MODE.BUNDLE_MODE, CE_CTIX_BUILD_MODE.CREATE_MODE],
     },
     {
+      type: 'list',
+      name: 'configPosition',
+      message: 'Where do you want to add the configuration?',
+      default: '.ctirc',
+      choices: ['.ctirc', 'tsconfig.json', 'package.json'],
+    },
+    {
       type: 'input',
       name: 'exportFilename',
       default: CE_CTIX_DEFAULT_VALUE.EXPORT_FILENAME,
@@ -75,9 +61,31 @@ export async function askInitOptions(): Promise<IInitQuestionAnswer> {
     },
   ]);
 
+  if (userSelectedAnswer.configPosition === '.ctirc' && optionFileExist) {
+    const overwriteAnswer = await inquirer.prompt<Pick<IInitQuestionAnswer, 'overwirte'>>([
+      {
+        type: 'confirm',
+        name: 'overwirte',
+        message: `Already exists ${chalk.redBright(optionFilePath)}, overwrite it?`,
+        default: false,
+      },
+    ]);
+
+    if (!overwriteAnswer.overwirte) {
+      return {
+        cwd: cwdAnswer.cwd,
+        overwirte: overwriteAnswer.overwirte,
+        tsconfig: [],
+        mode: CE_CTIX_BUILD_MODE.BUNDLE_MODE,
+        configPosition: '.ctirc',
+        exportFilename: CE_CTIX_DEFAULT_VALUE.EXPORT_FILENAME,
+      } satisfies IInitQuestionAnswer;
+    }
+  }
+
   const answer: IInitQuestionAnswer = {
     ...cwdAnswer,
-    ...selectedConfig,
+    ...userSelectedAnswer,
     overwirte: true,
   };
 
