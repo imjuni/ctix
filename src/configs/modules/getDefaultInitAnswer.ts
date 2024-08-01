@@ -25,6 +25,7 @@ export async function getDefaultInitAnswer(): Promise<IInitQuestionAnswer> {
     tsconfig: [tsconfigPath],
     mode: CE_CTIX_BUILD_MODE.BUNDLE_MODE,
     exportFilename: CE_CTIX_DEFAULT_VALUE.EXPORT_FILENAME,
+    configPosition: '.ctirc',
     overwirte: true,
   };
 
