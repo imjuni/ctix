@@ -1,103 +1,146 @@
-import { Spinner } from '#/cli/ux/Spinner';
 import { castConfig } from '#/configs/castConfig';
 import { CE_CTIX_DEFAULT_VALUE } from '#/configs/const-enum/CE_CTIX_DEFAULT_VALUE';
+import { getConfigObject } from '#/configs/getConfigObject';
 import { getConfigValue } from '#/configs/getConfigValue';
 import type { IProjectOptions } from '#/configs/interfaces/IProjectOptions';
 import type { TCommandBuildArgvOptions } from '#/configs/interfaces/TCommandBuildArgvOptions';
 import type { TCommandRemoveOptions } from '#/configs/interfaces/TCommandRemoveOptions';
 import { getCommand } from '#/configs/modules/getCommand';
-import { readJsonConfig } from '#/configs/modules/json/readJsonConfig';
-import { parseConfig } from '#/configs/parseConfig';
-import { getConfigFilePath } from '#/modules/path/getConfigFilePath';
-import { posixJoin } from '#/modules/path/modules/posixJoin';
+import { getConfigFilePath } from '#/configs/modules/getConfigFilePath';
+import { readConfigFromFile } from '#/configs/modules/readConfigFromFile';
+import { readConfigFromPackageJson } from '#/configs/modules/readConfigFromPackageJson';
+import { readConfigFromTsconfigJson } from '#/configs/modules/readConfigFromTsconfigJson';
+import { getCheckedValue } from '#/modules/values/getCheckedValue';
 import consola from 'consola';
-import findUp from 'find-up';
 import minimist from 'minimist';
 import { isError } from 'my-easy-fp';
-import fs from 'node:fs';
-import type { PackageJson, TsConfigJson } from 'type-fest';
 
 export async function loadConfig(): Promise<
   TCommandBuildArgvOptions | TCommandRemoveOptions | IProjectOptions
 > {
   try {
+    const configValueKeys = [
+      'force-yes',
+      'y',
+      'remove-backup',
+      'export-filename',
+      'f',
+      'output',
+      'o',
+      'skip-empty-dir',
+      'start-from',
+      'project',
+      'p',
+      'mode',
+      'use-semicolon',
+      'use-banner',
+      'quote',
+      'q',
+      'directive',
+      'file-ext',
+      'overwrite',
+      'w',
+      'backup',
+      'generation-style',
+      'include-files',
+      'exclude-files',
+      'config',
+      'c',
+      'spinner-stream',
+      'progress-stream',
+      'reasoner-stream',
+    ];
     const argv = minimist(process.argv.slice(2));
 
-    const prjectPath = getConfigValue(argv, 'p', 'project');
-    const tsconfigPath =
-      prjectPath != null
-        ? findUp.sync(prjectPath)
-        : findUp.sync(CE_CTIX_DEFAULT_VALUE.TSCONFIG_FILENAME);
-
-    const configFilePath = getConfigFilePath(argv, tsconfigPath);
+    // const configFilePath = getConfigFilePath(argv, tsconfigPath);
     const command = getCommand(argv._);
 
-    if (tsconfigPath == null) {
-      Spinner.it.fail('Cannot found tsconfig.json file!');
-      throw new Error('Cannot found tsconfig.json file!');
-    }
+    const configFilePath = await getConfigFilePath(
+      CE_CTIX_DEFAULT_VALUE.CONFIG_FILENAME,
+      getConfigValue(argv, 'c', 'config'),
+    );
+
+    const tsconfigFilePath = await getConfigFilePath(
+      CE_CTIX_DEFAULT_VALUE.TSCONFIG_FILENAME,
+      getConfigValue(argv, 'p', 'project'),
+    );
+
+    const configFileEither =
+      configFilePath != null ? await readConfigFromFile(configFilePath) : undefined;
 
     // case 1. using .ctirc
-    if (configFilePath != null) {
-      const parsed =
-        configFilePath != null ? parseConfig(await fs.promises.readFile(configFilePath)) : {};
+    if (configFileEither != null && configFileEither.type === 'pass') {
+      const projectFilePath =
+        getCheckedValue<string>('String', getConfigValue(argv, 'p', 'project')) ??
+        getCheckedValue<string>('String', configFileEither.pass.p) ??
+        getCheckedValue<string>('String', configFileEither.pass.project) ??
+        tsconfigFilePath;
 
-      const config = castConfig(command, parsed, {
-        config: configFilePath,
-        tsconfig: tsconfigPath,
-      });
+      const config = castConfig(
+        command,
+        {
+          ...configFileEither.pass,
+          ...getConfigObject(argv, ...configValueKeys),
+        },
+        {
+          from: '.ctirc',
+          config: configFilePath,
+          tsconfig: projectFilePath,
+        },
+      );
 
-      Spinner.it.fail("load configuration from '.ctirc'");
       return config;
     }
 
-    // case 2. using tsconfig.json
-    const tsconfigParsed = await readJsonConfig<TsConfigJson>(tsconfigPath);
-    if (
-      configFilePath == null &&
-      tsconfigParsed != null &&
-      'ctix' in tsconfigParsed &&
-      tsconfigParsed.ctix != null &&
-      typeof tsconfigParsed.ctix === 'object' &&
-      Object.keys(tsconfigParsed.ctix).length > 0
-    ) {
-      const config = castConfig(command, tsconfigParsed.ctix, {
-        config: configFilePath,
-        tsconfig: tsconfigPath,
-      });
+    const tsconfigEither =
+      tsconfigFilePath != null ? await readConfigFromTsconfigJson(tsconfigFilePath) : undefined;
 
-      Spinner.it.fail("load configuration from 'tsconfig.json'");
+    if (tsconfigEither != null && tsconfigEither.type === 'pass') {
+      const config = castConfig(
+        command,
+        {
+          ...tsconfigEither.pass,
+          ...getConfigObject(argv, ...configValueKeys),
+        },
+        {
+          from: 'tsconfig.json',
+          config: configFilePath,
+          tsconfig: tsconfigFilePath,
+        },
+      );
+
       return config;
     }
 
-    // case 3. using package.json
-    const packageJsonParsed = await readJsonConfig<PackageJson>(
-      posixJoin(process.cwd(), 'package.json'),
-    );
-    if (
-      configFilePath == null &&
-      packageJsonParsed != null &&
-      'ctix' in packageJsonParsed &&
-      packageJsonParsed.ctix != null &&
-      typeof packageJsonParsed.ctix === 'object' &&
-      Object.keys(packageJsonParsed.ctix).length > 0
-    ) {
-      const config = castConfig(command, packageJsonParsed.ctix, {
-        config: configFilePath,
-        tsconfig: tsconfigPath,
-      });
+    const packageJsonEither = await readConfigFromPackageJson();
 
-      Spinner.it.fail("load configuration from 'package.json'");
+    if (packageJsonEither.type === 'pass') {
+      const config = castConfig(
+        command,
+        {
+          ...packageJsonEither.pass,
+          ...getConfigObject(argv, ...configValueKeys),
+        },
+        {
+          from: 'package.json',
+          config: configFilePath,
+          tsconfig: tsconfigFilePath,
+        },
+      );
+
       return config;
     }
 
     // case 4. in case of a read failure from .ctirc, tsconfig.json, or package.json
     const config = castConfig(
       command,
-      {},
       {
+        ...getConfigObject(argv, ...configValueKeys),
+      },
+      {
+        from: 'none',
         config: configFilePath,
-        tsconfig: tsconfigPath,
+        tsconfig: tsconfigFilePath,
       },
     );
 

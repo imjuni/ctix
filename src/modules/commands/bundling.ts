@@ -36,8 +36,17 @@ import { replaceSepToPosix } from 'my-node-fp';
 import path from 'node:path';
 import type * as tsm from 'ts-morph';
 
-export async function bundling(_buildOptions: TCommandBuildOptions, bundleOption: TBundleOptions) {
+export async function bundling(buildOptions: TCommandBuildOptions, bundleOption: TBundleOptions) {
   Spinner.it.start("ctix 'bundle' mode start, ...");
+
+  if (
+    'from' in buildOptions &&
+    buildOptions.from &&
+    typeof buildOptions.from === 'string' &&
+    buildOptions.from !== 'none'
+  ) {
+    Spinner.it.succeed(`ctix 'bundle' mode configuration reading from '${buildOptions.from}'`);
+  }
 
   await TemplateContainer.bootstrap();
 

@@ -6,12 +6,17 @@ import type { TCommandRemoveOptions } from '#/configs/interfaces/TCommandRemoveO
 export function castConfig(
   command: CE_CTIX_COMMAND,
   config: unknown,
-  paths: { config?: string; tsconfig?: string },
+  paths: {
+    from: 'none' | '.ctirc' | 'tsconfig.json' | 'package.json';
+    config?: string;
+    tsconfig?: string;
+  },
 ): TCommandBuildArgvOptions | TCommandRemoveOptions | IProjectOptions {
   switch (command) {
     case CE_CTIX_COMMAND.BUILD_COMMAND:
       return {
         ...(config as TCommandBuildArgvOptions),
+        from: paths.from,
         p: paths.tsconfig,
         project: paths.tsconfig,
         c: paths.config,
@@ -21,6 +26,7 @@ export function castConfig(
     case CE_CTIX_COMMAND.REMOVE_COMMAND:
       return {
         ...(config as TCommandRemoveOptions),
+        from: paths.from,
         p: paths.tsconfig,
         project: paths.tsconfig,
         c: paths.config,
@@ -29,6 +35,7 @@ export function castConfig(
 
     default:
       return {
+        from: paths.from,
         p: paths.tsconfig,
         project: paths.tsconfig,
         c: paths.config,

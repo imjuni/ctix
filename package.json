@@ -83,6 +83,7 @@
     "@types/minimist": "^1.2.4",
     "@types/node": "^20.8.7",
     "@types/source-map-support": "^0.5.9",
+    "@types/type-check": "^0.3.30",
     "@types/yargs": "^17.0.32",
     "@typescript-eslint/eslint-plugin": "^7.6.0",
     "@typescript-eslint/parser": "^7.6.0",
@@ -143,6 +144,7 @@
     "ts-morph": "^23.0.0",
     "ts-pattern": "^5.0.5",
     "tslib": "^2.6.2",
+    "type-check": "^0.4.0",
     "type-fest": "^4.15.0",
     "yaml": "^2.4.1",
     "yargs": "^17.7.2"
