@@ -89,6 +89,9 @@ importers:
       tslib:
         specifier: ^2.6.2
         version: 2.6.2
+      type-check:
+        specifier: ^0.4.0
+        version: 0.4.0
       type-fest:
         specifier: ^4.15.0
         version: 4.15.0
@@ -135,6 +138,9 @@ importers:
       '@types/source-map-support':
         specifier: ^0.5.9
         version: 0.5.10
+      '@types/type-check':
+        specifier: ^0.3.30
+        version: 0.3.30
       '@types/yargs':
         specifier: ^17.0.32
         version: 17.0.32
@@ -870,6 +876,9 @@ packages:
 
   '@types/through@0.0.33':
     resolution: {integrity: sha512-HsJ+z3QuETzP3cswwtzt2vEIiHBk/dCcHGhbmG5X3ecnwFD/lPrMpliGXxSCg03L9AhrdwA4Oz/qfspkDW+xGQ==}
+
+  '@types/type-check@0.3.30':
+    resolution: {integrity: sha512-xTxWk/TWmpYBWD47NKejJiJ0y14MgPx8XOF2kDSqhQGWPy2qmuKc7P854Wrn3SqO/LyEYiVdsGC1mJw1ds+QpQ==}
 
   '@types/yargs-parser@21.0.3':
     resolution: {integrity: sha512-I4q9QU9MQv4oEOz4tAHJtNz1cwuLxn2F3xcc2iV5WdqLPpUnj30aUuxt1mAxYTG+oe8CZMV/+6rU4S4gRDzqtQ==}
@@ -3750,6 +3759,8 @@ snapshots:
   '@types/through@0.0.33':
     dependencies:
       '@types/node': 20.9.0
+
+  '@types/type-check@0.3.30': {}
 
   '@types/yargs-parser@21.0.3': {}
 

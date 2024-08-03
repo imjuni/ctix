@@ -1,3 +1,4 @@
+import { getConfigObject } from '#/configs/getConfigObject';
 import { getConfigValue } from '#/configs/getConfigValue';
 import { describe, expect, it } from 'vitest';
 
@@ -26,5 +27,22 @@ describe('getConfigValue', () => {
 
     expect(r01).toBeUndefined();
     expect(r02).toBeUndefined();
+  });
+});
+
+describe('getConfigObject', () => {
+  it('key more then one', () => {
+    const obj = getConfigObject({ a: 'a', b: 'b', c: 'c' }, 'a', 'c');
+    expect(obj).toMatchObject({ a: 'a', c: 'c' });
+  });
+
+  it('empty keys', () => {
+    const obj = getConfigObject({ a: 'a', b: 'b', c: 'c' }, 'z');
+    expect(obj).toBeUndefined();
+  });
+
+  it('hit two keys, but undefined value', () => {
+    const obj = getConfigObject({ a: 'a', b: 'b', c: 'c', d: undefined, e: undefined }, 'd', 'e');
+    expect(obj).toBeUndefined();
   });
 });

@@ -21,16 +21,22 @@ import type { ArgumentsCamelCase } from 'yargs';
 export async function createBuildOptions(
   argv: ArgumentsCamelCase<TCommandBuildArgvOptions> & {
     options?: (TCreateOptions | TBundleOptions)[];
+    from?: string;
   },
 ): Promise<TCommandBuildOptions> {
-  const options: TCommandBuildOptions = {
+  const options: TCommandBuildOptions & { from: string } = {
     $kind: CE_CTIX_COMMAND.BUILD_COMMAND,
     config: argv.config,
+    from: argv.from ?? 'none',
     spinnerStream: argv.spinnerStream,
     progressStream: argv.progressStream,
     reasonerStream: argv.reasonerStream,
     options: [],
   };
+
+  if ('from' in argv && argv.from != null && typeof argv.from === 'string') {
+    options.from = argv.from;
+  }
 
   Spinner.it.stream = argv.spinnerStream;
   ProgressBar.it.stream = argv.progressStream;
