@@ -1,4 +1,5 @@
 import { getCheckedValue } from '#/modules/values/getCheckedValue';
+import { isConfigComment } from '#/modules/values/isConfigComment';
 import { describe, expect, it } from 'vitest';
 
 describe('getValidValue', () => {
@@ -16,5 +17,30 @@ describe('getValidValue', () => {
     expect(r03).toEqual('hello');
     expect(r04).toBeUndefined();
     expect(r05).toBeUndefined();
+  });
+});
+
+describe('isConfigComment', () => {
+  it('configuration saved on package.json', () => {
+    const r01 = isConfigComment({
+      configComment: false,
+      configPosition: 'package.json',
+    });
+
+    expect(r01).toBeFalsy();
+  });
+
+  it('configuration saved on tsconfig or ctirc', () => {
+    const r01 = isConfigComment({
+      configComment: false,
+      configPosition: '.ctirc',
+    });
+    const r02 = isConfigComment({
+      configComment: true,
+      configPosition: 'tsconfig.json',
+    });
+
+    expect(r01).toBeFalsy();
+    expect(r02).toBeTruthy();
   });
 });

@@ -6,17 +6,15 @@ import { CE_CTIX_BUILD_MODE } from '#/configs/const-enum/CE_CTIX_BUILD_MODE';
 import { CE_CTIX_DEFAULT_VALUE } from '#/configs/const-enum/CE_CTIX_DEFAULT_VALUE';
 import type { TCommandInitOptions } from '#/configs/interfaces/TCommandInitOptions';
 import { getDefaultInitAnswer } from '#/configs/modules/getDefaultInitAnswer';
-import { safeJsonc } from '#/configs/modules/json/safeJsonc';
 import { transformBundleMode } from '#/configs/transforms/transformBundleMode';
 import { transformCreateMode } from '#/configs/transforms/transformCreateMode';
-import { posixJoin } from '#/modules/path/modules/posixJoin';
-import { prettifing } from '#/modules/writes/prettifing';
+import { isConfigComment } from '#/modules/values/isConfigComment';
 import { CE_TEMPLATE_NAME } from '#/templates/const-enum/CE_TEMPLATE_NAME';
 import { TemplateContainer } from '#/templates/modules/TemplateContainer';
 import chalk from 'chalk';
-import { exists } from 'my-node-fp';
+import { assign, parse, stringify } from 'comment-json';
 import fs from 'node:fs';
-import type { PackageJson, TsConfigJson } from 'type-fest';
+import pathe from 'pathe';
 
 export async function initializing(option: TCommandInitOptions) {
   await TemplateContainer.bootstrap();
@@ -24,12 +22,12 @@ export async function initializing(option: TCommandInitOptions) {
   const answer = option.forceYes ? await getDefaultInitAnswer() : await askInitOptions();
 
   if (!answer.overwirte) {
-    const optionFilePath = posixJoin(answer.cwd, CE_CTIX_DEFAULT_VALUE.CONFIG_FILENAME);
+    const optionFilePath = pathe.join(answer.cwd, CE_CTIX_DEFAULT_VALUE.CONFIG_FILENAME);
     Spinner.it.fail(`${chalk.yellow(optionFilePath)} already exists`);
     return;
   }
 
-  Spinner.it.start(`Start ${chalk.yellow('.ctirc')} file creation ...`);
+  Spinner.it.start(`Start ctix ${chalk.yellow('configuration')} generate ...`);
 
   const nestedOptions = await Promise.all(
     answer.tsconfig.map(async (tsconfigPath) => {
@@ -68,7 +66,11 @@ export async function initializing(option: TCommandInitOptions) {
     nestedOptions.map(async (initOption) => {
       const rendered = await TemplateContainer.evaluate(
         CE_TEMPLATE_NAME.NESTED_OPTIONS_TEMPLATE,
-        initOption,
+        {
+          isComment: isConfigComment(answer),
+          addEveryOptions: answer.addEveryOptions,
+          options: initOption,
+        },
         {
           rmWhitespace: false,
         },
@@ -82,6 +84,8 @@ export async function initializing(option: TCommandInitOptions) {
     CE_TEMPLATE_NAME.OPTIONS_TEMPLATE,
     {
       config: CE_CTIX_DEFAULT_VALUE.CONFIG_FILENAME,
+      isComment: isConfigComment(answer),
+      addEveryOptions: answer.addEveryOptions,
       spinnerStream: 'stdout',
       progressStream: 'stdout',
       reasonerStream: 'stderr',
@@ -90,66 +94,41 @@ export async function initializing(option: TCommandInitOptions) {
     { rmWhitespace: false },
   );
 
-  const prettified = await prettifing(process.cwd(), renderedOptions, {
-    parser: 'json',
-    endOfLine: 'lf',
-  });
+  const parsedRenderedOptions = parse(renderedOptions);
 
   if (answer.configPosition === 'tsconfig.json') {
     // tsconfig.json 파일은 중요하니까, 백업 만들 생각이 있냐고 물어보자
     await Promise.all(
       answer.tsconfig.map(async (tsconfigFilePath) => {
-        const buf = await fs.promises.readFile(tsconfigFilePath);
-        const tsconfig = safeJsonc<TsConfigJson>(buf);
+        const resolvedTsconfigFilePath = pathe.resolve(tsconfigFilePath);
+        const buf = await fs.promises.readFile(resolvedTsconfigFilePath);
+        const parsedTsconfig = parse(buf.toString());
+        const newTsconfig = assign(parsedTsconfig, { ctix: parsedRenderedOptions });
 
-        if (tsconfig != null) {
-          const newTsconfig = {
-            ...tsconfig,
-            ctix: { ...(safeJsonc(Buffer.from(prettified.contents)) ?? {}) },
-          };
-
-          await fs.promises.writeFile(tsconfigFilePath, JSON.stringify(newTsconfig, null, 2));
-          Spinner.it.succeed(`${chalk.yellow(tsconfigFilePath)} file modifing completed!`);
+        if (answer.confirmBackupPackageTsconfig) {
+          const backupFilePath = `${pathe.basename(resolvedTsconfigFilePath)}.bak${pathe.extname(resolvedTsconfigFilePath)}`;
+          await fs.promises.writeFile(backupFilePath, buf.toString());
         }
+
+        await fs.promises.writeFile(resolvedTsconfigFilePath, stringify(newTsconfig, undefined, 2));
+        Spinner.it.succeed(`${chalk.yellow(resolvedTsconfigFilePath)} file modifing completed!`);
       }),
     );
   } else if (answer.configPosition === 'package.json') {
-    const packageJsonFilePath = (
-      await Promise.all(
-        [posixJoin(answer.cwd, 'package.json'), posixJoin(process.cwd(), 'package.json')].map(
-          async (filePath) => {
-            return {
-              exists: await exists(filePath),
-              filePath,
-            };
-          },
-        ),
-      )
-    )
-      .filter((packageJson) => packageJson.exists)
-      .at(0);
+    const packageJsonFilePath = pathe.resolve(answer.packageJson);
+    const buf = await fs.promises.readFile(packageJsonFilePath);
+    const parsedPackageJson = parse(buf.toString());
+    const newPackageJson = assign(parsedPackageJson, { ctix: parsedRenderedOptions });
 
-    if (packageJsonFilePath == null) {
-      throw new Error('Cannot found package.json file');
+    if (answer.confirmBackupPackageTsconfig) {
+      const backupFilePath = `${pathe.basename(packageJsonFilePath)}.bak${pathe.extname(packageJsonFilePath)}`;
+      await fs.promises.writeFile(backupFilePath, buf.toString());
     }
 
-    const buf = await fs.promises.readFile(packageJsonFilePath.filePath);
-    const packageJson = safeJsonc<PackageJson>(buf);
-
-    if (packageJson != null) {
-      const newPackageJson = {
-        ...packageJson,
-        ctix: safeJsonc(Buffer.from(prettified.contents)) ?? {},
-      };
-
-      await fs.promises.writeFile(
-        packageJsonFilePath.filePath,
-        JSON.stringify(newPackageJson, null, 2),
-      );
-      Spinner.it.succeed(`${chalk.yellow(packageJsonFilePath.filePath)} file modifing completed!`);
-    }
+    await fs.promises.writeFile(packageJsonFilePath, stringify(newPackageJson, undefined, 2));
+    Spinner.it.succeed(`${chalk.yellow(packageJsonFilePath)} file modifing completed!`);
   } else {
-    await fs.promises.writeFile('.ctirc', prettified.contents);
+    await fs.promises.writeFile('.ctirc', stringify(parsedRenderedOptions, undefined, 2));
     Spinner.it.succeed(`${chalk.yellow('.ctirc')} file writing completed!`);
   }
 }
