@@ -36,8 +36,15 @@ In addition, `ctix` will auto-generate `barrel` files so that a single `index.d.
   - [Barrel file](#barrel-file)
 - [Installation](#installation)
 - [Usage](#usage)
+  - [Saving Configuration](#saving-configuration)
+- [include \& exclude file](#include--exclude-file)
   - [How can I include wanted files?](#how-can-i-include-wanted-files)
   - [How can I exclude unwanted files?](#how-can-i-exclude-unwanted-files)
+- [eslint style inline comment](#eslint-style-inline-comment)
+  - [@ctix-exclude](#ctix-exclude)
+  - [@ctix-exclude-next](#ctix-exclude-next)
+  - [@ctix-generation-style](#ctix-generation-style)
+  - [@ctix-declaration](#ctix-declaration)
   - [Programming interface](#programming-interface)
 - [Requirement](#requirement)
 - [Important](#important)
@@ -114,6 +121,19 @@ The mode in which the `barrel` file is to be generated. There is a create mode t
 
 Check out the `.ctirc` in [examples/type10](https://github.com/imjuni/ctix/blob/master/examples/type10/.ctirc) to see how to utilize the `module` mode.
 
+### Saving Configuration
+
+You can save frequently used configurations. ctix supports saving settings in `package.json`, `tsconfig.json`, or a `.ctirc` file. You can easily create a basic configuration using the `ctix init` command.
+
+```bash
+# generate base configuration
+ctix init
+```
+
+## include & exclude file
+
+`ctix` needs a list of files to generate the `index.ts` file. You can provide this list using the `--include` option, which supports glob patterns. If you don't use the `--include` option, ctix will use the `include` setting from the `.ctirc` file. If neither the `--include` option nor the `.ctirc` file is provided, ctix will fall back to the `include` field in the `tsconfig.json` file.
+
 ### How can I include wanted files?
 
 `ctix` gets a glob pattern to generate the `index.ts` file. The glob pattern is obtained from various configuration files such as:
@@ -141,14 +161,64 @@ There are two ways to do this. The first is to create a `.ctirc` file and set th
 
 If you want to use a `.ctirc` file, I recommend creating one with the `npx ctix init` command.
 
-> eslint style inline comment
+## eslint style inline comment
+
+You can add configurations using eslint-style inline comments.
+
+### @ctix-exclude
+
+If you want to include an entire directory but exclude certain files, instead of writing a complex glob pattern, you can simply use inline comments to exclude the specific files.
 
 ```tsx
-// @ctix-exclude
+/** @ctix-exclude */
 
 const Button = () => {
   return <button>Sample</button>;
 };
+```
+
+### @ctix-exclude-next
+
+When exporting multiple classes and functions, you can exclude one or two of them if needed.
+
+```tsx
+const Button = () => {};
+
+const GroupButton = () => {};
+
+// @ctix-exclude-next
+const UnwantedButton = () => {};
+
+const Checkbox = () => {};
+```
+
+### @ctix-generation-style
+
+```ts
+/** @ctix-generation-style default-alias-named-destructive */
+const Button = () => {};
+
+const GroupButton = () => {};
+
+// @ctix-exclude-next
+const UnwantedButton = () => {};
+
+const Checkbox = () => {};
+```
+
+The export syntax in the `index.ts` file is determined by the chosen generation style. For more details, refer to the [More about Generation Style](doc/IN_DEPTH_GEN_STYLE.md) documentation.
+
+### @ctix-declaration
+
+When `ctix` generates the `index.ts` file, it uses [prettier](https://prettier.io/) and [prettier-plugin-organize-imports](https://www.npmjs.com/package/prettier-plugin-organize-imports) to check if the files to be exported are used. During this process, files that only contain `declare module` are excluded. This can cause issues if you intend to bundle type files. However, if you add `@ctix-declaration` to the file, it will be included in the `index.ts` file. Keep in mind that `@ctix-declaration` is applied after the exclude option, so make sure the file is not included in the exclude option.
+
+```ts
+/** @ctix-declaration */
+
+declare module '*.vue' {
+  import Vue from 'vue';
+  export default Vue;
+}
 ```
 
 ### Programming interface
