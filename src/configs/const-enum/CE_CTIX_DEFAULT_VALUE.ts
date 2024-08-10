@@ -2,6 +2,7 @@ export const CE_CTIX_DEFAULT_VALUE = {
   CONFIG_FILENAME: '.ctirc',
   TSCONFIG_FILENAME: 'tsconfig.json',
   EXPORT_FILENAME: 'index.ts',
+  PACKAGE_JSON_FILENAME: 'package.json',
   REMOVE_FILE_CHOICE_FUZZY: 50,
 } as const;
 

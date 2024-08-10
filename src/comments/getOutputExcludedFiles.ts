@@ -1,7 +1,7 @@
 import type { IExtendOptions } from '#/configs/interfaces/IExtendOptions';
-import { posixJoin } from '#/modules/path/modules/posixJoin';
 import { settify } from 'my-easy-fp';
 import { getDirname } from 'my-node-fp';
+import pathe from 'pathe';
 import type * as tsm from 'ts-morph';
 
 export async function getOutputExcludedFiles(params: {
@@ -22,7 +22,7 @@ export async function getOutputExcludedFiles(params: {
   );
 
   const outputFiles = settify(outputDirPaths).map((dirPath) =>
-    posixJoin(dirPath, params.exportFilename),
+    pathe.join(dirPath, params.exportFilename),
   );
 
   return outputFiles;

@@ -5,6 +5,10 @@ export interface IInitQuestionAnswer {
   tsconfig: string[];
   mode: CE_CTIX_BUILD_MODE;
   overwirte: boolean;
+  packageJson: string;
+  addEveryOptions: boolean;
+  configComment: boolean;
+  confirmBackupPackageTsconfig: boolean;
   configPosition: '.ctirc' | 'tsconfig.json' | 'package.json';
   exportFilename: string;
 }
