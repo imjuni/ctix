@@ -37,14 +37,14 @@ In addition, `ctix` will auto-generate `barrel` files so that a single `index.d.
 - [Installation](#installation)
 - [Usage](#usage)
   - [Saving Configuration](#saving-configuration)
-- [include \& exclude file](#include--exclude-file)
-  - [How can I include wanted files?](#how-can-i-include-wanted-files)
-  - [How can I exclude unwanted files?](#how-can-i-exclude-unwanted-files)
-- [eslint style inline comment](#eslint-style-inline-comment)
-  - [@ctix-exclude](#ctix-exclude)
-  - [@ctix-exclude-next](#ctix-exclude-next)
-  - [@ctix-generation-style](#ctix-generation-style)
-  - [@ctix-declaration](#ctix-declaration)
+  - [include \& exclude file](#include--exclude-file)
+    - [How can I include wanted files?](#how-can-i-include-wanted-files)
+    - [How can I exclude unwanted files?](#how-can-i-exclude-unwanted-files)
+  - [eslint style inline comment](#eslint-style-inline-comment)
+    - [@ctix-exclude](#ctix-exclude)
+    - [@ctix-exclude-next](#ctix-exclude-next)
+    - [@ctix-generation-style](#ctix-generation-style)
+    - [@ctix-declaration](#ctix-declaration)
   - [Programming interface](#programming-interface)
 - [Requirement](#requirement)
 - [Important](#important)
@@ -130,11 +130,11 @@ You can save frequently used configurations. ctix supports saving settings in `p
 ctix init
 ```
 
-## include & exclude file
+### include & exclude file
 
 `ctix` needs a list of files to generate the `index.ts` file. You can provide this list using the `--include` option, which supports glob patterns. If you don't use the `--include` option, ctix will use the `include` setting from the `.ctirc` file. If neither the `--include` option nor the `.ctirc` file is provided, ctix will fall back to the `include` field in the `tsconfig.json` file.
 
-### How can I include wanted files?
+#### How can I include wanted files?
 
 `ctix` gets a glob pattern to generate the `index.ts` file. The glob pattern is obtained from various configuration files such as:
 
@@ -144,7 +144,7 @@ ctix init
 
 If your `index.ts` file is empty or a warning is displayed, please check the above configuration.
 
-### How can I exclude unwanted files?
+#### How can I exclude unwanted files?
 
 There are two ways to do this. The first is to create a `.ctirc` file and set the include or exclude value, which works similarly to the include and exclude values in the `tsconfig.json` file. The second is to comment out `@ctix-exclude` at the top of the files you want to exclude, such as eslint.
 
@@ -161,11 +161,11 @@ There are two ways to do this. The first is to create a `.ctirc` file and set th
 
 If you want to use a `.ctirc` file, I recommend creating one with the `npx ctix init` command.
 
-## eslint style inline comment
+### eslint style inline comment
 
 You can add configurations using eslint-style inline comments.
 
-### @ctix-exclude
+#### @ctix-exclude
 
 If you want to include an entire directory but exclude certain files, instead of writing a complex glob pattern, you can simply use inline comments to exclude the specific files.
 
@@ -177,7 +177,7 @@ const Button = () => {
 };
 ```
 
-### @ctix-exclude-next
+#### @ctix-exclude-next
 
 When exporting multiple classes and functions, you can exclude one or two of them if needed.
 
@@ -192,7 +192,7 @@ const UnwantedButton = () => {};
 const Checkbox = () => {};
 ```
 
-### @ctix-generation-style
+#### @ctix-generation-style
 
 ```ts
 /** @ctix-generation-style default-alias-named-destructive */
@@ -208,7 +208,7 @@ const Checkbox = () => {};
 
 The export syntax in the `index.ts` file is determined by the chosen generation style. For more details, refer to the [More about Generation Style](doc/IN_DEPTH_GEN_STYLE.md) documentation.
 
-### @ctix-declaration
+#### @ctix-declaration
 
 When `ctix` generates the `index.ts` file, it uses [prettier](https://prettier.io/) and [prettier-plugin-organize-imports](https://www.npmjs.com/package/prettier-plugin-organize-imports) to check if the files to be exported are used. During this process, files that only contain `declare module` are excluded. This can cause issues if you intend to bundle type files. However, if you add `@ctix-declaration` to the file, it will be included in the `index.ts` file. Keep in mind that `@ctix-declaration` is applied after the exclude option, so make sure the file is not included in the exclude option.
 
