@@ -11,5 +11,5 @@ export function isDeclarationFile(sourceFile: tsm.SourceFile) {
     };
   });
 
-  return statements.every((statement) => statement.isDeclaration);
+  return statements.some((statement) => statement.isDeclaration);
 }

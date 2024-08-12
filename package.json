@@ -151,9 +151,9 @@
     "yargs": "^17.7.2"
   },
   "peerDependencies": {
-    "prettier": "^3",
-    "prettier-plugin-organize-imports": "^3",
-    "typescript": "^5"
+    "prettier": ">=3",
+    "prettier-plugin-organize-imports": ">=3",
+    "typescript": ">=5"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
