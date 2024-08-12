@@ -212,6 +212,8 @@ The export syntax in the `index.ts` file is determined by the chosen generation 
 
 When `ctix` generates the `index.ts` file, it uses [prettier](https://prettier.io/) and [prettier-plugin-organize-imports](https://www.npmjs.com/package/prettier-plugin-organize-imports) to check if the files to be exported are used. During this process, files that only contain `declare module` are excluded. This can cause issues if you intend to bundle type files. However, if you add `@ctix-declaration` to the file, it will be included in the `index.ts` file. Keep in mind that `@ctix-declaration` is applied after the exclude option, so make sure the file is not included in the exclude option.
 
+> @ctix-declaration does not work when used with export statements in the same file.
+
 ```ts
 /** @ctix-declaration */
 
