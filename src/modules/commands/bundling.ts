@@ -190,31 +190,33 @@ export async function bundling(buildOptions: TCommandBuildOptions, bundleOption:
       return { renderData, ...style };
     });
 
-  const importsRendered = await TemplateContainer.evaluate(
+  const inlineDeclarationsRendered = await TemplateContainer.evaluate(
     CE_TEMPLATE_NAME.DECLARATION_FILE_TEMPLATE,
     {
       options: { quote: bundleOption.quote },
       declarations: await Promise.all(
-        inlineDeclarations.map((declaration) => {
-          const relativePath =
-            bundleOption.output != null
-              ? addCurrentDirPrefix(
-                  posixRelative(
-                    bundleOption.output,
-                    path.join(
+        inlineDeclarations
+          .filter((inlineDeclaration) => statementMap.get(inlineDeclaration.filePath) == null)
+          .map((declaration) => {
+            const relativePath =
+              bundleOption.output != null
+                ? addCurrentDirPrefix(
+                    posixRelative(
+                      bundleOption.output,
+                      path.join(
+                        path.dirname(declaration.filePath),
+                        path.basename(declaration.filePath, path.extname(declaration.filePath)),
+                      ),
+                    ),
+                  )
+                : replaceSepToPosix(
+                    `.${path.posix.sep}${path.join(
                       path.dirname(declaration.filePath),
                       path.basename(declaration.filePath, path.extname(declaration.filePath)),
-                    ),
-                  ),
-                )
-              : replaceSepToPosix(
-                  `.${path.posix.sep}${path.join(
-                    path.dirname(declaration.filePath),
-                    path.basename(declaration.filePath, path.extname(declaration.filePath)),
-                  )}`,
-                );
-          return { ...declaration, relativePath };
-        }),
+                    )}`,
+                  );
+            return { ...declaration, relativePath };
+          }),
       ),
     },
   );
@@ -232,7 +234,7 @@ export async function bundling(buildOptions: TCommandBuildOptions, bundleOption:
   Spinner.it.start('output file exists check, ...');
 
   const outputMap = new Map<string, string>();
-  outputMap.set(output, [importsRendered, ...exportsRendered].join('\n'));
+  outputMap.set(output, [inlineDeclarationsRendered, ...exportsRendered].join('\n'));
   const fileExistReason = await checkOutputFile(outputMap);
 
   if (!bundleOption.overwrite && !bundleOption.backup && fileExistReason.length > 0) {
