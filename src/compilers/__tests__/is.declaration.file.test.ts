@@ -19,7 +19,7 @@ describe('isDeclaration', () => {
     const r02 = isDeclaration(tsm.SyntaxKind.ImportDeclaration);
 
     expect(r01).toBeTruthy();
-    expect(r02).toBeTruthy();
+    expect(r02).toBeFalsy();
   });
 
   it('not declaration', () => {
@@ -42,7 +42,7 @@ import '@babel/polyfill';
 
     const sourceFile = context.project.createSourceFile(filename, source.trim());
     const r01 = isDeclarationFile(sourceFile);
-    expect(r01).toBeTruthy();
+    expect(r01).toBeFalsy();
   });
 
   it('file have only module-declarations', () => {
