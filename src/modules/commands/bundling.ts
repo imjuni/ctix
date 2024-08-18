@@ -16,9 +16,7 @@ import { ProjectContainer } from '#/modules/file/ProjectContainer';
 import { checkOutputFile } from '#/modules/file/checkOutputFile';
 import { getTsExcludeFiles } from '#/modules/file/getTsExcludeFiles';
 import { getTsIncludeFiles } from '#/modules/file/getTsIncludeFiles';
-import { addCurrentDirPrefix } from '#/modules/path/addCurrentDirPrefix';
 import { posixJoin } from '#/modules/path/modules/posixJoin';
-import { posixRelative } from '#/modules/path/modules/posixRelative';
 import { posixResolve } from '#/modules/path/modules/posixResolve';
 import { ExcludeContainer } from '#/modules/scope/ExcludeContainer';
 import { IncludeContainer } from '#/modules/scope/IncludeContainer';
@@ -28,12 +26,11 @@ import { CE_TEMPLATE_NAME } from '#/templates/const-enum/CE_TEMPLATE_NAME';
 import type { IIndexFileWriteParams } from '#/templates/interfaces/IIndexFileWriteParams';
 import type { IIndexRenderData } from '#/templates/interfaces/IIndexRenderData';
 import { TemplateContainer } from '#/templates/modules/TemplateContainer';
+import { getInlineDeclarationRenderData } from '#/templates/modules/getInlineDeclarationRenderData';
 import { getRenderData } from '#/templates/modules/getRenderData';
 import { getSelectStyle } from '#/templates/modules/getSelectStyle';
 import chalk from 'chalk';
 import dayjs from 'dayjs';
-import { replaceSepToPosix } from 'my-node-fp';
-import path from 'node:path';
 import type * as tsm from 'ts-morph';
 
 export async function bundling(buildOptions: TCommandBuildOptions, bundleOption: TBundleOptions) {
@@ -194,30 +191,7 @@ export async function bundling(buildOptions: TCommandBuildOptions, bundleOption:
     CE_TEMPLATE_NAME.DECLARATION_FILE_TEMPLATE,
     {
       options: { quote: bundleOption.quote },
-      declarations: await Promise.all(
-        inlineDeclarations
-          .filter((inlineDeclaration) => statementMap.get(inlineDeclaration.filePath) == null)
-          .map((declaration) => {
-            const relativePath =
-              bundleOption.output != null
-                ? addCurrentDirPrefix(
-                    posixRelative(
-                      bundleOption.output,
-                      path.join(
-                        path.dirname(declaration.filePath),
-                        path.basename(declaration.filePath, path.extname(declaration.filePath)),
-                      ),
-                    ),
-                  )
-                : replaceSepToPosix(
-                    `.${path.posix.sep}${path.join(
-                      path.dirname(declaration.filePath),
-                      path.basename(declaration.filePath, path.extname(declaration.filePath)),
-                    )}`,
-                  );
-            return { ...declaration, relativePath };
-          }),
-      ),
+      declarations: getInlineDeclarationRenderData(inlineDeclarations, bundleOption),
     },
   );
 
