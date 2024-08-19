@@ -85,14 +85,16 @@ export async function bundling(buildOptions: TCommandBuildOptions, bundleOption:
     project,
     filePaths,
     keyword: CE_INLINE_COMMENT_KEYWORD.FILE_DECLARATION_KEYWORD,
-  }).filter((declaration) => {
-    const sourceFile = project.getSourceFile(declaration.filePath);
-    if (sourceFile == null) {
-      return false;
-    }
+  })
+    .filter((declaration) => !exclude.isExclude(declaration.filePath))
+    .filter((declaration) => {
+      const sourceFile = project.getSourceFile(declaration.filePath);
+      if (sourceFile == null) {
+        return false;
+      }
 
-    return isDeclarationFile(sourceFile);
-  });
+      return isDeclarationFile(sourceFile);
+    });
 
   const filenames = filePaths
     .filter((filename) => include.isInclude(filename))

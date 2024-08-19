@@ -21,10 +21,8 @@ export function getInlineDeclarationRenderData(
 
     const relativePath =
       options.output != null
-        ? addCurrentDirPrefix(
-            posixRelative(options.output, pathe.join(dirname, `${basename}${extname}`)),
-          )
-        : replaceSepToPosix(`.${path.posix.sep}${pathe.join(dirname, `${basename}${extname}`)}`);
+        ? addCurrentDirPrefix(posixRelative(options.output, pathe.join(dirname, basename)))
+        : replaceSepToPosix(`.${path.posix.sep}${pathe.join(dirname, basename)}`);
 
     return {
       ...declaration,
