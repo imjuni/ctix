@@ -43,7 +43,7 @@ describe('getInlineDeclarationRenderData', () => {
         tag: '@ctix-declaration',
         pos: { line: 0, column: 0, start: 0 },
         workspaces: undefined,
-        relativePath: '../c/d/a.ts',
+        relativePath: '../c/d/a',
         extname: { origin: '.ts', render: '.js' },
       },
       {
@@ -52,7 +52,7 @@ describe('getInlineDeclarationRenderData', () => {
         tag: '@ctix-declaration',
         pos: { line: 0, column: 0, start: 0 },
         workspaces: undefined,
-        relativePath: '../c/e/b.ts',
+        relativePath: '../c/e/b',
         extname: { origin: '.ts', render: '.js' },
       },
     ]);
@@ -95,7 +95,7 @@ describe('getInlineDeclarationRenderData', () => {
         tag: '@ctix-declaration',
         pos: { line: 0, column: 0, start: 0 },
         workspaces: undefined,
-        relativePath: `./${pathe.join(process.cwd(), '/a/b/c/d/a.ts')}`,
+        relativePath: `./${pathe.join(process.cwd(), '/a/b/c/d/a')}`,
         extname: { origin: '.ts', render: '.js' },
       },
       {
@@ -104,7 +104,7 @@ describe('getInlineDeclarationRenderData', () => {
         tag: '@ctix-declaration',
         pos: { line: 0, column: 0, start: 0 },
         workspaces: undefined,
-        relativePath: `./${pathe.join(process.cwd(), '/a/b/c/e/b.ts')}`,
+        relativePath: `./${pathe.join(process.cwd(), '/a/b/c/e/b')}`,
         extname: { origin: '.ts', render: '.js' },
       },
     ]);
