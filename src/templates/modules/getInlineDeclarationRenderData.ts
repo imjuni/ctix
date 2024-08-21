@@ -19,14 +19,14 @@ export function getInlineDeclarationRenderData(
     const dirname = pathe.dirname(declaration.filePath);
     const basename = pathe.basename(declaration.filePath, extname);
 
-    const relativePath =
+    const importPath =
       options.output != null
         ? addCurrentDirPrefix(posixRelative(options.output, pathe.join(dirname, basename)))
         : replaceSepToPosix(`.${path.posix.sep}${pathe.join(dirname, basename)}`);
 
     return {
       ...declaration,
-      relativePath,
+      importPath,
       extname: {
         origin: extname,
         render: renderExtname,
