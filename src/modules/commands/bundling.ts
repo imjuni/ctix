@@ -192,7 +192,7 @@ export async function bundling(buildOptions: TCommandBuildOptions, bundleOption:
   const inlineDeclarationsRendered = await TemplateContainer.evaluate(
     CE_TEMPLATE_NAME.DECLARATION_FILE_TEMPLATE,
     {
-      options: { quote: bundleOption.quote },
+      options: { quote: bundleOption.quote, useSemicolon: bundleOption.useSemicolon },
       declarations: getInlineDeclarationRenderData(inlineDeclarations, bundleOption),
     },
   );
