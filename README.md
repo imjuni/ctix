@@ -134,6 +134,10 @@ ctix init
 
 `ctix` needs a list of files to generate the `index.ts` file. You can provide this list using the `--include` option, which supports glob patterns. If you don't use the `--include` option, ctix will use the `include` setting from the `.ctirc` file. If neither the `--include` option nor the `.ctirc` file is provided, ctix will fall back to the `include` field in the `tsconfig.json` file.
 
+![include-exclude-diagram](/static/img/file-include-exclude.png)
+
+This diagram shows the file include/exclude mechanism.
+
 #### How can I include wanted files?
 
 `ctix` gets a glob pattern to generate the `index.ts` file. The glob pattern is obtained from various configuration files such as:
