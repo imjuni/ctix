@@ -86,6 +86,7 @@ export async function bundling(buildOptions: TCommandBuildOptions, bundleOption:
     filePaths,
     keyword: CE_INLINE_COMMENT_KEYWORD.FILE_DECLARATION_KEYWORD,
   })
+    .filter((declaration) => include.isInclude(declaration.filePath))
     .filter((declaration) => !exclude.isExclude(declaration.filePath))
     .filter((declaration) => {
       const sourceFile = project.getSourceFile(declaration.filePath);
