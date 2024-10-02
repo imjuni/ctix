@@ -8,22 +8,18 @@ import { initializing } from '#/modules/commands/initializing';
 import consola from 'consola';
 import type yargs from 'yargs';
 
-async function initCommandCode(argv: yargs.ArgumentsCamelCase<ICommandInitOptions>) {
-  const option: TCommandInitOptions = {
-    $kind: CE_CTIX_COMMAND.INIT_COMMAND,
-    forceYes: argv.forceYes,
-  };
-
-  await initializing(option);
-}
-
 export async function initCommand(argv: yargs.ArgumentsCamelCase<ICommandInitOptions>) {
   ProgressBar.it.enable = true;
   Spinner.it.enable = true;
   Reasoner.it.enable = true;
 
   try {
-    await initCommandCode(argv);
+    const option: TCommandInitOptions = {
+      $kind: CE_CTIX_COMMAND.INIT_COMMAND,
+      forceYes: argv.forceYes,
+    };
+
+    await initializing(option);
   } catch (err) {
     consola.error(err);
   } finally {

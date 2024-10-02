@@ -7,18 +7,14 @@ import { building } from '#/modules/commands/building';
 import consola from 'consola';
 import type yargs from 'yargs';
 
-async function buildCommandCode(argv: yargs.ArgumentsCamelCase<TCommandBuildArgvOptions>) {
-  const options = await createBuildOptions(argv);
-  await building(options);
-}
-
 export async function buildCommand(argv: yargs.ArgumentsCamelCase<TCommandBuildArgvOptions>) {
   ProgressBar.it.enable = true;
   Spinner.it.enable = true;
   Reasoner.it.enable = true;
 
   try {
-    await buildCommandCode(argv);
+    const options = await createBuildOptions(argv);
+    await building(options);
   } catch (err) {
     consola.error(err);
   } finally {

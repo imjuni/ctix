@@ -54,6 +54,10 @@ export class Reasoner {
     }
   }
 
+  get logger() {
+    return this.#logger;
+  }
+
   get enable() {
     return this.#enable;
   }
@@ -88,7 +92,7 @@ export class Reasoner {
     } else {
       messageBlock.push(
         `   ${chevronRight} ${chalk.gray(
-          `${filePath}:${reason.lineAndCharacter.line}:${reason.lineAndCharacter.character}`,
+          `${filePath}:${chalk.yellowBright(reason.lineAndCharacter.line)}:${chalk.yellowBright(reason.lineAndCharacter.character)}`,
         )}`,
       );
     }
@@ -119,6 +123,17 @@ export class Reasoner {
 
     this.#logger(warns.join(''));
     this.#streamFunc(errors.join(''));
+  }
+
+  displayNewIssueMessage() {
+    const messageIndent = '  > ';
+    this.#logger(
+      chalk.green(
+        `${messageIndent}Please submit a new GitHub issue with a reproducible repository to improve ctix!`,
+      ),
+    );
+    this.#logger(chalk.green(`${messageIndent}https://github.com/imjuni/ctix/issues/new`));
+    this.#logger('\n');
   }
 }
 

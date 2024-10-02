@@ -12,6 +12,7 @@ import { isDeclarationFile } from '#/compilers/isDeclarationFile';
 import { getExtendOptions } from '#/configs/getExtendOptions';
 import type { TBundleOptions } from '#/configs/interfaces/TBundleOptions';
 import type { TCommandBuildOptions } from '#/configs/interfaces/TCommandBuildOptions';
+import { NotFoundExportedKind } from '#/errors/NotFoundExportedKind';
 import { ProjectContainer } from '#/modules/file/ProjectContainer';
 import { checkOutputFile } from '#/modules/file/checkOutputFile';
 import { getTsExcludeFiles } from '#/modules/file/getTsExcludeFiles';
@@ -31,6 +32,8 @@ import { getRenderData } from '#/templates/modules/getRenderData';
 import { getSelectStyle } from '#/templates/modules/getSelectStyle';
 import chalk from 'chalk';
 import dayjs from 'dayjs';
+import { isError } from 'my-easy-fp';
+import { fail, pass } from 'my-only-either';
 import type * as tsm from 'ts-morph';
 
 export async function bundling(buildOptions: TCommandBuildOptions, bundleOption: TBundleOptions) {
@@ -115,16 +118,26 @@ export async function bundling(buildOptions: TCommandBuildOptions, bundleOption:
   ProgressBar.it.head = '    file ';
   ProgressBar.it.start(filenames.length, 0);
 
-  const statements = (
+  const statementEithers = (
     await Promise.all(
       filenames
         .map((filename) => project.getSourceFile(filename))
         .filter((sourceFile): sourceFile is tsm.SourceFile => sourceFile != null)
         .map(async (sourceFile) => {
-          const exportStatement = getExportStatement(sourceFile, bundleOption, extendOptions);
           ProgressBar.it.increment();
 
-          return exportStatement;
+          try {
+            const exportStatement = await getExportStatement(
+              sourceFile,
+              bundleOption,
+              extendOptions,
+            );
+
+            return pass(exportStatement);
+          } catch (caught) {
+            const err = isError(caught, new Error('unknown error raised'));
+            return fail(err);
+          }
         }),
     )
   ).flat();
@@ -134,7 +147,32 @@ export async function bundling(buildOptions: TCommandBuildOptions, bundleOption:
   const statementMap = new Map<string, IExportStatement[]>();
   const statementTable = new StatementTable();
 
+  const failStatements = statementEithers
+    .filter((statementEither) => statementEither.type === 'fail')
+    .map((statementEither) => statementEither.fail)
+    .filter((err) => err != null);
+
+  const statements = statementEithers
+    .filter((statementEither) => statementEither.type === 'pass')
+    .map((statementEither) => statementEither.pass)
+    .filter((statement) => statement != null)
+    .flat();
+
   statementTable.inserts(statements);
+
+  if (failStatements.length > 0) {
+    Spinner.it.fail("ctix 'bundle' mode incomplete ...");
+    Spinner.it.stop();
+
+    const reasons = failStatements
+      .filter((err) => err instanceof NotFoundExportedKind)
+      .map((err) => err.createReason());
+
+    Reasoner.it.start(reasons);
+    Reasoner.it.displayNewIssueMessage();
+
+    return;
+  }
 
   Spinner.it.start(`build ${`"${chalk.green(bundleOption.exportFilename)}"`} file start`);
 
@@ -169,7 +207,7 @@ export async function bundling(buildOptions: TCommandBuildOptions, bundleOption:
 
   Spinner.it.stop();
   ProgressBar.it.head = '  export ';
-  ProgressBar.it.start(statements.length, 0);
+  ProgressBar.it.start(statementEithers.length, 0);
 
   const datas = Array.from(statementMap.entries())
     .map(([filePath, exportStatements]) => {
