@@ -1,4 +1,5 @@
 import { getFunctionName } from '#/compilers/getFunctionName';
+import { NotFoundExportedKind } from '#/errors/NotFoundExportedKind';
 import * as tsm from 'ts-morph';
 import { match } from 'ts-pattern';
 
@@ -207,7 +208,16 @@ export function getExportedKind(node: tsm.ExportedDeclarations): {
        * ```
        */
       .otherwise(() => {
-        throw new Error(`Cannot support type: (${node.getKind()}) ${node.getText()}`);
+        const sourceFile = node.getSourceFile();
+        const filePath = sourceFile.getFilePath();
+        const pos = sourceFile.getLineAndColumnAtPos(node.getStart(false));
+
+        throw new NotFoundExportedKind(
+          pos,
+          filePath,
+          node,
+          `Cannot support type: (${node.getKind()}) ${node.getText()}`,
+        );
       })
   );
 }

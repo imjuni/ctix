@@ -14,6 +14,7 @@ import { CE_GENERATION_STYLE } from '#/configs/const-enum/CE_GENERATION_STYLE';
 import { getExtendOptions } from '#/configs/getExtendOptions';
 import type { TCommandBuildOptions } from '#/configs/interfaces/TCommandBuildOptions';
 import type { TCreateOptions } from '#/configs/interfaces/TCreateOptions';
+import { NotFoundExportedKind } from '#/errors/NotFoundExportedKind';
 import { getAllParentDir } from '#/modules//path/getAllParentDir';
 import { ProjectContainer } from '#/modules/file/ProjectContainer';
 import { checkOutputFile } from '#/modules/file/checkOutputFile';
@@ -40,7 +41,9 @@ import { getAutoRenderCase } from '#/templates/modules/getAutoRenderCase';
 import { getRenderData } from '#/templates/modules/getRenderData';
 import chalk from 'chalk';
 import dayjs from 'dayjs';
+import { isError } from 'my-easy-fp';
 import { getDirnameSync } from 'my-node-fp';
+import { fail, pass } from 'my-only-either';
 import type * as tsm from 'ts-morph';
 
 export async function creating(_buildOptions: TCommandBuildOptions, createOption: TCreateOptions) {
@@ -108,17 +111,22 @@ export async function creating(_buildOptions: TCommandBuildOptions, createOption
   ProgressBar.it.head = '    file ';
   ProgressBar.it.start(filenames.length, 0);
 
-  const statements = (
-    await Promise.all(
-      filenames
-        .map((filename) => project.getSourceFile(filename))
-        .filter((sourceFile): sourceFile is tsm.SourceFile => sourceFile != null)
-        .map(async (sourceFile) => {
+  const statementEithers = await Promise.all(
+    filenames
+      .map((filename) => project.getSourceFile(filename))
+      .filter((sourceFile): sourceFile is tsm.SourceFile => sourceFile != null)
+      .map(async (sourceFile) => {
+        ProgressBar.it.increment();
+
+        try {
           const statement = await getExportStatement(sourceFile, createOption, extendOptions);
-          return statement;
-        }),
-    )
-  ).flat();
+          return pass(statement);
+        } catch (caught) {
+          const err = isError(caught, new Error('unknown error raised'));
+          return fail(err);
+        }
+      }),
+  );
 
   ProgressBar.it.stop();
 
@@ -126,7 +134,32 @@ export async function creating(_buildOptions: TCommandBuildOptions, createOption
   const dirPathMap = new Map<string, IExportStatement[]>();
   const statementTable = new StatementTable();
 
+  const failStatements = statementEithers
+    .filter((statementEither) => statementEither.type === 'fail')
+    .map((statementEither) => statementEither.fail)
+    .filter((err) => err != null);
+
+  const statements = statementEithers
+    .filter((statementEither) => statementEither.type === 'pass')
+    .map((statementEither) => statementEither.pass)
+    .filter((statement) => statement != null)
+    .flat();
+
   statementTable.inserts(statements);
+
+  if (failStatements.length > 0) {
+    Spinner.it.fail("ctix 'create' mode incomplete ...");
+    Spinner.it.stop();
+
+    const reasons = failStatements
+      .filter((err) => err instanceof NotFoundExportedKind)
+      .map((err) => err.createReason());
+
+    Reasoner.it.start(reasons);
+    Reasoner.it.displayNewIssueMessage();
+
+    return;
+  }
 
   Spinner.it.start(`build ${`"${chalk.green(createOption.exportFilename)}"`} file start`);
 

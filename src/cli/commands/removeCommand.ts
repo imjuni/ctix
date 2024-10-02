@@ -9,15 +9,6 @@ import { removing } from '#/modules/commands/removing';
 import consola from 'consola';
 import type yargs from 'yargs';
 
-async function removeCommandCode(
-  argv: yargs.ArgumentsCamelCase<TCommandRemoveOptions & TCommandBuildArgvOptions>,
-) {
-  const options = await createBuildOptions(argv);
-  const removeOptions = createRemoveOptions(argv);
-
-  await removing({ ...options, ...removeOptions });
-}
-
 export async function removeCommand(
   argv: yargs.ArgumentsCamelCase<TCommandRemoveOptions & TCommandBuildArgvOptions>,
 ) {
@@ -26,7 +17,10 @@ export async function removeCommand(
   Reasoner.it.enable = true;
 
   try {
-    await removeCommandCode(argv);
+    const options = await createBuildOptions(argv);
+    const removeOptions = createRemoveOptions(argv);
+
+    await removing({ ...options, ...removeOptions });
   } catch (err) {
     consola.error(err);
   } finally {
