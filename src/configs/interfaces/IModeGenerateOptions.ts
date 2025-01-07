@@ -86,7 +86,7 @@ export interface IModeGenerateOptions {
    * @command build
    * @mode bundle, create
    *
-   * @defulat true
+   * @default true
    * */
   backup: boolean;
 
