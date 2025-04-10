@@ -53,7 +53,7 @@ export async function bundling(buildOptions: TCommandBuildOptions, bundleOption:
   const extendOptions = await getExtendOptions(bundleOption.project);
   const project = ProjectContainer.project(bundleOption.project);
 
-  Spinner.it.succeed(`[${bundleOption.project}] loading compelete!`);
+  Spinner.it.succeed(`[${bundleOption.project}] loading complete!`);
   Spinner.it.update('include, exclude config');
 
   const output = posixResolve(posixJoin(bundleOption.output, bundleOption.exportFilename));

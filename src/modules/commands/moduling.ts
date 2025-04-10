@@ -31,7 +31,7 @@ export async function moduling(_buildOptions: TCommandBuildOptions, moduleOption
   const extendOptions = await getExtendOptions(moduleOption.project);
   const project = ProjectContainer.project(moduleOption.project);
 
-  Spinner.it.succeed(`[${moduleOption.project}] loading compelete!`);
+  Spinner.it.succeed(`[${moduleOption.project}] loading complete!`);
   Spinner.it.update('include, exclude config');
 
   const output = posixResolve(posixJoin(moduleOption.output, moduleOption.exportFilename));
