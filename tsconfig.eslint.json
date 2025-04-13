@@ -7,7 +7,7 @@
     "src/**/*.ts",
     "prepublish.js",
     ".eslintrc.cjs",
-    "vitest.config.ts",
+    "vitest.config.mts",
     "commitlint.config.js"
   ],
   "exclude": ["node_modules/**", "dist/**/*", ".configs/**", "examples/**", "docs/**"]
