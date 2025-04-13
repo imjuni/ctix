@@ -3,28 +3,27 @@ import { Reasoner } from '#/cli/ux/Reasoner';
 import { Spinner } from '#/cli/ux/Spinner';
 import { CE_INLINE_COMMENT_KEYWORD } from '#/comments/const-enum/CE_INLINE_COMMENT_KEYWORD';
 import { getInlineCommentedFiles } from '#/comments/getInlineCommentedFiles';
-import { getInlineStyle } from '#/comments/getInlineStyle';
 import { getOutputExcludedFiles } from '#/comments/getOutputExcludedFiles';
 import { getSourceFileComments } from '#/comments/getSourceFileComments';
 import type { ISourceFileComments } from '#/comments/interfaces/ISourceFileComments';
 import { StatementTable } from '#/compilers/StatementTable';
 import { getExportStatement } from '#/compilers/getExportStatement';
 import type { IExportStatement } from '#/compilers/interfaces/IExportStatement';
-import { CE_GENERATION_STYLE } from '#/configs/const-enum/CE_GENERATION_STYLE';
+import type { CE_GENERATION_STYLE } from '#/configs/const-enum/CE_GENERATION_STYLE';
 import { getExtendOptions } from '#/configs/getExtendOptions';
 import type { TCommandBuildOptions } from '#/configs/interfaces/TCommandBuildOptions';
 import type { TCreateOptions } from '#/configs/interfaces/TCreateOptions';
 import { NotFoundExportedKind } from '#/errors/NotFoundExportedKind';
-import { getAllParentDir } from '#/modules//path/getAllParentDir';
 import { ProjectContainer } from '#/modules/file/ProjectContainer';
 import { checkOutputFile } from '#/modules/file/checkOutputFile';
+import { getCreateModeFileTree } from '#/modules/file/getCreateModeFileTree';
+import { getExportStatementFromMap } from '#/modules/file/getExportStatementFromMap';
 import { getTsExcludeFiles } from '#/modules/file/getTsExcludeFiles';
 import { getTsIncludeFiles } from '#/modules/file/getTsIncludeFiles';
-import { dfsWalk } from '#/modules/file/walk';
+import { processSkipEmptyDirOnFileTree } from '#/modules/file/processSkipEmptyDirOnFileTree';
 import { addCurrentDirPrefix } from '#/modules/path/addCurrentDirPrefix';
-import { getDepth } from '#/modules/path/getDepth';
+import { filenamify } from '#/modules/path/filenamify';
 import { getImportStatementExtname } from '#/modules/path/getImportStatementExtname';
-import { getParentDir } from '#/modules/path/getParentDir';
 import { posixJoin } from '#/modules/path/modules/posixJoin';
 import { posixRelative } from '#/modules/path/modules/posixRelative';
 import { ExcludeContainer } from '#/modules/scope/ExcludeContainer';
@@ -37,12 +36,10 @@ import type { IIndexFileWriteParams } from '#/templates/interfaces/IIndexFileWri
 import type { IIndexRenderData } from '#/templates/interfaces/IIndexRenderData';
 import { TemplateContainer } from '#/templates/modules/TemplateContainer';
 import { createRenderData } from '#/templates/modules/createRenderData';
-import { getAutoRenderCase } from '#/templates/modules/getAutoRenderCase';
-import { getRenderData } from '#/templates/modules/getRenderData';
+import { getSelectStyle } from '#/templates/modules/getSelectStyle';
 import chalk from 'chalk';
 import dayjs from 'dayjs';
 import { isError } from 'my-easy-fp';
-import { getDirnameSync } from 'my-node-fp';
 import { fail, pass } from 'my-only-either';
 import type * as tsm from 'ts-morph';
 
@@ -202,99 +199,73 @@ export async function creating(_buildOptions: TCommandBuildOptions, createOption
   );
 
   Spinner.it.stop();
-  ProgressBar.it.head = '  export ';
-  ProgressBar.it.start(statements.length, 0);
 
   const renderDataMap = new Map<
     string,
     { case: CE_AUTO_RENDER_CASE; style: CE_GENERATION_STYLE; renderData: IIndexRenderData }[]
   >();
 
-  Array.from(filePathMap.entries())
-    .map(([filePath, exportStatements]) => getRenderData(createOption, filePath, exportStatements))
-    .filter((renderData): renderData is IIndexRenderData => renderData != null)
-    .map((renderData) => {
-      const comment = commentMap.get(renderData.filePath)?.comments.at(0);
-      const styleInfo =
-        comment != null
-          ? getInlineStyle({
-              comment,
-              options: {
-                keyword: CE_INLINE_COMMENT_KEYWORD.FILE_GENERATION_STYLE_KEYWORD,
-              },
-            })
-          : undefined;
+  const originFilePathTree = await getCreateModeFileTree(createOption.startFrom);
+  const filePathTree = processSkipEmptyDirOnFileTree({
+    tree: originFilePathTree,
+    dirPathMap,
+    skipEmptyDir: createOption.skipEmptyDir,
+  });
+  const createModeFiles = [
+    {
+      path: originFilePathTree.root.path,
+      children: originFilePathTree.root.children.map((child) => child.path),
+    },
+    ...filePathTree,
+  ];
 
-      const style =
-        styleInfo?.style ?? createOption.generationStyle === CE_GENERATION_STYLE.AUTO
-          ? getAutoRenderCase(renderData)
-          : ({
-              case: CE_AUTO_RENDER_CASE.UNKNOWN,
-              style: createOption.generationStyle,
-            } satisfies ReturnType<typeof getAutoRenderCase>);
+  ProgressBar.it.head = '  export ';
+  ProgressBar.it.start(createModeFiles.length, 0);
 
-      return { renderData, ...style };
-    })
-    .forEach((data) => {
-      const key = getDirnameSync(data.renderData.filePath);
-      const prev = renderDataMap.get(key);
+  createModeFiles.forEach((dirPath) => {
+    const dirPathStatements = getExportStatementFromMap(dirPath.path, dirPathMap);
+    const dirPathRenderDatas = dirPathStatements.map((statement) => {
+      const filePath = posixJoin(statement.path.dirPath, filenamify(statement.path.filename));
 
-      if (prev == null) {
-        renderDataMap.set(key, [data]);
-      } else {
-        renderDataMap.set(key, [...prev, data]);
-      }
+      const renderData = createRenderData(
+        CE_AUTO_RENDER_CASE.DEFAULT_NAMED,
+        createOption.generationStyle,
+        createOption,
+        posixJoin(dirPath.path, createOption.exportFilename),
+        {
+          importPath: addCurrentDirPrefix(posixRelative(dirPath.path, filePath)),
+          extname: {
+            origin: '.ts',
+            render: getImportStatementExtname(createOption.fileExt, '.ts'),
+          },
+          isHasDefault: false,
+          isHasPartialExclude: false,
+          default: undefined,
+          named: dirPathMap.get(dirPath.path) ?? [],
+        },
+      );
 
-      ProgressBar.it.increment();
+      const comment = commentMap.get(filePath)?.comments.at(0);
+      const selectedStyle = getSelectStyle({
+        comment,
+        options: { style: createOption.generationStyle },
+        renderData: renderData.renderData,
+      });
+
+      renderData.case = selectedStyle.case;
+      renderData.style = selectedStyle.style;
+
+      return renderData;
     });
 
-  await dfsWalk(createOption.startFrom, (params) => {
-    // 상위 디렉터리에 하위 디렉터리 정보를 추가하는 작업이기 때문에, 최상위 디렉터리는 별도의 작업이 필요없다
-    // Since we're adding subdirectory information to a parent directory,
-    // the top-level directory doesn't need to do anything.
-    if (createOption.startFrom === params.dirPath) {
-      return;
-    }
-
-    const parentDir = getParentDir(params.dirPath);
-
-    if (parentDir == null) {
-      return;
-    }
-
-    if (createOption.skipEmptyDir) {
-      if ((dirPathMap.get(params.dirPath) ?? []).length <= 0) {
-        return;
-      }
-
-      const parentDirs = getAllParentDir(createOption.startFrom, params.dirPath);
-      const firstExistDir = parentDirs
-        .sort((l, r) => getDepth(r) - getDepth(l))
-        .find((dir) => {
-          if ((dirPathMap.get(dir) ?? []).length > 0) {
-            return true;
-          }
-
-          if (dir === createOption.startFrom) {
-            return true;
-          }
-
-          return false;
-        });
-
-      if (firstExistDir == null) {
-        throw new Error('Cannot find the parent directory where the export statement is existed');
-      }
-
-      // index.ts 파일을 생성하기 위한 render data를 생성한다
-      // Generate render data to create an `index.ts` file
-      const indexRednerData = createRenderData(
+    const childrenRenderDatas = dirPath.children.map((child) => {
+      const renderData = createRenderData(
         CE_AUTO_RENDER_CASE.DEFAULT_NAMED,
-        CE_GENERATION_STYLE.DEFAULT_STAR_NAMED_STAR,
+        createOption.generationStyle,
         createOption,
-        posixJoin(firstExistDir, createOption.exportFilename),
+        posixJoin(child, createOption.exportFilename),
         {
-          importPath: addCurrentDirPrefix(posixRelative(firstExistDir, params.dirPath)),
+          importPath: addCurrentDirPrefix(posixRelative(dirPath.path, child)),
           extname: {
             origin: '.ts',
             render: getImportStatementExtname(createOption.fileExt, '.ts'),
@@ -302,47 +273,25 @@ export async function creating(_buildOptions: TCommandBuildOptions, createOption
           isHasDefault: false,
           isHasPartialExclude: false,
           default: undefined,
-          named: dirPathMap.get(params.dirPath) ?? [],
+          named: dirPathMap.get(child) ?? [],
         },
       );
 
-      const prev = renderDataMap.get(firstExistDir);
+      const comment = commentMap.get(child)?.comments.at(0);
+      const selectedStyle = getSelectStyle({
+        comment,
+        options: { style: createOption.generationStyle },
+        renderData: renderData.renderData,
+      });
 
-      if (prev == null) {
-        renderDataMap.set(firstExistDir, [indexRednerData]);
-      } else {
-        renderDataMap.set(firstExistDir, [...prev, indexRednerData]);
-      }
-    } else {
-      const currentDirStatements = dirPathMap.get(params.dirPath) ?? [];
+      renderData.case = selectedStyle.case;
+      renderData.style = selectedStyle.style;
 
-      // index.ts 파일을 생성하기 위한 render data를 생성한다
-      const indexRednerData = createRenderData(
-        CE_AUTO_RENDER_CASE.DEFAULT_NAMED,
-        CE_GENERATION_STYLE.DEFAULT_STAR_NAMED_STAR,
-        createOption,
-        posixJoin(params.dirPath, createOption.exportFilename),
-        {
-          importPath: addCurrentDirPrefix(posixRelative(parentDir, params.dirPath)),
-          extname: {
-            origin: '.ts',
-            render: getImportStatementExtname(createOption.fileExt, '.ts'),
-          },
-          isHasDefault: false,
-          isHasPartialExclude: false,
-          default: undefined,
-          named: currentDirStatements,
-        },
-      );
+      return renderData;
+    });
 
-      const prev = renderDataMap.get(parentDir);
-
-      if (prev == null) {
-        renderDataMap.set(parentDir, [indexRednerData]);
-      } else {
-        renderDataMap.set(parentDir, [...prev, indexRednerData]);
-      }
-    }
+    renderDataMap.set(dirPath.path, [...dirPathRenderDatas, ...childrenRenderDatas]);
+    ProgressBar.it.increment();
   });
 
   const rendereds = await Promise.all(

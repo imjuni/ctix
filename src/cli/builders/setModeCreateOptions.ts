@@ -7,7 +7,6 @@ export function setModeCreateOptions<T = Argv<IModeCreateOptions>>(args: Argv<IM
       describe:
         'if `skipEmptyDir` is set to true, an empty directory with no files will not create an `index.ts` file',
       type: 'boolean',
-      default: true,
     })
     .option('start-from', {
       describe: 'specify the starting directory to start creating the `index.ts` file',
