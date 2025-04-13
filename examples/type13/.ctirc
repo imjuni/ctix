@@ -1,0 +1,26 @@
+{
+  "spinnerStream": "stdout",
+  "progressStream": "stdout",
+  "reasonerStream": "stderr",
+  "options": [
+    {
+      "mode": "create",
+      "project": "examples/type13/tsconfig.json",
+      "exportFilename": "index.ts",
+      "useSemicolon": true,
+      "useBanner": false,
+      "useTimestamp": false,
+      "quote": "'",
+      "directive": "",
+      "fileExt": "none",
+      "overwrite": true,
+      "backup": false,
+      "generationStyle": "auto",
+      "include": ["**/*.ts"],
+      "exclude": [],
+      "skipEmptyDir": true,
+      "removeBackup": false,
+      "forceYes": false
+    }
+  ]
+}
