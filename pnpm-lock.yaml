@@ -30,8 +30,8 @@ importers:
         specifier: ^1.11.10
         version: 1.11.10
       eta:
-        specifier: 4.0.1
-        version: 4.0.1
+        specifier: 3.5.0
+        version: 3.5.0
       filenamify:
         specifier: ^4.3.0
         version: 4.3.0
@@ -1735,9 +1735,9 @@ packages:
     resolution: {integrity: sha512-kVscqXk4OCp68SZ0dkgEKVi6/8ij300KBWTJq32P/dYeWTSwK41WyTxalN1eRmA5Z9UU/LX9D7FWSmV9SAYx6g==}
     engines: {node: '>=0.10.0'}
 
-  eta@4.0.1:
-    resolution: {integrity: sha512-0h0oBEsF6qAJU7eu9ztvJoTo8D2PAq/4FvXVIQA1fek3WOTe6KPsVJycekG1+g1N6mfpblkheoGwaUhMtnlH4A==}
-    engines: {node: '>=20'}
+  eta@3.5.0:
+    resolution: {integrity: sha512-e3x3FBvGzeCIHhF+zhK8FZA2vC5uFn6b4HJjegUbIWrDb4mJ7JjTGMJY9VGIbRVpmSwHopNiaJibhjIr+HfLug==}
+    engines: {node: '>=6.0.0'}
 
   eventemitter3@5.0.1:
     resolution: {integrity: sha512-GWkBvjiSZK87ELrYOSESUYeVIc9mvLLf/nXalMOS5dYrgZq9o5OVkbZAVM06CVxYsCwH9BDZFPlQTlPA1j4ahA==}
@@ -4939,7 +4939,7 @@ snapshots:
 
   esutils@2.0.3: {}
 
-  eta@4.0.1: {}
+  eta@3.5.0: {}
 
   eventemitter3@5.0.1: {}
 
