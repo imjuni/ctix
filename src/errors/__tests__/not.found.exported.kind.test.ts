@@ -118,7 +118,7 @@ export function iamfunction() {
       type: 'error',
       lineAndCharacter: { line: 1, character: 1 },
       filePath: filename,
-      message: "Cannot support export statement: (260) hero = 'ironman'",
+      message: "Cannot support export statement: (261) hero = 'ironman'",
     });
   });
 });
