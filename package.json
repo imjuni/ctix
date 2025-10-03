@@ -54,14 +54,14 @@
   "exports": {
     ".": {
       "require": {
+        "types": "./dist/types/index.d.ts",
         "require": "./dist/cjs/index.cjs",
-        "default": "./dist/cjs/index.cjs",
-        "types": "./dist/types/index.d.ts"
+        "default": "./dist/cjs/index.cjs"
       },
       "import": {
+        "types": "./dist/types/index.d.ts",
         "import": "./dist/esm/index.mjs",
-        "default": "./dist/esm/index.mjs",
-        "types": "./dist/types/index.d.ts"
+        "default": "./dist/esm/index.mjs"
       }
     }
   },
@@ -125,7 +125,7 @@
     "comment-parser": "^1.4.1",
     "consola": "^3.2.3",
     "dayjs": "^1.11.10",
-    "eta": "4.0.1",
+    "eta": "3.5.0",
     "filenamify": "^4.3.0",
     "find-up": "^5.0.0",
     "fuse.js": "^7.0.0",
