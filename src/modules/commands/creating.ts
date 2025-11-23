@@ -23,6 +23,7 @@ import { getTsIncludeFiles } from '#/modules/file/getTsIncludeFiles';
 import { processSkipEmptyDirOnFileTree } from '#/modules/file/processSkipEmptyDirOnFileTree';
 import { addCurrentDirPrefix } from '#/modules/path/addCurrentDirPrefix';
 import { filenamify } from '#/modules/path/filenamify';
+import { getExtname } from '#/modules/path/getExtname';
 import { getImportStatementExtname } from '#/modules/path/getImportStatementExtname';
 import { posixJoin } from '#/modules/path/modules/posixJoin';
 import { posixRelative } from '#/modules/path/modules/posixRelative';
@@ -40,6 +41,7 @@ import { getSelectStyle } from '#/templates/modules/getSelectStyle';
 import chalk from 'chalk';
 import dayjs from 'dayjs';
 import { isError } from 'my-easy-fp';
+import { basenames } from 'my-node-fp';
 import { fail, pass } from 'my-only-either';
 import type * as tsm from 'ts-morph';
 
@@ -226,6 +228,10 @@ export async function creating(_buildOptions: TCommandBuildOptions, createOption
     const dirPathStatements = getExportStatementFromMap(dirPath.path, dirPathMap);
     const dirPathRenderDatas = dirPathStatements.map((statement) => {
       const filePath = posixJoin(statement.path.dirPath, filenamify(statement.path.filename));
+      const importFilePath = posixJoin(
+        statement.path.dirPath,
+        basenames(statement.path.filename, getExtname(statement.path.filename)),
+      );
 
       const renderData = createRenderData(
         CE_AUTO_RENDER_CASE.DEFAULT_NAMED,
@@ -233,7 +239,7 @@ export async function creating(_buildOptions: TCommandBuildOptions, createOption
         createOption,
         posixJoin(dirPath.path, createOption.exportFilename),
         {
-          importPath: addCurrentDirPrefix(posixRelative(dirPath.path, filePath)),
+          importPath: addCurrentDirPrefix(posixRelative(dirPath.path, importFilePath)),
           extname: {
             origin: '.ts',
             render: getImportStatementExtname(createOption.fileExt, '.ts'),
