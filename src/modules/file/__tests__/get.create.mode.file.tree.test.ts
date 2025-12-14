@@ -1,9 +1,13 @@
 import { getCreateModeFileTree } from '#/modules/file/getCreateModeFileTree';
 import pathe from 'pathe';
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 // get.create.mode.file.tree
 describe('getCreateModeFiles', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   const type04Dir = pathe.join(process.cwd(), 'examples', 'type04');
 
   it('start from process.cwd()', async () => {

@@ -1,6 +1,7 @@
 import type { IModuleChild } from '#/modules/file/interfaces/IModuleChild';
 import type { IModuleRoot } from '#/modules/file/interfaces/IModuleRoot';
 import { getParentDir } from '#/modules/path/getParentDir';
+import { getPathFromReaddir } from '#/modules/path/getPathFromReaddir';
 import fs from 'fs';
 import { orThrow } from 'my-easy-fp';
 import pathe from 'pathe';
@@ -20,7 +21,7 @@ export async function getCreateModeFileTree(startFrom: string) {
 
   const children = dirs
     .map((dir) => {
-      const path = pathe.resolve(pathe.join(dir.path, dir.name));
+      const path = pathe.resolve(pathe.join(getPathFromReaddir(dir), dir.name));
       const parent = orThrow(getParentDir(path));
 
       const child: IModuleChild = {
