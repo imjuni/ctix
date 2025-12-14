@@ -15,4 +15,10 @@ describe('getPathFromReaddir', () => {
 
     expect(filePath).toBe(expectPath);
   });
+
+  it('should be return empty string when pass empty object', () => {
+    const filePath = getPathFromReaddir({} as any);
+
+    expect(filePath).toBe('');
+  });
 });
