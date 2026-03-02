@@ -95,7 +95,7 @@ export async function creating(_buildOptions: TCommandBuildOptions, createOption
 
   const filenames = filePaths
     .filter((filename) => include.isInclude(filename))
-    .filter((filename) => exclude.isExclude(filename));
+    .filter((filename) => !exclude.isExclude(filename));
 
   Spinner.it.succeed('analysis export statements completed!');
   Spinner.it.stop();
