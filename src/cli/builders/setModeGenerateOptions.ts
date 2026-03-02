@@ -89,6 +89,7 @@ export function setModeGenerateOptions<T = Argv<IModeGenerateOptions & IModeTsGe
         'A list of files to exclude when generating the index.ts file. If no value is set,',
         'the value of the exclude setting set in the tsconfig.json file is used',
       ].join(' '),
+      array: true,
       type: 'string',
     })
     .option('exclude-files', {
@@ -96,6 +97,7 @@ export function setModeGenerateOptions<T = Argv<IModeGenerateOptions & IModeTsGe
         'A list of files to exclude when generating the index.ts file. If no value is set,',
         'the value of the exclude setting set in the tsconfig.json file is used',
       ].join(' '),
+      array: true,
       type: 'string',
     });
 
