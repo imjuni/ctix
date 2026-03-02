@@ -22,8 +22,7 @@ import { getTsExcludeFiles } from '#/modules/file/getTsExcludeFiles';
 import { getTsIncludeFiles } from '#/modules/file/getTsIncludeFiles';
 import { processSkipEmptyDirOnFileTree } from '#/modules/file/processSkipEmptyDirOnFileTree';
 import { addCurrentDirPrefix } from '#/modules/path/addCurrentDirPrefix';
-import { filenamify } from '#/modules/path/filenamify';
-import { getExtname } from '#/modules/path/getExtname';
+import { getCorrectCasedPath } from '#/modules/path/getCorrectCasedPath';
 import { getImportStatementExtname } from '#/modules/path/getImportStatementExtname';
 import { posixJoin } from '#/modules/path/modules/posixJoin';
 import { posixRelative } from '#/modules/path/modules/posixRelative';
@@ -37,11 +36,11 @@ import type { IIndexFileWriteParams } from '#/templates/interfaces/IIndexFileWri
 import type { IIndexRenderData } from '#/templates/interfaces/IIndexRenderData';
 import { TemplateContainer } from '#/templates/modules/TemplateContainer';
 import { createRenderData } from '#/templates/modules/createRenderData';
+import { getRenderData } from '#/templates/modules/getRenderData';
 import { getSelectStyle } from '#/templates/modules/getSelectStyle';
 import chalk from 'chalk';
 import dayjs from 'dayjs';
-import { isError } from 'my-easy-fp';
-import { basenames } from 'my-node-fp';
+import { atOrUndefined, isError } from 'my-easy-fp';
 import { fail, pass } from 'my-only-either';
 import type * as tsm from 'ts-morph';
 
@@ -55,9 +54,11 @@ export async function creating(_buildOptions: TCommandBuildOptions, createOption
   Spinner.it.succeed(`${createOption.project} loading complete!`);
   Spinner.it.update('include, exclude config');
 
-  const filePaths = project
-    .getSourceFiles()
-    .map((sourceFile) => sourceFile.getFilePath().toString());
+  const filePaths = await Promise.all(
+    project
+      .getSourceFiles()
+      .map((sourceFile) => getCorrectCasedPath(sourceFile.getFilePath().toString())),
+  );
 
   const include = new IncludeContainer({
     config: { include: getTsIncludeFiles({ config: createOption, extend: extendOptions }) },
@@ -94,7 +95,7 @@ export async function creating(_buildOptions: TCommandBuildOptions, createOption
 
   const filenames = filePaths
     .filter((filename) => include.isInclude(filename))
-    .filter((filename) => !exclude.isExclude(filename));
+    .filter((filename) => exclude.isExclude(filename));
 
   Spinner.it.succeed('analysis export statements completed!');
   Spinner.it.stop();
@@ -221,53 +222,33 @@ export async function creating(_buildOptions: TCommandBuildOptions, createOption
     ...filePathTree,
   ];
 
-  // Remove duplicates based on path
-  const uniqueCreateModeFiles = createModeFiles.filter(
-    (file, index, self) => self.findIndex((f) => f.path === file.path) === index,
-  );
-
   ProgressBar.it.head = '  export ';
-  ProgressBar.it.start(uniqueCreateModeFiles.length, 0);
+  ProgressBar.it.start(createModeFiles.length, 0);
 
-  uniqueCreateModeFiles.forEach((dirPath) => {
-    const dirPathStatements = getExportStatementFromMap(dirPath.path, dirPathMap);
-    const dirPathRenderDatas = dirPathStatements.map((statement) => {
-      const filePath = posixJoin(statement.path.dirPath, filenamify(statement.path.filename));
-      const importFilePath = posixJoin(
-        statement.path.dirPath,
-        basenames(statement.path.filename, getExtname(statement.path.filename)),
-      );
+  createModeFiles.forEach((dirPath) => {
+    const dirPathRenderDatas = (() => {
+      const dirPathStatements = getExportStatementFromMap(dirPath.path, dirPathMap);
+      const firstStatement = atOrUndefined(dirPathStatements, 0);
 
-      const renderData = createRenderData(
-        CE_AUTO_RENDER_CASE.DEFAULT_NAMED,
-        createOption.generationStyle,
-        createOption,
-        posixJoin(dirPath.path, createOption.exportFilename),
-        {
-          importPath: addCurrentDirPrefix(posixRelative(dirPath.path, importFilePath)),
-          extname: {
-            origin: '.ts',
-            render: getImportStatementExtname(createOption.fileExt, '.ts'),
-          },
-          isHasDefault: false,
-          isHasPartialExclude: false,
-          default: undefined,
-          named: dirPathMap.get(dirPath.path) ?? [],
-        },
-      );
+      if (firstStatement != null) {
+        const filePath = posixJoin(firstStatement.path.dirPath, firstStatement.path.filename);
 
-      const comment = commentMap.get(filePath)?.comments.at(0);
-      const selectedStyle = getSelectStyle({
-        comment,
-        options: { style: createOption.generationStyle },
-        renderData: renderData.renderData,
-      });
+        const renderData = getRenderData(createOption, filePath, dirPathStatements, dirPath.path);
 
-      renderData.case = selectedStyle.case;
-      renderData.style = selectedStyle.style;
+        if (renderData != null) {
+          const comment = commentMap.get(renderData.filePath)?.comments.at(0);
+          const style = getSelectStyle({
+            comment,
+            options: { style: createOption.generationStyle },
+            renderData,
+          });
 
-      return renderData;
-    });
+          return { renderData, ...style };
+        }
+      }
+
+      return undefined;
+    })();
 
     const childrenRenderDatas = dirPath.children.map((child) => {
       const renderData = createRenderData(
@@ -301,7 +282,12 @@ export async function creating(_buildOptions: TCommandBuildOptions, createOption
       return renderData;
     });
 
-    renderDataMap.set(dirPath.path, [...dirPathRenderDatas, ...childrenRenderDatas]);
+    renderDataMap.set(
+      dirPath.path,
+      dirPathRenderDatas != null
+        ? [dirPathRenderDatas, ...childrenRenderDatas]
+        : childrenRenderDatas,
+    );
     ProgressBar.it.increment();
   });
 

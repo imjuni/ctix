@@ -3,6 +3,7 @@ import { getSummaryStatement } from '#/compilers/getSummaryStatement';
 import type { IExportStatement } from '#/compilers/interfaces/IExportStatement';
 import type { IExtendOptions } from '#/configs/interfaces/IExtendOptions';
 import type { IModeGenerateOptions } from '#/configs/interfaces/IModeGenerateOptions';
+import { getCorrectCasedPath } from '#/modules/path/getCorrectCasedPath';
 import { posixRelative } from '#/modules/path/modules/posixRelative';
 import { posixResolve } from '#/modules/path/modules/posixResolve';
 import { getDirname, replaceSepToPosix, startSepRemove } from 'my-node-fp';
@@ -14,9 +15,10 @@ export async function getExportStatement(
   option: Pick<IModeGenerateOptions, 'project' | 'exportFilename'>,
   extendOptions: Pick<IExtendOptions, 'eol'>,
 ): Promise<IExportStatement[]> {
-  const dirPath = posixResolve(await getDirname(sourceFile.getFilePath().toString()));
+  const correctedFilePath = await getCorrectCasedPath(sourceFile.getFilePath().toString());
+  const dirPath = posixResolve(await getDirname(correctedFilePath));
   const filename = startSepRemove(
-    replaceSepToPosix(sourceFile.getFilePath().toString().replace(dirPath, '')),
+    replaceSepToPosix(correctedFilePath.replace(dirPath, '')),
     path.posix.sep,
   );
   // rootDir 또는 output, project 셋 중에 하나를 선택해서 써야 한다

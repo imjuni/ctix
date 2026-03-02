@@ -32,5 +32,6 @@ npx ctix build -p [your tsconfig.json] -o [output directory]
 | type09         | When using TTF fonts by declaring them as modules and using them in TypeScript |
 | type10         | For Vue.js projects                                                            |
 | type11         | When using Component Props in React projects                                   |
+| type14         | build with create mode. Also test camelCase filename                           |
 
 In light of the fact that export statements are collected in a single `index.ts` file, duplicate names cannot be used. In this case, aliases should be used to export with different names. If there are duplicate names, ctix will exclude all duplicates from the `index.ts` file and output a warning to alert the developer of the duplicate names. An example of this is `type03`.
