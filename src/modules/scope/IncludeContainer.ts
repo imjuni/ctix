@@ -37,7 +37,8 @@ export class IncludeContainer {
     }
 
     if (path.isAbsolute(filePath)) {
-      return this.#map.get(filePath) != null;
+      const isExists = this.#map.get(filePath);
+      return isExists ?? false;
     }
 
     return this.#map.get(posixResolve(filePath)) != null;

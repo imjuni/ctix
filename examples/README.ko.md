@@ -32,5 +32,6 @@ npx ctix build -p [your tsconfig.json] -o [output directory]
 | type09         | ttf 폰트를 module declare module로 작성한 뒤 TypeScript에서 사용하는 경우 |
 | type10         | Vue.js를 사용하는 경우                                                    |
 | type11         | React 프로젝트에서 Component Props를 사용하는 경우                        |
+| type14         | Create 모드 테스트, CamelCase 파일명 처리 테스트                          |
 
 하나의 `index.ts` 파일에 export statements를 모으기 때문에 중복된 이름을 사용할 수 없습니다. 이 경우 alias를 사용하여 다른 이름으로 export해야 합니다. ctix는 중복된 이름이 있는 경우 중복된 이름 모두 `index.ts`에서 제외 합니다. 그리고 경고를 출력하여 개발자가 중복된 이름을 인지할 수 있게 합니다. 이에 대한 예제가 type03 입니다.

@@ -1,0 +1,40 @@
+{
+  "options": [
+    {
+      "backup": false,
+      // build mode
+      // - create: create an `index.ts` file in each directory
+      // - bundle: bundle all export information in one `index.ts` file
+      "mode": "create",
+      // tsconfig.json path: you must pass path with filename, like this "./tsconfig.json"
+      // only work root directory or cli parameter
+      //
+      // @mode all
+      "project": "tsconfig.json",
+      // Export filename, if you not pass this field that use "index.ts" or "index.d.ts"
+      //
+      // @mode create, bundle, remove
+      // @default index.ts
+      "exportFilename": "index.ts",
+      "generationStyle": "auto",
+      // A list of files to use when generating the index.ts file. If no value is set,
+      // the value of the include setting set in the tsconfig.json file will be used
+      //
+      // @mode create, bundle
+      "include": [
+        "src/**/*"
+      ],
+      // A list of files to exclude when generating the index.ts file. If no value is set,
+      // the value of the exclude setting set in the tsconfig.json file is used
+      //
+      // @mode create, bundle
+      "exclude": [
+        "node_modules",
+        "dist",
+        //"src/gitlab/graphql/types.ts",
+      ],
+      "overwrite": true,
+      "startFrom": "./src",
+    }
+  ]
+}

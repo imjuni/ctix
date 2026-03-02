@@ -17,6 +17,7 @@ import { ProjectContainer } from '#/modules/file/ProjectContainer';
 import { checkOutputFile } from '#/modules/file/checkOutputFile';
 import { getTsExcludeFiles } from '#/modules/file/getTsExcludeFiles';
 import { getTsIncludeFiles } from '#/modules/file/getTsIncludeFiles';
+import { getCorrectCasedPath } from '#/modules/path/getCorrectCasedPath';
 import { posixJoin } from '#/modules/path/modules/posixJoin';
 import { posixResolve } from '#/modules/path/modules/posixResolve';
 import { ExcludeContainer } from '#/modules/scope/ExcludeContainer';
@@ -57,9 +58,11 @@ export async function bundling(buildOptions: TCommandBuildOptions, bundleOption:
   Spinner.it.update('include, exclude config');
 
   const output = posixResolve(posixJoin(bundleOption.output, bundleOption.exportFilename));
-  const filePaths = project
-    .getSourceFiles()
-    .map((sourceFile) => sourceFile.getFilePath().toString());
+  const filePaths = await Promise.all(
+    project
+      .getSourceFiles()
+      .map((sourceFile) => getCorrectCasedPath(sourceFile.getFilePath().toString())),
+  );
 
   const include = new IncludeContainer({
     config: { include: getTsIncludeFiles({ config: bundleOption, extend: extendOptions }) },

@@ -11,6 +11,7 @@ describe('getGlobFiles', () => {
 
     expect(files).toEqual([
       'tsconfig.json',
+      'examples/type14/tsconfig.json',
       'examples/type13/tsconfig.json',
       'examples/type12/tsconfig.json',
       'examples/type11/tsconfig.json',
@@ -37,6 +38,7 @@ describe('getGlobFiles', () => {
 
     expect(files).toEqual([
       posixJoin(process.cwd(), 'tsconfig.json'),
+      posixJoin(process.cwd(), 'examples/type14/tsconfig.json'),
       posixJoin(process.cwd(), 'examples/type13/tsconfig.json'),
       posixJoin(process.cwd(), 'examples/type12/tsconfig.json'),
       posixJoin(process.cwd(), 'examples/type11/tsconfig.json'),
