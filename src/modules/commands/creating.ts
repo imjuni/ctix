@@ -221,10 +221,15 @@ export async function creating(_buildOptions: TCommandBuildOptions, createOption
     ...filePathTree,
   ];
 
-  ProgressBar.it.head = '  export ';
-  ProgressBar.it.start(createModeFiles.length, 0);
+  // Remove duplicates based on path
+  const uniqueCreateModeFiles = createModeFiles.filter(
+    (file, index, self) => self.findIndex((f) => f.path === file.path) === index,
+  );
 
-  createModeFiles.forEach((dirPath) => {
+  ProgressBar.it.head = '  export ';
+  ProgressBar.it.start(uniqueCreateModeFiles.length, 0);
+
+  uniqueCreateModeFiles.forEach((dirPath) => {
     const dirPathStatements = getExportStatementFromMap(dirPath.path, dirPathMap);
     const dirPathRenderDatas = dirPathStatements.map((statement) => {
       const filePath = posixJoin(statement.path.dirPath, filenamify(statement.path.filename));
