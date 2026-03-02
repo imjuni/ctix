@@ -1,5 +1,8 @@
 /* eslint-disable no-continue, no-await-in-loop */
+import { getSep } from '#/modules/path/getSep';
+import { atOrThrow, orThrow } from 'my-easy-fp';
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 
 /**
@@ -18,47 +21,46 @@ export async function getCorrectCasedPath(inputPath: string): Promise<string> {
   // https://github.com/microsoft/TypeScript/issues/26157
   // https://github.com/microsoft/TypeScript/issues/17617
   try {
+    // Get separator once and reuse
+    const sep = getSep();
+
     // Normalize the path first to handle relative paths properly
     const normalizedPath = path.normalize(inputPath);
     const resolvedPath = path.isAbsolute(normalizedPath)
       ? normalizedPath
       : path.resolve(normalizedPath);
-    const segments = resolvedPath.split(path.sep).filter((segment) => segment !== '');
+    const segments = resolvedPath.split(sep).filter((segment) => segment !== '');
 
     // Start with root for absolute paths
-    let correctedPath = resolvedPath.startsWith(path.sep) ? path.sep : '';
+    let correctedPath = resolvedPath.startsWith(sep) ? sep : '';
 
     // Handle Windows drive letter (C:, D:, etc.)
-    const firstSegment = segments.at(0);
-    if (process.platform === 'win32' && firstSegment != null && firstSegment.endsWith(':')) {
-      correctedPath = firstSegment + path.sep;
+    const firstSegment = atOrThrow(segments, 0);
+    if (os.platform() === 'win32' && firstSegment.endsWith(':')) {
+      correctedPath = firstSegment + sep;
       segments.shift(); // Remove drive letter from segments
     }
 
     for (const currentSegment of segments) {
-      if (currentSegment == null || currentSegment === '') {
-        // Skip empty segments
-        continue;
-      }
-
-      const parentPath = correctedPath ?? path.sep;
+      const safeSegment = orThrow(currentSegment);
+      const parentPath = correctedPath;
 
       // Check if the current segment exists with correct casing
       try {
         const actualEntries = await fs.promises.readdir(parentPath);
         const correctEntry = actualEntries.find(
-          (entry) => entry.toLowerCase() === currentSegment.toLowerCase(),
+          (entry) => entry.toLowerCase() === safeSegment.toLowerCase(),
         );
 
         if (correctEntry != null) {
           correctedPath = path.join(correctedPath, correctEntry);
         } else {
           // If not found, keep the original casing
-          correctedPath = path.join(correctedPath, currentSegment);
+          correctedPath = path.join(correctedPath, safeSegment);
         }
       } catch {
         // If parent directory doesn't exist, keep original casing and return
-        correctedPath = path.join(correctedPath, currentSegment);
+        correctedPath = path.join(correctedPath, safeSegment);
         break;
       }
     }
