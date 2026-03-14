@@ -1,0 +1,4 @@
+{
+  "extends": "./tsconfig.inherit.base.json",
+  "include": ["src/**/*.ts"]
+}
