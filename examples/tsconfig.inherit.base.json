@@ -1,0 +1,7 @@
+{
+  "compilerOptions": {
+    "strict": true
+  },
+  "include": ["src/**/*.ts", "src/**/*.vue"],
+  "exclude": ["dist/**", "node_modules/**"]
+}

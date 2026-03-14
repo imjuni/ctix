@@ -1,0 +1,4 @@
+{
+  "extends": "./tsconfig.inherit.base.json",
+  "exclude": ["dist/**", "node_modules/**", "**/*.test.ts"]
+}

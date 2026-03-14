@@ -59,11 +59,23 @@ export async function createBuildOptions(
               ...option,
               include: getTsIncludeFiles({
                 config: { include: option.include },
-                extend: { tsconfig, resolved: { projectDirPath: projectPath } },
+                extend: {
+                  tsconfig,
+                  resolved: {
+                    projectDirPath: path.dirname(projectPath),
+                    projectFilePath: projectPath,
+                  },
+                },
               }),
               exclude: getTsExcludeFiles({
                 config: { exclude: option.exclude },
-                extend: { tsconfig },
+                extend: {
+                  tsconfig,
+                  resolved: {
+                    projectDirPath: path.dirname(projectPath),
+                    projectFilePath: projectPath,
+                  },
+                },
               }),
             },
           );
@@ -81,11 +93,23 @@ export async function createBuildOptions(
               ...option,
               include: getTsIncludeFiles({
                 config: { include: option.include },
-                extend: { tsconfig, resolved: { projectDirPath: projectPath } },
+                extend: {
+                  tsconfig,
+                  resolved: {
+                    projectDirPath: path.dirname(projectPath),
+                    projectFilePath: projectPath,
+                  },
+                },
               }),
               exclude: getTsExcludeFiles({
                 config: { exclude: option.exclude },
-                extend: { tsconfig },
+                extend: {
+                  tsconfig,
+                  resolved: {
+                    projectDirPath: path.dirname(projectPath),
+                    projectFilePath: projectPath,
+                  },
+                },
               }),
             },
           );
@@ -102,11 +126,23 @@ export async function createBuildOptions(
             ...option,
             include: getTsIncludeFiles({
               config: { include: option.include },
-              extend: { tsconfig, resolved: { projectDirPath: projectPath } },
+              extend: {
+                tsconfig,
+                resolved: {
+                  projectDirPath: path.dirname(projectPath),
+                  projectFilePath: projectPath,
+                },
+              },
             }),
             exclude: getTsExcludeFiles({
               config: { exclude: option.exclude },
-              extend: { tsconfig },
+              extend: {
+                tsconfig,
+                resolved: {
+                  projectDirPath: path.dirname(projectPath),
+                  projectFilePath: projectPath,
+                },
+              },
             }),
           },
         );
@@ -125,7 +161,10 @@ export async function createBuildOptions(
       ? toArray(argv.include)
       : getTsIncludeFiles({
           config: { include: [] },
-          extend: { tsconfig, resolved: { projectDirPath: projectPath } },
+          extend: {
+            tsconfig,
+            resolved: { projectDirPath: path.dirname(projectPath), projectFilePath: projectPath },
+          },
         });
 
   const exclude =
@@ -133,7 +172,10 @@ export async function createBuildOptions(
       ? toArray(argv.exclude)
       : getTsExcludeFiles({
           config: { exclude: [] },
-          extend: { tsconfig },
+          extend: {
+            tsconfig,
+            resolved: { projectDirPath: path.dirname(projectPath), projectFilePath: projectPath },
+          },
         });
 
   const mode = argv.mode ?? CE_CTIX_BUILD_MODE.BUNDLE_MODE;
