@@ -5,6 +5,15 @@ import { defaultExclude } from '#/modules/scope/defaultExclude';
 import { Glob } from 'glob';
 import { describe, expect, it } from 'vitest';
 
+/**
+ * Converts a posix absolute path to a Windows-style path with backslashes.
+ * e.g. /Users/foo/bar.ts => \Users\foo\bar.ts
+ * Used to simulate paths that ts-morph returns on Windows.
+ */
+function toWindowsPath(posixAbsolutePath: string): string {
+  return posixAbsolutePath.replace(/\//g, '\\');
+}
+
 describe('IncludeContainer', () => {
   it('getter', () => {
     const container = new IncludeContainer({
@@ -73,6 +82,58 @@ describe('IncludeContainer', () => {
     expect(r03).toBeFalsy();
     expect(r04).toBeTruthy();
     expect(r05).toBeFalsy();
+  });
+
+  it('isInclude - Windows-style backslash absolute path should be recognized', () => {
+    // Regression test for Windows path separator bug.
+    // On Windows, ts-morph returns paths like C:\project\src\foo.ts (backslashes).
+    // IncludeContainer stores posix paths (C:/project/src/foo.ts) after replaceSepToPosix.
+    // isInclude must normalize backslashes before map lookup; otherwise it always returns false.
+    const container = new IncludeContainer({
+      config: { include: ['src/cli/**/*.ts'] },
+      cwd: process.cwd(),
+    });
+
+    // Pick a real file that IS in the map (posix separator)
+    const posixPath = Array.from(container.map.keys()).at(0);
+    expect(posixPath).toBeDefined();
+
+    // Simulate the Windows path that ts-morph would return on a Windows machine
+    const windowsStylePath = toWindowsPath(posixPath!);
+
+    // isInclude must return true — the file is included regardless of separator style
+    expect(container.isInclude(windowsStylePath)).toBe(true);
+  });
+
+  it('isInclude - Windows-style backslash path must not match an excluded file', () => {
+    // Even after normalizing separators, a file outside the include glob must not match.
+    const container = new IncludeContainer({
+      config: { include: ['src/cli/**/*.ts'] },
+      cwd: process.cwd(),
+    });
+
+    // A path that is NOT in the include pattern (src/modules, not src/cli)
+    const posixPathNotIncluded = posixJoin(process.cwd(), 'src/modules/scope/IncludeContainer.ts');
+    const windowsStylePath = toWindowsPath(posixPathNotIncluded);
+
+    expect(container.isInclude(windowsStylePath)).toBe(false);
+  });
+
+  it('isInclude - relative Windows-style backslash path should be recognized', () => {
+    // Regression test for relative paths with backslashes on Windows.
+    // When filePath is relative (not absolute), isInclude calls posixResolve.
+    // On Windows, path.resolve('src\\cli\\foo.ts') returns a proper Windows absolute path,
+    // but posixResolve must then also normalize separators for the map lookup to succeed.
+    const container = new IncludeContainer({
+      config: { include: ['src/cli/**/*.ts'] },
+      cwd: process.cwd(),
+    });
+
+    // Simulate a relative Windows-style path (backslashes instead of forward slashes)
+    const windowsRelativePath = 'src\\cli\\builders\\setModeBundleOptions.ts';
+
+    // isInclude should resolve and normalize the path to match the map key
+    expect(container.isInclude(windowsRelativePath)).toBe(true);
   });
 
   it('files - string path', () => {

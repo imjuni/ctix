@@ -48,6 +48,7 @@ export function castConfig(
         'progress-stream': 'stderr',
         reasonerStream: 'stderr',
         'reasoner-stream': 'stderr',
+        verbose: false,
       } as IProjectOptions;
   }
 }

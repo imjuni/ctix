@@ -1,3 +1,4 @@
+import { Debugger } from '#/cli/ux/Debugger';
 import { ProgressBar } from '#/cli/ux/ProgressBar';
 import { Reasoner } from '#/cli/ux/Reasoner';
 import { Spinner } from '#/cli/ux/Spinner';
@@ -11,6 +12,7 @@ export async function buildCommand(argv: yargs.ArgumentsCamelCase<TCommandBuildA
   ProgressBar.it.enable = true;
   Spinner.it.enable = true;
   Reasoner.it.enable = true;
+  Debugger.it.enable = argv.verbose ?? false;
 
   try {
     const options = await createBuildOptions(argv);

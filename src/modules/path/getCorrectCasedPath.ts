@@ -1,6 +1,7 @@
 /* eslint-disable no-continue, no-await-in-loop */
 import { getSep } from '#/modules/path/getSep';
 import { atOrThrow, orThrow } from 'my-easy-fp';
+import { replaceSepToPosix } from 'my-node-fp';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -65,9 +66,11 @@ export async function getCorrectCasedPath(inputPath: string): Promise<string> {
       }
     }
 
-    return correctedPath;
+    // Normalize to posix separators so callers always receive forward-slash paths
+    // regardless of the platform (Windows uses backslashes with path.join).
+    return replaceSepToPosix(correctedPath);
   } catch {
     // If any error occurs, return the original path
-    return inputPath;
+    return replaceSepToPosix(inputPath);
   }
 }
