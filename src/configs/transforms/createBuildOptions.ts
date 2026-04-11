@@ -31,6 +31,7 @@ export async function createBuildOptions(
     spinnerStream: argv.spinnerStream,
     progressStream: argv.progressStream,
     reasonerStream: argv.reasonerStream,
+    verbose: argv.verbose ?? false,
     options: [],
   };
 

@@ -30,6 +30,13 @@ export function setProjectOptions<T = Argv<IProjectOptions>>(args: Argv<IProject
       type: 'string',
       choices: ['stdout', 'stderr'],
       default: 'stderr',
+    })
+    .option('verbose', {
+      alias: 'v',
+      describe:
+        'Enable verbose debug logging to diagnose path resolution and include/exclude issues',
+      type: 'boolean',
+      default: false,
     });
 
   return args as T;

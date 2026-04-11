@@ -17,6 +17,7 @@ export function createRemoveOptions(
     spinnerStream: argv.spinnerStream,
     progressStream: argv.progressStream,
     reasonerStream: argv.reasonerStream,
+    verbose: argv.verbose ?? false,
     removeBackup: argv.removeBackup,
     exportFilename: argv.exportFilename ?? CE_CTIX_DEFAULT_VALUE.EXPORT_FILENAME,
     forceYes: argv.forceYes,

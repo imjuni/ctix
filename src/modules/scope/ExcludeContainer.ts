@@ -1,3 +1,4 @@
+import { Debugger } from '#/cli/ux/Debugger';
 import type { IInlineCommentInfo } from '#/comments/interfaces/IInlineCommentInfo';
 import type { IModeGenerateOptions } from '#/configs/interfaces/IModeGenerateOptions';
 import { getGlobFiles } from '#/modules/file/getGlobFiles';
@@ -6,6 +7,11 @@ import { defaultExclude } from '#/modules/scope/defaultExclude';
 import { Glob, type GlobOptions } from 'glob';
 import { replaceSepToPosix } from 'my-node-fp';
 import path from 'node:path';
+
+/** Replaces all backslashes with forward slashes regardless of the current platform. */
+function normalizeToPosix(filePath: string): string {
+  return filePath.replace(/\\/g, '/');
+}
 
 export class ExcludeContainer {
   #globs: Glob<GlobOptions>[];
@@ -52,16 +58,33 @@ export class ExcludeContainer {
 
   isExclude(filePath: string): boolean {
     if (this.#map.size <= 0 && this.#inline.size <= 0) {
+      Debugger.it.log(`isExclude("${filePath}"): map and inline are empty => false`);
       return false;
     }
 
     if (path.isAbsolute(filePath)) {
-      return this.#map.get(filePath) != null || this.#inline.get(filePath) != null;
+      // Normalize backslashes to forward slashes so Windows paths (C:\foo\bar.ts)
+      // match the posix-normalized keys stored in the map (C:/foo/bar.ts).
+      const normalizedPath = normalizeToPosix(filePath);
+      const result =
+        this.#map.get(normalizedPath) != null || this.#inline.get(normalizedPath) != null;
+
+      Debugger.it.log(
+        `isExclude("${filePath}"): isAbsolute=true, normalized="${normalizedPath}" => ${result}`,
+      );
+
+      return result;
     }
 
-    return (
-      this.#map.get(posixResolve(filePath)) != null ||
-      this.#inline.get(posixResolve(filePath)) != null
+    // Normalize backslashes before resolving so relative Windows-style paths
+    // (src\cli\foo.ts) are correctly resolved and matched against the map.
+    const resolved = posixResolve(normalizeToPosix(filePath));
+    const result = this.#map.get(resolved) != null || this.#inline.get(resolved) != null;
+
+    Debugger.it.log(
+      `isExclude("${filePath}"): isAbsolute=false, resolved="${resolved}" => ${result}`,
     );
+
+    return result;
   }
 }

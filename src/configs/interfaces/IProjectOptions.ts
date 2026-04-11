@@ -39,4 +39,15 @@ export interface IProjectOptions {
    * @default stderr
    */
   reasonerStream: TStreamType;
+
+  /**
+   * Enable verbose debug logging to diagnose path resolution and include/exclude issues.
+   * Outputs diagnostic information to stderr.
+   *
+   * @command build, remove
+   * @mode bundle, create
+   *
+   * @default false
+   */
+  verbose: boolean;
 }
