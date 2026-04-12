@@ -3,12 +3,13 @@ import { CE_CTIX_BUILD_MODE } from '#/configs/const-enum/CE_CTIX_BUILD_MODE';
 import { CE_CTIX_DEFAULT_VALUE } from '#/configs/const-enum/CE_CTIX_DEFAULT_VALUE';
 import { getTsconfigComparer } from '#/configs/modules/getTsconfigComparer';
 import { getGlobFiles } from '#/modules/file/getGlobFiles';
+import { getCwd } from '#/modules/path/getCwd';
 import { defaultExclude } from '#/modules/scope/defaultExclude';
 import { Glob } from 'glob';
 import pathe from 'pathe';
 
 export async function getDefaultInitAnswer(): Promise<IInitQuestionAnswer> {
-  const cwd = process.cwd();
+  const cwd = getCwd();
   const glob = new Glob(['**/tsconfig.json', '**/tsconfig.*.json'], {
     cwd,
     ignore: defaultExclude,
@@ -24,7 +25,7 @@ export async function getDefaultInitAnswer(): Promise<IInitQuestionAnswer> {
   const answer: IInitQuestionAnswer = {
     cwd,
     tsconfig: [tsconfigPath],
-    packageJson: pathe.join(process.cwd(), CE_CTIX_DEFAULT_VALUE.PACKAGE_JSON_FILENAME),
+    packageJson: pathe.join(getCwd(), CE_CTIX_DEFAULT_VALUE.PACKAGE_JSON_FILENAME),
     mode: CE_CTIX_BUILD_MODE.BUNDLE_MODE,
     exportFilename: CE_CTIX_DEFAULT_VALUE.EXPORT_FILENAME,
     addEveryOptions: false,

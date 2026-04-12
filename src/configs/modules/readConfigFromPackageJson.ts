@@ -1,3 +1,4 @@
+import { getCwd } from '#/modules/path/getCwd';
 import fs from 'fs';
 import { isError } from 'my-easy-fp';
 import { type PassFailEither, fail, pass } from 'my-only-either';
@@ -8,7 +9,7 @@ export async function readConfigFromPackageJson(): Promise<
   PassFailEither<Error, Record<string, unknown>>
 > {
   try {
-    const packageJsonFilePath = pathe.join(process.cwd(), 'package.json');
+    const packageJsonFilePath = pathe.join(getCwd(), 'package.json');
     const buf = await fs.promises.readFile(packageJsonFilePath);
     const packageJson = JSON.parse(buf.toString()) as PackageJson;
 
