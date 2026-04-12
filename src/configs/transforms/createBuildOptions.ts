@@ -14,6 +14,7 @@ import { transformCreateMode } from '#/configs/transforms/transformCreateMode';
 import { transformModuleMode } from '#/configs/transforms/transformModuleMode';
 import { getTsExcludeFiles } from '#/modules/file/getTsExcludeFiles';
 import { getTsIncludeFiles } from '#/modules/file/getTsIncludeFiles';
+import { getCwd } from '#/modules/path/getCwd';
 import { toArray } from 'my-easy-fp';
 import path from 'node:path';
 import type { ArgumentsCamelCase } from 'yargs';
@@ -51,7 +52,7 @@ export async function createBuildOptions(
     options.options = await Promise.all(
       options.options.map(async (option) => {
         if (option.mode === CE_CTIX_BUILD_MODE.MODULE_MODE) {
-          const projectPath = path.resolve(option.project);
+          const projectPath = path.resolve(getCwd(), option.project);
           const tsconfig = getTypeScriptConfig(projectPath);
 
           const moduleMode = await transformModuleMode(
@@ -85,7 +86,7 @@ export async function createBuildOptions(
         }
 
         if (option.mode === CE_CTIX_BUILD_MODE.CREATE_MODE) {
-          const projectPath = path.resolve(option.project);
+          const projectPath = path.resolve(getCwd(), option.project);
           const tsconfig = getTypeScriptConfig(projectPath);
 
           const createMode = await transformCreateMode(
@@ -118,7 +119,7 @@ export async function createBuildOptions(
           return createMode;
         }
 
-        const projectPath = path.resolve(option.project);
+        const projectPath = path.resolve(getCwd(), option.project);
         const tsconfig = getTypeScriptConfig(projectPath);
 
         const bundleMode = transformBundleMode(
@@ -154,7 +155,7 @@ export async function createBuildOptions(
     return options;
   }
 
-  const projectPath = path.resolve(argv.project);
+  const projectPath = path.resolve(getCwd(), argv.project);
   const tsconfig = getTypeScriptConfig(projectPath);
 
   const include =
