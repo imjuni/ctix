@@ -182,10 +182,15 @@ export async function createBuildOptions(
 
   const mode = argv.mode ?? CE_CTIX_BUILD_MODE.BUNDLE_MODE;
 
+  // Pass the resolved absolute projectPath so that downstream functions
+  // (ProjectContainer, getExtendOptions, etc.) do not re-resolve the relative
+  // path against process.cwd() instead of getCwd().
+  const resolvedArgv = { ...argv, project: projectPath };
+
   if (mode === CE_CTIX_BUILD_MODE.CREATE_MODE) {
     options.options = [
-      await transformCreateMode(argv, {
-        ...argv,
+      await transformCreateMode(resolvedArgv, {
+        ...resolvedArgv,
         mode: CE_CTIX_BUILD_MODE.CREATE_MODE,
         include,
         exclude,
@@ -195,12 +200,12 @@ export async function createBuildOptions(
     return options;
   }
 
-  const output = getOutputValue(argv, { output: argv.output });
+  const output = getOutputValue(resolvedArgv, { output: argv.output });
 
   if (mode === CE_CTIX_BUILD_MODE.MODULE_MODE) {
     options.options = [
-      await transformModuleMode(argv, {
-        ...argv,
+      await transformModuleMode(resolvedArgv, {
+        ...resolvedArgv,
         mode: CE_CTIX_BUILD_MODE.MODULE_MODE,
         include,
         exclude,
@@ -211,8 +216,8 @@ export async function createBuildOptions(
   }
 
   options.options = [
-    transformBundleMode(argv, {
-      ...argv,
+    transformBundleMode(resolvedArgv, {
+      ...resolvedArgv,
       mode: CE_CTIX_BUILD_MODE.BUNDLE_MODE,
       output,
       include,
