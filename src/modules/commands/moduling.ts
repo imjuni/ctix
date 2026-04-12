@@ -1,3 +1,4 @@
+import { Debugger } from '#/cli/ux/Debugger';
 import { ProgressBar } from '#/cli/ux/ProgressBar';
 import { Reasoner } from '#/cli/ux/Reasoner';
 import { Spinner } from '#/cli/ux/Spinner';
@@ -36,6 +37,10 @@ export async function moduling(_buildOptions: TCommandBuildOptions, moduleOption
 
   const output = posixResolve(posixJoin(moduleOption.output, moduleOption.exportFilename));
 
+  Debugger.it.log(`[module] project: ${moduleOption.project}`);
+  Debugger.it.log(`[module] projectDirPath: ${extendOptions.resolved.projectDirPath}`);
+  Debugger.it.logList('[module] tsconfig fileNames', extendOptions.tsconfig.fileNames);
+
   const include = new IncludeContainer({
     config: { include: getTsIncludeFiles({ config: moduleOption, extend: extendOptions }) },
     cwd: extendOptions.resolved.projectDirPath,
@@ -59,7 +64,13 @@ export async function moduling(_buildOptions: TCommandBuildOptions, moduleOption
     cwd: extendOptions.resolved.projectDirPath,
   });
 
-  const filenames = include.files().filter((filename) => !exclude.isExclude(filename));
+  const allIncludedFiles = include.files();
+  const excludedByExclude = allIncludedFiles.filter((filename) => exclude.isExclude(filename));
+  const filenames = allIncludedFiles.filter((filename) => !exclude.isExclude(filename));
+
+  Debugger.it.logList('[module] files from include.files()', allIncludedFiles);
+  Debugger.it.logList('[module] files removed by exclude filter', excludedByExclude);
+  Debugger.it.logList('[module] final target files', filenames);
 
   Spinner.it.succeed('analysis export statements completed!');
   Spinner.it.stop();

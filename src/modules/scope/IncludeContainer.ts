@@ -28,15 +28,12 @@ export class IncludeContainer {
     this.#map = new Map<string, boolean>(files);
     this.#globs = [globs];
 
-    Debugger.it.log(
-      `IncludeContainer: cwd="${params.cwd}", patterns=${JSON.stringify(params.config.include)}`,
+    Debugger.it.log(`IncludeContainer: cwd="${params.cwd}"`);
+    Debugger.it.logList('IncludeContainer: patterns', params.config.include);
+    Debugger.it.logList(
+      'IncludeContainer: resolved files in map',
+      files.map(([key]) => key),
     );
-    Debugger.it.log(`IncludeContainer: ${files.length} files resolved into map`);
-
-    if (files.length > 0) {
-      Debugger.it.log(`IncludeContainer: sample map keys (first 5):`);
-      files.slice(0, 5).forEach(([key]) => Debugger.it.log(`  map key: "${key}"`));
-    }
   }
 
   get globs(): Readonly<Glob<GlobOptions>[]> {

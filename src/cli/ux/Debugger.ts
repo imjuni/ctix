@@ -81,6 +81,22 @@ export class Debugger {
     }
   }
 
+  logList(label: string, items: string[]) {
+    if (!this.#enable) {
+      return;
+    }
+
+    this.log(`${label} (${items.length}):`);
+
+    if (items.length === 0) {
+      this.log('  (empty)');
+    } else {
+      for (const item of items) {
+        this.log(`  - ${item}`);
+      }
+    }
+  }
+
   table(label: string, entries: [string, unknown][]) {
     if (!this.#enable) {
       return;
