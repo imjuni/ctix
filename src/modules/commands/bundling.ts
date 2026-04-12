@@ -1,3 +1,4 @@
+import { Debugger } from '#/cli/ux/Debugger';
 import { ProgressBar } from '#/cli/ux/ProgressBar';
 import { Reasoner } from '#/cli/ux/Reasoner';
 import { Spinner } from '#/cli/ux/Spinner';
@@ -64,6 +65,10 @@ export async function bundling(buildOptions: TCommandBuildOptions, bundleOption:
       .map((sourceFile) => getCorrectCasedPath(sourceFile.getFilePath().toString())),
   );
 
+  Debugger.it.log(`[bundle] project: ${bundleOption.project}`);
+  Debugger.it.log(`[bundle] projectDirPath: ${extendOptions.resolved.projectDirPath}`);
+  Debugger.it.logList('[bundle] ts-morph source files', filePaths);
+
   const include = new IncludeContainer({
     config: { include: getTsIncludeFiles({ config: bundleOption, extend: extendOptions }) },
     cwd: extendOptions.resolved.projectDirPath,
@@ -103,9 +108,13 @@ export async function bundling(buildOptions: TCommandBuildOptions, bundleOption:
       return isDeclarationFile(sourceFile);
     });
 
-  const filenames = filePaths
-    .filter((filename) => include.isInclude(filename))
-    .filter((filename) => !exclude.isExclude(filename));
+  const includedFiles = filePaths.filter((filename) => include.isInclude(filename));
+  const excludedByExclude = includedFiles.filter((filename) => exclude.isExclude(filename));
+  const filenames = includedFiles.filter((filename) => !exclude.isExclude(filename));
+
+  Debugger.it.logList('[bundle] files passed include filter', includedFiles);
+  Debugger.it.logList('[bundle] files removed by exclude filter', excludedByExclude);
+  Debugger.it.logList('[bundle] final target files', filenames);
 
   Spinner.it.succeed('analysis export statements completed!');
   Spinner.it.stop();

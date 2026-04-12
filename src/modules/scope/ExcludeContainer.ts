@@ -46,6 +46,14 @@ export class ExcludeContainer {
         : posixResolve(inlineExcluded.filePath);
       this.#inline.set(filePath, inlineExcluded);
     });
+
+    Debugger.it.log(`ExcludeContainer: cwd="${params.cwd}"`);
+    Debugger.it.logList('ExcludeContainer: patterns', params.config.exclude);
+    Debugger.it.logList(
+      'ExcludeContainer: resolved files in map',
+      files.map(([key]) => key),
+    );
+    Debugger.it.logList('ExcludeContainer: inline excludeds', Array.from(this.#inline.keys()));
   }
 
   get globs(): Readonly<Glob<GlobOptions>[]> {

@@ -1,3 +1,4 @@
+import { Debugger } from '#/cli/ux/Debugger';
 import { ProgressBar } from '#/cli/ux/ProgressBar';
 import { Reasoner } from '#/cli/ux/Reasoner';
 import { Spinner } from '#/cli/ux/Spinner';
@@ -60,6 +61,10 @@ export async function creating(_buildOptions: TCommandBuildOptions, createOption
       .map((sourceFile) => getCorrectCasedPath(sourceFile.getFilePath().toString())),
   );
 
+  Debugger.it.log(`[create] project: ${createOption.project}`);
+  Debugger.it.log(`[create] projectDirPath: ${extendOptions.resolved.projectDirPath}`);
+  Debugger.it.logList('[create] ts-morph source files', filePaths);
+
   const include = new IncludeContainer({
     config: { include: getTsIncludeFiles({ config: createOption, extend: extendOptions }) },
     cwd: extendOptions.resolved.projectDirPath,
@@ -93,9 +98,13 @@ export async function creating(_buildOptions: TCommandBuildOptions, createOption
     inlineExcludeds,
   });
 
-  const filenames = filePaths
-    .filter((filename) => include.isInclude(filename))
-    .filter((filename) => !exclude.isExclude(filename));
+  const includedFiles = filePaths.filter((filename) => include.isInclude(filename));
+  const excludedByExclude = includedFiles.filter((filename) => exclude.isExclude(filename));
+  const filenames = includedFiles.filter((filename) => !exclude.isExclude(filename));
+
+  Debugger.it.logList('[create] files passed include filter', includedFiles);
+  Debugger.it.logList('[create] files removed by exclude filter', excludedByExclude);
+  Debugger.it.logList('[create] final target files', filenames);
 
   Spinner.it.succeed('analysis export statements completed!');
   Spinner.it.stop();
