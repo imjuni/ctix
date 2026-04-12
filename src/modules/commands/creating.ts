@@ -91,7 +91,9 @@ export async function creating(_buildOptions: TCommandBuildOptions, createOption
     config: {
       exclude: [
         ...getTsExcludeFiles({ config: createOption, extend: extendOptions }),
-        ...outputExcludeds,
+        ...outputExcludeds.map((absPath) =>
+          posixRelative(extendOptions.resolved.projectDirPath, absPath),
+        ),
       ],
     },
     cwd: extendOptions.resolved.projectDirPath,
