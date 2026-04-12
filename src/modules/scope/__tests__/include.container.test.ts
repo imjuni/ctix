@@ -25,14 +25,19 @@ describe('IncludeContainer', () => {
     expect(container.map).toBeDefined();
   });
 
-  it('isInclude - no glob files', () => {
+  it('isInclude - no include patterns means include all files', () => {
+    // When no include patterns are specified (empty array), all files should pass the
+    // include check. This matches the TypeScript compiler default behaviour where an
+    // absent `include` field means "include everything".
     const container = new IncludeContainer({
       config: { include: [] },
       cwd: process.cwd(),
     });
 
     const r01 = container.isInclude('src/files/IncludeContainer.ts');
-    expect(r01).toBeFalsy();
+    const r02 = container.isInclude('src/modules/scope/IncludeContainer.ts');
+    expect(r01).toBeTruthy();
+    expect(r02).toBeTruthy();
   });
 
   it('isInclude', () => {

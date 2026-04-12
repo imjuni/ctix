@@ -30,6 +30,11 @@ export class IncludeContainer {
 
     Debugger.it.log(`IncludeContainer: cwd="${params.cwd}"`);
     Debugger.it.logList('IncludeContainer: patterns', params.config.include);
+
+    if (params.config.include.length === 0) {
+      Debugger.it.log('IncludeContainer: no patterns specified — all files will be included');
+    }
+
     Debugger.it.logList(
       'IncludeContainer: resolved files in map',
       files.map(([key]) => key),
@@ -46,8 +51,9 @@ export class IncludeContainer {
 
   isInclude(filePath: string): boolean {
     if (this.#map.size <= 0) {
-      Debugger.it.log(`isInclude("${filePath}"): map is empty => false`);
-      return false;
+      // No include patterns were specified — treat as "include everything"
+      Debugger.it.log(`isInclude("${filePath}"): map is empty => true (no include filter)`);
+      return true;
     }
 
     if (path.isAbsolute(filePath)) {
