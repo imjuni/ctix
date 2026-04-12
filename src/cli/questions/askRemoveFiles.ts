@@ -1,6 +1,7 @@
 import type { IChoiceTypeItem } from '#/cli/interfaces/IChoiceTypeItem';
 import { getRatioNumber } from '#/cli/modules/getRatioNumber';
 import { CE_CTIX_DEFAULT_VALUE } from '#/configs/const-enum/CE_CTIX_DEFAULT_VALUE';
+import { getCwd } from '#/modules/path/getCwd';
 import { posixRelative } from '#/modules/path/modules/posixRelative';
 import Fuse from 'fuse.js';
 import inquirer from 'inquirer';
@@ -12,7 +13,7 @@ export async function askRemoveFiles(filePaths: string[]) {
   const choiceAbleTypes = filePaths.map((filePath) => {
     return {
       filePath,
-      name: posixRelative(process.cwd(), filePath),
+      name: posixRelative(getCwd(), filePath),
       value: filePath,
     } satisfies IChoiceTypeItem;
   });

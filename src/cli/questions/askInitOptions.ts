@@ -3,6 +3,7 @@ import { CE_CTIX_BUILD_MODE } from '#/configs/const-enum/CE_CTIX_BUILD_MODE';
 import { CE_CTIX_DEFAULT_VALUE } from '#/configs/const-enum/CE_CTIX_DEFAULT_VALUE';
 import { getTsconfigComparer } from '#/configs/modules/getTsconfigComparer';
 import { getGlobFiles } from '#/modules/file/getGlobFiles';
+import { getCwd } from '#/modules/path/getCwd';
 import { defaultExclude } from '#/modules/scope/defaultExclude';
 import chalk from 'chalk';
 import { exists } from 'find-up';
@@ -11,7 +12,7 @@ import inquirer from 'inquirer';
 import pathe from 'pathe';
 
 export async function askInitOptions(): Promise<IInitQuestionAnswer> {
-  const cwd = process.cwd();
+  const cwd = getCwd();
 
   const cwdAnswer = await inquirer.prompt<Pick<IInitQuestionAnswer, 'cwd'>>([
     {
@@ -117,7 +118,7 @@ export async function askInitOptions(): Promise<IInitQuestionAnswer> {
         overwirte: overwriteAnswer.overwirte,
         tsconfig: [],
         addEveryOptions: false,
-        packageJson: pathe.join(process.cwd(), CE_CTIX_DEFAULT_VALUE.PACKAGE_JSON_FILENAME),
+        packageJson: pathe.join(getCwd(), CE_CTIX_DEFAULT_VALUE.PACKAGE_JSON_FILENAME),
         mode: CE_CTIX_BUILD_MODE.BUNDLE_MODE,
         configPosition: '.ctirc',
         configComment: true,
