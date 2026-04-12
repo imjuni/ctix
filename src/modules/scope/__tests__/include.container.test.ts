@@ -25,19 +25,23 @@ describe('IncludeContainer', () => {
     expect(container.map).toBeDefined();
   });
 
-  it('isInclude - no include patterns means include all files', () => {
-    // When no include patterns are specified (empty array), all files should pass the
-    // include check. This matches the TypeScript compiler default behaviour where an
-    // absent `include` field means "include everything".
+  it('isInclude - no include patterns defaults to all ts/tsx under cwd', () => {
+    // When no include patterns are specified (empty array), IncludeContainer falls back to
+    // **/*.ts and **/*.tsx within the project cwd. Files that exist under cwd pass;
+    // the map is never empty so unrelated workspace packages are not pulled in.
     const container = new IncludeContainer({
       config: { include: [] },
       cwd: process.cwd(),
     });
 
-    const r01 = container.isInclude('src/files/IncludeContainer.ts');
-    const r02 = container.isInclude('src/modules/scope/IncludeContainer.ts');
+    // map must not be empty — default patterns should have matched real project files
+    expect(container.map.size).toBeGreaterThan(0);
+
+    // a real file that exists under cwd must be included
+    const r01 = container.isInclude(
+      posixJoin(process.cwd(), 'src/modules/scope/IncludeContainer.ts'),
+    );
     expect(r01).toBeTruthy();
-    expect(r02).toBeTruthy();
   });
 
   it('isInclude', () => {

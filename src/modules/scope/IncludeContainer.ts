@@ -17,7 +17,14 @@ export class IncludeContainer {
   #map: Map<string, boolean>;
 
   constructor(params: { config: Pick<IModeGenerateOptions, 'include'>; cwd: string }) {
-    const globs = new Glob(params.config.include, {
+    // When no include patterns are specified, fall back to all TypeScript source files
+    // under the project directory. This matches the TypeScript compiler's default behaviour
+    // (an absent `include` means "include everything") while keeping the scope limited
+    // to the project cwd so unrelated workspace packages are not pulled in.
+    const patterns =
+      params.config.include.length > 0 ? params.config.include : ['**/*.ts', '**/*.tsx'];
+
+    const globs = new Glob(patterns, {
       absolute: true,
       ignore: defaultExclude,
       cwd: params.cwd,
@@ -29,10 +36,15 @@ export class IncludeContainer {
     this.#globs = [globs];
 
     Debugger.it.log(`IncludeContainer: cwd="${params.cwd}"`);
-    Debugger.it.logList('IncludeContainer: patterns', params.config.include);
+    Debugger.it.logList(
+      'IncludeContainer: patterns',
+      params.config.include.length > 0 ? params.config.include : ['**/*.ts', '**/*.tsx (default)'],
+    );
 
     if (params.config.include.length === 0) {
-      Debugger.it.log('IncludeContainer: no patterns specified — all files will be included');
+      Debugger.it.log(
+        'IncludeContainer: no patterns specified — defaulting to **/*.ts, **/*.tsx within cwd',
+      );
     }
 
     Debugger.it.logList(
@@ -51,9 +63,8 @@ export class IncludeContainer {
 
   isInclude(filePath: string): boolean {
     if (this.#map.size <= 0) {
-      // No include patterns were specified — treat as "include everything"
-      Debugger.it.log(`isInclude("${filePath}"): map is empty => true (no include filter)`);
-      return true;
+      Debugger.it.log(`isInclude("${filePath}"): map is empty => false`);
+      return false;
     }
 
     if (path.isAbsolute(filePath)) {
