@@ -12,6 +12,7 @@ import { checkOutputFile } from '#/modules/file/checkOutputFile';
 import { getTsExcludeFiles } from '#/modules/file/getTsExcludeFiles';
 import { getTsIncludeFiles } from '#/modules/file/getTsIncludeFiles';
 import { posixJoin } from '#/modules/path/modules/posixJoin';
+import { posixRelative } from '#/modules/path/modules/posixRelative';
 import { posixResolve } from '#/modules/path/modules/posixResolve';
 import { ExcludeContainer } from '#/modules/scope/ExcludeContainer';
 import { IncludeContainer } from '#/modules/scope/IncludeContainer';
@@ -58,7 +59,10 @@ export async function moduling(_buildOptions: TCommandBuildOptions, moduleOption
    */
   const exclude = new ExcludeContainer({
     config: {
-      exclude: [...getTsExcludeFiles({ config: moduleOption, extend: extendOptions }), ...[output]],
+      exclude: [
+        ...getTsExcludeFiles({ config: moduleOption, extend: extendOptions }),
+        posixRelative(extendOptions.resolved.projectDirPath, output),
+      ],
     },
     inlineExcludeds,
     cwd: extendOptions.resolved.projectDirPath,
