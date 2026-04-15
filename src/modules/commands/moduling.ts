@@ -36,7 +36,10 @@ export async function moduling(_buildOptions: TCommandBuildOptions, moduleOption
   Spinner.it.succeed(`[${moduleOption.project}] loading complete!`);
   Spinner.it.update('include, exclude config');
 
-  const output = posixResolve(posixJoin(moduleOption.output, moduleOption.exportFilename));
+  // Guard: if moduleOption.output is empty, fall back to the project directory.
+  // posixJoin("", "x") produces "/x" (root) on all platforms, which is wrong.
+  const outputDir = moduleOption.output || extendOptions.resolved.projectDirPath;
+  const output = posixResolve(posixJoin(outputDir, moduleOption.exportFilename));
 
   Debugger.it.log(`[module] project: ${moduleOption.project}`);
   Debugger.it.log(`[module] projectDirPath: ${extendOptions.resolved.projectDirPath}`);

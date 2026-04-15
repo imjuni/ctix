@@ -59,7 +59,10 @@ export async function bundling(buildOptions: TCommandBuildOptions, bundleOption:
   Spinner.it.succeed(`[${bundleOption.project}] loading complete!`);
   Spinner.it.update('include, exclude config');
 
-  const output = posixResolve(posixJoin(bundleOption.output, bundleOption.exportFilename));
+  // Guard: if bundleOption.output is empty, fall back to the project directory.
+  // posixJoin("", "x") produces "/x" (root) on all platforms, which is wrong.
+  const outputDir = bundleOption.output || extendOptions.resolved.projectDirPath;
+  const output = posixResolve(posixJoin(outputDir, bundleOption.exportFilename));
   const filePaths = await Promise.all(
     project
       .getSourceFiles()
