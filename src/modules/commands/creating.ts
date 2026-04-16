@@ -23,7 +23,7 @@ import { getTsExcludeFiles } from '#/modules/file/getTsExcludeFiles';
 import { getTsIncludeFiles } from '#/modules/file/getTsIncludeFiles';
 import { processSkipEmptyDirOnFileTree } from '#/modules/file/processSkipEmptyDirOnFileTree';
 import { addCurrentDirPrefix } from '#/modules/path/addCurrentDirPrefix';
-import { getCorrectCasedPath } from '#/modules/path/getCorrectCasedPath';
+import { buildCorrectCasePathMap } from '#/modules/path/buildCorrectCasePathMap';
 import { getImportStatementExtname } from '#/modules/path/getImportStatementExtname';
 import { posixJoin } from '#/modules/path/modules/posixJoin';
 import { posixRelative } from '#/modules/path/modules/posixRelative';
@@ -55,10 +55,21 @@ export async function creating(_buildOptions: TCommandBuildOptions, createOption
   Spinner.it.succeed(`${createOption.project} loading complete!`);
   Spinner.it.update('include, exclude config');
 
-  const filePaths = await Promise.all(
-    project
-      .getSourceFiles()
-      .map((sourceFile) => getCorrectCasedPath(sourceFile.getFilePath().toString())),
+  const rawFilePaths = project
+    .getSourceFiles()
+    .map((sourceFile) => sourceFile.getFilePath().toString());
+  const caseMap = await buildCorrectCasePathMap(rawFilePaths);
+  const filePaths = rawFilePaths.map((p) => caseMap.get(p) ?? p);
+
+  // Build correctedPath → SourceFile map so lookups remain correct after case
+  // correction. ts-morph registers files by their original (possibly wrong-cased)
+  // path, so project.getSourceFile(correctedPath) can return null on
+  // case-sensitive systems or strict ts-morph builds.
+  const sourceFileMap = new Map<string, tsm.SourceFile>(
+    project.getSourceFiles().map((sf) => {
+      const original = sf.getFilePath().toString();
+      return [caseMap.get(original) ?? original, sf];
+    }),
   );
 
   Debugger.it.log(`[create] project: ${createOption.project}`);
@@ -70,11 +81,14 @@ export async function creating(_buildOptions: TCommandBuildOptions, createOption
     cwd: extendOptions.resolved.projectDirPath,
   });
 
+  // Pass rawFilePaths so project.getSourceFile() inside uses original registered
+  // paths. Remap the returned filePath values through caseMap so that
+  // ExcludeContainer stores corrected-path keys and isExclude() matches correctly.
   const inlineExcludeds = getInlineCommentedFiles({
     project,
-    filePaths,
+    filePaths: rawFilePaths,
     keyword: CE_INLINE_COMMENT_KEYWORD.FILE_EXCLUDE_KEYWORD,
-  });
+  }).map((item) => ({ ...item, filePath: caseMap.get(item.filePath) ?? item.filePath }));
 
   const outputExcludeds = await getOutputExcludedFiles({
     project,
@@ -124,7 +138,7 @@ export async function creating(_buildOptions: TCommandBuildOptions, createOption
 
   const statementEithers = await Promise.all(
     filenames
-      .map((filename) => project.getSourceFile(filename))
+      .map((filename) => sourceFileMap.get(filename))
       .filter((sourceFile): sourceFile is tsm.SourceFile => sourceFile != null)
       .map(async (sourceFile) => {
         ProgressBar.it.increment();

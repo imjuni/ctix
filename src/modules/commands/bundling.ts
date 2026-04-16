@@ -18,7 +18,7 @@ import { ProjectContainer } from '#/modules/file/ProjectContainer';
 import { checkOutputFile } from '#/modules/file/checkOutputFile';
 import { getTsExcludeFiles } from '#/modules/file/getTsExcludeFiles';
 import { getTsIncludeFiles } from '#/modules/file/getTsIncludeFiles';
-import { getCorrectCasedPath } from '#/modules/path/getCorrectCasedPath';
+import { buildCorrectCasePathMap } from '#/modules/path/buildCorrectCasePathMap';
 import { posixJoin } from '#/modules/path/modules/posixJoin';
 import { posixRelative } from '#/modules/path/modules/posixRelative';
 import { posixResolve } from '#/modules/path/modules/posixResolve';
@@ -63,10 +63,21 @@ export async function bundling(buildOptions: TCommandBuildOptions, bundleOption:
   // posixJoin("", "x") produces "/x" (root) on all platforms, which is wrong.
   const outputDir = bundleOption.output || extendOptions.resolved.projectDirPath;
   const output = posixResolve(posixJoin(outputDir, bundleOption.exportFilename));
-  const filePaths = await Promise.all(
-    project
-      .getSourceFiles()
-      .map((sourceFile) => getCorrectCasedPath(sourceFile.getFilePath().toString())),
+  const rawFilePaths = project
+    .getSourceFiles()
+    .map((sourceFile) => sourceFile.getFilePath().toString());
+  const caseMap = await buildCorrectCasePathMap(rawFilePaths);
+  const filePaths = rawFilePaths.map((p) => caseMap.get(p) ?? p);
+
+  // Build correctedPath → SourceFile map so lookups remain correct after case
+  // correction. ts-morph registers files by their original (possibly wrong-cased)
+  // path, so project.getSourceFile(correctedPath) can return null on
+  // case-sensitive systems or strict ts-morph builds.
+  const sourceFileMap = new Map<string, tsm.SourceFile>(
+    project.getSourceFiles().map((sf) => {
+      const original = sf.getFilePath().toString();
+      return [caseMap.get(original) ?? original, sf];
+    }),
   );
 
   Debugger.it.log(`[bundle] project: ${bundleOption.project}`);
@@ -78,11 +89,14 @@ export async function bundling(buildOptions: TCommandBuildOptions, bundleOption:
     cwd: extendOptions.resolved.projectDirPath,
   });
 
+  // Pass rawFilePaths so project.getSourceFile() inside uses original registered
+  // paths. Remap the returned filePath values through caseMap so that
+  // ExcludeContainer stores corrected-path keys and isExclude() matches correctly.
   const inlineExcludeds = getInlineCommentedFiles({
     project,
-    filePaths,
+    filePaths: rawFilePaths,
     keyword: CE_INLINE_COMMENT_KEYWORD.FILE_EXCLUDE_KEYWORD,
-  });
+  }).map((item) => ({ ...item, filePath: caseMap.get(item.filePath) ?? item.filePath }));
 
   /**
    * SourceCode를 읽어서 inline file exclude 된 파일을 별도로 전달한다. 이렇게 하는 이유는, 이 파일은 왜 포함되지
@@ -101,13 +115,14 @@ export async function bundling(buildOptions: TCommandBuildOptions, bundleOption:
 
   const inlineDeclarations = getInlineCommentedFiles({
     project,
-    filePaths,
+    filePaths: rawFilePaths,
     keyword: CE_INLINE_COMMENT_KEYWORD.FILE_DECLARATION_KEYWORD,
   })
+    .map((item) => ({ ...item, filePath: caseMap.get(item.filePath) ?? item.filePath }))
     .filter((declaration) => include.isInclude(declaration.filePath))
     .filter((declaration) => !exclude.isExclude(declaration.filePath))
     .filter((declaration) => {
-      const sourceFile = project.getSourceFile(declaration.filePath);
+      const sourceFile = sourceFileMap.get(declaration.filePath);
       if (sourceFile == null) {
         return false;
       }
@@ -140,7 +155,7 @@ export async function bundling(buildOptions: TCommandBuildOptions, bundleOption:
   const statementEithers = (
     await Promise.all(
       filenames
-        .map((filename) => project.getSourceFile(filename))
+        .map((filename) => sourceFileMap.get(filename))
         .filter((sourceFile): sourceFile is tsm.SourceFile => sourceFile != null)
         .map(async (sourceFile) => {
           ProgressBar.it.increment();
