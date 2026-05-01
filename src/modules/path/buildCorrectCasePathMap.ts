@@ -56,6 +56,8 @@ export async function buildCorrectCasePathMap(inputPaths: string[]): Promise<Map
   );
 
   for (const { dir, entries } of dirEntries) {
+    // dirEntries is built from dirToInputs.keys(), so get() is always defined here
+    /* v8 ignore next */
     const pathsInDir = dirToInputs.get(dir) ?? [];
 
     if (entries == null) {
