@@ -37,10 +37,12 @@ export interface IExportStatement {
    * export 할 때 사용된 이름
    */
   identifier: {
-    /** export 할 때 사용된 이름, default는 default가 입력된다 */
+    /** Name used when exporting; "default" is used for default exports
+     * export 할 때 사용된 이름, default는 default가 입력된다 */
     name: string;
 
-    /** export를 alias할 때 사용할 이름, default에서 사용되며 파일이름이 사용된다 */
+    /** Name used when aliasing the export; used for default exports where the filename is used
+     * export를 alias할 때 사용할 이름, default에서 사용되며 파일이름이 사용된다 */
     alias: string;
   };
 

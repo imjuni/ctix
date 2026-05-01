@@ -11,6 +11,7 @@ export async function getCreateModeFileTree(startFrom: string) {
   const fileOrDirs = await fs.promises.readdir(resolved, { withFileTypes: true, recursive: true });
   const dirs = fileOrDirs.filter((fileOrDir) => fileOrDir.isDirectory());
 
+  // Create the root node
   // root 노드를 만든다
   const root: IModuleRoot = {
     kind: 'root',
@@ -44,9 +45,11 @@ export async function getCreateModeFileTree(startFrom: string) {
     const parent = map.get(child.parent);
 
     if (parent != null) {
+      // When the node has a parent that is not the root
       // root 아닌 부모 노드를 가지고 있는 경우
       parent.children.push(child);
     } else if (parent == null && child.parent === root.path) {
+      // When the node is a direct child of the root node
       // root 노드 자식인 경우
       root.children.push(child);
     }

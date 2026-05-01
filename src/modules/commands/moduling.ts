@@ -141,6 +141,7 @@ export async function moduling(_buildOptions: TCommandBuildOptions, moduleOption
 
   await indexWrites(indexFiles, moduleOption, extendOptions);
 
+  // After writing the index file, it needs to be registered in the project
   // index 파일을 쓰고 나면 이걸 project에 등록해줘야 한다
   ProjectContainer.addSourceFilesAtPaths(moduleOption.project, Array.from(outputMap.keys()));
 
