@@ -153,7 +153,7 @@
   "peerDependencies": {
     "prettier": ">=3",
     "prettier-plugin-organize-imports": ">=3",
-    "typescript": ">=5"
+    "typescript": ">=5 <6"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
