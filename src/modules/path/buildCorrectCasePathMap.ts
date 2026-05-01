@@ -104,7 +104,7 @@ export async function buildCorrectCasePathMap(inputPaths: string[]): Promise<Map
   if (isCaseInsensitive && conflicts.length > 0) {
     const lines = conflicts.map(
       ({ dir: conflictDir, files }) =>
-        `  ${chalk.cyan(conflictDir)}: ${files.map((f) => chalk.yellow(f)).join(', ')}`,
+        `  ${chalk.cyan(conflictDir)}: ${files.map((file) => chalk.yellow(file)).join(', ')}`,
     );
 
     const platformLabel = platform === 'darwin' ? 'macOS' : 'Windows';

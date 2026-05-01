@@ -137,7 +137,7 @@ Test projects for various scenarios. Contains examples with different structures
 - Don't use one alphabet variable name
   - Not use: `const filePaths = rawFilePaths.map((p) => caseMap.get(p) ?? p);`
   - use singular name
-    - `const filePaths = rawFilePaths.map((rawFilePath) => caseMap.get(rawFilePaths) ?? rawFilePaths);`
+    - `const filePaths = rawFilePaths.map((rawFilePath) => caseMap.get(rawFilePath) ?? rawFilePath);`
 
 ### Commit Log
 
