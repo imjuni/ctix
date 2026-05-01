@@ -23,7 +23,7 @@ export async function indexWrites(
 
       if (option.backup) {
         if (await exists(file.path)) {
-          await writeFile(`${file.path}.bak`, await readFile(file.path));
+          await writeFile(`${file.path}.bak`, await readFile(file.path, 'utf-8'));
         }
 
         await writeFile(file.path, `${prettified.contents.trim()}${extendOptions.eol}`);
