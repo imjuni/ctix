@@ -59,16 +59,16 @@ export async function creating(_buildOptions: TCommandBuildOptions, createOption
     .getSourceFiles()
     .map((sourceFile) => sourceFile.getFilePath().toString());
   const caseMap = await buildCorrectCasePathMap(rawFilePaths);
-  const filePaths = rawFilePaths.map((p) => caseMap.get(p) ?? p);
+  const filePaths = rawFilePaths.map((rawFilePath) => caseMap.get(rawFilePath) ?? rawFilePath);
 
   // Build correctedPath → SourceFile map so lookups remain correct after case
   // correction. ts-morph registers files by their original (possibly wrong-cased)
   // path, so project.getSourceFile(correctedPath) can return null on
   // case-sensitive systems or strict ts-morph builds.
   const sourceFileMap = new Map<string, tsm.SourceFile>(
-    project.getSourceFiles().map((sf) => {
-      const original = sf.getFilePath().toString();
-      return [caseMap.get(original) ?? original, sf];
+    project.getSourceFiles().map((sourceFile) => {
+      const original = sourceFile.getFilePath().toString();
+      return [caseMap.get(original) ?? original, sourceFile];
     }),
   );
 
