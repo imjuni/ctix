@@ -14,6 +14,9 @@ import path from 'node:path';
  * @returns The file path with correct casing matching the actual filesystem
  */
 export async function getCorrectCasedPath(inputPath: string): Promise<string> {
+  // In the type14 scenario, sourceFile.getFilePath incorrectly returns SomeApiService.ts or SomeAPIService.ts.
+  // This is a problem that occurs on case-insensitive OSes like Windows and macOS.
+  // A way to correctly fix this needs to be investigated.
   // type14 상황에서 sourceFile.getFilePath 함수가 SomeApiService.ts 또는 SomeAPIService.ts를
   // 잘못 반환하는 이슈가 있다. window, macOS와 같이 case-sensitive가 아닌 OS에서 발생하는 문제이다.
   // 이 부분을 올바르게 수정할 수 있는 방법을 연구해야 한다.

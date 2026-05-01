@@ -2,14 +2,17 @@ import type { IExportStatement } from '#/compilers/interfaces/IExportStatement';
 
 export interface IIndexRenderData {
   options: {
-    /** 따옴표 종류 */
+    /** Type of quote character
+     * 따옴표 종류 */
     quote: string;
 
-    /** 세미콜론 추가 여부 */
+    /** Whether to add semicolon
+     * 세미콜론 추가 여부 */
     useSemicolon: boolean;
   };
 
-  /** 파일 경로 */
+  /** File path
+   * 파일 경로 */
   filePath: string;
 
   statement: {
@@ -19,25 +22,32 @@ export interface IIndexRenderData {
      * */
     importPath: string;
 
-    /** 파일 확장자 */
+    /** File extension
+     * 파일 확장자 */
     extname: {
-      /** 원본 확장자 */
+      /** Original extension
+       * 원본 확장자 */
       origin: string;
 
-      /** 렌더링용 확장자 */
+      /** Extension for rendering
+       * 렌더링용 확장자 */
       render: string;
     };
 
-    /** default export를 가지고 있는가 여부 */
+    /** Whether the file has a default export
+     * default export를 가지고 있는가 여부 */
     isHasDefault: boolean;
 
-    /** named export에서 일부 export statement가 exclude에 포함되어 있는가 */
+    /** Whether some export statements in named exports are included in exclude
+     * named export에서 일부 export statement가 exclude에 포함되어 있는가 */
     isHasPartialExclude: boolean;
 
-    /** default export statemt 정보 */
+    /** Default export statement information
+     * default export statemt 정보 */
     default?: IExportStatement;
 
-    /** named export statements 정보 */
+    /** Named export statements information
+     * named export statements 정보 */
     named: IExportStatement[];
   };
 }

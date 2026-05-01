@@ -6,11 +6,14 @@ export interface IStatementComments {
 
   // position: location of the statement commented on
   pos: {
-    /** inline exclude 키워드가 몇 번째 line에 있는가 */
+    /** Which line number the inline exclude keyword is on
+     * inline exclude 키워드가 몇 번째 line에 있는가 */
     line: number;
-    /** inline exclude 키워드가 몇 번째 col에 있는가 */
+    /** Which column number the inline exclude keyword is on
+     * inline exclude 키워드가 몇 번째 col에 있는가 */
     column: number;
-    /** exclude 키워드가 포함된 statement의 위치 */
+    /** Position of the statement containing the exclude keyword
+     * exclude 키워드가 포함된 statement의 위치 */
     start: number;
   };
 

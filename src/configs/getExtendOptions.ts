@@ -11,6 +11,8 @@ export async function getExtendOptions(project: string): Promise<IExtendOptions>
   const tsconfig = getTypeScriptConfig(projectPath);
   const resolvedProjectDirPath = replaceSepToPosix(await getDirname(projectPath));
 
+  // Based on various tests, a project with no include specified also includes all ts files in directories
+  // above the tsconfig.json file. It is necessary to filter out files that are above the tsconfig.json file.
   // 여러가지 테스트를 해본 결과, include에 아무것도 지정하지 않은 프로젝트는 tsconfig.json 파일보다
   // 더 상위 디렉터리에 있는 ts 파일도 모두 포함한다. 이런 식으로 필터를 걸어서, tsconfig.json 파일보다
   // 상위에 있는 것을 제외하는 작업이 필요하다

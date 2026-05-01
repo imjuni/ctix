@@ -81,6 +81,8 @@ export function getAutoRenderCase(renderData: IIndexRenderData): {
     renderData.statement.named.length <= 0 &&
     renderData.statement.isHasPartialExclude
   ) {
+    // A warning is needed when this pattern is used; in rollup-plugin-dts, this causes an error
+    // because the default export is emitted twice.
     // 이 방식으로 되어 있을 때는 경고가 필요하다, rollup-plugin-dts에서는 이 방식인 경우,
     // default export를 2번 내보내서 오류가 발생한다.
     return {
@@ -101,6 +103,8 @@ export function getAutoRenderCase(renderData: IIndexRenderData): {
     renderData.statement.named.length > 0 &&
     renderData.statement.isHasPartialExclude
   ) {
+    // A warning is needed when this pattern is used; in rollup-plugin-dts, this causes an error
+    // because the default export is emitted twice.
     // 이 방식으로 되어 있을 때는 경고가 필요하다, rollup-plugin-dts에서는 이 방식인 경우,
     // default export를 2번 내보내서 오류가 발생한다.
     return {

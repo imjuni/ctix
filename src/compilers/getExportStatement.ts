@@ -21,6 +21,7 @@ export async function getExportStatement(
     replaceSepToPosix(correctedFilePath.replace(dirPath, '')),
     path.posix.sep,
   );
+  // One of rootDir, output, or project must be selected and used
   // rootDir 또는 output, project 셋 중에 하나를 선택해서 써야 한다
   const relativePath = posixRelative(await getDirname(option.project), dirPath);
   // sourceFile.getExportDeclarations().at(0)?.getNamedExports
@@ -48,6 +49,9 @@ export async function getExportStatement(
       const [exportedDeclaration] = exportedDeclarations;
       const kind = getExportedKind(exportedDeclaration);
 
+      // Not sure why this pattern is used for module declarations
+      // There should be no pattern found when doing something like declare module "react" {}...
+      // This is because of example08...
       // 모듈일 때 왜 패턴을 하는지 잘 모르겠다
       // declare module "react" {} 같은 것을 할 때 패턴이 발견될 리가 없는데...
       // example08번 때문이네...

@@ -97,6 +97,7 @@ export async function initializing(option: TCommandInitOptions) {
   const parsedRenderedOptions = parse(renderedOptions);
 
   if (answer.configPosition === 'tsconfig.json') {
+    // Since the tsconfig.json file is important, let's ask if they want to create a backup
     // tsconfig.json 파일은 중요하니까, 백업 만들 생각이 있냐고 물어보자
     await Promise.all(
       answer.tsconfig.map(async (tsconfigFilePath) => {
