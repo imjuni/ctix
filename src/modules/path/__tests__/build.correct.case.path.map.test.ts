@@ -111,6 +111,24 @@ describe('buildCorrectCasePathMap', () => {
     exitSpy.mockRestore();
   });
 
+  it('should use "Windows" label when platform is win32 and case conflicts exist', async () => {
+    const platformSpy = vi.spyOn(os, 'platform').mockReturnValue('win32');
+    const exitSpy = vi.spyOn(process, 'exit').mockImplementation(() => undefined as never);
+    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+
+    mockReaddir.mockResolvedValueOnce(['Aa.ts', 'aA.ts'] as any);
+
+    const inputs = ['/project/src/Aa.ts', '/project/src/aA.ts'];
+    await buildCorrectCasePathMap(inputs);
+
+    expect(exitSpy).toHaveBeenCalledWith(1);
+    expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('Windows'));
+
+    platformSpy.mockRestore();
+    exitSpy.mockRestore();
+    consoleSpy.mockRestore();
+  });
+
   it('should not exit on case-sensitive platforms even with same-lower-case filenames', async () => {
     const platformSpy = vi.spyOn(os, 'platform').mockReturnValue('linux');
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation(() => undefined as never);

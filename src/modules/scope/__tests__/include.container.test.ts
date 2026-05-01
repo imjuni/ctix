@@ -145,6 +145,16 @@ describe('IncludeContainer', () => {
     expect(container.isInclude(windowsRelativePath)).toBe(true);
   });
 
+  it('isInclude - returns false when map is empty (no files matched)', () => {
+    const container = new IncludeContainer({
+      config: { include: ['__nonexistent_dir_ctix_test__/**/*.ts'] },
+      cwd: process.cwd(),
+    });
+
+    expect(container.map.size).toBe(0);
+    expect(container.isInclude('src/modules/scope/IncludeContainer.ts')).toBe(false);
+  });
+
   it('files - string path', () => {
     const expactation = getGlobFiles(
       new Glob('examples/type03/**/*.ts', {

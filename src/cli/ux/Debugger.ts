@@ -55,9 +55,12 @@ export class Debugger {
   }
 
   #openStream() {
+    // Both callers guard logFile != null before calling; this is a defensive check
+    /* v8 ignore start */
     if (this.#logFile == null) {
       return;
     }
+    /* v8 ignore stop */
 
     const logDir = path.dirname(this.#logFile);
 
