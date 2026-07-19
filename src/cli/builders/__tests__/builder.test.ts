@@ -10,14 +10,14 @@ import type { IModeGenerateOptions } from '#/configs/interfaces/IModeGenerateOpt
 import type { IModeTsGenerateOptions } from '#/configs/interfaces/IModeTsGenerateOptions';
 import type { IProjectOptions } from '#/configs/interfaces/IProjectOptions';
 import { describe, expect, it } from 'vitest';
-import yargs from 'yargs';
+import yargs, { type Argv } from 'yargs';
 import { hideBin } from 'yargs/helpers';
 
 describe('option builder', () => {
   describe('setProjectOptions', () => {
     it('common option builded', () => {
       const y = yargs(hideBin(process.argv));
-      const builded = setProjectOptions(y as unknown as yargs.Argv<IProjectOptions>);
+      const builded = setProjectOptions(y as unknown as Argv<IProjectOptions>);
       expect(builded).toBeDefined();
     });
   });
@@ -26,7 +26,7 @@ describe('option builder', () => {
     it('common option builded', () => {
       const y = yargs(hideBin(process.argv));
       const builded = setModeGenerateOptions(
-        y as unknown as yargs.Argv<IModeGenerateOptions & IModeTsGenerateOptions>,
+        y as unknown as Argv<IModeGenerateOptions & IModeTsGenerateOptions>,
       );
       expect(builded).toBeDefined();
     });
@@ -35,7 +35,7 @@ describe('option builder', () => {
   describe('setCommandCreateOptions', () => {
     it('common option builded', () => {
       const y = yargs(hideBin(process.argv));
-      const builded = setModeCreateOptions(y as unknown as yargs.Argv<IModeCreateOptions>);
+      const builded = setModeCreateOptions(y as unknown as Argv<IModeCreateOptions>);
       expect(builded).toBeDefined();
     });
   });
@@ -43,7 +43,7 @@ describe('option builder', () => {
   describe('setCommandBundleOptions', () => {
     it('common option builded', () => {
       const y = yargs(hideBin(process.argv));
-      const builded = setModeBundleOptions(y as unknown as yargs.Argv<IModeBundleOptions>);
+      const builded = setModeBundleOptions(y as unknown as Argv<IModeBundleOptions>);
       expect(builded).toBeDefined();
     });
   });
@@ -51,7 +51,7 @@ describe('option builder', () => {
   describe('setCommandRemoveOptions', () => {
     it('common option builded', () => {
       const y = yargs(hideBin(process.argv));
-      const builded = setCommandRemoveOptions(y as unknown as yargs.Argv<ICommandRemoveOptions>);
+      const builded = setCommandRemoveOptions(y as unknown as Argv<ICommandRemoveOptions>);
       expect(builded).toBeDefined();
     });
   });

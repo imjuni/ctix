@@ -6,9 +6,9 @@ import type { TCommandBuildArgvOptions } from '#/configs/interfaces/TCommandBuil
 import { createBuildOptions } from '#/configs/transforms/createBuildOptions';
 import { building } from '#/modules/commands/building';
 import consola from 'consola';
-import type yargs from 'yargs';
+import type { ArgumentsCamelCase } from 'yargs';
 
-export async function buildCommand(argv: yargs.ArgumentsCamelCase<TCommandBuildArgvOptions>) {
+export async function buildCommand(argv: ArgumentsCamelCase<TCommandBuildArgvOptions>) {
   ProgressBar.it.enable = true;
   Spinner.it.enable = true;
   Reasoner.it.enable = true;

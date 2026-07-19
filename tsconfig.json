@@ -12,6 +12,8 @@
       // compilerOptions specified here will override those declared below,
       // but *only* in ts-node.  Useful if you want ts-node and tsc to use
       // different options with a single tsconfig.json.
+      "module": "Node16",
+      "moduleResolution": "Node16"
     },
     "require": ["tsconfig-paths/register"]
   },
@@ -37,8 +39,8 @@
     "isolatedModules": true /* Transpile each file as a separate module (similar to 'ts.transpileModule'). */,
 
     /* Module Resolution Options */
-    "module": "CommonJS",
-    "moduleResolution": "Node" /* Specify module resolution strategy: 'node' (Node.js) or 'classic' (TypeScript pre-1.6). */,
+    "module": "ESNext",
+    "moduleResolution": "Bundler" /* Resolve modules for the CJS and ESM bundle outputs. */,
     "rootDir": ".",
     "paths": {
       "#/*": ["./src/*"]

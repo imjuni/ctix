@@ -102,13 +102,11 @@ npm install ctix --save-dev
 
 > **TypeScript version requirement**
 >
-> ctix 2.8.0 requires **TypeScript >=5.0.0 and <6.0.0**.
->
-> TypeScript 6.x shifts to ESM-first defaults and introduces breaking changes to `moduleResolution` and `baseUrl` that are not yet supported by ctix. Until ctix adds ESM support, please keep your TypeScript version in the 5.x range.
+> ctix supports **TypeScript >=5.0.0 and <7.0.0**.
 >
 > ```bash
-> # install a compatible TypeScript version explicitly
-> npm install typescript@">=5 <6" --save-dev
+> # install a supported TypeScript version explicitly
+> npm install typescript@">=5 <7" --save-dev
 > ```
 
 ## Usage

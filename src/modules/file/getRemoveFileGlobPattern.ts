@@ -5,7 +5,7 @@ import type { TCreateOptions } from '#/configs/interfaces/TCreateOptions';
 import { posixJoin } from '#/modules/path/modules/posixJoin';
 import { posixResolve } from '#/modules/path/modules/posixResolve';
 import { getDirname } from 'my-node-fp';
-import type yargs from 'yargs';
+import type { ArgumentsCamelCase } from 'yargs';
 
 interface IGetRemoveFileGlobPatternReturn {
   origin: string;
@@ -15,7 +15,7 @@ interface IGetRemoveFileGlobPatternReturn {
 
 export async function getRemoveFileGlobPattern(
   argv: Pick<
-    yargs.ArgumentsCamelCase<TCommandRemoveOptions & TCommandBuildArgvOptions>,
+    ArgumentsCamelCase<TCommandRemoveOptions & TCommandBuildArgvOptions>,
     'exportFilename' | 'removeBackup'
   >,
   options: (
