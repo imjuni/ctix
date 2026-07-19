@@ -28,10 +28,9 @@
     "isolatedModules": true /* Transpile each file as a separate module (similar to 'ts.transpileModule'). */,
 
     /* Module Resolution Options */
-    "baseUrl": "." /* Base directory to resolve non-absolute module names. */,
     "rootDir": ".",
     "paths": {
-      "#/*": ["src/*"]
+      "#/*": ["./src/*"]
     },
     "esModuleInterop": true /* Enables emit interoperability between CommonJS and ES Modules via creation of namespace objects for all imports. Implies 'allowSyntheticDefaultImports'. */,
 
