@@ -65,9 +65,7 @@
       }
     }
   },
-  "files": [
-    "dist"
-  ],
+  "files": ["dist"],
   "bin": {
     "ctix": "./dist/cjs/cli.cjs"
   },
@@ -109,11 +107,10 @@
     "read-pkg": "^5.2.0",
     "rimraf": "^5.0.5",
     "rollup": "^4.14.2",
-    "rollup-plugin-dts": "^6.1.0",
+    "rollup-plugin-dts": "^6.4.1",
     "ts-node": "^10.9.2",
     "tsc-alias": "^1.8.8",
     "tsconfig-paths": "^4.2.0",
-    "vite-tsconfig-paths": "^5.1.4",
     "vitest": "^3.1.1",
     "vue": "^3.4.21"
   },
@@ -142,7 +139,7 @@
     "ora": "^5.4.1",
     "pathe": "2.0.3",
     "source-map-support": "^0.5.21",
-    "ts-morph": "27.0.0",
+    "ts-morph": "28.0.0",
     "ts-pattern": "^5.0.5",
     "tslib": "^2.6.2",
     "type-check": "^0.4.0",
@@ -153,12 +150,10 @@
   "peerDependencies": {
     "prettier": ">=3",
     "prettier-plugin-organize-imports": ">=3",
-    "typescript": ">=5 <6"
+    "typescript": ">=5 <7"
   },
   "lint-staged": {
-    "*.{js,jsx,ts,tsx}": [
-      "cross-env NODE_ENV=production eslint --cache"
-    ],
+    "*.{js,jsx,ts,tsx}": ["cross-env NODE_ENV=production eslint --cache"],
     "*.{js,jsx,ts,tsx},*.json,.{eslintrc.cjs,prettierrc}": [
       "cross-env NODE_ENV=production prettier --ignore-path .eslintignore --parser json --write"
     ]

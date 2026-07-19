@@ -1,8 +1,13 @@
 /* eslint-disable import/no-default-export, import/no-extraneous-dependencies */
-import tsconfigPaths from 'vite-tsconfig-paths';
+import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
+  resolve: {
+    alias: {
+      '#': fileURLToPath(new URL('./src', import.meta.url)),
+    },
+  },
   test: {
     testTimeout: 10_000,
     coverage: {
@@ -11,5 +16,4 @@ export default defineConfig({
     },
     exclude: ['node_modules', 'examples'],
   },
-  plugins: [tsconfigPaths({ projects: ['tsconfig.json'] })],
 });

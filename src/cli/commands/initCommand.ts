@@ -6,9 +6,9 @@ import type { ICommandInitOptions } from '#/configs/interfaces/ICommandInitOptio
 import type { TCommandInitOptions } from '#/configs/interfaces/TCommandInitOptions';
 import { initializing } from '#/modules/commands/initializing';
 import consola from 'consola';
-import type yargs from 'yargs';
+import type { ArgumentsCamelCase } from 'yargs';
 
-export async function initCommand(argv: yargs.ArgumentsCamelCase<ICommandInitOptions>) {
+export async function initCommand(argv: ArgumentsCamelCase<ICommandInitOptions>) {
   ProgressBar.it.enable = true;
   Spinner.it.enable = true;
   Reasoner.it.enable = true;

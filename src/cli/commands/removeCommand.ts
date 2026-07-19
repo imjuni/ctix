@@ -8,10 +8,10 @@ import { createBuildOptions } from '#/configs/transforms/createBuildOptions';
 import { createRemoveOptions } from '#/configs/transforms/createRemoveOptions';
 import { removing } from '#/modules/commands/removing';
 import consola from 'consola';
-import type yargs from 'yargs';
+import type { ArgumentsCamelCase } from 'yargs';
 
 export async function removeCommand(
-  argv: yargs.ArgumentsCamelCase<TCommandRemoveOptions & TCommandBuildArgvOptions>,
+  argv: ArgumentsCamelCase<TCommandRemoveOptions & TCommandBuildArgvOptions>,
 ) {
   ProgressBar.it.enable = true;
   Spinner.it.enable = true;
