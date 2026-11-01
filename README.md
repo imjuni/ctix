@@ -205,6 +205,8 @@ const UnwantedButton = () => {};
 const Checkbox = () => {};
 ```
 
+Namespaces are included or excluded as a whole. Applying `@ctix-exclude-next` to any declaration of a merged namespace excludes the entire symbol. Comments inside namespace bodies do not filter individual members. See [namespace exclusion](doc/IN_DEPTH_EXCLUDE.md#namespaces-and-merged-declarations).
+
 #### @ctix-generation-style
 
 ```ts

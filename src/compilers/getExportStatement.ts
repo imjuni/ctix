@@ -26,7 +26,8 @@ export async function getExportStatement(
   const relativePath = posixRelative(await getDirname(option.project), dirPath);
   // sourceFile.getExportDeclarations().at(0)?.getNamedExports
   const exportedDeclarationsMap = sourceFile.getExportedDeclarations();
-  const defaultExportedDeclarations = exportedDeclarationsMap.get('default')?.at(0);
+  const defaultDeclarations = exportedDeclarationsMap.get('default') ?? [];
+  const defaultExportedDeclarations = defaultDeclarations.at(0);
 
   const defaultExportedName =
     defaultExportedDeclarations != null
@@ -35,6 +36,7 @@ export async function getExportStatement(
             path: { filename, dirPath, relativePath },
             identifier: 'default',
             node: defaultExportedDeclarations,
+            declarations: defaultDeclarations,
             eol: extendOptions.eol,
             project: option.project,
             isDefault: true,
@@ -60,6 +62,7 @@ export async function getExportStatement(
           path: { filename, dirPath, relativePath },
           identifier: exportedDeclarationKey,
           node: exportedDeclaration,
+          declarations: exportedDeclarations,
           project: option.project,
           eol: extendOptions.eol,
           isDefault: false,
@@ -71,6 +74,7 @@ export async function getExportStatement(
           path: { filename, dirPath, relativePath },
           identifier: exportedDeclarationKey,
           node: exportedDeclaration,
+          declarations: exportedDeclarations,
           project: option.project,
           eol: extendOptions.eol,
           isDefault: false,
@@ -80,6 +84,7 @@ export async function getExportStatement(
       return getSummaryStatement({
         path: { filename, dirPath, relativePath },
         node: exportedDeclaration,
+        declarations: exportedDeclarations,
         identifier: exportedDeclarationKey,
         alias: kind.name !== exportedDeclarationKey && kind.name != null ? kind.name : undefined,
         project: option.project,

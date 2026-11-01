@@ -110,3 +110,9 @@ export class Organization {
 ```
 
 It supports two keywords: `@ctix-exclude` and `@ctix-exclude-next`. The `@ctix-exclude` sets the entire file as an exclude file, regardless of its location. The `@ctix-exclude-next` sets the next statement as a partial exclude. It does not exclude the entire file, but excludes the export statement.
+
+### Namespaces and merged declarations
+
+A namespace is included or excluded as a whole. If any declaration of a merged namespace (including a merged interface, class, or function) has `@ctix-exclude-next`, ctix excludes the entire exported symbol, regardless of declaration order. Other exported symbols in the file remain eligible for export.
+
+ctix recursively checks whether namespaces have public members and omits namespaces without any public members. Merged interfaces, classes, and functions remain eligible. It does not apply exclusion comments on namespace members. A comment on an inner member cannot hide that member through a barrel re-export: re-exporting the namespace exposes all its original exported members. Use `@ctix-exclude-next` before a top-level namespace declaration to exclude the whole symbol, or `@ctix-exclude` at the top of the file to exclude the file.
