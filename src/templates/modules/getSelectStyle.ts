@@ -11,6 +11,13 @@ export function getSelectStyle(params: {
   options: { style: CE_GENERATION_STYLE };
   renderData: IIndexRenderData;
 }): ReturnType<typeof getAutoRenderCase> {
+  if (params.renderData.statement.isHasPartialExclude) {
+    return {
+      case: CE_AUTO_RENDER_CASE.UNKNOWN,
+      style: CE_GENERATION_STYLE.DEFAULT_ALIAS_NAMED_DESTRUCTIVE,
+    };
+  }
+
   if (params.comment != null) {
     const style = getInlineStyle({
       comment: params.comment,
